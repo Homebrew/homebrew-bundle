@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'brewdler'
+require 'commander/import'
+
+program :version, Brewdler::VERSION
+program :description, 'CLI helper for brewdler'
+
+default_command :install
+
+command :install do |c|
+  c.description = 'Install all homebrew based dependecies'
+  c.action do |args, options|
+
+    begin
+      dependencies = []
+      File.open(File.join(Dir.pwd, 'Brewfile')).each { |line|
+        line.chomp!
+        if line.length > 0
+          dependencies << line
+        end
+      }
+    rescue
+      puts 'No Brewfile found'
+    end
+
+    dependencies.each do |dependency|
+      installed_version = installed?(dependency) 
+      puts "#{installed_version ? 'Using' : 'Installing'}: #{dependency} #{installed_version}"
+      install(dependency) unless installed_version
+    end
+
+    puts "All dependencies installed"
+  end
+end
+
+def install(name)
+  brewable = `brew info #{name}`
+  if brewable[0..4] != 'Error'
+    system "brew install #{name}"
+  else
+    puts "Error: No available formula for #{name}"
+  end
+end
+
+def installed?(name)
+  installed = `brew list #{name} -v`
+  if installed.length > 0
+    return installed.split(' ').last
+  end
+end
