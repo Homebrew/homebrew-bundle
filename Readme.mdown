@@ -4,7 +4,7 @@ Bundler for non-ruby dependencies from homebrew
 
 ## Requirements
 
-[Homebrew]()
+[Homebrew](http://github.com/mxcl/homebrew) is used for installing the dependencies, it only works on a mac and so does this gem.
 
 ## Usage
 
