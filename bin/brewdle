@@ -16,7 +16,7 @@ command :install do |c|
       dependencies = []
       File.open(File.join(Dir.pwd, 'Brewfile')).each { |line|
         line.chomp!
-        if line.length > 0
+        if line.length > 0 && !comment?(line)
           dependencies << line
         end
       }
@@ -25,7 +25,7 @@ command :install do |c|
     end
 
     dependencies.each do |dependency|
-      installed_version = installed?(dependency) 
+      installed_version = installed?(dependency)
       puts "#{installed_version ? 'Using' : 'Installing'}: #{dependency} #{installed_version}"
       install(dependency) unless installed_version
     end
@@ -48,4 +48,8 @@ def installed?(name)
   if installed.length > 0
     return installed.split(' ').last
   end
+end
+
+def comment?(line)
+  line =~ /^ *#/
 end
