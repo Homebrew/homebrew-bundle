@@ -45,7 +45,7 @@ end
 
 def installed?(name)
   installed = `brew list #{name} -v`
-  if installed.length > 0
+  if installed.length > 0 && !installed.match(/\AError/)
     return installed.split(' ').last
   end
 end
