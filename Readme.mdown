@@ -2,6 +2,10 @@
 
 Bundler for non-ruby dependencies from homebrew
 
+[![Gem Version](https://badge.fury.io/rb/brewdler.png)](http://badge.fury.io/rb/brewdler)
+[![Dependency Status](https://gemnasium.com/andrew/brewdler.png)](https://gemnasium.com/andrew/brewdler)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/andrew/brewdler)
+
 ## Requirements
 
 [Homebrew](http://github.com/mxcl/homebrew) is used for installing the dependencies, it only works on a mac and so does this gem.
@@ -53,4 +57,4 @@ Report Issues/Feature requests on [GitHub Issues](http://github.com/andrew/brewd
 
 ## Copyright
 
-Copyright (c) 2011 Andrew Nesbitt. See LICENSE for details.
+Copyright (c) 2013 Andrew Nesbitt. See LICENSE for details.
