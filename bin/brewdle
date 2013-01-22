@@ -25,9 +25,12 @@ command :install do |c|
     end
 
     dependencies.each do |dependency|
-      installed_version = installed?(dependency)
-      puts "#{installed_version ? 'Using' : 'Installing'}: #{dependency} #{installed_version}"
-      install(dependency) unless installed_version
+      if installed?(dependency)
+        puts "Using #{dependency} (#{installed_version(dependency)})"
+      else
+        puts "Installing #{dependency} (#{formula_version(dependency)})"
+        install(dependency)
+      end
     end
 
     puts "All dependencies installed"
@@ -44,10 +47,18 @@ def install(name)
 end
 
 def installed?(name)
-  installed = `brew list #{name} -v`
-  if installed.length > 0 && !installed.match(/\AError/)
-    return installed.split(' ').last
-  end
+  installed_version = `brew list --versions #{name}`.chomp
+  !installed_version.empty?
+end
+
+def installed_version(name)
+  installed_version = `brew list --versions #{name}`.chomp
+  installed_version.match(/#{name} ([^\s]+)/)[1]
+end
+
+def formula_version(name)
+  formula_version = `brew info #{name}`
+  formula_version.split($/).first.match(/#{name}: stable ([^\s,]+)/)[1]
 end
 
 def comment?(line)
