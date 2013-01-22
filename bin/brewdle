@@ -13,12 +13,9 @@ command :install do |c|
   c.action do |args, options|
 
     begin
-      dependencies = []
-      File.open(File.join(Dir.pwd, 'Brewfile')).each { |line|
+      dependencies = File.open(File.join(Dir.pwd, 'Brewfile')).find_all { |line|
         line.chomp!
-        if line.length > 0 && !comment?(line)
-          dependencies << line
-        end
+        line.length > 0 && !comment?(line)
       }
     rescue
       puts 'No Brewfile found'
