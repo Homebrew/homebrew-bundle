@@ -21,16 +21,25 @@ command :install do |c|
       puts 'No Brewfile found'
     end
 
-    dependencies.each do |dependency|
-      if installed?(dependency)
-        puts "Using #{dependency} (#{installed_version(dependency)})"
-      else
-        puts "Installing #{dependency} (#{formula_version(dependency)})"
-        install(dependency)
+    missing_formulae = dependencies.find_all { |dependency|
+      !formula_exists?(dependency)
+    }
+
+    if missing_formulae.empty?
+      dependencies.each do |dependency|
+        if installed?(dependency)
+          puts "Using #{dependency} (#{installed_version(dependency)})"
+        else
+          puts "Installing #{dependency} (#{formula_version(dependency)})"
+          install(dependency)
+        end
       end
+      puts "All dependencies installed"
+    else
+      puts "Non-existent formula/e: #{missing_formulae.join(', ')}"
+      puts "(please check spelling in Brewfile, and/or run 'brew update')"
     end
 
-    puts "All dependencies installed"
   end
 end
 
@@ -41,6 +50,11 @@ def install(name)
   else
     puts "Error: No available formula for #{name}"
   end
+end
+
+def formula_exists?(name)
+  formula_location = File.join(`brew --prefix`.chomp, 'Library', 'Formula', name + ".rb")
+  File.exists? formula_location
 end
 
 def installed?(name)
