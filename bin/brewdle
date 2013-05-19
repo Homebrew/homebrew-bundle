@@ -13,17 +13,17 @@ command :install do |c|
   c.action do |args, options|
 
     begin
-      dependencies = File.open(File.join(Dir.pwd, 'Brewfile')).find_all { |line|
+      dependencies = File.open(File.join(Dir.pwd, 'Brewfile')).find_all do |line|
         line.chomp!
-        line.length > 0 && !comment?(line)
-      }
+        line.length > 0 && not_a_comment(line)
+      end
     rescue
       puts 'No Brewfile found'
     end
 
-    missing_formulae = dependencies.find_all { |dependency|
-      !formula_exists?(dependency)
-    }
+    missing_formulae = dependencies.find_all do |dependency|
+      no_formula(dependency)
+    end
 
     if missing_formulae.empty?
       dependencies.each do |dependency|
@@ -52,24 +52,37 @@ def install(name)
   end
 end
 
-def formula_exists?(name)
-  formula_location = File.join(`brew --prefix`.chomp, 'Library', 'Formula', name + ".rb")
-  File.exists? formula_location
-end
-
-def installed?(name)
-  installed_version = `brew list --versions #{name}`.chomp
-  !installed_version.empty?
-end
-
-def installed_version(name)
-  installed_version = `brew list --versions #{name}`.chomp
-  installed_version.match(/#{name} ([^\s]+)/)[1]
+def formula_location(name)
+  File.join(`brew --prefix`.chomp, 'Library', 'Formula', name + ".rb")
 end
 
 def formula_version(name)
   formula_version = `brew info #{name}`
   formula_version.split($/).first.match(/#{name}: stable ([^\s,]+)/)[1]
+end
+
+def formula_exists?(name)
+  File.exists? formula_location(name)
+end
+
+def no_formula(name)
+  !File.exists? formula_location(name)
+end
+
+def installed_version(name)
+  `brew list --versions #{name}`.chomp
+end
+
+def installed?(name)
+  !installed_version(name).empty?
+end
+
+def installed_version(name)
+  installed_version(name).match(/#{name} ([^\s]+)/)[1]
+end
+
+def not_a_comment(line)
+  line !~ /^ *#/
 end
 
 def comment?(line)
