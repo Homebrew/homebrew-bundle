@@ -9,11 +9,11 @@ module Brewdler
     end
 
     def brew(name)
-      Brewdler::Installer.install('brew', name)
+      Brewdler::BrewInstaller.install(name)
     end
 
     def cask(name)
-      Brewdler::Installer.install('cask', name)
+      Brewdler::CaskInstaller.install(name)
     end
   end
 end

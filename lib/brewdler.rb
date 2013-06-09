@@ -1,3 +1,4 @@
 require "brewdler/version"
 require "brewdler/dsl"
-require "brewdler/installer"
+require "brewdler/brew_installer"
+require "brewdler/cask_installer"
