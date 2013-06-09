@@ -11,80 +11,12 @@ default_command :install
 command :install do |c|
   c.description = 'Install all homebrew based dependecies'
   c.action do |args, options|
-
     begin
-      dependencies = File.open(File.join(Dir.pwd, 'Brewfile')).find_all do |line|
-        line.chomp!
-        line.length > 0 && not_a_comment(line)
-      end
-    rescue
+      file = File.read(File.join(Dir.pwd, "Brewfile"))
+      Brewdler::Dsl.new(file).process
+    rescue Errno::ENOENT => e
       puts 'No Brewfile found'
+      puts e.message
     end
-
-    missing_formulae = dependencies.find_all do |dependency|
-      no_formula(dependency)
-    end
-
-    if missing_formulae.empty?
-      dependencies.each do |dependency|
-        if installed?(dependency)
-          puts "Using #{dependency} (#{installed_version(dependency)})"
-        else
-          puts "Installing #{dependency} (#{formula_version(dependency)})"
-          install(dependency)
-        end
-      end
-      puts "All dependencies installed"
-    else
-      puts "Non-existent formula/e: #{missing_formulae.join(', ')}"
-      puts "(please check spelling in Brewfile, and/or run 'brew update')"
-    end
-
   end
-end
-
-def install(name)
-  brewable = `brew info #{name}`
-  if brewable[0..4] != 'Error'
-    system "brew install #{name}"
-  else
-    puts "Error: No available formula for #{name}"
-  end
-end
-
-def formula_location(name)
-  File.join(`brew --prefix`.chomp, 'Library', 'Formula', name + ".rb")
-end
-
-def formula_version(name)
-  formula_version = `brew info #{name}`
-  formula_version.split($/).first.match(/#{name}: stable ([^\s,]+)/)[1]
-end
-
-def formula_exists?(name)
-  File.exists? formula_location(name)
-end
-
-def no_formula(name)
-  !File.exists? formula_location(name)
-end
-
-def installed_version(name)
-  `brew list --versions #{name}`.chomp
-end
-
-def installed?(name)
-  !installed_version(name).empty?
-end
-
-def installed_version(name)
-  installed_version(name).match(/#{name} ([^\s]+)/)[1]
-end
-
-def not_a_comment(line)
-  line !~ /^ *#/
-end
-
-def comment?(line)
-  line =~ /^ *#/
 end
