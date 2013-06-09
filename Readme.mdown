@@ -4,11 +4,13 @@ Bundler for non-ruby dependencies from homebrew
 
 [![Gem Version](https://badge.fury.io/rb/brewdler.png)](http://badge.fury.io/rb/brewdler)
 [![Dependency Status](https://gemnasium.com/andrew/brewdler.png)](https://gemnasium.com/andrew/brewdler)
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/andrew/brewdler)
+[![Code Climate](https://codeclimate.com/github/andrew/brewdler.png)](https://codeclimate.com/github/andrew/brewdler)
 
 ## Requirements
 
 [Homebrew](http://github.com/mxcl/homebrew) is used for installing the dependencies, it only works on a mac and so does this gem.
+
+[Homebrew-cask](http://github.com/phinze/homebrew-cask) is optional and used for installing Mac applications.
 
 ## Usage
 
@@ -22,11 +24,12 @@ then create a `Brewfile` in the root of your project:
 
 Then list your homebrew based dependencies in your `Brewfile`:
 
-    redis
-    mongodb
-    sphinx
-    imagemagick
-    mysql
+    brew 'redis'
+    brew 'mongodb'
+    brew 'sphinx'
+    brew 'imagemagick'
+    brew 'mysql'
+    cask 'google-chrome'
 
 You can then easily install all of the dependencies on a new mac like so:
 
