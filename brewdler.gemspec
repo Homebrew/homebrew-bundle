@@ -2,8 +2,8 @@
 require File.expand_path('../lib/brewdler/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Andrew Nesbitt"]
-  gem.email         = ["andrewnez@gmail.com"]
+  gem.authors       = ["Andrew Nesbitt", "James A. Anderson", "Amos King"]
+  gem.email         = ["andrewnez@gmail.com", "me@jamesaanderson.com", "amos.l.king@gmail.com"]
   gem.summary       = %q{Bundler for non-ruby dependencies from homebrew}
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
