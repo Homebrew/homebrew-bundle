@@ -17,6 +17,12 @@ command :install do |c|
     rescue Errno::ENOENT => e
       puts 'No Brewfile found'
       puts e.message
+    rescue NameError
+      file = File.open(File.join(Dir.pwd, "Brewfile"))
+      file.find_all do |name|
+        name.chomp!
+        Brewdler::BrewInstaller.install(name) if name.length > 0 && name !~ /^ *#/
+      end
     end
   end
 end
