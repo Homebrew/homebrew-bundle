@@ -14,4 +14,5 @@ Gem::Specification.new do |gem|
   gem.version       = Brewdler::VERSION
 
   gem.add_dependency 'commander'
+  gem.add_development_dependency 'rspec'
 end
