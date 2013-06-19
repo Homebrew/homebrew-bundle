@@ -15,8 +15,7 @@ command :install do |c|
       file = File.read(File.join(Dir.pwd, "Brewfile"))
       Brewdler::Dsl.new(file).process
     rescue Errno::ENOENT => e
-      puts 'No Brewfile found'
-      puts e.message
+      raise "No Brewfile found\n#{e.message}"
     rescue NameError
       file = File.open(File.join(Dir.pwd, "Brewfile"))
       file.find_all do |name|
