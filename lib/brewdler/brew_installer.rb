@@ -4,7 +4,7 @@ module Brewdler
       if system 'brew info'
         `brew install #{name}`
       else
-        raise "Unable to install #{name}. Homebrew is not currently installed on your system."
+        raise "Unable to install #{name}. Homebrew is not currently installed on your system"
       end
     end
   end

@@ -5,7 +5,7 @@ module Brewdler::Commands
         file = File.read(File.join(Dir.pwd, "Brewfile"))
         Brewdler::Dsl.new(file).process
       rescue Errno::ENOENT => e
-        raise "No Brewfile found."
+        raise "No Brewfile found"
       rescue NameError
         file = File.open(File.join(Dir.pwd, "Brewfile"))
         file.find_all do |name|
