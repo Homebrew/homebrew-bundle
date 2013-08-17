@@ -12,6 +12,8 @@ Bundler for non-ruby dependencies from homebrew
 
 [Homebrew](http://github.com/mxcl/homebrew) is used for installing the dependencies, it only works on a mac and so does this gem.
 
+[Homebrew brew-tap](https://github.com/mxcl/homebrew/wiki/brew-tap) is new feature in Homebrew-0.9, add more Github repos to the list of formulae.
+
 [Homebrew-cask](http://github.com/phinze/homebrew-cask) is optional and used for installing Mac applications.
 
 ## Usage
@@ -26,6 +28,7 @@ then create a `Brewfile` in the root of your project:
 
 Then list your homebrew based dependencies in your `Brewfile`:
 
+    tap 'phinze/cask'
     brew 'redis'
     brew 'mongodb'
     brew 'sphinx'
