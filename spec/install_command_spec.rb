@@ -9,7 +9,7 @@ describe Brewdler::Commands::Install do
 
   context "when a Brewfile is found" do
     it "does not raise an error" do
-      File.stub(:read).and_return("brew 'git'\ncask 'google-chrome'")
+      File.stub(:read).and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Brewdler::Commands::Install.run }.to_not raise_error('No Brewfile found')
 
       File.stub(:read => 'git', :open => ['git'])
