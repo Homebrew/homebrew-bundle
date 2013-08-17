@@ -15,5 +15,9 @@ module Brewdler
     def cask(name)
       Brewdler::CaskInstaller.install(name)
     end
+
+    def tap(name)
+      Brewdler::RepoInstaller.install(name)
+    end
   end
 end
