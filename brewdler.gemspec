@@ -5,6 +5,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Andrew Nesbitt", "James A. Anderson", "Amos King"]
   gem.email         = ["andrewnez@gmail.com", "me@jamesaanderson.com", "amos.l.king@gmail.com"]
   gem.summary       = %q{Bundler for non-ruby dependencies from homebrew}
+  gem.licenses      = ['MIT']
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
