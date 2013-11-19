@@ -2,6 +2,12 @@
 
 Bundler for non-ruby dependencies from homebrew
 
+*Note: this is now a native feature in homebrew:*
+
+    brew bundle path/to/Brewfile
+
+*https://github.com/mxcl/homebrew/blob/master/Library/Contributions/cmd/brew-bundle.rb*
+
 [![Gem Version](https://badge.fury.io/rb/brewdler.png)](http://badge.fury.io/rb/brewdler)
 [![Dependency Status](https://gemnasium.com/andrew/brewdler.png)](https://gemnasium.com/andrew/brewdler)
 [![Code Climate](https://codeclimate.com/github/andrew/brewdler.png)](https://codeclimate.com/github/andrew/brewdler)
