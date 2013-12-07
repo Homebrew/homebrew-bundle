@@ -15,6 +15,7 @@ Gem::Specification.new do |gem|
   gem.version       = Brewdler::VERSION
 
   gem.add_dependency 'commander'
+  gem.add_dependency 'mime-types', '1.25'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'simplecov'
