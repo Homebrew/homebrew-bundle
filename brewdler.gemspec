@@ -13,6 +13,7 @@ Gem::Specification.new do |gem|
   gem.name          = "brewdler"
   gem.require_paths = ['lib']
   gem.version       = Brewdler::VERSION
+  gem.required_ruby_version = '>= 1.9.2'
 
   gem.add_dependency 'commander'
   gem.add_dependency 'mime-types', '1.25'
