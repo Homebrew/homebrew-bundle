@@ -10,11 +10,11 @@ Bundler for non-ruby dependencies from homebrew
 
 ## Requirements
 
-[Homebrew](http://github.com/mxcl/homebrew) is used for installing the dependencies, it only works on a mac and so does this gem.
+[Homebrew](http://github.com/Homebrew/homebrew) is used for installing the dependencies, it only works on a mac and so does this gem.
 
-[Homebrew brew-tap](https://github.com/mxcl/homebrew/wiki/brew-tap) is new feature in Homebrew-0.9, add more Github repos to the list of formulae.
+[Homebrew brew-tap](https://github.com/Homebrew/homebrew/wiki/brew-tap) is new feature in Homebrew-0.9, add more Github repos to the list of formulae.
 
-[Homebrew-cask](http://github.com/phinze/homebrew-cask) is optional and used for installing Mac applications.
+[Homebrew-cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
 ## Usage
 
