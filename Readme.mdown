@@ -29,6 +29,7 @@ then create a `Brewfile` in the root of your project:
 Then list your homebrew based dependencies in your `Brewfile`:
 
     tap 'phinze/cask'
+    brew 'emacs', args: ['cocoa', 'srgb', 'with-gnutls']
     brew 'redis'
     brew 'mongodb'
     brew 'sphinx'
