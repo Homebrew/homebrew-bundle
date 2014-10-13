@@ -5,11 +5,11 @@ module Brewdler
     end
 
     def process
-      instance_eval(@input)
+      eval(@input)
     end
 
-    def brew(name)
-      Brewdler::BrewInstaller.install(name)
+    def brew(name, options={})
+      Brewdler::BrewInstaller.install(name, options)
     end
 
     def cask(name)
