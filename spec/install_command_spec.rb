@@ -11,6 +11,7 @@ describe Brewdler::Commands::Install do
     it "does not raise an error" do
       Brewdler::BrewInstaller.stub(:install).and_return(true)
       Brewdler::CaskInstaller.stub(:install).and_return(true)
+      Brewdler::RepoInstaller.stub(:install).and_return(true)
 
       File.stub(:read).and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Brewdler::Commands::Install.run }.to_not raise_error
