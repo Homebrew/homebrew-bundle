@@ -6,7 +6,7 @@ module Brewdler::Commands
       rescue Errno::ENOENT => e
         raise "No Brewfile found"
       rescue NameError
-        brewfile.find_all do |name|
+        brewfile.split("\n").each do |name|
           name.chomp!
           Brewdler::BrewInstaller.install(name) if name.length > 0 && name !~ /^ *#/
         end
