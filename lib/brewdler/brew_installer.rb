@@ -1,6 +1,6 @@
 module Brewdler
   class BrewInstaller
-    def self.install(name, options)
+    def self.install(name, options = {})
       if system 'brew info'
         command = "brew install #{name}"
         unless options[:args].nil?
