@@ -66,4 +66,4 @@ Report Issues/Feature requests on [GitHub Issues](http://github.com/andrew/brewd
 
 ## Copyright
 
-Copyright (c) 2013 Andrew Nesbitt. See LICENSE for details.
+Copyright (c) 2015 Andrew Nesbitt. See LICENSE for details.
