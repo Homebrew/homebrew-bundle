@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'brewdler'
-require 'commander/import'
+
+begin
+  require 'commander/import'
+rescue LoadError
+  Brewdler::Commands::Install.run
+  exit
+end
 
 program :version, Brewdler::VERSION
 program :description, 'CLI helper for brewdler'
