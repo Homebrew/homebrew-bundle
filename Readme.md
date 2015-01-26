@@ -22,17 +22,9 @@ You can install as a homebrew tap:
 
     $ brew tap andrew/homebrew-brewdler
 
-then use the following command to run it:
-
-    $ brew brewdler
-
-or if you install via rubygems:
+or you can install it via rubygems:
 
     $ gem install brewdler
-
-then use the following command to run it:
-
-    $ brewdle install
 
 ## Usage
 
@@ -51,7 +43,7 @@ Then list your homebrew based dependencies in your `Brewfile`:
     brew 'mysql'
     cask 'google-chrome'
 
-You can then easily install all of the dependencies:
+You can then easily install all of the dependencies with one of the following commands:
 
     $ brewdle install # installed via rubygems
     $ brew brewdle # installed via homebrew tab
