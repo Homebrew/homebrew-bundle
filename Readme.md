@@ -16,13 +16,27 @@ Bundler for non-ruby dependencies from homebrew
 
 [Homebrew-cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
-## Usage
+## Install
 
-Install using rubygems:
+You can install as a homebrew tap:
+
+    $ brew tap andrew/homebrew-brewdler
+
+then use the following command to run it:
+
+    $ brew brewdler
+
+or if you install via rubygems:
 
     $ gem install brewdler
 
-then create a `Brewfile` in the root of your project:
+then use the following command to run it:
+
+    $ brewdle install
+
+## Usage
+
+Create a `Brewfile` in the root of your project:
 
     $ touch Brewfile
 
@@ -37,9 +51,10 @@ Then list your homebrew based dependencies in your `Brewfile`:
     brew 'mysql'
     cask 'google-chrome'
 
-You can then easily install all of the dependencies on a new mac like so:
+You can then easily install all of the dependencies:
 
-    $ brewdle install
+    $ brewdle install # installed via rubygems
+    $ brew brewdle # installed via homebrew tab
 
 ## Note
 
