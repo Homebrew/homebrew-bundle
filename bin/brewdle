@@ -15,7 +15,7 @@ program :description, 'CLI helper for brewdler'
 default_command :install
 
 command :install do |c|
-  c.description = 'Install all homebrew based dependecies'
+  c.description = 'Install all Homebrew based dependecies'
   c.action do |args, options|
     Brewdler::Commands::Install.run
   end
