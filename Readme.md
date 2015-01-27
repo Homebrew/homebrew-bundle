@@ -56,21 +56,26 @@ If your software needs specific versions then perhaps you'll want to look at usi
 
 (Or there is always MacPorts...)
 
+## Contributors
+
+Over 10 different people have contributed to the project, you can see them all here: https://github.com/Homebrew/homebrew-brewdler/graphs/contributors
+
 ## Development
 
 Source hosted at [GitHub](http://github.com/Homebrew/homebrew-brewdler).
 Report Issues/Feature requests on [GitHub Issues](http://github.com/Homebrew/homebrew-brewdler/issues).
 
+Tests can be ran with `rake spec`
+
 ### Note on Patches/Pull Requests
 
  * Fork the project.
  * Make your feature addition or bug fix.
- * Add tests for it. This is important so I don't break it in a
-   future version unintentionally.
+ * Add tests for it. This is important so I don't break it in a future version unintentionally.
+ * Add documentation if necessary.
  * Commit, do not mess with Rakefile, version, or history.
-   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
- * Send me a pull request. Bonus points for topic branches.
+ * Send a pull request. Bonus points for topic branches.
 
 ## Copyright
 
-Copyright (c) 2015 Andrew Nesbitt. See LICENSE for details.
+Copyright (c) 2015 Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-brewdler/blob/master/LICENSE) for details.
