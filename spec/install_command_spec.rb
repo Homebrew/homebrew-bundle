@@ -9,14 +9,16 @@ describe Brewdler::Commands::Install do
 
   context "when a Brewfile is found" do
     it "does not raise an error" do
-      Brewdler::BrewInstaller.stub(:install).and_return(true)
-      Brewdler::CaskInstaller.stub(:install).and_return(true)
-      Brewdler::RepoInstaller.stub(:install).and_return(true)
+      allow(Brewdler::BrewInstaller).to receive(:install).and_return(true)
+      allow(Brewdler::CaskInstaller).to receive(:install).and_return(true)
+      allow(Brewdler::RepoInstaller).to receive(:install).and_return(true)
 
-      File.stub(:read).and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
+      allow(File).to receive(:read).
+        and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Brewdler::Commands::Install.run }.to_not raise_error
 
-      File.stub(:read => 'git', :open => ['git'])
+      allow(File).to receive(:read).and_return('git')
+      allow(File).to receive(:open).and_return('git')
       expect { Brewdler::Commands::Install.run }.to_not raise_error
     end
   end
