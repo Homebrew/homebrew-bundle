@@ -2,11 +2,11 @@
 
 Bundler for non-Ruby dependencies from Homebrew
 
-[![Gem Version](https://badge.fury.io/rb/brewdler.png)](http://badge.fury.io/rb/brewdler)
-[![Dependency Status](https://gemnasium.com/andrew/brewdler.png)](https://gemnasium.com/andrew/brewdler)
-[![Code Climate](https://codeclimate.com/github/andrew/brewdler.png)](https://codeclimate.com/github/andrew/brewdler)
-[![Coverage Status](https://coveralls.io/repos/andrew/brewdler/badge.png)](https://coveralls.io/r/andrew/brewdler)
-[![Build Status](https://travis-ci.org/andrew/brewdler.png)](https://travis-ci.org/andrew/brewdler)
+[![Gem Version](https://badge.fury.io/rb/homebrew-brewdler.png)](http://badge.fury.io/rb/homebrew-brewdler)
+[![Dependency Status](https://gemnasium.com/Homebrew/homebrew-brewdler.png)](https://gemnasium.com/Homebrew/homebrew-brewdler)
+[![Code Climate](https://codeclimate.com/github/Homebrew/homebrew-brewdler.png)](https://codeclimate.com/github/Homebrew/homebrew-brewdler)
+[![Coverage Status](https://coveralls.io/repos/Homebrew/homebrew-brewdler/badge.png)](https://coveralls.io/r/Homebrew/homebrew-brewdler)
+[![Build Status](https://travis-ci.org/Homebrew/homebrew-brewdler.png)](https://travis-ci.org/Homebrew/homebrew-brewdler)
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Bundler for non-Ruby dependencies from Homebrew
 
 You can install as a Homebrew tap:
 
-    $ brew tap andrew/homebrew-brewdler
+    $ brew tap Homebrew/homebrew-brewdler
 
 or you can install it via RubyGems:
 
@@ -58,8 +58,8 @@ If your software needs specific versions then perhaps you'll want to look at usi
 
 ## Development
 
-Source hosted at [GitHub](http://github.com/andrew/brewdler).
-Report Issues/Feature requests on [GitHub Issues](http://github.com/andrew/brewdler/issues).
+Source hosted at [GitHub](http://github.com/Homebrew/homebrew-brewdler).
+Report Issues/Feature requests on [GitHub Issues](http://github.com/Homebrew/homebrew-brewdler/issues).
 
 ### Note on Patches/Pull Requests
 
