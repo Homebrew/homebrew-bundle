@@ -20,7 +20,7 @@ Bundler for non-Ruby dependencies from Homebrew
 
 You can install as a Homebrew tap:
 
-    $ brew tap Homebrew/homebrew-brewdler
+    $ brew tap Homebrew/brewdler
 
 or you can install it via RubyGems:
 
