@@ -22,10 +22,6 @@ You can install as a Homebrew tap:
 
     $ brew tap Homebrew/brewdler
 
-or you can install it via RubyGems:
-
-    $ gem install brewdler
-
 ## Usage
 
 Create a `Brewfile` in the root of your project:
@@ -45,8 +41,17 @@ Then list your Homebrew based dependencies in your `Brewfile`:
 
 You can then easily install all of the dependencies with one of the following commands:
 
-    $ brewdle install # installed from RubyGems
-    $ brew brewdle # installed from Homebrew tap
+    $ brew brewdle
+
+### Install via rubygems
+
+The recommended way to use brewdler is via Homebrew tap but you can install it via RubyGems:
+
+    $ gem install brewdler
+
+Then use it with the following command:
+
+    $ brewdle install
 
 ## Note
 
