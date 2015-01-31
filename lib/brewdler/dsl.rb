@@ -5,7 +5,7 @@ module Brewdler
     end
 
     def process
-      eval(@input)
+      instance_eval(@input)
     end
 
     def brew(name, options={})
