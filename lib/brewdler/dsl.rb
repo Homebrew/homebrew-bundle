@@ -1,7 +1,8 @@
 module Brewdler
   class Dsl
-    def initialize(input)
+    def initialize(input, mode)
       @input = input
+      @mode = mode
     end
 
     def process
@@ -9,7 +10,11 @@ module Brewdler
     end
 
     def brew(name, options={})
-      Brewdler::BrewInstaller.install(name, options)
+      if @mode == "install"
+        Brewdler::BrewInstaller.install(name, options)
+      elsif @mode == "upgrade"
+        Brewdler::BrewInstaller.upgrade(name, options)
+      end
     end
 
     def cask(name)

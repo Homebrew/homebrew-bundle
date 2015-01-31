@@ -20,3 +20,12 @@ command :install do |c|
     Brewdler::Commands::Install.run
   end
 end
+
+command :upgrade do |c|
+  c.description = 'Install and Upgrade all Homebrew based dependencies'
+  c.action do |args, options|
+    Brewdler::Commands::Upgrade.run
+  end
+end
+
+alias_command :'update', :'upgrade'
