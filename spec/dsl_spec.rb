@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Brewdler::Dsl do
-  let(:dsl) { Brewdler::Dsl.new("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'\nbrew 'emacs', args: ['cocoa', 'srgb', 'with-gnutls']") }
+  let(:dsl) { Brewdler::Dsl.new("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'\nbrew 'emacs', args: ['cocoa', 'srgb', 'with-gnutls']", "install") }
 
   it "processes input" do
     expect(dsl).to receive(:tap).with('phinze/cask')
