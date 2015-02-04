@@ -1,15 +1,15 @@
 module Brewdler
   class BrewInstaller
     def self.install(name, options = {})
-      if `which brew`; $?.success?
-        command = "brew install #{name}"
+      if system "brew --prefix &>/dev/null"
+        command = [name]
         unless options[:args].nil?
           options[:args].each do |arg|
-            command << " --#{arg}"
+            command << "--#{arg}"
           end
         end
 
-        `#{command}`
+        Brewdler.system "brew", "install", *command
       else
         raise "Unable to install #{name}. Homebrew is not currently installed on your system"
       end
