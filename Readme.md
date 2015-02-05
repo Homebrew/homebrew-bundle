@@ -2,8 +2,6 @@
 
 Bundler for non-Ruby dependencies from Homebrew
 
-[![Gem Version](https://badge.fury.io/rb/brewdler.svg)](http://badge.fury.io/rb/homebrew-brewdler)
-[![Dependency Status](https://gemnasium.com/Homebrew/homebrew-brewdler.svg)](https://gemnasium.com/Homebrew/homebrew-brewdler)
 [![Code Climate](https://codeclimate.com/github/Homebrew/homebrew-brewdler/badges/gpa.svg)](https://codeclimate.com/github/Homebrew/homebrew-brewdler)
 [![Coverage Status](https://coveralls.io/repos/Homebrew/homebrew-brewdler/badge.svg)](https://coveralls.io/r/Homebrew/homebrew-brewdler)
 [![Build Status](https://travis-ci.org/Homebrew/homebrew-brewdler.svg)](https://travis-ci.org/Homebrew/homebrew-brewdler)
