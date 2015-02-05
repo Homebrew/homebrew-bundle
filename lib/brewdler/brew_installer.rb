@@ -1,7 +1,7 @@
 module Brewdler
   class BrewInstaller
     def self.install(name, options = {})
-      if system "brew --prefix &>/dev/null"
+      if Brewdler.brew_installed?
         command = [name]
         unless options[:args].nil?
           options[:args].each do |arg|
