@@ -1,4 +1,8 @@
 source 'http://rubygems.org'
 
-# Specify your gem's dependencies in brewdler.gemspec
-gemspec
+group :test do
+  gem 'rspec'
+  gem 'rake'
+  gem 'simplecov'
+  gem 'coveralls'
+end
