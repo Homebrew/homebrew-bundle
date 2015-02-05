@@ -43,16 +43,6 @@ You can then easily install all of the dependencies with one of the following co
 
     $ brew brewdle
 
-### Install via rubygems
-
-The recommended way to use brewdler is via Homebrew tap but you can install it via RubyGems:
-
-    $ gem install brewdler
-
-Then use it with the following command:
-
-    $ brewdle install
-
 ## Note
 
 Homebrew does not support installing specific versions of a library, only the most recent one so there is no good mechanism for storing installed versions in a .lock file.
@@ -78,7 +68,7 @@ Tests can be ran with `rake spec`
  * Make your feature addition or bug fix.
  * Add tests for it. This is important so I don't break it in a future version unintentionally.
  * Add documentation if necessary.
- * Commit, do not mess with Rakefile, version, or history.
+ * Commit, do not change Rakefile or history.
  * Send a pull request. Bonus points for topic branches.
 
 ## Copyright
