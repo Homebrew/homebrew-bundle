@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+puts "Installing brewdler from rubygems has been deprecated, instead install with:"
+puts "\n  brew tap Homebrew/brewdler"
+puts "\nFor more info see: https://github.com/Homebrew/homebrew-brewdler"
+
 require 'brewdler'
 
 begin
