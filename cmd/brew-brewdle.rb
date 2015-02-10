@@ -9,15 +9,20 @@ require "brewdler"
 
 usage = <<-EOS.undent
   brew brewdle
+  brew brewdle dump [--force]
   brew brewdle [--version]
   brew brewdle [-h|--help]
 
   Usage:
   Bundler for non-Ruby dependencies from Homebrew
 
+  brew brewdle                    read Brewfile and install all dependencies
+  brew brewdle dump               write all currently installed packages into a Brewfile
+
   Options:
-  -h, --help        show this help message and exit
-  --version         show the version of brewdler
+  --force                        force overwrite existed Brewfile
+  -h, --help                     show this help message and exit
+  --version                      show the version of brewdler
 EOS
 
 if ARGV.include?("--version")
@@ -33,6 +38,8 @@ end
 case ARGV.named[0]
 when nil, "install"
   Brewdler::Commands::Install.run
+when "dump"
+  Brewdler::Commands::Dump.run
 else
   abort usage
 end
