@@ -2,7 +2,7 @@ module Brewdler::Commands
   class Install
     def self.run
       begin
-        Brewdler::Dsl.new(brewfile).process
+        Brewdler::Dsl.new(brewfile).process.install
       rescue Errno::ENOENT => e
         raise "No Brewfile found"
       rescue NameError
