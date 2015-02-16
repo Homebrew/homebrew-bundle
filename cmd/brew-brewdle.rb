@@ -10,6 +10,7 @@ require "brewdler"
 usage = <<-EOS.undent
   brew brewdle
   brew brewdle dump [--force]
+  brew brewdle cleanup [--dry-run]
   brew brewdle [--version]
   brew brewdle [-h|--help]
 
@@ -18,9 +19,11 @@ usage = <<-EOS.undent
 
   brew brewdle                    read Brewfile and install all dependencies
   brew brewdle dump               write all currently installed packages into a Brewfile
+  brew brewdle cleanup            uninstall all Homebrew formulae not listed in Brewfile
 
   Options:
   --force                        force overwrite existed Brewfile
+  --dry-run                      list formulae rather than actual uninstalling them
   -h, --help                     show this help message and exit
   --version                      show the version of brewdler
 EOS
@@ -40,6 +43,8 @@ when nil, "install"
   Brewdler::Commands::Install.run
 when "dump"
   Brewdler::Commands::Dump.run
+when "cleanup"
+  Brewdler::Commands::Cleanup.run
 else
   abort usage
 end

@@ -9,10 +9,16 @@ module Brewdler
   end
 
   def self.brew_installed?
-    system("brew --version &>/dev/null")
+    Kernel.system("brew --version &>/dev/null")
   end
 
   def self.cask_installed?
-    system("brew cask --version &>/dev/null")
+    Kernel.system("brew cask --version &>/dev/null")
+  end
+
+  def self.brewfile
+    File.read(Dir['{*,.*}{B,b}rewfile'].first.to_s)
+  rescue Errno::ENOENT
+    raise "No Brewfile found"
   end
 end
