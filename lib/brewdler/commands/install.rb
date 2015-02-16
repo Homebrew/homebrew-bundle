@@ -2,21 +2,13 @@ module Brewdler::Commands
   class Install
     def self.run
       begin
-        Brewdler::Dsl.new(brewfile).process.install
-      rescue Errno::ENOENT => e
-        raise "No Brewfile found"
+        Brewdler::Dsl.new(Brewdler.brewfile).process.install
       rescue NameError
-        brewfile.split("\n").each do |name|
+        Brewdler.brewfile.split("\n").each do |name|
           name.chomp!
           Brewdler::BrewInstaller.install(name) if name.length > 0 && name !~ /^ *#/
         end
       end
-    end
-
-  private
-
-    def self.brewfile
-      File.read(Dir['{*,.*}{B,b}rewfile'].first.to_s)
     end
   end
 end
