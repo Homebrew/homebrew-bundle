@@ -40,14 +40,22 @@ Then list your Homebrew based dependencies in your `Brewfile`:
 You can then easily install all of the dependencies with one of the following commands:
 
     $ brew brewdle
-    
+
 ### Dump
 
-You can create a `Brewfile` from all the existing Homebrew packages you have installed with: 
+You can create a `Brewfile` from all the existing Homebrew packages you have installed with:
 
     $ brew brewdle dump
 
-The `--force` option will allow an existing `Brewfile` to be overwritten as well. 
+The `--force` option will allow an existing `Brewfile` to be overwritten as well.
+
+### Cleanup
+
+You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
+
+    $ brew brewdle cleanup
+
+If `--dry-run` option is passed, brewdler will list formulae rather than actually uninstalling them.
 
 ## Note
 
