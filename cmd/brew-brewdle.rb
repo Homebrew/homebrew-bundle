@@ -8,7 +8,7 @@ $LOAD_PATH.unshift(BREWDLER_LIB)
 require "brewdler"
 
 usage = <<-EOS.undent
-  brew brewdle
+  brew brewdle [-v|--verbose]
   brew brewdle dump [--force]
   brew brewdle cleanup [--dry-run]
   brew brewdle [--version]
@@ -17,15 +17,16 @@ usage = <<-EOS.undent
   Usage:
   Bundler for non-Ruby dependencies from Homebrew
 
-  brew brewdle                    read Brewfile and install all dependencies
-  brew brewdle dump               write all currently installed packages into a Brewfile
-  brew brewdle cleanup            uninstall all Homebrew formulae not listed in Brewfile
+  brew brewdle           read Brewfile and install all dependencies
+  brew brewdle dump      write all currently installed packages into a Brewfile
+  brew brewdle cleanup   uninstall all Homebrew formulae not listed in Brewfile
 
   Options:
-  --force                        force overwrite existed Brewfile
-  --dry-run                      list formulae rather than actual uninstalling them
-  -h, --help                     show this help message and exit
-  --version                      show the version of brewdler
+  -v, --verbose          print verbose output
+  --force                force overwrite existed Brewfile
+  --dry-run              list formulae rather than actual uninstalling them
+  -h, --help             show this help message and exit
+  --version              show the version of brewdler
 EOS
 
 if ARGV.include?("--version")
