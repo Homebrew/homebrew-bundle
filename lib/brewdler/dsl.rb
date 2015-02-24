@@ -1,12 +1,12 @@
 module Brewdler
   class Dsl
     class Entry
-      attr_reader :type, :name, :extra
+      attr_reader :type, :name, :options
 
-      def initialize(type, name, extra={})
+      def initialize(type, name, options={})
         @type = type
         @name = name
-        @extra = extra
+        @options = options
       end
     end
 
@@ -23,17 +23,34 @@ module Brewdler
     end
 
     def install
+      success = fail = 0
       @entries.each do |entry|
-        case entry.type
-        when :brew then Brewdler::BrewInstaller.install(entry.name, entry.extra[:options])
-        when :cask then Brewdler::CaskInstaller.install(entry.name)
-        when :repo then Brewdler::RepoInstaller.install(entry.name)
+        arg = [entry.name]
+        cls = case entry.type
+              when :brew
+                arg << entry.options
+                verb = "install"
+                Brewdler::BrewInstaller
+              when :cask
+                verb = "install"
+                Brewdler::CaskInstaller
+              when :repo
+                verb = "tap"
+                Brewdler::RepoInstaller
+              end
+        if cls.install(*arg)
+          puts "Succeed to #{verb} #{entry.name}"
+          success += 1
+        else
+          puts "Fail to #{verb} #{entry.name}"
+          fail += 1
         end
       end
+      puts "\nSuccess: #{success} Fail: #{fail}"
     end
 
     def brew(name, options={})
-      @entries << Entry.new(:brew, name, {:options => options})
+      @entries << Entry.new(:brew, name, options)
     end
 
     def cask(name)

@@ -1,11 +1,19 @@
 module Brewdler
   def self.system cmd, *args
-    pid = fork do
-      $stdout.reopen("/dev/null")
-      exec(cmd, *args)
+    verbose = ARGV.verbose?
+    logs = []
+    success = nil
+    IO.popen([cmd, *args], :err => [:child, :out]) do |pipe|
+      while buf = pipe.gets
+        puts buf if verbose
+        logs << buf
+      end
+      Process.wait(pipe.pid)
+      success = $?.success?
+      pipe.close
     end
-    Process.wait(pid)
-    $?.success?
+    puts logs.join unless success || verbose
+    success
   end
 
   def self.brew_installed?
