@@ -18,7 +18,11 @@ module Brewdler
     end
 
     def process
-      instance_eval(@input)
+      @input.untaint
+      proc {
+        $SAFE = 3
+        instance_eval(@input)
+      }.call
       self
     end
 
