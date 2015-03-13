@@ -27,6 +27,7 @@ describe Brewdler::BrewDumper do
   context "formulae `foo` and `bar` are installed" do
     before do
       allow(Brewdler).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -56,6 +57,7 @@ describe Brewdler::BrewDumper do
   context "HEAD and devel formulae are installed" do
     before do
       allow(Brewdler).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -82,6 +84,7 @@ describe Brewdler::BrewDumper do
   context "A formula link to the old keg" do
     before do
       allow(Brewdler).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -104,6 +107,7 @@ describe Brewdler::BrewDumper do
   context "A formula with no linked keg" do
     before do
       allow(Brewdler).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
