@@ -10,7 +10,7 @@ module Brewdler::Commands
         end
 
         if taps.any?
-          puts "Would untap"
+          puts "Would untap:"
           puts_columns taps
         end
       else
@@ -20,7 +20,7 @@ module Brewdler::Commands
         end
 
         if taps.any?
-          Kernel.system "brew", "untap", *taps_to_untap
+          Kernel.system "brew", "untap", *taps
         end
       end
     end
@@ -28,15 +28,15 @@ module Brewdler::Commands
     private
 
     def self.formulae_to_uninstall
-      dsl = Brewdler::Dsl.new(Brewdler.brewfile)
-      kept_formulae = dsl.process.entries.select { |e| e.type == :brew }.map(&:name)
+      @@dsl ||= Brewdler::Dsl.new(Brewdler.brewfile).process
+      kept_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
       current_formulae = `brew list`.split
       current_formulae - kept_formulae
     end
 
     def self.taps_to_untap
-      dsl = Brewdler::Dsl.new(Brewdler.brewfile)
-      kept_taps = dsl.process.entries.select { |e| e.type == :repo }.map(&:name)
+      @@dsl ||= Brewdler::Dsl.new(Brewdler.brewfile).process
+      kept_taps = @@dsl.entries.select { |e| e.type == :repo }.map(&:name)
       current_taps = `brew tap`.split
       current_taps - kept_taps
     end
