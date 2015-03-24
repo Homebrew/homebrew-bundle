@@ -16,10 +16,6 @@ describe Brewdler::Commands::Install do
       allow(File).to receive(:read).
         and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Brewdler::Commands::Install.run }.to_not raise_error
-
-      allow(File).to receive(:read).and_return('git')
-      allow(File).to receive(:open).and_return('git')
-      expect { Brewdler::Commands::Install.run }.to_not raise_error
     end
   end
 end
