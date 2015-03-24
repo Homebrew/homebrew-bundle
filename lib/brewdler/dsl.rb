@@ -15,6 +15,11 @@ module Brewdler
     def initialize(input)
       @input = input
       @entries = []
+      begin
+        process
+      rescue
+        raise "Invalid Brewfile."
+      end
     end
 
     def process
@@ -23,7 +28,6 @@ module Brewdler
         $SAFE = 3
         instance_eval(@input)
       }.call
-      self
     end
 
     def install
