@@ -15,7 +15,11 @@ module Brewdler
     def initialize(input)
       @input = input
       @entries = []
-      process
+      begin
+        process
+      rescue
+        raise "Invalid Brewfile."
+      end
     end
 
     def process
