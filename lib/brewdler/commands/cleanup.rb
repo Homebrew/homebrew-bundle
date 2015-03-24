@@ -28,14 +28,14 @@ module Brewdler::Commands
     private
 
     def self.formulae_to_uninstall
-      @@dsl ||= Brewdler::Dsl.new(Brewdler.brewfile).process
+      @@dsl ||= Brewdler::Dsl.new(Brewdler.brewfile)
       kept_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
       current_formulae = `brew list`.split
       current_formulae - kept_formulae
     end
 
     def self.taps_to_untap
-      @@dsl ||= Brewdler::Dsl.new(Brewdler.brewfile).process
+      @@dsl ||= Brewdler::Dsl.new(Brewdler.brewfile)
       kept_taps = @@dsl.entries.select { |e| e.type == :repo }.map(&:name)
       current_taps = `brew tap`.split
       current_taps - kept_taps

@@ -15,6 +15,7 @@ module Brewdler
     def initialize(input)
       @input = input
       @entries = []
+      process
     end
 
     def process
@@ -23,7 +24,6 @@ module Brewdler
         $SAFE = 3
         instance_eval(@input)
       }.call
-      self
     end
 
     def install
