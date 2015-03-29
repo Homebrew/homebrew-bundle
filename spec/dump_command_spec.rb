@@ -5,6 +5,7 @@ describe Brewdler::Commands::Dump do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(false)
+      allow(ARGV).to receive(:value).and_return(nil)
     end
 
     it "raises error" do
@@ -19,6 +20,7 @@ describe Brewdler::Commands::Dump do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:file?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
+      allow(ARGV).to receive(:value).and_return(nil)
     end
 
     it "doesn't raise error" do

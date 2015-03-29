@@ -25,7 +25,8 @@ module Brewdler
   end
 
   def self.brewfile
-    File.read(Dir['{*,.*}{B,b}rewfile'].first.to_s)
+    file = ARGV.value("file") || Dir["{*,.*}{B,b}rewfile"].first.to_s
+    File.read(file)
   rescue Errno::ENOENT
     raise "No Brewfile found"
   end

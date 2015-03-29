@@ -8,9 +8,9 @@ $LOAD_PATH.unshift(BREWDLER_LIB)
 require "brewdler"
 
 usage = <<-EOS.undent
-  brew brewdle [-v|--verbose]
-  brew brewdle dump [--force]
-  brew brewdle cleanup [--dry-run]
+  brew brewdle [-v|--verbose] [--file=<path>]
+  brew brewdle dump [--force] [--file=<path>]
+  brew brewdle cleanup [--dry-run] [--file=<path>]
   brew brewdle [--version]
   brew brewdle [-h|--help]
 
@@ -25,6 +25,7 @@ usage = <<-EOS.undent
   -v, --verbose          print verbose output
   --force                force overwrite existed Brewfile
   --dry-run              list formulae rather than actual uninstalling them
+  --file=<path>          set Brewfile path
   -h, --help             show this help message and exit
   --version              show the version of brewdler
 EOS

@@ -3,6 +3,7 @@ require "spec_helper"
 describe Brewdler::Commands::Cleanup do
   context "read Brewfile and currently installation" do
     before do
+      allow(ARGV).to receive(:value).and_return(nil)
       allow(File).to receive(:read).and_return("tap 'x'\ntap 'y'\nbrew 'a'\nbrew 'b'")
       allow(Brewdler::Commands::Cleanup).to receive(:`) do |arg|
         case arg
