@@ -12,8 +12,13 @@ module Brewdler
     end
 
     def dump_brewfile
+      if ARGV.include?("--global")
+        file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
+      else
+        file = Pathname.new(ARGV.value("file") || "Brewfile").expand_path(Dir.pwd)
+      end
       content = [repo, brew, cask].map(&:to_s).reject(&:empty?).join("\n") + "\n"
-      write_file Pathname.new(Dir.pwd).join("Brewfile"), content, ARGV.force?
+      write_file file, content, ARGV.force?
     end
 
     private

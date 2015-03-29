@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Brewdler::Commands::Install do
   context "when a Brewfile is not found" do
     it "raises an error" do
+      allow(ARGV).to receive(:value).and_return(nil)
       expect { Brewdler::Commands::Install.run }.to raise_error
     end
   end
@@ -13,6 +14,7 @@ describe Brewdler::Commands::Install do
       allow(Brewdler::CaskInstaller).to receive(:install).and_return(true)
       allow(Brewdler::RepoInstaller).to receive(:install).and_return(true)
 
+      allow(ARGV).to receive(:value).and_return(nil)
       allow(File).to receive(:read).
         and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Brewdler::Commands::Install.run }.to_not raise_error

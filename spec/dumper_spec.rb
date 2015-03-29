@@ -6,6 +6,7 @@ describe Brewdler::Dumper do
     allow(Brewdler).to receive(:brew_installed?).and_return(true)
     allow(Brewdler).to receive(:cask_installed?).and_return(true)
     allow(ARGV).to receive(:force?).and_return(false)
+    allow(ARGV).to receive(:value).and_return(nil)
     allow_any_instance_of(Brewdler::BrewDumper).to receive(:`).and_return("[]")
     allow_any_instance_of(Brewdler::RepoDumper).to receive(:`).and_return("caskroom/cask")
     allow_any_instance_of(Brewdler::CaskDumper).to receive(:`).and_return("google-chrome\njava")
@@ -14,6 +15,7 @@ describe Brewdler::Dumper do
 
   it "generate output" do
     expect(subject).to receive(:write_file) do |file, content, overwrite|
+      expect(file).to eql(Pathname.new(Dir.pwd).join("Brewfile"))
       expect(content).to eql("tap 'caskroom/cask'\ncask 'google-chrome'\ncask 'java'\n")
     end
     subject.dump_brewfile

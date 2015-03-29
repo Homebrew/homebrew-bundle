@@ -25,7 +25,12 @@ module Brewdler
   end
 
   def self.brewfile
-    File.read(Dir['{*,.*}{B,b}rewfile'].first.to_s)
+    if ARGV.include?("--global")
+      file = "#{ENV["HOME"]}/.Brewfile"
+    else
+      file = ARGV.value("file") || Dir["{*,.*}{B,b}rewfile"].first.to_s
+    end
+    File.read(file)
   rescue Errno::ENOENT
     raise "No Brewfile found"
   end
