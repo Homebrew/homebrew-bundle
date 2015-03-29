@@ -17,11 +17,11 @@ module Brewdler
   end
 
   def self.brew_installed?
-    Kernel.system("brew --version &>/dev/null")
+    @@brew ||= Kernel.system("brew --version &>/dev/null")
   end
 
   def self.cask_installed?
-    Kernel.system("brew cask --version &>/dev/null")
+    @@cask ||= Kernel.system("brew cask --version &>/dev/null")
   end
 
   def self.brewfile
