@@ -74,7 +74,7 @@ Over 10 different people have contributed to the project, you can see them all h
 Source hosted at [GitHub](http://github.com/Homebrew/homebrew-brewdler).
 Report Issues/Feature requests on [GitHub Issues](http://github.com/Homebrew/homebrew-brewdler/issues).
 
-Tests can be ran with `rake spec`
+Tests can be ran with `bundle && bundle exec rake spec`
 
 ### Note on Patches/Pull Requests
 
