@@ -33,7 +33,7 @@ module Brewdler
       else
         keg = installed.detect { |k| f["linked_keg"] == k["version"] }
       end
-      args = keg["used_options"].map { |option| option.gsub /^--/, "" }
+      args = keg["used_options"].map { |option| option.gsub(/^--/, "") }
       args << "HEAD" if keg["version"] == "HEAD"
       args << "devel" if keg["version"].gsub(/_\d+$/, "") == f["versions"]["devel"]
       args.uniq!
