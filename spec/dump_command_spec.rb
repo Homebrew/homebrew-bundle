@@ -26,7 +26,7 @@ describe Brewdler::Commands::Dump do
     it "doesn't raise error" do
       expect(FileUtils).to receive(:rm)
       expect_any_instance_of(Pathname).to receive(:write)
-      expect_any_instance_of(Pathname).to receive(:readlink) { |p| p }
+      expect_any_instance_of(Pathname).to receive(:realpath) { |p| p }
       expect do
         Bundler.with_clean_env { Brewdler::Commands::Dump.run }
       end.to_not raise_error
