@@ -26,6 +26,7 @@ module Brewdler
     def write_file(file, content, overwrite=false)
       if file.exist?
         if overwrite && file.file?
+          file = file.readlink
           FileUtils.rm file
         else
           raise "#{file} already existed."
