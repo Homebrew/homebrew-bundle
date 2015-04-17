@@ -1,9 +1,9 @@
-module Brewdler
+module Bundle
   class CaskDumper
     attr_reader :casks
 
     def initialize
-      if Brewdler.cask_installed?
+      if Bundle.cask_installed?
         @casks = `brew cask list`.split
       else
         @casks = []

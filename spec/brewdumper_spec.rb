@@ -1,19 +1,19 @@
 require "spec_helper"
 
-describe Brewdler::BrewDumper do
+describe Bundle::BrewDumper do
   context "when brew is not installed" do
     it "raises an error" do
-      allow(Brewdler).to receive(:brew_installed?).and_return(false)
-      expect { Brewdler::BrewDumper.new }.to raise_error
+      allow(Bundle).to receive(:brew_installed?).and_return(false)
+      expect { Bundle::BrewDumper.new }.to raise_error
     end
   end
 
   context "when no formula is installed" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`).and_return("[]")
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::BrewDumper).to receive(:`).and_return("[]")
     end
-    subject { Brewdler::BrewDumper.new }
+    subject { Bundle::BrewDumper.new }
 
     it "return empty list" do
       expect(subject.formulae).to be_empty
@@ -26,8 +26,8 @@ describe Brewdler::BrewDumper do
 
   context "formulae `foo` and `bar` are installed" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -43,7 +43,7 @@ describe Brewdler::BrewDumper do
         },
       ]
     end
-    subject { Brewdler::BrewDumper.new }
+    subject { Bundle::BrewDumper.new }
 
     it "return foo and bar with their information" do
       expect(subject.formulae).to eql([{:name=>"foo", :args=>[], :version=>"1.0"}, {:name=>"bar", :args=>["with-a", "with-b"], :version=>"2.0"}])
@@ -56,8 +56,8 @@ describe Brewdler::BrewDumper do
 
   context "HEAD and devel formulae are installed" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -73,7 +73,7 @@ describe Brewdler::BrewDumper do
         },
       ]
     end
-    subject { Brewdler::BrewDumper.new.formulae }
+    subject { Bundle::BrewDumper.new.formulae }
 
     it "return with args `devel` and `HEAD`" do
       expect(subject[0][:args]).to include("devel")
@@ -83,8 +83,8 @@ describe Brewdler::BrewDumper do
 
   context "A formula link to the old keg" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -97,7 +97,7 @@ describe Brewdler::BrewDumper do
         },
       ]
     end
-    subject { Brewdler::BrewDumper.new.formulae }
+    subject { Bundle::BrewDumper.new.formulae }
 
     it "return with linked keg" do
       expect(subject[0][:version]).to eql("1.0")
@@ -106,8 +106,8 @@ describe Brewdler::BrewDumper do
 
   context "A formula with no linked keg" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::BrewDumper).to receive(:`)
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
@@ -120,7 +120,7 @@ describe Brewdler::BrewDumper do
         },
       ]
     end
-    subject { Brewdler::BrewDumper.new.formulae }
+    subject { Bundle::BrewDumper.new.formulae }
 
     it "return with last one" do
       expect(subject[0][:version]).to eql("2.0")

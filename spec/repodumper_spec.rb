@@ -1,19 +1,19 @@
 require "spec_helper"
 
-describe Brewdler::RepoDumper do
+describe Bundle::RepoDumper do
   context "when brew is not installed" do
     it "raises an error" do
-      allow(Brewdler).to receive(:brew_installed?).and_return(false)
-      expect { Brewdler::RepoDumper.new }.to raise_error
+      allow(Bundle).to receive(:brew_installed?).and_return(false)
+      expect { Bundle::RepoDumper.new }.to raise_error
     end
   end
 
   context "when there is no tap" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::RepoDumper).to receive(:`).and_return("")
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::RepoDumper).to receive(:`).and_return("")
     end
-    subject { Brewdler::RepoDumper.new }
+    subject { Bundle::RepoDumper.new }
 
     it "return empty list" do
       expect(subject.repos).to be_empty
@@ -26,10 +26,10 @@ describe Brewdler::RepoDumper do
 
   context "there are tap `foo` and `bar`" do
     before do
-      allow(Brewdler).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Brewdler::RepoDumper).to receive(:`).and_return("foo\nbar")
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::RepoDumper).to receive(:`).and_return("foo\nbar")
     end
-    subject { Brewdler::RepoDumper.new }
+    subject { Bundle::RepoDumper.new }
 
     it "return list %w[foo bar]" do
       expect(subject.repos).to eql(%w[foo bar])

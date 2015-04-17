@@ -1,7 +1,7 @@
 require "fileutils"
 require "pathname"
 
-module Brewdler
+module Bundle
   class Dumper
     attr_reader :brew, :cask, :repo
 

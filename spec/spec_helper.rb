@@ -9,7 +9,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter
 ]
 
-require 'brewdler'
+require 'bundle'
 
 RSpec.configure do |config|
 

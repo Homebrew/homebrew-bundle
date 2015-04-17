@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Brewdler::Commands::Dump do
+describe Bundle::Commands::Dump do
   context "when files existed" do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
@@ -10,7 +10,7 @@ describe Brewdler::Commands::Dump do
 
     it "raises error" do
       expect do
-        Bundler.with_clean_env { Brewdler::Commands::Dump.run }
+        Bundler.with_clean_env { Bundle::Commands::Dump.run }
       end.to raise_error
     end
   end
@@ -28,7 +28,7 @@ describe Brewdler::Commands::Dump do
       expect_any_instance_of(Pathname).to receive(:write)
       expect_any_instance_of(Pathname).to receive(:realpath) { |p| p }
       expect do
-        Bundler.with_clean_env { Brewdler::Commands::Dump.run }
+        Bundler.with_clean_env { Bundle::Commands::Dump.run }
       end.to_not raise_error
     end
   end
