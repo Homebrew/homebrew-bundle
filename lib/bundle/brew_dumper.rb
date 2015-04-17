@@ -1,11 +1,11 @@
 require "json"
 
-module Brewdler
+module Bundle
   class BrewDumper
     attr_reader :formulae
 
     def initialize
-      if Brewdler.brew_installed?
+      if Bundle.brew_installed?
         formulae_info = JSON.load(`brew info --json=v1 --installed`) || [] rescue []
         @formulae = formulae_info.map { |info| formula_inspector info }
       else

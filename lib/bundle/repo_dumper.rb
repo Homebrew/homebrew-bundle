@@ -1,9 +1,9 @@
-module Brewdler
+module Bundle
   class RepoDumper
     attr_reader :repos
 
     def initialize
-      if Brewdler.brew_installed?
+      if Bundle.brew_installed?
         @repos = `brew tap`.split
       else
         raise "Unable to list installed taps. Homebrew is not currently installed on your system."

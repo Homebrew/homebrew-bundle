@@ -1,4 +1,4 @@
-module Brewdler
+module Bundle
   class Dsl
     class Entry
       attr_reader :type, :name, :options
@@ -38,13 +38,13 @@ module Brewdler
               when :brew
                 arg << entry.options
                 verb = "install"
-                Brewdler::BrewInstaller
+                Bundle::BrewInstaller
               when :cask
                 verb = "install"
-                Brewdler::CaskInstaller
+                Bundle::CaskInstaller
               when :repo
                 verb = "tap"
-                Brewdler::RepoInstaller
+                Bundle::RepoInstaller
               end
         if cls.install(*arg)
           puts "Succeed to #{verb} #{entry.name}"
