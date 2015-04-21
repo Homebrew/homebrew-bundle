@@ -47,10 +47,10 @@ module Bundle
                 Bundle::RepoInstaller
               end
         if cls.install(*arg)
-          puts "Succeed to #{verb} #{entry.name}"
+          puts "Succeeded to #{verb} #{entry.name}"
           success += 1
         else
-          puts "Fail to #{verb} #{entry.name}"
+          puts "Failed to #{verb} #{entry.name}"
           fail += 1
         end
       end
