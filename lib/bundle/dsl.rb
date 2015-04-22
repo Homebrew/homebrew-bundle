@@ -64,19 +64,19 @@ module Bundle
         [args, {}]
       end
 
-      names.each do |name|
+      names.flatten.each do |name|
         @entries << Entry.new(:brew, name, options)
       end
     end
 
     def cask(*names)
-      names.each do |name|
+      names.flatten.each do |name|
         @entries << Entry.new(:cask, name)
       end
     end
 
     def tap(*names)
-      names.each do |name|
+      names.flatten.each do |name|
         @entries << Entry.new(:repo, name)
       end
     end
