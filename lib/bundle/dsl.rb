@@ -57,16 +57,28 @@ module Bundle
       puts "\nSuccess: #{success} Fail: #{fail}"
     end
 
-    def brew(name, options={})
-      @entries << Entry.new(:brew, name, options)
+    def brew(*args)
+      names, options = if args.last.is_a? Hash
+        [args[0...-1], args.last]
+      else
+        [args, {}]
+      end
+
+      names.each do |name|
+        @entries << Entry.new(:brew, name, options)
+      end
     end
 
-    def cask(name)
-      @entries << Entry.new(:cask, name)
+    def cask(*names)
+      names.each do |name|
+        @entries << Entry.new(:cask, name)
+      end
     end
 
-    def tap(name)
-      @entries << Entry.new(:repo, name)
+    def tap(*names)
+      names.each do |name|
+        @entries << Entry.new(:repo, name)
+      end
     end
   end
 end
