@@ -37,20 +37,20 @@ module Bundle
         cls = case entry.type
               when :brew
                 arg << entry.options
-                verb = "install"
+                verb = "installing"
                 Bundle::BrewInstaller
               when :cask
-                verb = "install"
+                verb = "installing"
                 Bundle::CaskInstaller
               when :repo
-                verb = "tap"
+                verb = "tapping"
                 Bundle::RepoInstaller
               end
         if cls.install(*arg)
-          puts "Succeed to #{verb} #{entry.name}"
+          puts "Succeeded in #{verb} #{entry.name}"
           success += 1
         else
-          puts "Fail to #{verb} #{entry.name}"
+          puts "Failed in #{verb} #{entry.name}"
           fail += 1
         end
       end
