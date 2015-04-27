@@ -55,6 +55,7 @@ module Bundle
         end
       end
       puts "\nSuccess: #{success} Fail: #{fail}"
+      fail == 0
     end
 
     def brew(name, options={})
