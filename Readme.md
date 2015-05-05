@@ -41,6 +41,8 @@ You can then easily install all of the dependencies with one of the following co
 
     $ brew bundle
 
+If a dependency is already installed and there is an update available it will be upgraded.
+
 ### Dump
 
 You can create a `Brewfile` from all the existing Homebrew packages you have installed with:

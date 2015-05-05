@@ -8,7 +8,7 @@ $LOAD_PATH.unshift(BUNDLE_LIB)
 require "bundle"
 
 usage = <<-EOS.undent
-  brew bundle [-v|--verbose] [--file=<path>|--global]
+  brew bundle [-v|--verbose] [--file=<path>|--global] [--install-only]
   brew bundle dump [--force] [--file=<path>|--global]
   brew bundle cleanup [--dry-run] [--file=<path>|--global]
   brew bundle [--version]
@@ -17,7 +17,7 @@ usage = <<-EOS.undent
   Usage:
   Bundler for non-Ruby dependencies from Homebrew
 
-  brew bundle            read Brewfile and install all dependencies
+  brew bundle            read Brewfile and install and upgrade all dependencies
   brew bundle dump       write all currently installed packages into a Brewfile
   brew bundle cleanup    uninstall all Homebrew formulae not listed in Brewfile
 
@@ -27,6 +27,7 @@ usage = <<-EOS.undent
   --dry-run              list formulae rather than actual uninstalling them
   --file=<path>          set Brewfile path
   --global               set Brewfile path to $HOME/.Brewfile
+  --install-only         do not upgrade existing formulae, just install new
   -h, --help             show this help message and exit
   --version              show the version of bundle
 EOS
