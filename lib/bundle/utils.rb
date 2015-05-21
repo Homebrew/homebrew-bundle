@@ -24,18 +24,6 @@ module Bundle
     @@cask ||= Kernel.system("brew cask --version &>/dev/null")
   end
 
-  def self.installed_formulae
-    @@installed_formulae ||= `brew list -1`.split("\n")
-  end
-
-  def self.outdated_formulae
-    @@outdated_formulae ||= `brew outdated --quiet`.split("\n")
-  end
-
-  def self.pinned_formulae
-    @@pinned_formulae ||= `brew list --pinned`.split("\n")
-  end
-
   def self.brewfile
     if ARGV.include?("--global")
       file = "#{ENV["HOME"]}/.Brewfile"

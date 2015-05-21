@@ -3,9 +3,10 @@ require "spec_helper"
 describe Bundle::BrewInstaller do
   let(:formula) { "git" }
   let(:options) { { args: ["with-option"] } }
+  let(:installer) { Bundle::BrewInstaller.new(formula, options) }
 
   def do_install
-    Bundle::BrewInstaller.install(formula, options)
+    installer.install_or_upgrade
   end
 
   context "when brew is not installed" do
@@ -22,18 +23,18 @@ describe Bundle::BrewInstaller do
 
     context "when no formula is installed" do
       before do
-        allow(Bundle).to receive(:installed_formulae).and_return([])
+        allow(installer).to receive(:installed_formulae).and_return([])
       end
 
       it "install formula" do
-        expect(Bundle).to receive(:system).with("brew", "install", "git", "--with-option").and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option").and_return(true)
         expect(do_install).to eql(true)
       end
     end
 
     context "when formula is installed" do
       before do
-        allow(Bundle).to receive(:installed_formulae).and_return([formula])
+        allow(installer).to receive(:installed_formulae).and_return([formula])
       end
 
       context "with --install-only" do
@@ -47,24 +48,24 @@ describe Bundle::BrewInstaller do
         end
       end
 
-      context "when no --install-only" do
+      context "without --install-only" do
         context "when formula upgradable" do
           before do
-            allow(Bundle).to receive(:outdated_formulae).and_return([formula])
+            allow(installer).to receive(:outdated_formulae).and_return([formula])
           end
 
           it "upgrade formula" do
-            expect(Bundle).to receive(:system).with("brew", "upgrade", "git").and_return(true)
+            expect(Bundle).to receive(:system).with("brew", "upgrade", formula).and_return(true)
             expect(do_install).to eql(true)
           end
 
           context "when formula pinned" do
             before do
-              allow(Bundle).to receive(:pinned_formulae).and_return([formula])
+              allow(installer).to receive(:pinned_formulae).and_return([formula])
             end
 
             it "does not upgrade formula" do
-              expect(Bundle).not_to receive(:system).with("brew", "upgrade", "git")
+              expect(Bundle).not_to receive(:system).with("brew", "upgrade", formula)
               expect(do_install).to eql(true)
             end
           end
@@ -72,7 +73,7 @@ describe Bundle::BrewInstaller do
 
         context "when formula not upgrade" do
           before do
-            allow(Bundle).to receive(:outdated_formulae).and_return([])
+            allow(installer).to receive(:outdated_formulae).and_return([])
           end
 
           it "does not upgrade formula" do
