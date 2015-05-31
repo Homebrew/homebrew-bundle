@@ -16,10 +16,10 @@ module Bundle
     def to_s
       @formulae.map do |f|
         if f[:args].empty?
-          "brew '#{f[:name]}'"
+          "brew '#{f[:full_name]}'"
         else
           args = f[:args].map { |arg| "'#{arg}'" }.join(", ")
-          "brew '#{f[:name]}', args: [#{args}]"
+          "brew '#{f[:full_name]}', args: [#{args}]"
         end
       end.join("\n")
     end
@@ -37,7 +37,7 @@ module Bundle
       args << "HEAD" if keg["version"] == "HEAD"
       args << "devel" if keg["version"].gsub(/_\d+$/, "") == f["versions"]["devel"]
       args.uniq!
-      {name: f["name"], args: args, version: keg["version"]}
+      {name: f["name"], full_name: f["full_name"], args: args, version: keg["version"]}
     end
   end
 end

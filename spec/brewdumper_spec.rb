@@ -31,12 +31,14 @@ describe Bundle::BrewDumper do
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
           "versions" => {"stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
           "installed" => [ { "version" => "1.0", "used_options" => [] }, ],
           "linked_keg" => "1.0",
         },
         {
           "name" => "bar",
+          "full_name" => "bar",
           "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
           "installed" => [ { "version" => "2.0", "used_options" => ["--with-a", "--with-b"] }, ],
           "linked_keg" => "2.0",
@@ -46,11 +48,24 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper.new }
 
     it "return foo and bar with their information" do
-      expect(subject.formulae).to eql([{:name=>"foo", :args=>[], :version=>"1.0"}, {:name=>"bar", :args=>["with-a", "with-b"], :version=>"2.0"}])
+      expect(subject.formulae).to eql [
+        {
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :args => [],
+          :version => "1.0",
+        },
+        {
+          :name => "bar",
+          :full_name => "bar",
+          :args => ["with-a", "with-b"],
+          :version => "2.0",
+        }
+      ]
     end
 
     it "dump as foo and bar with args" do
-      expect(subject.to_s).to eql("brew 'foo'\nbrew 'bar', args: ['with-a', 'with-b']")
+      expect(subject.to_s).to eql("brew 'homebrew/tap/foo'\nbrew 'bar', args: ['with-a', 'with-b']")
     end
   end
 
@@ -61,12 +76,14 @@ describe Bundle::BrewDumper do
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
           "versions" => {"stable" => "1.0", "bottle" => false, "devel" => "1.1beta", "head" => "HEAD"},
           "installed" => [ { "version" => "1.1beta", "used_options" => [] }, ],
           "linked_keg" => "1.1beta",
         },
         {
           "name" => "bar",
+          "full_name" => "bar",
           "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
           "installed" => [ { "version" => "HEAD", "used_options" => [] }, ],
           "linked_keg" => "HEAD",
@@ -88,6 +105,7 @@ describe Bundle::BrewDumper do
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
           "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
           "installed" => [
             { "version" => "1.0", "used_options" => [] },
@@ -111,6 +129,7 @@ describe Bundle::BrewDumper do
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
           "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
           "installed" => [
             { "version" => "1.0", "used_options" => [] },
