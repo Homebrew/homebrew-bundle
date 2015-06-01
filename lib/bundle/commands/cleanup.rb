@@ -30,8 +30,12 @@ module Bundle::Commands
     def self.formulae_to_uninstall
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       kept_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
-      current_formulae = `brew list`.split
-      current_formulae - kept_formulae
+      current_formulae = Bundle::BrewDumper.new.formulae
+      current_formulae.reject do |formula|
+        kept_formulae.include?(formula[:name]) || kept_formulae.include?(formula[:full_name])
+      end.map do |formula|
+        formula[:full_name]
+      end
     end
 
     def self.taps_to_untap
