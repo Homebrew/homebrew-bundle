@@ -53,12 +53,8 @@ module Bundle
     end
 
     def upgrade!
-      return Bundle.system("brew", "upgrade", @name) if !install_only? && upgradable?
+      return Bundle.system("brew", "upgrade", @name) if upgradable?
       true
-    end
-
-    def install_only?
-      ARGV.include?("--install-only")
     end
 
     def prepare_args(args)

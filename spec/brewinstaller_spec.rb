@@ -37,37 +37,24 @@ describe Bundle::BrewInstaller do
         allow(installer).to receive(:installed_formulae).and_return([formula])
       end
 
-      context "with --install-only" do
+      context "when formula upgradable" do
         before do
-          allow(ARGV).to receive(:include?).with("--install-only").and_return(true)
+          allow(installer).to receive(:outdated_formulae).and_return([formula])
         end
 
-        it "does not upgrade formula" do
-          expect(Bundle).not_to receive(:system)
+        it "upgrade formula" do
+          expect(Bundle).to receive(:system).with("brew", "upgrade", formula).and_return(true)
           expect(do_install).to eql(true)
         end
-      end
 
-      context "without --install-only" do
-        context "when formula upgradable" do
+        context "when formula pinned" do
           before do
-            allow(installer).to receive(:outdated_formulae).and_return([formula])
+            allow(installer).to receive(:pinned_formulae).and_return([formula])
           end
 
-          it "upgrade formula" do
-            expect(Bundle).to receive(:system).with("brew", "upgrade", formula).and_return(true)
+          it "does not upgrade formula" do
+            expect(Bundle).not_to receive(:system).with("brew", "upgrade", formula)
             expect(do_install).to eql(true)
-          end
-
-          context "when formula pinned" do
-            before do
-              allow(installer).to receive(:pinned_formulae).and_return([formula])
-            end
-
-            it "does not upgrade formula" do
-              expect(Bundle).not_to receive(:system).with("brew", "upgrade", formula)
-              expect(do_install).to eql(true)
-            end
           end
         end
 
