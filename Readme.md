@@ -28,14 +28,15 @@ Create a `Brewfile` in the root of your project:
 
 Then list your Homebrew based dependencies in your `Brewfile`:
 
-    tap 'caskroom/cask'
+    tap 'caskroom/cask', 'homebrew/dupes'
     brew 'emacs', args: ['cocoa', 'srgb', 'with-gnutls']
     brew 'redis'
     brew 'mongodb'
     brew 'sphinx'
     brew 'imagemagick'
     brew 'mysql'
-    cask 'google-chrome'
+    brew 'tcl-tk', 'python', 'python3', args: ['universal', 'with-brewed-tk']
+    cask 'google-chrome', 'firefox'
 
 You can then easily install all of the dependencies with one of the following commands:
 
