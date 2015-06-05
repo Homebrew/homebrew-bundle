@@ -16,10 +16,10 @@ module Bundle
     def to_s
       @formulae.map do |f|
         if f[:args].empty?
-          "brew '#{f[:full_name]}'"
+          "brew '#{f[:name]}'"
         else
           args = f[:args].map { |arg| "'#{arg}'" }.join(", ")
-          "brew '#{f[:full_name]}', args: [#{args}]"
+          "brew '#{f[:name]}', args: [#{args}]"
         end
       end.join("\n")
     end
