@@ -5,12 +5,12 @@ describe Bundle::CaskDumper do
     before { allow(Bundle).to receive(:cask_installed?).and_return(false) }
     subject { Bundle::CaskDumper.new }
 
-    it "return empty list" do
+    it "returns empty list" do
       expect(subject.casks).to be_empty
     end
 
-    it "dump as empty string" do
-      expect(subject.to_s).to eql("")
+    it "dumps as empty string" do
+      expect(subject.dump_to_string []).to eql(["", ""])
     end
   end
 
@@ -21,28 +21,28 @@ describe Bundle::CaskDumper do
     end
     subject { Bundle::CaskDumper.new }
 
-    it "return empty list" do
+    it "returns empty list" do
       expect(subject.casks).to be_empty
     end
 
-    it "dump as empty string" do
-      expect(subject.to_s).to eql("")
+    it "dumps as empty string" do
+      expect(subject.dump_to_string []).to eql(["", ""])
     end
   end
 
-  context "cask `foo` and `bar` are installed" do
+  context "cask `foo`, `bar` and `baz` are installed, while `baz` is required by formula" do
     before do
       allow(Bundle).to receive(:cask_installed?).and_return(true)
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:`).and_return("foo\nbar")
+      allow_any_instance_of(Bundle::CaskDumper).to receive(:`).and_return("foo\nbar\nbaz")
     end
     subject { Bundle::CaskDumper.new }
 
-    it "return list %w[foo bar]" do
-      expect(subject.casks).to eql(%w[foo bar])
+    it "returns list %w[foo bar baz]" do
+      expect(subject.casks).to eql(%w[foo bar baz])
     end
 
-    it "dump as `cask 'foo' cask 'bar'`" do
-      expect(subject.to_s).to eql("cask 'foo'\ncask 'bar'")
+    it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'`" do
+      expect(subject.dump_to_string %w[baz]).to eql ["cask 'baz'", "cask 'foo'\ncask 'bar'"]
     end
   end
 end

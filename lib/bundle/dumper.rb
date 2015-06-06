@@ -17,7 +17,14 @@ module Bundle
       else
         file = Pathname.new(ARGV.value("file") || "Brewfile").expand_path(Dir.pwd)
       end
-      content = [repo, brew, cask].map(&:to_s).reject(&:empty?).join("\n") + "\n"
+      content = []
+      content << repo.to_s
+      formula_requirements = brew.expand_cask_requirements
+      cask_before_formula, cask_after_formula = cask.dump_to_string(formula_requirements)
+      content << cask_before_formula
+      content << brew.to_s
+      content << cask_after_formula
+      content = content.reject(&:empty?).join("\n") + "\n"
       write_file file, content, ARGV.force?
     end
 

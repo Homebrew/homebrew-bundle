@@ -10,8 +10,11 @@ module Bundle
       end
     end
 
-    def to_s
-      @casks.map { |cask| "cask '#{cask}'"}.join("\n")
+    def dump_to_string(formula_requirements)
+      [
+        (@casks & formula_requirements).map { |cask| "cask '#{cask}'"}.join("\n"),
+        (@casks - formula_requirements).map { |cask| "cask '#{cask}'"}.join("\n")
+      ]
     end
   end
 end
