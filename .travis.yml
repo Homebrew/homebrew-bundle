@@ -4,6 +4,8 @@ rvm:
   - 2.0.0
   - 2.2.0
 cache: bundler
+before_install:
+  - brew update
 script:
   - bundle exec rake
 notifications:
