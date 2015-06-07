@@ -29,7 +29,8 @@ Create a `Brewfile` in the root of your project:
 Then list your Homebrew based dependencies in your `Brewfile`:
 
     tap 'caskroom/cask'
-    brew 'emacs', args: ['cocoa', 'srgb', 'with-gnutls']
+    tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
+    brew 'emacs', args: ['with-cocoa', 'with-gnutls']
     brew 'redis'
     brew 'mongodb'
     brew 'sphinx'
