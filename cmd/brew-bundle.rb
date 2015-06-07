@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
+MINIMUM_HOMEBREW_REVISION = "bcee474bb4a989fec0fc0d4f9fbfb993208829e8"
+HOMEBREW_REPOSITORY.cd do
+  unless quiet_system "git", "rev-parse", "--verify", "#{MINIMUM_HOMEBREW_REVISION}^{commit}"
+    odie "Your Homebrew is outdated. Please run `brew update`."
+  end
+end
+
 BUNDLE_ROOT = File.expand_path "#{File.dirname(__FILE__)}/.."
 BUNDLE_LIB = Pathname.new(BUNDLE_ROOT)/"lib"
 
