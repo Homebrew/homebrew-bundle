@@ -24,15 +24,11 @@ module Bundle
     private
 
     def write_file(file, content, overwrite=false)
-      if file.exist?
-        if overwrite && file.file?
-          file = file.realpath
-          FileUtils.rm file
-        else
-          raise "#{file} already existed."
-        end
+      if file.exist? && !overwrite
+        raise "#{file} already exists."
       end
-      file.write content
+
+      file.open("w") { |io| io.write content }
     end
   end
 end
