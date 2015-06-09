@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+# commit bcee474bb4a989fec0fc0d4f9fbfb993208829e8
+MIN_HOMEBREW_COMMIT_DATE = Time.parse "Sun Jun 7 20:32:46 2015 +0800"
+HOMEBREW_REPOSITORY.cd do
+  unless MIN_HOMEBREW_COMMIT_DATE < Time.at(`git show -s --format=%ct`.to_i)
+     odie "Your Homebrew is outdated. Please run `brew update`."
+  end
+end
+
 BUNDLE_ROOT = File.expand_path "#{File.dirname(__FILE__)}/.."
 BUNDLE_LIB = Pathname.new(BUNDLE_ROOT)/"lib"
 
