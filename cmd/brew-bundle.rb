@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-# commit bcee474bb4a989fec0fc0d4f9fbfb993208829e8
-MIN_HOMEBREW_COMMIT_DATE = Time.parse "Sun Jun 7 20:32:46 2015 +0800"
+# commit 44609b8e05c8420141b643e7d8f00892f6c65e89
+MIN_HOMEBREW_COMMIT_DATE = Time.parse "Thu Jun 11 15:28:30 2015 +0800"
 HOMEBREW_REPOSITORY.cd do
-  unless MIN_HOMEBREW_COMMIT_DATE < Time.at(`git show -s --format=%ct`.to_i)
-     odie "Your Homebrew is outdated. Please run `brew update`."
+  if MIN_HOMEBREW_COMMIT_DATE > Time.at(`git show -s --format=%ct`.to_i)
+    odie "Your Homebrew is outdated. Please run `brew update`."
   end
 end
 
