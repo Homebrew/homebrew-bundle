@@ -14,7 +14,7 @@ module Bundle
 
     def to_s
       @repos.map do |tap|
-        remote = ", '#{tap["remote"]}'" if tap["custom_remote"]
+        remote = ", '#{tap["remote"]}'" if tap["custom_remote"] && tap["remote"]
         "tap '#{tap["name"]}'#{remote}"
       end.join("\n")
     end
