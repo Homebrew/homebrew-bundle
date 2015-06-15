@@ -25,7 +25,7 @@ usage = <<-EOS.undent
   Usage:
   Bundler for non-Ruby dependencies from Homebrew
 
-  brew bundle            read Brewfile and install all dependencies
+  brew bundle            read Brewfile and install and upgrade all dependencies
   brew bundle dump       write all currently installed packages into a Brewfile
   brew bundle cleanup    uninstall all Homebrew formulae not listed in Brewfile
 
