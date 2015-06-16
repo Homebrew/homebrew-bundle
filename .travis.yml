@@ -1,6 +1,5 @@
 language: objective-c # Force OS X
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.2.0
 cache: bundler
