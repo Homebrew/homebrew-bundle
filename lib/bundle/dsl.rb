@@ -23,11 +23,7 @@ module Bundle
     end
 
     def process
-      @input.untaint
-      proc {
-        $SAFE = 3
-        instance_eval(@input)
-      }.call
+      instance_eval(@input)
     end
 
     def install
