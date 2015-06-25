@@ -8,7 +8,7 @@ module Bundle
       if Bundle.brew_installed?
         @full_name = name
         @name = name.split("/").last
-        @args = prepare_args(options[:args])
+        @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
       else
         raise "Unable to install #{name}. Homebrew is not currently installed on your system"
       end
@@ -56,11 +56,6 @@ module Bundle
     def upgrade!
       return Bundle.system("brew", "upgrade", @name) if upgradable?
       true
-    end
-
-    def prepare_args(args)
-      args ||= []
-      args.map { |arg| "--#{arg}" }
     end
   end
 end
