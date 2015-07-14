@@ -61,7 +61,7 @@ module Bundle
     end
 
     def cask(name)
-      @entries << Entry.new(:cask, name)
+      @entries << Entry.new(:cask, name, options)
     end
 
     def tap(name, clone_target=nil)
