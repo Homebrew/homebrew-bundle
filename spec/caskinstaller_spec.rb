@@ -5,7 +5,7 @@ describe Bundle::CaskInstaller do
     Bundle::CaskInstaller.install("google-chrome")
   end
   def do_install_with_args
-    Bundle::CaskInstaller.install("firefox",{ :args => ["appdir=/Applications"]})
+    Bundle::CaskInstaller.install("firefox",{ :appdir => "/Applications"})
   end
   context "when brew is not installed" do
     it "raises an error" do
@@ -13,7 +13,7 @@ describe Bundle::CaskInstaller do
       expect { do_install }.to raise_error
     end
   end
-  
+
   context "when brew-cask is not installed" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)

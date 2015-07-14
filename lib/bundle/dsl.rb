@@ -15,11 +15,7 @@ module Bundle
     def initialize(input)
       @input = input
       @entries = []
-      begin
-        process
-      rescue
-        raise "Invalid Brewfile."
-      end
+      process
     end
 
     def process
@@ -56,7 +52,7 @@ module Bundle
       fail == 0
     end
 
-    def cask_defaults(*args)
+    def cask_defaults(args)
       # You can also modify the default installation locations used when issuing brew cask install:
       #
       # --caskroom=/my/path determines where the actual applications will be located. Should be handled with care — setting it outside /opt or your home directory might mess up your system. Default is /opt/homebrew-cask/Caskroom.
@@ -68,23 +64,16 @@ module Bundle
       # --input_methoddir=/my/path changes the path for Input Methods symlinks. Default is ~/Library/Input Methods
       # --screen_saverdir=/my/path changes the path for Screen Saver symlinks. Default is ~/Library/Screen Savers
 
-      @caskdefaults = {}
-      permitted_args = %w{caskroom appdir prefpanedir qlplugindir fontdir binarydir input_methoddir screen_saverdir}
-      args.each do |key, array|
-        if permitted_args.include? key
-          @caskdefaults[key] = args[key]
-        else
-          raise "#{key} is an invalid cask argument!"
-        end
-      end
+      @caskdefaults = args
     end
-    
+
     def brew(name, options={})
       @entries << Entry.new(:brew, name, options)
     end
 
     def cask(name, options={})
       options = @caskdefaults.merge(options)
+
       @entries << Entry.new(:cask, name, options)
     end
 
