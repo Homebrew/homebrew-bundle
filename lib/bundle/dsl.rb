@@ -15,6 +15,7 @@ module Bundle
     def initialize(input)
       @input = input
       @entries = []
+      @caskdefaults = {}
       process
     end
 
@@ -63,7 +64,6 @@ module Bundle
       # --binarydir=/my/path changes the path for binary symlinks. Default is /usr/local/bin
       # --input_methoddir=/my/path changes the path for Input Methods symlinks. Default is ~/Library/Input Methods
       # --screen_saverdir=/my/path changes the path for Screen Saver symlinks. Default is ~/Library/Screen Savers
-
       @caskdefaults = args
     end
 
