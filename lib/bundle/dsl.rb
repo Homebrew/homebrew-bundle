@@ -60,7 +60,7 @@ module Bundle
       @entries << Entry.new(:brew, name, options)
     end
 
-    def cask(name)
+    def cask(name, options={})
       @entries << Entry.new(:cask, name, options)
     end
 
