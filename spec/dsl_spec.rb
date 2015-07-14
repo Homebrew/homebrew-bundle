@@ -10,6 +10,7 @@ describe Bundle::Dsl do
     expect_any_instance_of(Bundle::Dsl).to receive(:brew).twice
     expect_any_instance_of(Bundle::Dsl).to receive(:cask).with('google-chrome')
     Bundle::Dsl.new <<-EOS
+      cask_defaults :appdir => "/Applications"
       tap 'caskroom/cask'
       tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
       brew 'git'
