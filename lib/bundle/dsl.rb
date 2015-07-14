@@ -36,6 +36,7 @@ module Bundle
                 verb = "installing"
                 Bundle::BrewInstaller
               when :cask
+                arg << entry.options
                 verb = "installing"
                 Bundle::CaskInstaller
               when :repo
