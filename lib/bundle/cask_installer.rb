@@ -1,6 +1,6 @@
 module Bundle
   class CaskInstaller
-    def self.install(name)
+    def self.install(name, options = {})
       unless Bundle.brew_installed?
         raise "Unable to install #{name}. Homebrew is not currently installed on your system"
       end
@@ -12,13 +12,15 @@ module Bundle
           raise "Unable to install #{name}. Homebrew-cask is not currently installed on your system"
         end
       end
-
+      
       if installed_casks.include? name
         puts "Skip to install #{name}" if ARGV.verbose?
         return true
       end
-
-      if (success = Bundle.system "brew", "cask", "install", name)
+      
+      @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
+      
+      if (success = Bundle.system("brew", "cask", "install", name, *@args))
         installed_casks << name
       end
 
