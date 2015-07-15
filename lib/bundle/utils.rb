@@ -24,6 +24,10 @@ module Bundle
     @@cask ||= Kernel.system("brew cask --version &>/dev/null")
   end
 
+  def self.services_installed?
+    @@services ||= Kernel.system("brew services --help &>/dev/null")
+  end
+
   def self.brewfile
     if ARGV.include?("--global")
       file = "#{ENV["HOME"]}/.Brewfile"
