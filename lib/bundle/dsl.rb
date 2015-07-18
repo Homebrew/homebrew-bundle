@@ -17,8 +17,13 @@ module Bundle
       @entries = []
       begin
         process
-      rescue
-        raise "Invalid Brewfile."
+      rescue => e
+        error_msg = "Invalid Brewfile."
+        if ARGV.verbose?
+          error_msg += "\n#{e}"
+          error_msg += "\n#{e.backtrace.join "\n"}"
+        end
+        raise error_msg
       end
     end
 

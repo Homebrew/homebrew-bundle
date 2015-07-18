@@ -61,13 +61,32 @@ if ARGV.flag?("--help")
   exit 0
 end
 
-case ARGV.named[0]
-when nil, "install"
-  Bundle::Commands::Install.run
-when "dump"
-  Bundle::Commands::Dump.run
-when "cleanup"
-  Bundle::Commands::Cleanup.run
-else
-  abort usage
+begin
+  case ARGV.named[0]
+  when nil, "install"
+    Bundle::Commands::Install.run
+  when "dump"
+    Bundle::Commands::Dump.run
+  when "cleanup"
+    Bundle::Commands::Cleanup.run
+  else
+    abort usage
+  end
+rescue SystemExit
+  puts "Kernel.exit" if ARGV.verbose?
+  raise
+rescue Interrupt
+  puts # seemingly a newline is typical
+  exit 130
+rescue RuntimeError, SystemCallError => e
+  raise if e.message.empty?
+  onoe e
+  puts e.backtrace if ARGV.debug?
+  exit 1
+rescue Exception => e
+  onoe e
+  puts "#{Tty.white}Please report this bug:"
+  puts "    #{Tty.em}https://github.com/Homebrew/homebrew-bundle/issues/#{Tty.reset}"
+  puts e.backtrace
+  exit 1
 end
