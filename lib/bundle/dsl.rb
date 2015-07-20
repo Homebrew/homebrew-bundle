@@ -15,7 +15,7 @@ module Bundle
     def initialize(input)
       @input = input
       @entries = []
-      @cask_options = {}
+      @cask_opts = {}
       process
     end
 
@@ -54,7 +54,7 @@ module Bundle
     end
 
     def cask_opts(args)
-      @cask_options = args
+      @cask_opts = args
     end
 
     def brew(name, options={})
@@ -62,7 +62,7 @@ module Bundle
     end
 
     def cask(name, options={})
-      options = @cask_options.merge(options)
+      options = @cask_opts.merge(options)
 
       @entries << Entry.new(:cask, name, options)
     end
