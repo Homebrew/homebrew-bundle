@@ -15,7 +15,7 @@ module Bundle
     def initialize(input)
       @input = input
       @entries = []
-      @caskdefaults = {}
+      @cask_opts = {}
       process
     end
 
@@ -53,18 +53,8 @@ module Bundle
       fail == 0
     end
 
-    def cask_defaults(args)
-      # You can also modify the default installation locations used when issuing brew cask install:
-      #
-      # --caskroom=/my/path determines where the actual applications will be located. Should be handled with care — setting it outside /opt or your home directory might mess up your system. Default is /opt/homebrew-cask/Caskroom.
-      # --appdir=/my/path changes the path where the symlinks to the applications (above) will be generated. This is commonly used to create the links in the root Applications directory instead of the home Applications directory by specifying --appdir=/Applications. Default is ~/Applications.
-      # --prefpanedir=/my/path changes the path for PreferencePane symlinks. Default is ~/Library/PreferencePanes
-      # --qlplugindir=/my/path changes the path for Quicklook Plugin symlinks. Default is ~/Library/QuickLook
-      # --fontdir=/my/path changes the path for Fonts symlinks. Default is ~/Library/Fonts
-      # --binarydir=/my/path changes the path for binary symlinks. Default is /usr/local/bin
-      # --input_methoddir=/my/path changes the path for Input Methods symlinks. Default is ~/Library/Input Methods
-      # --screen_saverdir=/my/path changes the path for Screen Saver symlinks. Default is ~/Library/Screen Savers
-      @caskdefaults = args
+    def cask_opts(args)
+      @cask_opts = args
     end
 
     def brew(name, options={})
@@ -72,7 +62,7 @@ module Bundle
     end
 
     def cask(name, options={})
-      options = @caskdefaults.merge(options)
+      options = @cask_opts.merge(options)
 
       @entries << Entry.new(:cask, name, options)
     end

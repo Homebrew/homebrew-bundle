@@ -1,7 +1,5 @@
 module Bundle
   class CaskInstaller
-    PERMITTED_OPTIONS = %w{caskroom appdir prefpanedir qlplugindir fontdir binarydir input_methoddir screen_saverdir}
-
     def self.install(name, options = {})
       unless Bundle.brew_installed?
         raise "Unable to install #{name}. Homebrew is not currently installed on your system"
@@ -20,14 +18,10 @@ module Bundle
         return true
       end
 
-      if options.size
+      if options.any?
         @args = []
         options.each do |key, array|
-          if PERMITTED_OPTIONS.include? key.to_s
-            # puts "Installing #{name} with: #{options}"
-            @args << "--#{key}=#{options[key]}"
-            # puts "WARNING! Invalid cask option: #{key.to_s}"
-          end
+          @args << "--#{key}=#{options[key]}"
         end
       end
 
