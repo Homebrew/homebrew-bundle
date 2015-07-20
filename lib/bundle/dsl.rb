@@ -62,7 +62,7 @@ module Bundle
     end
 
     def cask(name, options={})
-      options = @cask_opts.merge(options.opts)
+      options = @cask_opts.merge(options[:opts])
 
       @entries << Entry.new(:cask, name, options)
     end
