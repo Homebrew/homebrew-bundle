@@ -39,7 +39,7 @@ Then list your Homebrew based dependencies in your `Brewfile`:
     brew 'imagemagick'
     brew 'mysql'
     cask 'google-chrome'
-    cask 'firefox', opts: appdir: '~/Applications'
+    cask 'firefox', opts: {appdir: '~/Applications'}
 
 You can then easily install all of the dependencies with one of the following commands:
 
