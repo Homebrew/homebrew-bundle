@@ -16,7 +16,12 @@ module Bundle
       @input = input
       @entries = []
       @cask_args = {}
-      process
+
+      begin
+        process
+      rescue
+        raise "Invalid Brewfile."
+      end
     end
 
     def process
