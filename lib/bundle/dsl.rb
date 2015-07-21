@@ -15,7 +15,7 @@ module Bundle
     def initialize(input)
       @input = input
       @entries = []
-      @cask_opts = {}
+      @cask_args = {}
       process
     end
 
@@ -53,8 +53,8 @@ module Bundle
       fail == 0
     end
 
-    def cask_opts(args)
-      @cask_opts = args
+    def cask_args(args)
+      @cask_args = args
     end
 
     def brew(name, options={})
@@ -62,10 +62,10 @@ module Bundle
     end
 
     def cask(name, options={})
-      if options[:opts]
-        options = @cask_opts.merge(options[:opts])
+      if options[:args]
+        options = @cask_args.merge(options[:args])
       else
-        options = @cask_opts
+        options = @cask_args
       end
       @entries << Entry.new(:cask, name, options)
     end

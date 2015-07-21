@@ -28,7 +28,7 @@ Create a `Brewfile` in the root of your project:
 
 Then list your Homebrew based dependencies in your `Brewfile`:
 
-    cask_opts appdir: '/Applications'
+    cask_args appdir: '/Applications'
 
     tap 'caskroom/cask'
     tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
@@ -39,7 +39,7 @@ Then list your Homebrew based dependencies in your `Brewfile`:
     brew 'imagemagick'
     brew 'mysql'
     cask 'google-chrome'
-    cask 'firefox', opts: {appdir: '~/Applications'}
+    cask 'firefox', args: {appdir: '~/Applications'}
 
 You can then easily install all of the dependencies with one of the following commands:
 
