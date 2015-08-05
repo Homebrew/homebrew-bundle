@@ -1,6 +1,7 @@
 require "bundle/version"
 require "bundle/utils"
 require "bundle/dsl"
+require "bundle/brew_services"
 require "bundle/brew_installer"
 require "bundle/cask_installer"
 require "bundle/repo_installer"

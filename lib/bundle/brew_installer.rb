@@ -1,7 +1,9 @@
 module Bundle
   class BrewInstaller
     def self.install(name, options = {})
-      new(name, options).install_or_upgrade
+      result = new(name, options).install_or_upgrade
+      result = BrewServices.restart(name) if result && options[:restart_service]
+      result
     end
 
     def initialize(name, options = {})
