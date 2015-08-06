@@ -31,7 +31,7 @@ Then list your Homebrew based dependencies in your `Brewfile`:
     tap 'caskroom/cask'
     tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
     brew 'emacs', args: ['with-cocoa', 'with-gnutls']
-    brew 'redis'
+    brew 'redis', restart_service: true
     brew 'mongodb'
     brew 'sphinx'
     brew 'imagemagick'
