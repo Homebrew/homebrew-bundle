@@ -60,6 +60,14 @@ You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers 
 
 Unless the `--force` option is passed, formulae will be listed rather than actually uninstalled.
 
+### Check
+
+You can check there's anything to install/upgrade in the `Brewfile` by running:
+
+    $ brew bundle check
+
+This provides a successful exit code if everything is up-to-date so is useful for scripting.
+
 ## Note
 
 Homebrew does not support installing specific versions of a library, only the most recent one so there is no good mechanism for storing installed versions in a .lock file.

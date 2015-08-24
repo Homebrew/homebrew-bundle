@@ -31,6 +31,7 @@ usage = <<-EOS.undent
   brew bundle [-v|--verbose] [--file=<path>|--global]
   brew bundle dump [--force] [--file=<path>|--global]
   brew bundle cleanup [--force] [--file=<path>|--global]
+  brew bundle check [--file=<path>|--global]
   brew bundle [--version]
   brew bundle [-h|--help]
 
@@ -40,6 +41,7 @@ usage = <<-EOS.undent
   brew bundle            install or upgrade all dependencies in a Brewfile
   brew bundle dump       write all installed casks/formulae/taps into a Brewfile
   brew bundle cleanup    uninstall all dependencies not listed in a Brewfile
+  brew bundle check      check if all dependencies are installed in a Brewfile
 
   Options:
   -v, --verbose          print verbose output
@@ -68,6 +70,8 @@ begin
     Bundle::Commands::Dump.run
   when "cleanup"
     Bundle::Commands::Cleanup.run
+  when "check"
+    Bundle::Commands::Check.run
   else
     abort usage
   end
