@@ -40,6 +40,7 @@ describe Bundle::Commands::Cleanup do
 
   context "no formulae to uninstall and no taps to untap" do
     before do
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
       allow(ARGV).to receive(:force?).and_return(true)
@@ -51,8 +52,23 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
+  context "there are casks to uninstall" do
+    before do
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
+      allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
+      allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      allow(ARGV).to receive(:force?).and_return(true)
+    end
+
+    it "uninstalls casks" do
+      expect(Kernel).to receive(:system).with(*%w[brew cask uninstall --force a b])
+      expect { Bundle::Commands::Cleanup.run }.to output(/Uninstalled 2 casks/).to_stdout
+    end
+  end
+
   context "there are formulae to uninstall" do
     before do
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
       allow(ARGV).to receive(:force?).and_return(true)
@@ -66,6 +82,7 @@ describe Bundle::Commands::Cleanup do
 
   context "there are taps to untap" do
     before do
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
       allow(ARGV).to receive(:force?).and_return(true)
@@ -79,6 +96,7 @@ describe Bundle::Commands::Cleanup do
 
   context "there are formulae to uninstall and taps to untap but passing without `--force`" do
     before do
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
       allow(ARGV).to receive(:force?).and_return(false)
