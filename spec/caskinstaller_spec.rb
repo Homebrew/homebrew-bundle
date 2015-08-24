@@ -8,7 +8,17 @@ describe Bundle::CaskInstaller do
   context "when brew is not installed" do
     it "raises an error" do
       allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { do_install }.to raise_error
+      expect { do_install }.to raise_error(RuntimeError)
+    end
+  end
+
+  context '.installed_casks' do
+    before do
+      allow_any_instance_of(Bundle::CaskInstaller).to receive(:`)
+    end
+
+    it 'shells out' do
+      Bundle::CaskInstaller.installed_casks
     end
   end
 
@@ -33,7 +43,7 @@ describe Bundle::CaskInstaller do
       it "raises an error" do
         allow(Bundle).to receive(:cask_installed?).and_return(false, false)
         expect(Bundle).to receive(:system).with("brew", "install", "caskroom/cask/brew-cask")
-        expect { do_install }.to raise_error
+        expect { do_install }.to raise_error(RuntimeError)
       end
     end
   end

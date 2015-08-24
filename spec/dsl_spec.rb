@@ -17,4 +17,9 @@ describe Bundle::Dsl do
       cask 'google-chrome'
     EOS
   end
+
+  it "handles invalid input" do
+    allow(ARGV).to receive(:verbose?).and_return(true)
+    expect { Bundle::Dsl.new "abcdef" }.to raise_error(RuntimeError)
+  end
 end

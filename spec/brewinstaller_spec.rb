@@ -38,10 +38,30 @@ describe Bundle::BrewInstaller do
     end
   end
 
+  context '.installed_formulae' do
+    before do
+      allow_any_instance_of(Bundle::BrewInstaller).to receive(:`)
+    end
+
+    it 'shells out' do
+      Bundle::BrewInstaller.installed_formulae
+    end
+  end
+
+  context '.outdated_formulae' do
+    before do
+      allow_any_instance_of(Bundle::BrewInstaller).to receive(:`)
+    end
+
+    it 'shells out' do
+      Bundle::BrewInstaller.outdated_formulae
+    end
+  end
+
   context "when brew is not installed" do
     it "raises an error" do
       allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { do_install }.to raise_error
+      expect { do_install }.to raise_error(RuntimeError)
     end
   end
 

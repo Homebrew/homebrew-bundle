@@ -4,7 +4,7 @@ describe Bundle::TapDumper do
   context "when brew is not installed" do
     it "raises an error" do
       allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { Bundle::TapDumper.new }.to raise_error
+      expect { Bundle::TapDumper.new }.to raise_error(RuntimeError)
     end
   end
 

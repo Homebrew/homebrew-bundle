@@ -14,7 +14,7 @@ module Bundle
         Bundle.system "brew", "tap", "homebrew/services"
 
         unless Bundle.services_installed?
-          raise "Unable to restart #{name}. Homebrew-services is not currently installed on your system"
+          raise "Unable to restart #{@name}. brew-services is not currently installed on your system"
         end
       end
     end

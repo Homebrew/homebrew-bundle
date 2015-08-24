@@ -5,6 +5,16 @@ describe Bundle::BrewServices do
     Bundle::BrewServices.restart("nginx")
   end
 
+  context 'Bundle.services_installed?' do
+    before do
+      expect(Kernel).to receive(:system)
+    end
+
+    it 'shells out' do
+      Bundle.services_installed?
+    end
+  end
+
   context "when brew-services is not installed" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
@@ -23,7 +33,7 @@ describe Bundle::BrewServices do
       it "raises an error" do
         allow(Bundle).to receive(:services_installed?).and_return(false, false)
         expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/services").and_return(true)
-        expect { restart_service }.to raise_error
+        expect { restart_service }.to raise_error(RuntimeError)
       end
     end
   end

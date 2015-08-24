@@ -4,6 +4,7 @@ describe Bundle::Commands::Dump do
   context "when files existed" do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
+      allow(ARGV).to receive(:include?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(false)
       allow(ARGV).to receive(:value).and_return(nil)
     end
@@ -11,7 +12,7 @@ describe Bundle::Commands::Dump do
     it "raises error" do
       expect do
         Bundler.with_clean_env { Bundle::Commands::Dump.run }
-      end.to raise_error
+      end.to raise_error(RuntimeError)
     end
   end
 
