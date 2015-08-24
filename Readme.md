@@ -37,6 +37,7 @@ Then list your Homebrew based dependencies in your `Brewfile`:
     brew 'imagemagick'
     brew 'mysql'
     cask 'google-chrome'
+    cask 'java' unless system '/usr/libexec/java_home --failfast'
 
 You can then easily install all of the dependencies with one of the following commands:
 
