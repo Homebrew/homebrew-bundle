@@ -3,7 +3,7 @@ module Bundle::Commands
     def self.run
       formulae = formulae_to_uninstall
       taps = taps_to_untap
-      if ARGV.dry_run?
+      unless ARGV.force?
         if formulae.any?
           puts "Would uninstall formulae:"
           puts_columns formulae

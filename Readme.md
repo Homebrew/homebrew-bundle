@@ -58,7 +58,7 @@ You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers 
 
     $ brew bundle cleanup
 
-If `--dry-run` option is passed, bundle will list formulae rather than actually uninstalling them.
+Unless the `--force` option is passed, formulae will be listed rather than actually uninstalled.
 
 ## Note
 

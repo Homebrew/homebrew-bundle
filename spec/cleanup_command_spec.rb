@@ -42,7 +42,7 @@ describe Bundle::Commands::Cleanup do
     before do
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
-      allow(ARGV).to receive(:dry_run?).and_return(false)
+      allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "does nothing" do
@@ -55,7 +55,7 @@ describe Bundle::Commands::Cleanup do
     before do
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
-      allow(ARGV).to receive(:dry_run?).and_return(false)
+      allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "uninstalls formulae" do
@@ -68,7 +68,7 @@ describe Bundle::Commands::Cleanup do
     before do
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(ARGV).to receive(:dry_run?).and_return(false)
+      allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "untaps taps" do
@@ -77,11 +77,11 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there are formulae to uninstall and taps to untap but passing with `--dry-run`" do
+  context "there are formulae to uninstall and taps to untap but passing without `--force`" do
     before do
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(ARGV).to receive(:dry_run?).and_return(true)
+      allow(ARGV).to receive(:force?).and_return(false)
     end
 
     it "lists formulae and taps" do

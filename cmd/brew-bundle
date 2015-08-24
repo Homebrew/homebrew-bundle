@@ -30,7 +30,7 @@ require "bundle"
 usage = <<-EOS.undent
   brew bundle [-v|--verbose] [--file=<path>|--global]
   brew bundle dump [--force] [--file=<path>|--global]
-  brew bundle cleanup [--dry-run] [--file=<path>|--global]
+  brew bundle cleanup [--force] [--file=<path>|--global]
   brew bundle [--version]
   brew bundle [-h|--help]
 
@@ -43,8 +43,7 @@ usage = <<-EOS.undent
 
   Options:
   -v, --verbose          print verbose output
-  --force                force overwrite existed Brewfile
-  --dry-run              list formulae rather than actual uninstalling them
+  --force                uninstall dependencies or overwrite existing Brewfile
   --file=<path>          set Brewfile path
   --global               set Brewfile path to $HOME/.Brewfile
   -h, --help             show this help message and exit
