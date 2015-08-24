@@ -8,14 +8,16 @@ module Bundle
     def initialize
       @brew = BrewDumper.new
       @cask = CaskDumper.new
-      @repo = RepoDumper.new
+      @repo = TapDumper.new
     end
 
     def dump_brewfile
       if ARGV.include?("--global")
         file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
       else
-        file = Pathname.new(ARGV.value("file") || "Brewfile").expand_path(Dir.pwd)
+        filename = ARGV.value("file")
+        filename ||= "Brewfile"
+        file = Pathname.new(filename).expand_path(Dir.pwd)
       end
       content = []
       content << repo.to_s

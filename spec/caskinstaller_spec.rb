@@ -14,12 +14,14 @@ describe Bundle::CaskInstaller do
 
   context "when brew-cask is not installed" do
     before do
+      allow(ARGV).to receive(:verbose?).and_return(false)
       allow(Bundle).to receive(:brew_installed?).and_return(true)
     end
 
     context "it tries to install brew-cask and successed" do
       it "works fine" do
         allow(Bundle).to receive(:cask_installed?).and_return(false, true)
+        allow(ARGV).to receive(:verbose?).and_return(false)
         allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return([])
         expect(Bundle).to receive(:system).with("brew", "install", "caskroom/cask/brew-cask").and_return(true)
         expect(Bundle).to receive(:system).with("brew", "cask", "install", "google-chrome").and_return(true)

@@ -5,7 +5,7 @@ module Bundle::Commands
       taps = taps_to_untap
       if ARGV.dry_run?
         if formulae.any?
-          puts "Would uninstall:"
+          puts "Would uninstall formulae:"
           puts_columns formulae
         end
 

@@ -12,7 +12,7 @@ describe Bundle::Commands::Install do
     it "does not raise an error" do
       allow(Bundle::BrewInstaller).to receive(:install).and_return(true)
       allow(Bundle::CaskInstaller).to receive(:install).and_return(true)
-      allow(Bundle::RepoInstaller).to receive(:install).and_return(true)
+      allow(Bundle::TapInstaller).to receive(:install).and_return(true)
 
       allow(ARGV).to receive(:value).and_return(nil)
       allow(File).to receive(:read).

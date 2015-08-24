@@ -48,11 +48,12 @@ describe Bundle::BrewInstaller do
   context "when brew is installed" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     context "when no formula is installed" do
       before do
-        allow(installer).to receive(:installed_formulae).and_return([])
+        allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return([])
       end
 
       it "install formula" do
@@ -63,12 +64,12 @@ describe Bundle::BrewInstaller do
 
     context "when formula is installed" do
       before do
-        allow(installer).to receive(:installed_formulae).and_return([formula])
+        allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return([formula])
       end
 
       context "when formula upgradable" do
         before do
-          allow(installer).to receive(:outdated_formulae).and_return([formula])
+          allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return([formula])
         end
 
         it "upgrade formula" do
@@ -78,7 +79,7 @@ describe Bundle::BrewInstaller do
 
         context "when formula pinned" do
           before do
-            allow(installer).to receive(:pinned_formulae).and_return([formula])
+            allow(Bundle::BrewInstaller).to receive(:pinned_formulae).and_return([formula])
           end
 
           it "does not upgrade formula" do
@@ -89,7 +90,7 @@ describe Bundle::BrewInstaller do
 
         context "when formula not upgrade" do
           before do
-            allow(installer).to receive(:outdated_formulae).and_return([])
+            allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return([])
           end
 
           it "does not upgrade formula" do

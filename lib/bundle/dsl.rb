@@ -46,7 +46,7 @@ module Bundle
               when :repo
                 arg << entry.options[:clone_target]
                 verb = "tapping"
-                Bundle::RepoInstaller
+                Bundle::TapInstaller
               end
         if cls.install(*arg)
           puts "Succeeded in #{verb} #{entry.name}"

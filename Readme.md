@@ -12,7 +12,7 @@ Bundler for non-Ruby dependencies from Homebrew
 
 [brew tap](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
-[Homebrew-cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
+[Homebrew Cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
 ## Install
 
@@ -66,8 +66,6 @@ Homebrew does not support installing specific versions of a library, only the mo
 
 If your software needs specific versions then perhaps you'll want to look at using [Vagrant](http://vagrantup.com/) to better match your development and production environments.
 
-(Or there is always MacPorts...)
-
 ## Contributors
 
 Over 10 different people have contributed to the project, you can see them all here: https://github.com/Homebrew/homebrew-bundle/graphs/contributors
@@ -90,4 +88,4 @@ Tests can be ran with `bundle && bundle exec rake spec`
 
 ## Copyright
 
-Copyright (c) 2015 Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/master/LICENSE) for details.
+Copyright (c) 2015 Homebrew maintainers and Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/master/LICENSE) for details.
