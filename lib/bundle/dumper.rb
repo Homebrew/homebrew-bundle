@@ -16,7 +16,7 @@ module Bundle
         file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
       else
         filename = ARGV.value("file")
-        filename = "/dev/stdin" if filename == "-"
+        filename = "/dev/stdout" if filename == "-"
         filename ||= "Brewfile"
         file = Pathname.new(filename).expand_path(Dir.pwd)
       end
@@ -34,7 +34,7 @@ module Bundle
     private
 
     def write_file(file, content, overwrite=false)
-      if file.exist? && !overwrite
+      if file.exist? && !overwrite && file.to_s != "/dev/stdout"
         raise "#{file} already exists."
       end
 
