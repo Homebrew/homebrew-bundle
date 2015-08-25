@@ -32,7 +32,9 @@ module Bundle
     if ARGV.include?("--global")
       file = "#{ENV["HOME"]}/.Brewfile"
     else
-      file = ARGV.value("file") || Dir["{*,.*}{B,b}rewfile"].first.to_s
+      file = ARGV.value("file")
+      file = "/dev/stdin" if file == "-"
+      file ||= "Brewfile"
     end
     File.read(file)
   rescue Errno::ENOENT

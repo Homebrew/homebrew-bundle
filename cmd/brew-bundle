@@ -30,25 +30,26 @@ require "bundle"
 usage = <<-EOS.undent
   brew bundle [-v|--verbose] [--file=<path>|--global]
   brew bundle dump [--force] [--file=<path>|--global]
-  brew bundle cleanup [--dry-run] [--file=<path>|--global]
+  brew bundle cleanup [--force] [--file=<path>|--global]
+  brew bundle check [--file=<path>|--global]
   brew bundle [--version]
   brew bundle [-h|--help]
 
   Usage:
   Bundler for non-Ruby dependencies from Homebrew
 
-  brew bundle            read Brewfile and install and upgrade all dependencies
-  brew bundle dump       write all currently installed packages into a Brewfile
-  brew bundle cleanup    uninstall all Homebrew formulae not listed in Brewfile
+  brew bundle            install or upgrade all dependencies in a Brewfile
+  brew bundle dump       write all installed casks/formulae/taps into a Brewfile
+  brew bundle cleanup    uninstall all dependencies not listed in a Brewfile
+  brew bundle check      check if all dependencies are installed in a Brewfile
 
   Options:
   -v, --verbose          print verbose output
-  --force                force overwrite existed Brewfile
-  --dry-run              list formulae rather than actual uninstalling them
+  --force                uninstall dependencies or overwrite existing Brewfile
   --file=<path>          set Brewfile path
   --global               set Brewfile path to $HOME/.Brewfile
   -h, --help             show this help message and exit
-  --version              show the version of bundle
+  --version              show the version of homebrew-bundle
 EOS
 
 if ARGV.include?("--version")
@@ -69,6 +70,8 @@ begin
     Bundle::Commands::Dump.run
   when "cleanup"
     Bundle::Commands::Cleanup.run
+  when "check"
+    Bundle::Commands::Check.run
   else
     abort usage
   end

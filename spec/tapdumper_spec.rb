@@ -1,22 +1,22 @@
 require "spec_helper"
 
-describe Bundle::RepoDumper do
+describe Bundle::TapDumper do
   context "when brew is not installed" do
     it "raises an error" do
       allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { Bundle::RepoDumper.new }.to raise_error
+      expect { Bundle::TapDumper.new }.to raise_error(RuntimeError)
     end
   end
 
   context "when there is no tap" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::RepoDumper).to receive(:`).and_return("[]")
+      allow_any_instance_of(Bundle::TapDumper).to receive(:`).and_return("[]")
     end
-    subject { Bundle::RepoDumper.new }
+    subject { Bundle::TapDumper.new }
 
     it "returns empty list" do
-      expect(subject.repos).to be_empty
+      expect(subject.taps).to be_empty
     end
 
     it "dumps as empty string" do
@@ -27,7 +27,7 @@ describe Bundle::RepoDumper do
   context "there are tap `homebrew/foo` and `bitbucket/bar`" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::RepoDumper).to receive(:`)
+      allow_any_instance_of(Bundle::TapDumper).to receive(:`)
       allow(JSON).to receive(:load).and_return [
         {
           "name" => "homebrew/foo",
@@ -41,10 +41,10 @@ describe Bundle::RepoDumper do
         },
       ]
     end
-    subject { Bundle::RepoDumper.new }
+    subject { Bundle::TapDumper.new }
 
     it "returns list of information" do
-      expect(subject.repos).not_to be_empty
+      expect(subject.taps).not_to be_empty
     end
 
     it "dumps output" do

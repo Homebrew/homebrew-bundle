@@ -12,7 +12,7 @@ Bundler for non-Ruby dependencies from Homebrew
 
 [brew tap](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
-[Homebrew-cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
+[Homebrew Cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
 ## Install
 
@@ -37,6 +37,7 @@ Then list your Homebrew based dependencies in your `Brewfile`:
     brew 'imagemagick'
     brew 'mysql'
     cask 'google-chrome'
+    cask 'java' unless system '/usr/libexec/java_home --failfast'
 
 You can then easily install all of the dependencies with one of the following commands:
 
@@ -58,15 +59,21 @@ You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers 
 
     $ brew bundle cleanup
 
-If `--dry-run` option is passed, bundle will list formulae rather than actually uninstalling them.
+Unless the `--force` option is passed, formulae will be listed rather than actually uninstalled.
+
+### Check
+
+You can check there's anything to install/upgrade in the `Brewfile` by running:
+
+    $ brew bundle check
+
+This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
 ## Note
 
 Homebrew does not support installing specific versions of a library, only the most recent one so there is no good mechanism for storing installed versions in a .lock file.
 
 If your software needs specific versions then perhaps you'll want to look at using [Vagrant](http://vagrantup.com/) to better match your development and production environments.
-
-(Or there is always MacPorts...)
 
 ## Contributors
 
@@ -90,4 +97,4 @@ Tests can be ran with `bundle && bundle exec rake spec`
 
 ## Copyright
 
-Copyright (c) 2015 Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/master/LICENSE) for details.
+Copyright (c) 2015 Homebrew maintainers and Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/master/LICENSE) for details.
