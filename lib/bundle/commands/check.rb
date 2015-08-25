@@ -22,6 +22,7 @@ module Bundle::Commands
     def self.formulae_to_install
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       requested_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
+      requested_formulae.map! { |f| f.split("/").last }
       current_formulae = Bundle::BrewDumper.new.formulae.map { |f| f[:name] }
       upgradable_formulae = Bundle::BrewInstaller.upgradable_formulae
       requested_formulae - (current_formulae - upgradable_formulae)
