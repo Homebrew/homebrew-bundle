@@ -1,4 +1,7 @@
-#!/usr/bin/env ruby -W0
+#!/usr/bin/env ruby
+
+# Set verbosity level to 0
+$VERBOSE = nil
 
 # Ruby version check
 unless RUBY_VERSION.split(".").first.to_i >= 2
