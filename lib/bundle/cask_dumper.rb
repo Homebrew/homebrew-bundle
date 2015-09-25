@@ -4,7 +4,7 @@ module Bundle
 
     def initialize
       if Bundle.cask_installed?
-        @casks = `brew cask list -1`.split("\n").map { |cask| cask.chomp " (!)" }
+        @casks = `brew cask list -1 2>/dev/null`.split("\n").map { |cask| cask.chomp " (!)" }
       else
         @casks = []
       end
