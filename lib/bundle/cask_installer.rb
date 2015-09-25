@@ -28,7 +28,7 @@ module Bundle
     end
 
     def self.installed_casks
-      @@installed_casks ||= `brew cask list -1`.split("\n").map { |cask| cask.chomp " (!)" }
+      @@installed_casks ||= `brew cask list -1 2>/dev/null`.split("\n").map { |cask| cask.chomp " (!)" }
     end
   end
 end
