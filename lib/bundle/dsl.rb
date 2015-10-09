@@ -43,7 +43,7 @@ module Bundle
               when :cask
                 verb = "installing"
                 Bundle::CaskInstaller
-              when :repo
+              when :tap
                 arg << entry.options[:clone_target]
                 verb = "tapping"
                 Bundle::TapInstaller
@@ -69,7 +69,7 @@ module Bundle
     end
 
     def tap(name, clone_target=nil)
-      @entries << Entry.new(:repo, name, :clone_target => clone_target)
+      @entries << Entry.new(:tap, name, :clone_target => clone_target)
     end
   end
 end

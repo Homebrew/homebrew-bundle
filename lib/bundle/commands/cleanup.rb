@@ -58,7 +58,7 @@ module Bundle::Commands
 
     def self.taps_to_untap
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_taps = @@dsl.entries.select { |e| e.type == :repo }.map(&:name)
+      kept_taps = @@dsl.entries.select { |e| e.type == :tap }.map(&:name)
       current_taps = `brew tap`.split
       current_taps - kept_taps
     end

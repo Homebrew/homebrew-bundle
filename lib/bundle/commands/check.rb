@@ -30,7 +30,7 @@ module Bundle::Commands
 
     def self.taps_to_tap
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      requested_taps = @@dsl.entries.select { |e| e.type == :repo }.map(&:name)
+      requested_taps = @@dsl.entries.select { |e| e.type == :tap }.map(&:name)
       current_taps = `brew tap`.split
       requested_taps - current_taps
     end
