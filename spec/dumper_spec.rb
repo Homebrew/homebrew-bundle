@@ -1,6 +1,5 @@
 require "spec_helper"
 
-
 describe Bundle::Dumper do
   before do
     allow(Bundle).to receive(:brew_installed?).and_return(true)
@@ -14,7 +13,7 @@ describe Bundle::Dumper do
   subject { Bundle::Dumper.new }
 
   it "generates output" do
-    expect(subject).to receive(:write_file) do |file, content, overwrite|
+    expect(subject).to receive(:write_file) do |file, content, _overwrite|
       expect(file).to eql(Pathname.new(Dir.pwd).join("Brewfile"))
       expect(content).to eql("cask 'google-chrome'\ncask 'java'\n")
     end

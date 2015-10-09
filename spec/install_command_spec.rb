@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Bundle::Commands::Install do
   context "when a Brewfile is not found" do

@@ -1,7 +1,7 @@
-require 'simplecov'
+require "simplecov"
 SimpleCov.start
 
-require 'coveralls'
+require "coveralls"
 Coveralls.wear!
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
@@ -9,8 +9,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter
 ]
 
-require 'bundle'
+require "bundle"
 
-RSpec.configure do |config|
-
+RSpec.configure do |_config|
 end

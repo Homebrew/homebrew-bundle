@@ -32,8 +32,8 @@ describe Bundle::BrewDumper do
         {
           "name" => "foo",
           "full_name" => "homebrew/tap/foo",
-          "versions" => {"stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
-          "installed" => [ { "version" => "1.0", "used_options" => [] }, ],
+          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
+          "installed" => [{ "version" => "1.0", "used_options" => [] }],
           "linked_keg" => "1.0",
           "dependencies" => [],
           "requirements" => [],
@@ -41,8 +41,8 @@ describe Bundle::BrewDumper do
         {
           "name" => "bar",
           "full_name" => "bar",
-          "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
-          "installed" => [ { "version" => "2.0", "used_options" => ["--with-a", "--with-b"] }, ],
+          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
+          "installed" => [{ "version" => "2.0", "used_options" => ["--with-a", "--with-b"] }],
           "linked_keg" => "2.0",
           "dependencies" => [],
           "requirements" => [],
@@ -52,7 +52,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper.new }
 
     it "returns foo and bar with their information" do
-      expect(subject.formulae).to contain_exactly(
+      expect(subject.formulae).to contain_exactly *[
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
@@ -68,8 +68,8 @@ describe Bundle::BrewDumper do
           :version => "2.0",
           :dependencies => [],
           :requirements => [],
-        }
-      )
+        },
+      ]
     end
 
     it "dumps as foo and bar with args" do
@@ -85,8 +85,8 @@ describe Bundle::BrewDumper do
         {
           "name" => "foo",
           "full_name" => "foo",
-          "versions" => {"stable" => "1.0", "bottle" => false, "devel" => "1.1beta", "head" => "HEAD"},
-          "installed" => [ { "version" => "1.1beta", "used_options" => [] }, ],
+          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => "1.1beta", "head" => "HEAD" },
+          "installed" => [{ "version" => "1.1beta", "used_options" => [] }],
           "linked_keg" => "1.1beta",
           "dependencies" => [],
           "requirements" => [],
@@ -94,8 +94,8 @@ describe Bundle::BrewDumper do
         {
           "name" => "bar",
           "full_name" => "homebrew/tap/bar",
-          "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
-          "installed" => [ { "version" => "HEAD", "used_options" => [] }, ],
+          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
+          "installed" => [{ "version" => "HEAD", "used_options" => [] }],
           "linked_keg" => "HEAD",
           "dependencies" => [],
           "requirements" => [],
@@ -118,7 +118,7 @@ describe Bundle::BrewDumper do
         {
           "name" => "foo",
           "full_name" => "homebrew/tap/foo",
-          "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
+          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
           "installed" => [
             { "version" => "1.0", "used_options" => [] },
             { "version" => "2.0", "used_options" => [] },
@@ -126,7 +126,7 @@ describe Bundle::BrewDumper do
           "linked_keg" => "1.0",
           "dependencies" => [],
           "requirements" => [],
-        },
+        }
       ]
     end
     subject { Bundle::BrewDumper.new.formulae }
@@ -144,7 +144,7 @@ describe Bundle::BrewDumper do
         {
           "name" => "foo",
           "full_name" => "homebrew/tap/foo",
-          "versions" => {"stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
+          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
           "installed" => [
             { "version" => "1.0", "used_options" => [] },
             { "version" => "2.0", "used_options" => [] },
@@ -152,7 +152,7 @@ describe Bundle::BrewDumper do
           "linked_keg" => nil,
           "dependencies" => [],
           "requirements" => [],
-        },
+        }
       ]
     end
     subject { Bundle::BrewDumper.new.formulae }
@@ -170,8 +170,8 @@ describe Bundle::BrewDumper do
         {
           "name" => "a",
           "full_name" => "a",
-          "versions" => {"stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
-          "installed" => [ { "version" => "1.0", "used_options" => [] }, ],
+          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
+          "installed" => [{ "version" => "1.0", "used_options" => [] }],
           "linked_keg" => "1.0",
           "dependencies" => ["b"],
           "requirements" => [],
@@ -179,17 +179,17 @@ describe Bundle::BrewDumper do
         {
           "name" => "b",
           "full_name" => "b",
-          "versions" => {"stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
-          "installed" => [ { "version" => "1.0", "used_options" => [] }, ],
+          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
+          "installed" => [{ "version" => "1.0", "used_options" => [] }],
           "linked_keg" => "1.0",
           "dependencies" => [],
-          "requirements" => [ { "name" => "foo", "default_formula" => "c", "cask" => "bar" }, ],
+          "requirements" => [{ "name" => "foo", "default_formula" => "c", "cask" => "bar" }],
         },
         {
           "name" => "c",
           "full_name" => "homebrew/tap/c",
-          "versions" => {"stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD"},
-          "installed" => [ { "version" => "1.0", "used_options" => [] }, ],
+          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
+          "installed" => [{ "version" => "1.0", "used_options" => [] }],
           "linked_keg" => "1.0",
           "dependencies" => [],
           "requirements" => [],

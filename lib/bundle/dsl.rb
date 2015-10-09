@@ -3,7 +3,7 @@ module Bundle
     class Entry
       attr_reader :type, :name, :options
 
-      def initialize(type, name, options={})
+      def initialize(type, name, options = {})
         @type = type
         @name = name
         @options = options
@@ -60,7 +60,7 @@ module Bundle
       fail == 0
     end
 
-    def brew(name, options={})
+    def brew(name, options = {})
       @entries << Entry.new(:brew, name, options)
     end
 
@@ -68,7 +68,7 @@ module Bundle
       @entries << Entry.new(:cask, name)
     end
 
-    def tap(name, clone_target=nil)
+    def tap(name, clone_target = nil)
       @entries << Entry.new(:tap, name, :clone_target => clone_target)
     end
   end

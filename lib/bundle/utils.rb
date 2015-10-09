@@ -1,5 +1,5 @@
 module Bundle
-  def self.system cmd, *args
+  def self.system(cmd, *args)
     verbose = ARGV.verbose?
     logs = []
     success = nil

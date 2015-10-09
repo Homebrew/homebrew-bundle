@@ -5,12 +5,12 @@ describe Bundle::BrewServices do
     Bundle::BrewServices.restart("nginx")
   end
 
-  context 'Bundle.services_installed?' do
+  context "Bundle.services_installed?" do
     before do
       expect(Kernel).to receive(:system)
     end
 
-    it 'shells out' do
+    it "shells out" do
       Bundle.services_installed?
     end
   end

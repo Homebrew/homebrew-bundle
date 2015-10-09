@@ -30,7 +30,7 @@ describe Bundle::Commands::Cleanup do
         { :name => "e", :full_name => "homebrew/tap/e" },
         { :name => "f", :full_name => "homebrew/tap/f" },
         { :name => "h", :full_name => "other/tap/h" },
-       ]
+      ]
       expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
         c
         homebrew/tap/e

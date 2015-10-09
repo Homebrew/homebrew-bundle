@@ -17,7 +17,7 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow_any_instance_of(Bundle::BrewDumper).to receive(:formulae).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(Bundle::Commands::Check).to receive(:`).and_return('')
+      allow(Bundle::Commands::Check).to receive(:`).and_return("")
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'phinze/cask'")
       expect { Bundle::Commands::Check.run }.to raise_error(SystemExit)

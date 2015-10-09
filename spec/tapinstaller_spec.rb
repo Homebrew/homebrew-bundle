@@ -12,20 +12,20 @@ describe Bundle::TapInstaller do
     end
   end
 
-  context '.installed_taps' do
+  context ".installed_taps" do
     before do
       allow_any_instance_of(Bundle::TapInstaller).to receive(:`)
     end
 
-    it 'shells out' do
+    it "shells out" do
       Bundler.with_clean_env { Bundle::TapInstaller.installed_taps }
     end
   end
 
   context "when tap is installed" do
     before do
-       allow(Bundle::TapInstaller).to receive(:installed_taps).and_return(["phinze/cask"])
-       allow(ARGV).to receive(:verbose?).and_return(false)
+      allow(Bundle::TapInstaller).to receive(:installed_taps).and_return(["phinze/cask"])
+      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "skips" do
@@ -36,8 +36,8 @@ describe Bundle::TapInstaller do
 
   context "when tap is not installed" do
     before do
-       allow(Bundle::TapInstaller).to receive(:installed_taps).and_return([])
-       allow(ARGV).to receive(:verbose?).and_return(false)
+      allow(Bundle::TapInstaller).to receive(:installed_taps).and_return([])
+      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "taps" do

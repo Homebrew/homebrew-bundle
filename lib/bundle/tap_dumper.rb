@@ -6,7 +6,11 @@ module Bundle
 
     def initialize
       if Bundle.brew_installed?
-        @taps = JSON.load(`brew tap-info --json=v1 --installed`) || [] rescue []
+        @taps = begin
+          JSON.load(`brew tap-info --json=v1 --installed`) || []
+        rescue
+          []
+        end
       else
         raise "Unable to list installed taps. Homebrew is not currently installed on your system."
       end
