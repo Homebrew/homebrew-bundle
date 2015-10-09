@@ -33,8 +33,13 @@ module Bundle
       file = "#{ENV["HOME"]}/.Brewfile"
     else
       file = ARGV.value("file")
-      file = "/dev/stdin" if file == "-"
-      file ||= "Brewfile"
+      if file == "-"
+        file = "/dev/stdin"
+      elsif file.nil?
+        file = "Brewfile"
+      else
+        file = File.expand_path(file)
+      end
     end
     File.read(file)
   rescue Errno::ENOENT
