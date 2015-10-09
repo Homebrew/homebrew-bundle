@@ -4,7 +4,7 @@ describe Bundle::Commands::Cleanup do
   context "read Brewfile and currently installation" do
     before do
       allow(ARGV).to receive(:value).and_return(nil)
-      allow(File).to receive(:read).and_return <<-EOS
+      allow_any_instance_of(Pathname).to receive(:read).and_return <<-EOS
         tap 'x'
         tap 'y'
         cask '123'

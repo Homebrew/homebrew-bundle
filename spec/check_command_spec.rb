@@ -19,8 +19,7 @@ describe Bundle::Commands::Check do
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(Bundle::Commands::Check).to receive(:`).and_return('')
       allow(ARGV).to receive(:include?).and_return(true)
-      allow(File).to receive(:read).
-        and_return("tap 'phinze/cask'")
+      allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'phinze/cask'")
       expect { Bundle::Commands::Check.run }.to raise_error(SystemExit)
     end
   end

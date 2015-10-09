@@ -15,7 +15,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive(:install).and_return(true)
 
       allow(ARGV).to receive(:value).and_return(nil)
-      allow(File).to receive(:read).
+      allow_any_instance_of(Pathname).to receive(:read).
         and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Bundle::Commands::Install.run }.to_not raise_error
     end
@@ -26,7 +26,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive(:install).and_return(false)
 
       allow(ARGV).to receive(:value).and_return(nil)
-      allow(File).to receive(:read).
+      allow_any_instance_of(Pathname).to receive(:read).
         and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
       expect { Bundle::Commands::Install.run }.to raise_error(SystemExit)
     end

@@ -30,13 +30,14 @@ module Bundle
 
   def self.brewfile
     if ARGV.include?("--global")
-      file = "#{ENV["HOME"]}/.Brewfile"
+      file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
     else
-      file = ARGV.value("file")
-      file = "/dev/stdin" if file == "-"
-      file ||= "Brewfile"
+      filename = ARGV.value("file")
+      filename = "/dev/stdin" if filename == "-"
+      filename ||= "Brewfile"
+      file = Pathname.new(filename).expand_path(Dir.pwd)
     end
-    File.read(file)
+    file.read
   rescue Errno::ENOENT
     raise "No Brewfile found"
   end
