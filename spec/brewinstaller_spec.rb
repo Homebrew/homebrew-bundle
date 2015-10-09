@@ -6,7 +6,7 @@ describe Bundle::BrewInstaller do
   let(:installer) { Bundle::BrewInstaller.new(formula, options) }
 
   def do_install
-    installer.install_or_upgrade
+    Bundler.with_clean_env { installer.install_or_upgrade }
   end
 
   describe '.install' do
@@ -44,7 +44,7 @@ describe Bundle::BrewInstaller do
     end
 
     it 'shells out' do
-      Bundle::BrewInstaller.installed_formulae
+      Bundler.with_clean_env { Bundle::BrewInstaller.installed_formulae }
     end
   end
 
@@ -54,7 +54,7 @@ describe Bundle::BrewInstaller do
     end
 
     it 'shells out' do
-      Bundle::BrewInstaller.outdated_formulae
+      Bundler.with_clean_env { Bundle::BrewInstaller.outdated_formulae }
     end
   end
 

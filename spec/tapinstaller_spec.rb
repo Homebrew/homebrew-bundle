@@ -18,7 +18,7 @@ describe Bundle::TapInstaller do
     end
 
     it 'shells out' do
-      Bundle::TapInstaller.installed_taps
+      Bundler.with_clean_env { Bundle::TapInstaller.installed_taps }
     end
   end
 
