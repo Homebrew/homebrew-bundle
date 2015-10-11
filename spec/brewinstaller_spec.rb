@@ -2,27 +2,27 @@ require "spec_helper"
 
 describe Bundle::BrewInstaller do
   let(:formula) { "git" }
-  let(:options) { { args: ["with-option"] } }
+  let(:options) { { :args => ["with-option"] } }
   let(:installer) { Bundle::BrewInstaller.new(formula, options) }
 
   def do_install
-    installer.install_or_upgrade
+    Bundler.with_clean_env { installer.install_or_upgrade }
   end
 
-  describe '.install' do
+  describe ".install" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewServices).to receive(:restart).with(formula).and_return(true)
     end
 
-    context 'restart_service option is true' do
-      let(:options) {{ restart_service: true}}
+    context "restart_service option is true" do
+      let(:options) { { :restart_service => true } }
 
-      context 'formula is installed successfully' do
+      context "formula is installed successfully" do
         before do
           allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(true)
         end
-        it 'restart service' do
+        it "restart service" do
           Bundle::BrewInstaller.install(formula, options)
         end
       end
@@ -38,23 +38,23 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context '.installed_formulae' do
+  context ".installed_formulae" do
     before do
       allow_any_instance_of(Bundle::BrewInstaller).to receive(:`)
     end
 
-    it 'shells out' do
-      Bundle::BrewInstaller.installed_formulae
+    it "shells out" do
+      Bundler.with_clean_env { Bundle::BrewInstaller.installed_formulae }
     end
   end
 
-  context '.outdated_formulae' do
+  context ".outdated_formulae" do
     before do
       allow_any_instance_of(Bundle::BrewInstaller).to receive(:`)
     end
 
-    it 'shells out' do
-      Bundle::BrewInstaller.outdated_formulae
+    it "shells out" do
+      Bundler.with_clean_env { Bundle::BrewInstaller.outdated_formulae }
     end
   end
 

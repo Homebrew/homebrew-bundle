@@ -12,12 +12,12 @@ describe Bundle::CaskInstaller do
     end
   end
 
-  context '.installed_casks' do
+  context ".installed_casks" do
     before do
       allow_any_instance_of(Bundle::CaskInstaller).to receive(:`)
     end
 
-    it 'shells out' do
+    it "shells out" do
       Bundle::CaskInstaller.installed_casks
     end
   end
@@ -57,7 +57,7 @@ describe Bundle::CaskInstaller do
 
     context "when cask is installed" do
       before do
-         allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return(["google-chrome"])
+        allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return(["google-chrome"])
       end
 
       it "skips" do
@@ -68,7 +68,7 @@ describe Bundle::CaskInstaller do
 
     context "when cask is not installed" do
       before do
-         allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return([])
+        allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return([])
       end
 
       it "installs cask" do

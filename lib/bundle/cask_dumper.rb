@@ -12,8 +12,8 @@ module Bundle
 
     def dump_to_string(formula_requirements)
       [
-        (@casks & formula_requirements).map { |cask| "cask '#{cask}'"}.join("\n"),
-        (@casks - formula_requirements).map { |cask| "cask '#{cask}'"}.join("\n")
+        (@casks & formula_requirements).map { |cask| "cask '#{cask}'" }.join("\n"),
+        (@casks - formula_requirements).map { |cask| "cask '#{cask}'" }.join("\n"),
       ]
     end
   end

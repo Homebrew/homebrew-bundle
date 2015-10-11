@@ -22,12 +22,12 @@ module Bundle::Commands
       else
         if casks.any?
           Kernel.system "brew", "cask", "uninstall", "--force", *casks
-          puts "Uninstalled #{casks.size} cask#{ casks.size == 1 ? "" : "s"}"
+          puts "Uninstalled #{casks.size} cask#{casks.size == 1 ? "" : "s"}"
         end
 
         if formulae.any?
           Kernel.system "brew", "uninstall", "--force", *formulae
-          puts "Uninstalled #{formulae.size} formula#{ formulae.size == 1 ? "" : "e"}"
+          puts "Uninstalled #{formulae.size} formula#{formulae.size == 1 ? "" : "e"}"
         end
 
         if taps.any?
@@ -58,7 +58,7 @@ module Bundle::Commands
 
     def self.taps_to_untap
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_taps = @@dsl.entries.select { |e| e.type == :repo }.map(&:name)
+      kept_taps = @@dsl.entries.select { |e| e.type == :tap }.map(&:name)
       current_taps = `brew tap`.split
       current_taps - kept_taps
     end

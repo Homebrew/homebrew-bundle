@@ -1,8 +1,8 @@
-source 'http://rubygems.org'
+source "http://rubygems.org"
 
 group :test do
-  gem 'rspec'
-  gem 'rake'
-  gem 'simplecov'
-  gem 'coveralls'
+  gem "rspec"
+  gem "rake"
+  gem "simplecov"
+  gem "coveralls"
 end

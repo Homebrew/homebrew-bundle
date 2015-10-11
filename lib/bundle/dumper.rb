@@ -33,7 +33,7 @@ module Bundle
 
     private
 
-    def write_file(file, content, overwrite=false)
+    def write_file(file, content, overwrite = false)
       if file.exist? && !overwrite && file.to_s != "/dev/stdout"
         raise "#{file} already exists."
       end
