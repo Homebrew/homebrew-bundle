@@ -32,7 +32,9 @@ module Bundle
     end
 
     def install
-      success = fail = 0
+      success = 0
+      failure = 0
+
       @entries.each do |entry|
         arg = [entry.name]
         cls = case entry.type
@@ -53,11 +55,12 @@ module Bundle
           success += 1
         else
           puts "Failed in #{verb} #{entry.name}"
-          fail += 1
+          failure += 1
         end
       end
-      puts "\nSuccess: #{success} Fail: #{fail}"
-      fail == 0
+      puts "\nSuccess: #{success} Fail: #{failure}"
+
+      failure.zero?
     end
 
     def brew(name, options = {})
