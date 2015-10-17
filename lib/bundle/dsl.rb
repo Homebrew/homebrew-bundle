@@ -15,6 +15,8 @@ module Bundle
     def initialize(input)
       @input = input
       @entries = []
+      @cask_args = {}
+
       begin
         process
       rescue => e
@@ -43,6 +45,7 @@ module Bundle
                 verb = "installing"
                 Bundle::BrewInstaller
               when :cask
+                arg << entry.options
                 verb = "installing"
                 Bundle::CaskInstaller
               when :tap
@@ -63,12 +66,21 @@ module Bundle
       failure.zero?
     end
 
+    def cask_args(args)
+      @cask_args = args
+    end
+
     def brew(name, options = {})
       @entries << Entry.new(:brew, name, options)
     end
 
-    def cask(name)
-      @entries << Entry.new(:cask, name)
+    def cask(name, options={})
+      if options[:args]
+        options = @cask_args.merge(options[:args])
+      else
+        options = @cask_args
+      end
+      @entries << Entry.new(:cask, name, options)
     end
 
     def tap(name, clone_target = nil)
