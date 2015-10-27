@@ -70,7 +70,7 @@ describe Bundle::CaskInstaller do
 
     context "when cask is installed" do
       before do
-        allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return(["google-chrome","firefox"])
+        allow(Bundle::CaskInstaller).to receive(:installed_casks).and_return(["google-chrome"])
       end
 
       it "skips" do
