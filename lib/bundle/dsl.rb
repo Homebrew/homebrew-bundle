@@ -75,11 +75,7 @@ module Bundle
     end
 
     def cask(name, options={})
-      if options[:args]
-        options = @cask_args.merge(options[:args])
-      else
-        options = @cask_args
-      end
+      options[:args] = @cask_args.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
     end
 
