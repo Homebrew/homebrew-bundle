@@ -41,7 +41,7 @@ Then list your Homebrew based dependencies in your `Brewfile`:
     brew 'mysql'
     cask 'google-chrome'
     cask 'java' unless system '/usr/libexec/java_home --failfast'
-    cask 'firefox', args: {'appdir=/Applications'}
+    cask 'firefox', args: { appdir: '/Applications' }
 
 You can then easily install all of the dependencies with one of the following commands:
 
