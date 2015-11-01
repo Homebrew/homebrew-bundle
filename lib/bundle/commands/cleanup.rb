@@ -49,17 +49,15 @@ module Bundle::Commands
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       kept_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
       current_formulae = Bundle::BrewDumper.new.formulae
-      current_formulae.reject do |formula|
-        kept_formulae.include?(formula[:name]) || kept_formulae.include?(formula[:full_name])
-      end.map do |formula|
-        formula[:full_name]
-      end
+      current_formulae.reject do |f|
+        Bundle::BrewInstaller.formula_in_array?(f[:name], kept_formulae) || Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
+      end.map {|f| f[:full_name] }
     end
 
     def self.taps_to_untap
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       kept_taps = @@dsl.entries.select { |e| e.type == :tap }.map(&:name)
-      current_taps = `brew tap`.split
+      current_taps = Bundle::TapDumper.new.taps.map { |t| t["name"] }
       current_taps - kept_taps
     end
   end

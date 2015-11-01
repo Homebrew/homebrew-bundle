@@ -19,7 +19,7 @@ module Bundle
     end
 
     def self.installed_taps
-      @@installed_taps ||= `brew tap`.split("\n")
+      @@installed_taps ||=  Bundle::TapDumper.new.taps.map { |t| t["name"] }
     end
   end
 end
