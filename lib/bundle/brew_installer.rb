@@ -24,14 +24,50 @@ module Bundle
       end
     end
 
-    def self.upgradable_formulae
-      outdated_formulae - pinned_formulae
+    def self.formula_installed_and_up_to_date?(formula)
+      formula_installed?(formula) && !formula_upgradable?(formula)
+    end
+
+    def self.formula_in_array?(formula, array)
+      array.include?(formula) || array.include?(resolved_formula_name(formula))
     end
 
     private
 
+    def self.formula_installed?(formula)
+      formula_in_array?(formula, installed_formulae)
+    end
+
+    def self.formula_upgradable?(formula)
+      formula_in_array?(formula, upgradable_formulae)
+    end
+
     def self.installed_formulae
-      @@installed_formulae ||= `brew list -1`.split("\n")
+      @@installed_formulae ||= Bundle::BrewDumper.new.formulae.map { |f| f[:name] }
+    end
+
+    def self.upgradable_formulae
+      outdated_formulae - pinned_formulae
+    end
+
+    def self.formulae_aliases_reset!
+      @@formulae_aliases = nil
+    end
+
+    def self.formulae_aliases
+      @@formulae_aliases ||= begin
+        formulae_aliases = {}
+        Bundle::BrewDumper.new.formulae.each do |f|
+          aliases = f[:aliases]
+          next if !aliases || aliases.empty?
+          aliases.each { |a| formulae_aliases[a] = f[:name] }
+        end
+        formulae_aliases
+      end
+    end
+
+    def self.resolved_formula_name(formula)
+      formulae_aliases[formula] || formulae_aliases.key(formula) || formula
     end
 
     def self.outdated_formulae
@@ -43,11 +79,11 @@ module Bundle
     end
 
     def installed?
-      BrewInstaller.installed_formulae.include?(@name)
+      BrewInstaller.formula_installed?(@name)
     end
 
     def upgradable?
-      BrewInstaller.upgradable_formulae.include?(@name)
+      BrewInstaller.formula_upgradable?(@name)
     end
 
     def install!

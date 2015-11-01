@@ -12,6 +12,10 @@ module Bundle::Commands
 
     private
 
+    def self.reset_dsl!
+      @@dsl = nil
+    end
+
     def self.casks_to_install
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       requested_casks = @@dsl.entries.select { |e| e.type == :cask }.map(&:name)
@@ -22,16 +26,15 @@ module Bundle::Commands
     def self.formulae_to_install
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       requested_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
-      requested_formulae.map! { |f| f.split("/").last }
-      current_formulae = Bundle::BrewDumper.new.formulae.map { |f| f[:name] }
-      upgradable_formulae = Bundle::BrewInstaller.upgradable_formulae
-      requested_formulae - (current_formulae - upgradable_formulae)
+      requested_formulae.reject do |f|
+        Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
+      end
     end
 
     def self.taps_to_tap
       @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       requested_taps = @@dsl.entries.select { |e| e.type == :tap }.map(&:name)
-      current_taps = `brew tap`.split
+      current_taps = Bundle::TapDumper.new.taps.map { |t| t["name"] }
       requested_taps - current_taps
     end
   end

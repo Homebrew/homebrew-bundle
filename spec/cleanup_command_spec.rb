@@ -3,6 +3,7 @@ require "spec_helper"
 describe Bundle::Commands::Cleanup do
   context "read Brewfile and currently installation" do
     before do
+      Bundle::BrewInstaller.formulae_aliases_reset!
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return <<-EOS
         tap 'x'
@@ -10,7 +11,7 @@ describe Bundle::Commands::Cleanup do
         cask '123'
         brew 'a'
         brew 'b'
-        brew 'd'
+        brew 'd2'
         brew 'homebrew/tap/f'
         brew 'homebrew/tap/g'
         brew 'homebrew/tap/h'
@@ -24,9 +25,9 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which formulae to uninstall" do
       allow(Bundle::BrewDumper).to receive_message_chain(:new, :formulae).and_return [
-        { :name => "a", :full_name => "a" },
+        { :name => "a2", :full_name => "a2", :aliases => ["a"] },
         { :name => "c", :full_name => "c" },
-        { :name => "d", :full_name => "homebrew/tap/d" },
+        { :name => "d", :full_name => "homebrew/tap/d", :aliases => ["d2"] },
         { :name => "e", :full_name => "homebrew/tap/e" },
         { :name => "f", :full_name => "homebrew/tap/f" },
         { :name => "h", :full_name => "other/tap/h" },
@@ -39,7 +40,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "computes which tap to untap" do
-      allow(Bundle::Commands::Cleanup).to receive(:`).and_return("x\nz")
+      allow_any_instance_of(Bundle::TapDumper).to receive(:taps).and_return([{"name"=>"z"}])
       expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
     end
   end

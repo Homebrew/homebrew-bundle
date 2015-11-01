@@ -24,6 +24,22 @@ describe Bundle::TapDumper do
     end
   end
 
+  context "when Homebrew returns bad JSON" do
+    before do
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow_any_instance_of(Bundle::TapDumper).to receive(:`).and_return("}{")
+    end
+    subject { Bundle::TapDumper.new }
+
+    it "returns empty list" do
+      expect(subject.taps).to be_empty
+    end
+
+    it "dumps as empty string" do
+      expect(subject.to_s).to eql("")
+    end
+  end
+
   context "there are tap `homebrew/foo` and `bitbucket/bar`" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)

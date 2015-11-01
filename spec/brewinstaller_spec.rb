@@ -58,6 +58,26 @@ describe Bundle::BrewInstaller do
     end
   end
 
+  context ".formula_installed_and_up_to_date?" do
+    before do
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+        {
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :aliases => ["foobar"],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
+        },
+      ]
+    end
+
+    it "shells out" do
+      expect(Bundle::BrewInstaller.formula_installed_and_up_to_date?("foo")).to eql(true)
+    end
+  end
+
   context "when brew is not installed" do
     it "raises an error" do
       allow(Bundle).to receive(:brew_installed?).and_return(false)

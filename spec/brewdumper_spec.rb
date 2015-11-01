@@ -11,7 +11,24 @@ describe Bundle::BrewDumper do
   context "when no formula is installed" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::BrewDumper).to receive(:`).and_return("[]")
+      allow(Bundle::BrewDumper).to receive(:`).and_return("[]")
+    end
+    subject { Bundle::BrewDumper.new }
+
+    it "returns empty list" do
+      expect(subject.formulae).to be_empty
+    end
+
+    it "dumps as empty string" do
+      expect(subject.to_s).to eql("")
+    end
+  end
+
+  context "when Homebrew returns bad JSON" do
+    before do
+      Bundle::BrewDumper.formulae_info_reset!
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow(Bundle::BrewDumper).to receive(:`).and_return("}{")
     end
     subject { Bundle::BrewDumper.new }
 
@@ -26,28 +43,9 @@ describe Bundle::BrewDumper do
 
   context "formulae `foo` and `bar` are installed" do
     before do
+      Bundle::BrewDumper.formulae_info_reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
-      allow(JSON).to receive(:load).and_return [
-        {
-          "name" => "foo",
-          "full_name" => "homebrew/tap/foo",
-          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [{ "version" => "1.0", "used_options" => [] }],
-          "linked_keg" => "1.0",
-          "dependencies" => [],
-          "requirements" => [],
-        },
-        {
-          "name" => "bar",
-          "full_name" => "bar",
-          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [{ "version" => "2.0", "used_options" => ["--with-a", "--with-b"] }],
-          "linked_keg" => "2.0",
-          "dependencies" => [],
-          "requirements" => [],
-        },
-      ]
+      allow(Bundle::BrewDumper).to receive(:`).and_return('[{"name":"foo","full_name":"homebrew/tap/foo","desc":"","homepage":"","oldname":null,"aliases":[],"versions":{"stable":"1.0","bottle":false},"revision":0,"installed":[{"version":"1.0","used_options":[],"built_as_bottle":null,"poured_from_bottle":true}],"linked_keg":"1.0","keg_only":null,"dependencies":[],"conflicts_with":[],"caveats":null,"requirements":[],"options":[],"bottle":{}},{"name":"bar","full_name":"bar","desc":"","homepage":"","oldname":null,"aliases":[],"versions":{"stable":"2.0","bottle":false},"revision":0,"installed":[{"version":"2.0","used_options":["--with-a","--with-b"],"built_as_bottle":null,"poured_from_bottle":true}],"linked_keg":null,"keg_only":null,"dependencies":[],"conflicts_with":[],"caveats":null,"requirements":[],"options":[],"bottle":{}}]')
     end
     subject { Bundle::BrewDumper.new }
 
@@ -56,6 +54,7 @@ describe Bundle::BrewDumper do
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
+          :aliases => [],
           :args => [],
           :version => "1.0",
           :dependencies => [],
@@ -64,6 +63,7 @@ describe Bundle::BrewDumper do
         {
           :name => "bar",
           :full_name => "bar",
+          :aliases => [],
           :args => ["with-a", "with-b"],
           :version => "2.0",
           :dependencies => [],
@@ -80,25 +80,25 @@ describe Bundle::BrewDumper do
   context "HEAD and devel formulae are installed" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
-      allow(JSON).to receive(:load).and_return [
+      allow(Bundle::BrewDumper).to receive(:`)
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
         {
-          "name" => "foo",
-          "full_name" => "foo",
-          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => "1.1beta", "head" => "HEAD" },
-          "installed" => [{ "version" => "1.1beta", "used_options" => [] }],
-          "linked_keg" => "1.1beta",
-          "dependencies" => [],
-          "requirements" => [],
+          :name => "foo",
+          :full_name => "foo",
+          :aliases => [],
+          :args => ["devel"],
+          :version => "1.1beta",
+          :dependencies => [],
+          :requirements => [],
         },
         {
-          "name" => "bar",
-          "full_name" => "homebrew/tap/bar",
-          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [{ "version" => "HEAD", "used_options" => [] }],
-          "linked_keg" => "HEAD",
-          "dependencies" => [],
-          "requirements" => [],
+          :name => "bar",
+          :full_name => "homebrew/tap/bar",
+          :aliases => [],
+          :args => ["HEAD"],
+          :version => "HEAD",
+          :dependencies => [],
+          :requirements => [],
         },
       ]
     end
@@ -113,19 +113,16 @@ describe Bundle::BrewDumper do
   context "A formula link to the old keg" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
-      allow(JSON).to receive(:load).and_return [
+      allow(Bundle::BrewDumper).to receive(:`)
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
         {
-          "name" => "foo",
-          "full_name" => "homebrew/tap/foo",
-          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [
-            { "version" => "1.0", "used_options" => [] },
-            { "version" => "2.0", "used_options" => [] },
-          ],
-          "linked_keg" => "1.0",
-          "dependencies" => [],
-          "requirements" => [],
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
         }
       ]
     end
@@ -139,19 +136,16 @@ describe Bundle::BrewDumper do
   context "A formula with no linked keg" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
-      allow(JSON).to receive(:load).and_return [
+      allow(Bundle::BrewDumper).to receive(:`)
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
         {
-          "name" => "foo",
-          "full_name" => "homebrew/tap/foo",
-          "versions" => { "stable" => "2.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [
-            { "version" => "1.0", "used_options" => [] },
-            { "version" => "2.0", "used_options" => [] },
-          ],
-          "linked_keg" => nil,
-          "dependencies" => [],
-          "requirements" => [],
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :aliases => [],
+          :args => [],
+          :version => "2.0",
+          :dependencies => [],
+          :requirements => [],
         }
       ]
     end
@@ -165,34 +159,34 @@ describe Bundle::BrewDumper do
   context "several formulae with dependant relations" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow_any_instance_of(Bundle::BrewDumper).to receive(:`)
-      allow(JSON).to receive(:load).and_return [
+      allow(Bundle::BrewDumper).to receive(:`)
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
         {
-          "name" => "a",
-          "full_name" => "a",
-          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [{ "version" => "1.0", "used_options" => [] }],
-          "linked_keg" => "1.0",
-          "dependencies" => ["b"],
-          "requirements" => [],
+          :name => "a",
+          :full_name => "a",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => ["b"],
+          :requirements => [],
         },
         {
-          "name" => "b",
-          "full_name" => "b",
-          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [{ "version" => "1.0", "used_options" => [] }],
-          "linked_keg" => "1.0",
-          "dependencies" => [],
-          "requirements" => [{ "name" => "foo", "default_formula" => "c", "cask" => "bar" }],
+          :name => "b",
+          :full_name => "b",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [{ "name" => "foo", "default_formula" => "c", "cask" => "bar" }],
         },
         {
-          "name" => "c",
-          "full_name" => "homebrew/tap/c",
-          "versions" => { "stable" => "1.0", "bottle" => false, "devel" => nil, "head" => "HEAD" },
-          "installed" => [{ "version" => "1.0", "used_options" => [] }],
-          "linked_keg" => "1.0",
-          "dependencies" => [],
-          "requirements" => [],
+          :name => "c",
+          :full_name => "homebrew/tap/c",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
         },
       ]
     end

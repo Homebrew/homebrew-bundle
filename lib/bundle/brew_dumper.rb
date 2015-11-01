@@ -7,12 +7,7 @@ module Bundle
 
     def initialize
       if Bundle.brew_installed?
-        formulae_info = begin
-          JSON.load(`brew info --json=v1 --installed`) || []
-        rescue
-          []
-        end
-        @formulae = formulae_info.map { |info| formula_inspector info }
+        @formulae = BrewDumper.formulae_info
       else
         raise "Unable to list installed formulae. Homebrew is not currently installed on your system."
       end
@@ -61,7 +56,20 @@ module Bundle
 
     private
 
-    def formula_inspector(f)
+    def self.formulae_info
+      @@formulae_info ||= begin
+        installed_formulae = JSON.load(`brew info --json=v1 --installed`) || []
+        installed_formulae.map { |info| formula_inspector info }
+      rescue JSON::ParserError
+        []
+      end
+    end
+
+    def self.formulae_info_reset!
+      @@formulae_info = nil
+    end
+
+    def self.formula_inspector(f)
       installed = f["installed"]
       if f["linked_keg"].nil?
         keg = installed[-1]
@@ -75,6 +83,7 @@ module Bundle
       {
         :name => f["name"],
         :full_name => f["full_name"],
+        :aliases => f["aliases"],
         :args => args,
         :version => keg["version"],
         :dependencies => f["dependencies"],

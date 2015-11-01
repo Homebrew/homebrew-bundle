@@ -6,7 +6,8 @@ describe Bundle::Dumper do
     allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(ARGV).to receive(:force?).and_return(false)
     allow(ARGV).to receive(:value).and_return(nil)
-    allow_any_instance_of(Bundle::BrewDumper).to receive(:`).and_return("[]")
+    Bundle::BrewDumper.formulae_info_reset!
+    allow(Bundle::BrewDumper).to receive(:`).and_return("[]")
     allow_any_instance_of(Bundle::TapDumper).to receive(:`).and_return("[]")
     allow_any_instance_of(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
