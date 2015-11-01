@@ -9,12 +9,16 @@ describe Bundle::Dsl do
     )
     expect_any_instance_of(Bundle::Dsl).to receive(:brew).twice
     expect_any_instance_of(Bundle::Dsl).to receive(:cask).with("google-chrome")
+    expect_any_instance_of(Bundle::Dsl).to receive(:cask_args).with(:appdir => "/Applications")
+    expect_any_instance_of(Bundle::Dsl).to receive(:cask).with("firefox", :args => {:appdir => "~/my-apps/Applications"})
     Bundle::Dsl.new <<-EOS
+      cask_args :appdir => "/Applications"
       tap 'caskroom/cask'
       tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
       brew 'git'
       brew 'emacs', args: ['with-cocoa', 'with-gnutls']
       cask 'google-chrome'
+      cask 'firefox', args: { appdir: '~/my-apps/Applications' }
     EOS
   end
 
