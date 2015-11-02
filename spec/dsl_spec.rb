@@ -28,4 +28,16 @@ describe Bundle::Dsl do
     allow(ARGV).to receive(:verbose?).and_return(true)
     expect { Bundle::Dsl.new "abcdef" }.to raise_error(RuntimeError)
   end
+
+  it ".sanitize_brew_name" do
+    expect(Bundle::Dsl.send(:sanitize_brew_name, "homebrew/homebrew/foo")).to eql("foo")
+    expect(Bundle::Dsl.send(:sanitize_brew_name, "homebrew/homebrew-bar/foo")).to eql("homebrew/bar/foo")
+    expect(Bundle::Dsl.send(:sanitize_brew_name, "homebrew/bar/foo")).to eql("homebrew/bar/foo")
+    expect(Bundle::Dsl.send(:sanitize_brew_name, "foo")).to eql("foo")
+  end
+
+  it ".sanitize_tap_name" do
+    expect(Bundle::Dsl.send(:sanitize_tap_name, "homebrew/homebrew-foo")).to eql("homebrew/foo")
+    expect(Bundle::Dsl.send(:sanitize_tap_name, "homebrew/foo")).to eql("homebrew/foo")
+  end
 end
