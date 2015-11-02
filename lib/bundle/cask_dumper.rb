@@ -1,19 +1,21 @@
 module Bundle
   class CaskDumper
-    attr_reader :casks
+    def self.reset!
+      @casks = nil
+    end
 
-    def initialize
-      if Bundle.cask_installed?
-        @casks = `brew cask list -1 2>/dev/null`.split("\n").map { |cask| cask.chomp " (!)" }
+    def self.casks
+      @casks ||= if Bundle.cask_installed?
+        `brew cask list -1 2>/dev/null`.split("\n").map { |cask| cask.chomp " (!)" }
       else
-        @casks = []
+        []
       end
     end
 
-    def dump_to_string(formula_requirements)
+    def self.dump(casks_required_by_formulae)
       [
-        (@casks & formula_requirements).map { |cask| "cask '#{cask}'" }.join("\n"),
-        (@casks - formula_requirements).map { |cask| "cask '#{cask}'" }.join("\n"),
+        (casks & casks_required_by_formulae).map { |cask| "cask '#{cask}'" }.join("\n"),
+        (casks - casks_required_by_formulae).map { |cask| "cask '#{cask}'" }.join("\n"),
       ]
     end
   end

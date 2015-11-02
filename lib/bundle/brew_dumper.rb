@@ -3,19 +3,23 @@ require "tsort"
 
 module Bundle
   class BrewDumper
-    attr_reader :formulae
+    def self.reset!
+      @formulae = nil
+    end
 
-    def initialize
+    def self.formulae
+      return @formulae if @formulae
       if Bundle.brew_installed?
-        @formulae = BrewDumper.formulae_info
+        @formulae = formulae_info
+        sort!
       else
         raise "Unable to list installed formulae. Homebrew is not currently installed on your system."
       end
-      sort!
+      @formulae
     end
 
-    def to_s
-      @formulae.map do |f|
+    def self.dump
+      formulae.map do |f|
         if f[:args].empty?
           "brew '#{f[:full_name]}'"
         else
@@ -25,48 +29,19 @@ module Bundle
       end.join("\n")
     end
 
-    def sort!
-      # Step 1: Sort by formula full name while putting tap formulae behind core formulae.
-      #         So we can have a nicer output.
-      @formulae.sort! do |a, b|
-        if !a[:full_name].include?("/") && b[:full_name].include?("/")
-          -1
-        elsif a[:full_name].include?("/") && !b[:full_name].include?("/")
-          1
-        else
-          a[:full_name] <=> b[:full_name]
-        end
-      end
-
-      # Step 2: Sort by formula dependency topology.
-      topo = Topo.new
-      @formulae.each do |f|
-        deps = (f[:dependencies] + f[:requirements].map { |req| req["default_formula"] }.compact).uniq
-        topo[f[:full_name]] = deps.map do |dep|
-          ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
-          ff[:full_name] if ff
-        end.compact
-      end
-      @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
-    end
-
-    def expand_cask_requirements
-      @formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
+    def self.cask_requirements
+      formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
     end
 
     private
 
     def self.formulae_info
-      @@formulae_info ||= begin
+      begin
         installed_formulae = JSON.load(`brew info --json=v1 --installed`) || []
         installed_formulae.map { |info| formula_inspector info }
       rescue JSON::ParserError
         []
       end
-    end
-
-    def self.formulae_info_reset!
-      @@formulae_info = nil
     end
 
     def self.formula_inspector(f)
@@ -97,6 +72,31 @@ module Bundle
       def tsort_each_child(node, &block)
         fetch(node).each(&block)
       end
+    end
+
+    def self.sort!
+      # Step 1: Sort by formula full name while putting tap formulae behind core formulae.
+      #         So we can have a nicer output.
+      @formulae.sort! do |a, b|
+        if !a[:full_name].include?("/") && b[:full_name].include?("/")
+          -1
+        elsif a[:full_name].include?("/") && !b[:full_name].include?("/")
+          1
+        else
+          a[:full_name] <=> b[:full_name]
+        end
+      end
+
+      # Step 2: Sort by formula dependency topology.
+      topo = Topo.new
+      @formulae.each do |f|
+        deps = (f[:dependencies] + f[:requirements].map { |req| req["default_formula"] }.compact).uniq
+        topo[f[:full_name]] = deps.map do |dep|
+          ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
+          ff[:full_name] if ff
+        end.compact
+      end
+      @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
     end
   end
 end
