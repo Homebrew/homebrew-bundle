@@ -11,15 +11,21 @@ module Bundle
       end
 
       puts "Installing #{name} tap. It is not currently installed." if ARGV.verbose?
-      if clone_target
+      success = if clone_target
         Bundle.system "brew", "tap", name, clone_target
       else
         Bundle.system "brew", "tap", name
       end
+
+      if success
+        installed_taps << name
+      end
+
+      success
     end
 
     def self.installed_taps
-      @@installed_taps ||=  Bundle::TapDumper.new.taps.map { |t| t["name"] }
+      @installed_taps ||=  Bundle::TapDumper.tap_names
     end
   end
 end

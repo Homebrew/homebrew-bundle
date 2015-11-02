@@ -24,5 +24,9 @@ module Bundle
         "tap '#{tap["name"]}'#{remote}"
       end.join("\n")
     end
+
+    def self.tap_names
+      taps.map { |tap| tap["name"] }
+    end
   end
 end

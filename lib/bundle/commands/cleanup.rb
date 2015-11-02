@@ -1,5 +1,12 @@
 module Bundle::Commands
   class Cleanup
+    def self.reset!
+      @dsl = nil
+      Bundle::CaskDumper.reset!
+      Bundle::BrewDumper.reset!
+      Bundle::TapDumper.reset!
+    end
+
     def self.run
       casks = casks_to_uninstall
       formulae = formulae_to_uninstall
@@ -39,25 +46,26 @@ module Bundle::Commands
     private
 
     def self.casks_to_uninstall
-      @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_casks = @@dsl.entries.select { |e| e.type == :cask }.map(&:name)
-      current_casks = Bundle::CaskDumper.new.casks
+      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
+      current_casks = Bundle::CaskDumper.casks
       current_casks - kept_casks
     end
 
     def self.formulae_to_uninstall
-      @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_formulae = @@dsl.entries.select { |e| e.type == :brew }.map(&:name)
-      current_formulae = Bundle::BrewDumper.new.formulae
+      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+      kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
+      current_formulae = Bundle::BrewDumper.formulae
       current_formulae.reject do |f|
-        Bundle::BrewInstaller.formula_in_array?(f[:name], kept_formulae) || Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
+        Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
       end.map {|f| f[:full_name] }
     end
 
     def self.taps_to_untap
-      @@dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_taps = @@dsl.entries.select { |e| e.type == :tap }.map(&:name)
-      current_taps = Bundle::TapDumper.new.taps.map { |t| t["name"] }
+      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
+      current_taps = Bundle::TapDumper.tap_names
       current_taps - kept_taps
     end
   end

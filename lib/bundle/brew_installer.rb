@@ -1,5 +1,11 @@
 module Bundle
   class BrewInstaller
+    def self.reset!
+      @installed_formulae = nil
+      @outdated_formulae = nil
+      @pinned_formulae = nil
+    end
+
     def self.install(name, options = {})
       result = new(name, options).install_or_upgrade
       result = BrewServices.restart(name) if result && options[:restart_service]
@@ -29,7 +35,13 @@ module Bundle
     end
 
     def self.formula_in_array?(formula, array)
-      array.include?(formula) || array.include?(resolved_formula_name(formula))
+      return true if array.include?(formula)
+      return true if array.include?(formula.split("/").last)
+      resolved_full_name = Bundle::BrewDumper.formula_aliases[formula]
+      return false unless resolved_full_name
+      return true if array.include?(resolved_full_name)
+      return true if array.include?(resolved_full_name.split("/").last)
+      false
     end
 
     private
@@ -43,39 +55,19 @@ module Bundle
     end
 
     def self.installed_formulae
-      @@installed_formulae ||= Bundle::BrewDumper.new.formulae.map { |f| f[:name] }
+      @installed_formulae ||= Bundle::BrewDumper.formula_names
     end
 
     def self.upgradable_formulae
       outdated_formulae - pinned_formulae
     end
 
-    def self.formulae_aliases_reset!
-      @@formulae_aliases = nil
-    end
-
-    def self.formulae_aliases
-      @@formulae_aliases ||= begin
-        formulae_aliases = {}
-        Bundle::BrewDumper.new.formulae.each do |f|
-          aliases = f[:aliases]
-          next if !aliases || aliases.empty?
-          aliases.each { |a| formulae_aliases[a] = f[:name] }
-        end
-        formulae_aliases
-      end
-    end
-
-    def self.resolved_formula_name(formula)
-      formulae_aliases[formula] || formulae_aliases.key(formula) || formula
-    end
-
     def self.outdated_formulae
-      @@outdated_formulae ||= `brew outdated --quiet`.split("\n").map { |f| f.split("/").last }
+      @outdated_formulae ||= `brew outdated --quiet`.split("\n").map { |f| f.split("/").last }
     end
 
     def self.pinned_formulae
-      @@pinned_formulae ||= `brew list --pinned`.split("\n")
+      @pinned_formulae ||= `brew list --pinned`.split("\n")
     end
 
     def installed?

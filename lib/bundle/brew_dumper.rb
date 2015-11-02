@@ -5,6 +5,7 @@ module Bundle
   class BrewDumper
     def self.reset!
       @formulae = nil
+      @formula_aliases = nil
     end
 
     def self.formulae
@@ -31,6 +32,28 @@ module Bundle
 
     def self.cask_requirements
       formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
+    end
+
+    def self.formula_names
+      formulae.map { |f| f[:name] }
+    end
+
+    def self.formula_aliases
+      return @formula_aliases if @formula_aliases
+      @formula_aliases = {}
+      formulae.each do |f|
+        aliases = f[:aliases]
+        next if !aliases || aliases.empty?
+        if f[:full_name].include? "/" # tap formula
+          aliases.each do |a|
+            @formula_aliases[a] = f[:full_name]
+            @formula_aliases["#{f[:full_name].rpartition("/").first}/#{a}"] = f[:full_name]
+          end
+        else
+          aliases.each { |a| @formula_aliases[a] = f[:full_name] }
+        end
+      end
+      @formula_aliases
     end
 
     private
