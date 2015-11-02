@@ -15,8 +15,8 @@ $LOAD_PATH.unshift HOMEBREW_LIBRARY_PATH
 require "global"
 
 # Homebrew version check
-# commit 44609b8e05c8420141b643e7d8f00892f6c65e89
-MIN_HOMEBREW_COMMIT_DATE = Time.parse "Thu Jun 11 15:28:30 2015 +0800"
+# commit f3cf43acfc764acba84fa20b4c42a3e0b5382589
+MIN_HOMEBREW_COMMIT_DATE = Time.parse "Wed Oct 14 17:26:41 2015 +0800"
 HOMEBREW_REPOSITORY.cd do
   if MIN_HOMEBREW_COMMIT_DATE > Time.at(`git show -s --format=%ct`.to_i)
     odie "Your Homebrew is outdated. Please run `brew update`."
