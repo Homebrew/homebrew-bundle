@@ -3,7 +3,8 @@ require "spec_helper"
 describe Bundle::Commands::Cleanup do
   context "read Brewfile and currently installation" do
     before do
-      Bundle::BrewInstaller.formulae_aliases_reset!
+      Bundle::Commands::Cleanup.reset!
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return <<-EOS
         tap 'x'
@@ -15,41 +16,51 @@ describe Bundle::Commands::Cleanup do
         brew 'homebrew/tap/f'
         brew 'homebrew/tap/g'
         brew 'homebrew/tap/h'
+        brew 'homebrew/tap/i2'
       EOS
     end
 
     it "computes which casks to uninstall" do
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return(%w[123 456])
-      expect(Bundle::Commands::Cleanup.casks_to_uninstall).to eql(%w[456])
+      allow(Bundle::CaskDumper).to receive(:casks).and_return(%w[123 456])
+      Bundler.with_clean_env do
+        expect(Bundle::Commands::Cleanup.casks_to_uninstall).to eql(%w[456])
+      end
     end
 
     it "computes which formulae to uninstall" do
-      allow(Bundle::BrewDumper).to receive_message_chain(:new, :formulae).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         { :name => "a2", :full_name => "a2", :aliases => ["a"] },
         { :name => "c", :full_name => "c" },
         { :name => "d", :full_name => "homebrew/tap/d", :aliases => ["d2"] },
         { :name => "e", :full_name => "homebrew/tap/e" },
         { :name => "f", :full_name => "homebrew/tap/f" },
         { :name => "h", :full_name => "other/tap/h" },
+        { :name => "i", :full_name => "homebrew/tap/i", :aliases => ["i2"] },
       ]
-      expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
-        c
-        homebrew/tap/e
-        other/tap/h
-      ]
+      Bundler.with_clean_env do
+        expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
+          c
+          homebrew/tap/e
+          other/tap/h
+        ]
+      end
     end
 
     it "computes which tap to untap" do
-      allow_any_instance_of(Bundle::TapDumper).to receive(:taps).and_return([{"name"=>"z"}])
-      expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
+      allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z])
+      Bundler.with_clean_env do
+        expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
+      end
     end
   end
 
   context "no formulae to uninstall and no taps to untap" do
     before do
+      Bundle::Commands::Cleanup.reset!
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -61,9 +72,11 @@ describe Bundle::Commands::Cleanup do
 
   context "there are casks to uninstall" do
     before do
+      Bundle::Commands::Cleanup.reset!
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -75,9 +88,11 @@ describe Bundle::Commands::Cleanup do
 
   context "there are formulae to uninstall" do
     before do
+      Bundle::Commands::Cleanup.reset!
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -89,9 +104,11 @@ describe Bundle::Commands::Cleanup do
 
   context "there are taps to untap" do
     before do
+      Bundle::Commands::Cleanup.reset!
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -103,9 +120,11 @@ describe Bundle::Commands::Cleanup do
 
   context "there are casks and formulae to uninstall and taps to untap but without passing `--force`" do
     before do
+      Bundle::Commands::Cleanup.reset!
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(false)
     end
 

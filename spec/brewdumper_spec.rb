@@ -3,51 +3,53 @@ require "spec_helper"
 describe Bundle::BrewDumper do
   context "when brew is not installed" do
     it "raises an error" do
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { Bundle::BrewDumper.new }.to raise_error(RuntimeError)
+      expect { Bundle::BrewDumper.formulae }.to raise_error(RuntimeError)
     end
   end
 
   context "when no formula is installed" do
     before do
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`).and_return("[]")
     end
-    subject { Bundle::BrewDumper.new }
+    subject { Bundle::BrewDumper }
 
     it "returns empty list" do
       expect(subject.formulae).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.to_s).to eql("")
+      expect(subject.dump).to eql("")
     end
   end
 
   context "when Homebrew returns bad JSON" do
     before do
-      Bundle::BrewDumper.formulae_info_reset!
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`).and_return("}{")
     end
-    subject { Bundle::BrewDumper.new }
+    subject { Bundle::BrewDumper }
 
     it "returns empty list" do
       expect(subject.formulae).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.to_s).to eql("")
+      expect(subject.dump).to eql("")
     end
   end
 
   context "formulae `foo` and `bar` are installed" do
     before do
-      Bundle::BrewDumper.formulae_info_reset!
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`).and_return('[{"name":"foo","full_name":"homebrew/tap/foo","desc":"","homepage":"","oldname":null,"aliases":[],"versions":{"stable":"1.0","bottle":false},"revision":0,"installed":[{"version":"1.0","used_options":[],"built_as_bottle":null,"poured_from_bottle":true}],"linked_keg":"1.0","keg_only":null,"dependencies":[],"conflicts_with":[],"caveats":null,"requirements":[],"options":[],"bottle":{}},{"name":"bar","full_name":"bar","desc":"","homepage":"","oldname":null,"aliases":[],"versions":{"stable":"2.0","bottle":false},"revision":0,"installed":[{"version":"2.0","used_options":["--with-a","--with-b"],"built_as_bottle":null,"poured_from_bottle":true}],"linked_keg":null,"keg_only":null,"dependencies":[],"conflicts_with":[],"caveats":null,"requirements":[],"options":[],"bottle":{}}]')
     end
-    subject { Bundle::BrewDumper.new }
+    subject { Bundle::BrewDumper }
 
     it "returns foo and bar with their information" do
       expect(subject.formulae).to contain_exactly *[
@@ -73,12 +75,13 @@ describe Bundle::BrewDumper do
     end
 
     it "dumps as foo and bar with args" do
-      expect(subject.to_s).to eql("brew 'bar', args: ['with-a', 'with-b']\nbrew 'homebrew/tap/foo'")
+      expect(subject.dump).to eql("brew 'bar', args: ['with-a', 'with-b']\nbrew 'homebrew/tap/foo'")
     end
   end
 
   context "HEAD and devel formulae are installed" do
     before do
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`)
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
@@ -102,7 +105,7 @@ describe Bundle::BrewDumper do
         },
       ]
     end
-    subject { Bundle::BrewDumper.new.formulae }
+    subject { Bundle::BrewDumper.formulae }
 
     it "returns with args `devel` and `HEAD`" do
       expect(subject[0][:args]).to include("devel")
@@ -112,6 +115,7 @@ describe Bundle::BrewDumper do
 
   context "A formula link to the old keg" do
     before do
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`)
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
@@ -126,7 +130,7 @@ describe Bundle::BrewDumper do
         }
       ]
     end
-    subject { Bundle::BrewDumper.new.formulae }
+    subject { Bundle::BrewDumper.formulae }
 
     it "returns with linked keg" do
       expect(subject[0][:version]).to eql("1.0")
@@ -135,6 +139,7 @@ describe Bundle::BrewDumper do
 
   context "A formula with no linked keg" do
     before do
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`)
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
@@ -149,7 +154,7 @@ describe Bundle::BrewDumper do
         }
       ]
     end
-    subject { Bundle::BrewDumper.new.formulae }
+    subject { Bundle::BrewDumper.formulae }
 
     it "returns with last one" do
       expect(subject[0][:version]).to eql("2.0")
@@ -158,6 +163,7 @@ describe Bundle::BrewDumper do
 
   context "several formulae with dependant relations" do
     before do
+      Bundle::BrewDumper.reset!
       allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:`)
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
@@ -190,14 +196,14 @@ describe Bundle::BrewDumper do
         },
       ]
     end
-    subject { Bundle::BrewDumper.new }
+    subject { Bundle::BrewDumper }
 
     it "returns formulae with correct order" do
       expect(subject.formulae.map { |f| f[:name] }).to eq %w[c b a]
     end
 
     it "returns all the cask requirements" do
-      expect(subject.expand_cask_requirements).to eq %w[bar]
+      expect(subject.cask_requirements).to eq %w[bar]
     end
   end
 end

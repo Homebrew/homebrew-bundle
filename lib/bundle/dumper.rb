@@ -3,15 +3,7 @@ require "pathname"
 
 module Bundle
   class Dumper
-    attr_reader :brew, :cask, :tap
-
-    def initialize
-      @brew = BrewDumper.new
-      @cask = CaskDumper.new
-      @tap = TapDumper.new
-    end
-
-    def dump_brewfile
+    def self.dump_brewfile
       if ARGV.include?("--global")
         file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
       else
@@ -21,11 +13,11 @@ module Bundle
         file = Pathname.new(filename).expand_path(Dir.pwd)
       end
       content = []
-      content << tap.to_s
-      formula_requirements = brew.expand_cask_requirements
-      cask_before_formula, cask_after_formula = cask.dump_to_string(formula_requirements)
+      content << TapDumper.dump
+      casks_required_by_formulae = BrewDumper.cask_requirements
+      cask_before_formula, cask_after_formula = CaskDumper.dump(casks_required_by_formulae)
       content << cask_before_formula
-      content << brew.to_s
+      content << BrewDumper.dump
       content << cask_after_formula
       content = content.reject(&:empty?).join("\n") + "\n"
       write_file file, content, ARGV.force?
@@ -33,7 +25,7 @@ module Bundle
 
     private
 
-    def write_file(file, content, overwrite = false)
+    def self.write_file(file, content, overwrite = false)
       if file.exist? && !overwrite && file.to_s != "/dev/stdout"
         raise "#{file} already exists."
       end

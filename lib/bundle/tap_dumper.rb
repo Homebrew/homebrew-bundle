@@ -2,11 +2,13 @@ require "json"
 
 module Bundle
   class TapDumper
-    attr_reader :taps
+    def self.reset!
+      @taps = nil
+    end
 
-    def initialize
-      if Bundle.brew_installed?
-        @taps = begin
+    def self.taps
+      @taps ||= if Bundle.brew_installed?
+        begin
           JSON.load(`brew tap-info --json=v1 --installed`) || []
         rescue
           []
@@ -16,11 +18,15 @@ module Bundle
       end
     end
 
-    def to_s
-      @taps.map do |tap|
+    def self.dump
+      taps.map do |tap|
         remote = ", '#{tap["remote"]}'" if tap["custom_remote"] && tap["remote"]
         "tap '#{tap["name"]}'#{remote}"
       end.join("\n")
+    end
+
+    def self.tap_names
+      taps.map { |tap| tap["name"] }
     end
   end
 end

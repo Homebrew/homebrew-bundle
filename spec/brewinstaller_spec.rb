@@ -9,58 +9,56 @@ describe Bundle::BrewInstaller do
     Bundler.with_clean_env { installer.install_or_upgrade }
   end
 
-  describe ".install" do
+  context "restart_service option is true" do
     before do
       allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow(Bundle::BrewServices).to receive(:restart).with(formula).and_return(true)
     end
 
-    context "restart_service option is true" do
-      let(:options) { { :restart_service => true } }
-
-      context "formula is installed successfully" do
-        before do
-          allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(true)
-        end
-        it "restart service" do
-          Bundle::BrewInstaller.install(formula, options)
-        end
+    context "formula is installed successfully" do
+      before do
+        allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(true)
       end
-      context "formula isn't installed" do
-        before do
-          allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(false)
-        end
-        it "did not call restart service" do
-          expect(Bundle::BrewServices).not_to receive(:restart).with(formula)
-          Bundle::BrewInstaller.install(formula, options)
-        end
+
+      it "restart service" do
+        expect(Bundle::BrewServices).to receive(:restart).with(formula).and_return(true)
+        Bundle::BrewInstaller.install(formula, :restart_service => true)
       end
     end
-  end
 
-  context ".installed_formulae" do
-    before do
-      allow_any_instance_of(Bundle::BrewInstaller).to receive(:`)
-    end
+    context "formula isn't installed" do
+      before do
+        allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(false)
+      end
 
-    it "shells out" do
-      Bundler.with_clean_env { Bundle::BrewInstaller.installed_formulae }
+      it "did not call restart service" do
+        expect(Bundle::BrewServices).not_to receive(:restart)
+        Bundle::BrewInstaller.install(formula, :restart_service => true)
+      end
     end
   end
 
   context ".outdated_formulae" do
-    before do
-      allow_any_instance_of(Bundle::BrewInstaller).to receive(:`)
-    end
-
     it "shells out" do
-      Bundler.with_clean_env { Bundle::BrewInstaller.outdated_formulae }
+      Bundle::BrewInstaller.reset!
+      expect(Bundle::BrewInstaller).to receive(:`).and_return("a\nhomebrew/tap/b")
+      expect(Bundle::BrewInstaller.outdated_formulae).to eql(%w[a b])
+    end
+  end
+
+  context ".pinned_formulae" do
+    it "shells out" do
+      Bundle::BrewInstaller.reset!
+      expect(Bundle::BrewInstaller).to receive(:`).and_return("a\nb")
+      expect(Bundle::BrewInstaller.pinned_formulae).to eql(%w[a b])
     end
   end
 
   context ".formula_installed_and_up_to_date?" do
     before do
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      Bundle::BrewDumper.reset!
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return(%w[bar])
+      allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
@@ -70,11 +68,23 @@ describe Bundle::BrewInstaller do
           :dependencies => [],
           :requirements => [],
         },
+        {
+          :name => "bar",
+          :full_name => "bar",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
+        },
       ]
     end
 
-    it "shells out" do
+    it "returns result" do
       expect(Bundle::BrewInstaller.formula_installed_and_up_to_date?("foo")).to eql(true)
+      expect(Bundle::BrewInstaller.formula_installed_and_up_to_date?("foobar")).to eql(true)
+      expect(Bundle::BrewInstaller.formula_installed_and_up_to_date?("bar")).to eql(false)
+      expect(Bundle::BrewInstaller.formula_installed_and_up_to_date?("baz")).to eql(false)
     end
   end
 
