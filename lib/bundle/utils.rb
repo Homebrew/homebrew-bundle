@@ -21,11 +21,11 @@ module Bundle
   end
 
   def self.cask_installed?
-    @cask ||= Kernel.system("brew cask --version >/dev/null 2>&1")
+    @cask ||= Kernel.system("brew command cask >/dev/null 2>&1")
   end
 
   def self.services_installed?
-    @services ||= Kernel.system("brew services --help >/dev/null 2>&1")
+    @services ||= Kernel.system("brew command services >/dev/null 2>&1")
   end
 
   def self.brewfile
