@@ -7,8 +7,13 @@ module Bundle
     end
 
     def self.install(name, options = {})
-      result = new(name, options).install_or_upgrade
-      result = BrewServices.restart(name) if result && options[:restart_service]
+      if options[:uninstall]
+        result = new(name, options).uninstall!
+        result = BrewServices.stop(name) if result && options[:stop_service]
+      else
+        result = new(name, options).install_or_upgrade
+        result = BrewServices.restart(name) if result && options[:restart_service]
+      end
       result
     end
 
@@ -28,6 +33,12 @@ module Bundle
       else
         install!
       end
+    end
+
+    def uninstall!
+      puts "Uninstalling #{@name} formula." if ARGV.verbose?
+      success = Bundle.system("brew", "uninstall", @full_name, *@args)
+      success
     end
 
     def self.formula_installed_and_up_to_date?(formula)
