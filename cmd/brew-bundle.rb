@@ -1,18 +1,14 @@
-#!/usr/bin/env ruby
-
-# Set verbosity level to 0
-$VERBOSE = nil
-
 # Ruby version check
 unless RUBY_VERSION.split(".").first.to_i >= 2
-  abort "Ruby 2.0 or above is required. You can install it with `brew install ruby`."
-end
+  alt_ruby = which "ruby"
+  alt_ruby_version = `#{alt_ruby} --version`.chomp[/\d\.\d/, 0] if alt_ruby
 
-# Load Homebrew Library
-require "pathname"
-HOMEBREW_LIBRARY_PATH ||= Pathname.new(ENV["HOMEBREW_LIBRARY_PATH"])
-$LOAD_PATH.unshift HOMEBREW_LIBRARY_PATH
-require "global"
+  unless alt_ruby && alt_ruby_version.split(".").first.to_i >= 2
+    abort "Ruby 2.0 or above is required. You can install it with `brew install ruby`."
+  end
+
+  exec alt_ruby, "-W0", "-I#{HOMEBREW_LIBRARY_PATH}", "-rglobal", __FILE__, *ARGV
+end
 
 # Homebrew version check
 # commit f3cf43acfc764acba84fa20b4c42a3e0b5382589
