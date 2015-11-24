@@ -5,6 +5,11 @@ module Bundle
       Bundle.system "brew", "services", "restart", name
     end
 
+    def self.stop(name)
+      ensure_brew_services_installed!
+      Bundle.system "brew", "services", "stop", name
+    end
+
     def self.ensure_brew_services_installed!
       unless Bundle.services_installed?
         Bundle.system "brew", "tap", "homebrew/services"
