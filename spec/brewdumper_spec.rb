@@ -43,6 +43,29 @@ describe Bundle::BrewDumper do
     end
   end
 
+  context "when Homebrew returns JSON with a malformed linked_keg" do
+    before do
+      Bundle::BrewDumper.reset!
+      allow(Bundle).to receive(:brew_installed?).and_return(true)
+      allow(Bundle::BrewDumper).to receive(:`).and_return('[{"name":"foo","full_name":"homebrew/tap/foo","desc":"","homepage":"","oldname":null,"aliases":[],"versions":{"stable":"1.0","bottle":false},"revision":0,"installed":[{"version":"1.0","used_options":[],"built_as_bottle":null,"poured_from_bottle":true}],"linked_keg":"fish","keg_only":null,"dependencies":[],"conflicts_with":[],"caveats":null,"requirements":[],"options":[],"bottle":{}}]')
+    end
+    subject { Bundle::BrewDumper }
+
+    it "returns no version" do
+      expect(subject.formulae).to contain_exactly *[
+        {
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :aliases => [],
+          :args => [],
+          :version => nil,
+          :dependencies => [],
+          :requirements => [],
+        },
+      ]
+    end
+  end
+
   context "formulae `foo` and `bar` are installed" do
     before do
       Bundle::BrewDumper.reset!

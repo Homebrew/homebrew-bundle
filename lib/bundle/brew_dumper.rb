@@ -70,21 +70,28 @@ module Bundle
     def self.formula_inspector(f)
       installed = f["installed"]
       if f["linked_keg"].nil?
-        keg = installed[-1]
+        keg = installed.last
       else
         keg = installed.detect { |k| f["linked_keg"] == k["version"] }
       end
-      keg ||= {}
-      args = keg["used_options"].map { |option| option.gsub(/^--/, "") }
-      args << "HEAD" if keg["version"] == "HEAD"
-      args << "devel" if keg["version"].gsub(/_\d+$/, "") == f["versions"]["devel"]
-      args.uniq!
+
+      if keg
+        args = keg["used_options"].to_a.map { |option| option.gsub(/^--/, "") }
+        args << "HEAD" if keg["version"] == "HEAD"
+        args << "devel" if keg["version"].to_s.gsub(/_\d+$/, "") == f["versions"]["devel"]
+        args.uniq!
+        version = keg["version"]
+      else
+        args = []
+        version = nil
+      end
+
       {
         :name => f["name"],
         :full_name => f["full_name"],
         :aliases => f["aliases"],
         :args => args,
-        :version => keg["version"],
+        :version => version,
         :dependencies => f["dependencies"],
         :requirements => f["requirements"],
       }
