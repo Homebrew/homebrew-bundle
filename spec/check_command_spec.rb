@@ -7,7 +7,6 @@ describe Bundle::Commands::Check do
 
   context "when dependencies are satisfied" do
     it "does not raise an error" do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
@@ -21,10 +20,8 @@ describe Bundle::Commands::Check do
     end
 
     it "raises an error" do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(Bundle::Commands::Check).to receive(:`).and_return("")
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'")
       expect { do_check }.to raise_error(SystemExit)
@@ -37,10 +34,8 @@ describe Bundle::Commands::Check do
     end
 
     it "raises an error" do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(Bundle::Commands::Check).to receive(:`).and_return("")
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       expect { do_check }.to raise_error(SystemExit)
@@ -53,10 +48,8 @@ describe Bundle::Commands::Check do
     end
 
     it "raises an error" do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(Bundle::Commands::Check).to receive(:`).and_return("")
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'abc/def'")
       expect { do_check }.to raise_error(SystemExit)

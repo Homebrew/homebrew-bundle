@@ -7,14 +7,9 @@ module Bundle
     end
 
     def self.taps
-      @taps ||= if Bundle.brew_installed?
-        begin
-          JSON.load(`brew tap-info --json=v1 --installed`) || []
-        rescue
-          []
-        end
-      else
-        raise "Unable to list installed taps. Homebrew is not currently installed on your system."
+      @taps ||= begin
+        require "tap"
+        Tap.map(&:to_hash)
       end
     end
 

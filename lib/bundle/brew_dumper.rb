@@ -9,14 +9,10 @@ module Bundle
     end
 
     def self.formulae
-      return @formulae if @formulae
-      if Bundle.brew_installed?
+      @formulae ||= begin
         @formulae = formulae_info
         sort!
-      else
-        raise "Unable to list installed formulae. Homebrew is not currently installed on your system."
       end
-      @formulae
     end
 
     def self.dump
@@ -59,12 +55,8 @@ module Bundle
     private
 
     def self.formulae_info
-      begin
-        installed_formulae = JSON.load(`brew info --json=v1 --installed`) || []
-        installed_formulae.map { |info| formula_inspector info }
-      rescue JSON::ParserError
-        []
-      end
+      require "cmd/info"
+      Homebrew.formulae_json.map { |info| formula_inspector info }
     end
 
     def self.formula_inspector(f)
@@ -94,6 +86,8 @@ module Bundle
         :version => version,
         :dependencies => f["dependencies"],
         :requirements => f["requirements"],
+        :pinned? => !!f["pinned"],
+        :outdated? => !!f["outdated"],
       }
     end
 

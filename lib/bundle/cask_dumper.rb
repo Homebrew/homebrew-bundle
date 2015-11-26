@@ -5,11 +5,7 @@ module Bundle
     end
 
     def self.casks
-      @casks ||= if Bundle.cask_installed?
-        `brew cask list -1 2>/dev/null`.split("\n").map { |cask| cask.chomp " (!)" }
-      else
-        []
-      end
+      @casks ||= `brew cask list -1 2>/dev/null`.split("\n").map { |cask| cask.chomp " (!)" }
     end
 
     def self.dump(casks_required_by_formulae)

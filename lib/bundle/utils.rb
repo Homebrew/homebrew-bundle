@@ -16,18 +16,6 @@ module Bundle
     success
   end
 
-  def self.brew_installed?
-    @brew ||= Kernel.system("brew --version >/dev/null 2>&1")
-  end
-
-  def self.cask_installed?
-    @cask ||= Kernel.system("brew command cask >/dev/null 2>&1")
-  end
-
-  def self.services_installed?
-    @services ||= Kernel.system("brew command services >/dev/null 2>&1")
-  end
-
   def self.brewfile
     if ARGV.include?("--global")
       file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
