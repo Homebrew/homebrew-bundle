@@ -2,15 +2,12 @@ require "spec_helper"
 
 describe Bundle::Dumper do
   before do
-    allow(Bundle).to receive(:brew_installed?).and_return(true)
     allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(ARGV).to receive(:force?).and_return(false)
     allow(ARGV).to receive(:value).and_return(nil)
     Bundle::BrewDumper.reset!
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!
-    allow(Bundle::BrewDumper).to receive(:`).and_return("[]")
-    allow(Bundle::TapDumper).to receive(:`).and_return("[]")
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
   subject { Bundle::Dumper }

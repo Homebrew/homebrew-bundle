@@ -11,8 +11,8 @@ unless RUBY_VERSION.split(".").first.to_i >= 2
 end
 
 # Homebrew version check
-# commit f3cf43acfc764acba84fa20b4c42a3e0b5382589
-MIN_HOMEBREW_COMMIT_DATE = Time.parse "Wed Oct 14 17:26:41 2015 +0800"
+# commit d6b31251e20597842afa386f12f32013e3c13f21
+MIN_HOMEBREW_COMMIT_DATE = Time.parse "Fri Nov 27 16:40:16 2015 +0000"
 HOMEBREW_REPOSITORY.cd do
   if MIN_HOMEBREW_COMMIT_DATE > Time.at(`git show -s --format=%ct`.to_i)
     odie "Your Homebrew is outdated. Please run `brew update`."

@@ -10,10 +10,6 @@ describe Bundle::BrewInstaller do
   end
 
   context "restart_service option is true" do
-    before do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
-    end
-
     context "formula is installed successfully" do
       before do
         allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(true)
@@ -38,25 +34,32 @@ describe Bundle::BrewInstaller do
   end
 
   context ".outdated_formulae" do
-    it "shells out" do
+    it "calls Homebrew" do
       Bundle::BrewInstaller.reset!
-      expect(Bundle::BrewInstaller).to receive(:`).and_return("a\nhomebrew/tap/b")
-      expect(Bundle::BrewInstaller.outdated_formulae).to eql(%w[a b])
+      expect(Bundle::BrewDumper).to receive(:formulae).and_return([
+        { name: "a", outdated?: true },
+        { name: "b", outdated?: true },
+        { name: "c", outdated?: false },
+      ])
+      expect(Bundle::BrewInstaller.outdated_formulae.map{|f|f[:name]}).to eql(%w[a b])
     end
   end
 
   context ".pinned_formulae" do
-    it "shells out" do
+    it "calls Homebrew" do
       Bundle::BrewInstaller.reset!
-      expect(Bundle::BrewInstaller).to receive(:`).and_return("a\nb")
-      expect(Bundle::BrewInstaller.pinned_formulae).to eql(%w[a b])
+      expect(Bundle::BrewDumper).to receive(:formulae).and_return([
+        { name: "a", pinned?: true },
+        { name: "b", pinned?: true },
+        { name: "c", pinned?: false },
+      ])
+      expect(Bundle::BrewInstaller.pinned_formulae.map{|f|f[:name]}).to eql(%w[a b])
     end
   end
 
   context ".formula_installed_and_up_to_date?" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return(%w[bar])
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         {
@@ -88,16 +91,8 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "when brew is not installed" do
-    it "raises an error" do
-      allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { do_install }.to raise_error(RuntimeError)
-    end
-  end
-
   context "when brew is installed" do
     before do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:verbose?).and_return(false)
     end
 

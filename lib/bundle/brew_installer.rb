@@ -13,13 +13,9 @@ module Bundle
     end
 
     def initialize(name, options = {})
-      if Bundle.brew_installed?
-        @full_name = name
-        @name = name.split("/").last
-        @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
-      else
-        raise "Unable to install #{name} formula. Homebrew is not currently installed on your system"
-      end
+      @full_name = name
+      @name = name.split("/").last
+      @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
     end
 
     def install_or_upgrade
@@ -63,11 +59,11 @@ module Bundle
     end
 
     def self.outdated_formulae
-      @outdated_formulae ||= `brew outdated --quiet`.split("\n").map { |f| f.split("/").last }
+      @outdated_formulae ||= Bundle::BrewDumper.formulae.select {|f| f[:outdated?] }
     end
 
     def self.pinned_formulae
-      @pinned_formulae ||= `brew list --pinned`.split("\n")
+      @pinned_formulae ||= Bundle::BrewDumper.formulae.select {|f| f[:pinned?] }
     end
 
     def installed?

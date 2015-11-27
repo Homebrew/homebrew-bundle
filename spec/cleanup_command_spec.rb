@@ -4,7 +4,6 @@ describe Bundle::Commands::Cleanup do
   context "read Brewfile and currently installation" do
     before do
       Bundle::Commands::Cleanup.reset!
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return <<-EOS
         tap 'x'
@@ -60,7 +59,6 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -76,7 +74,6 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -92,7 +89,6 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -108,7 +104,6 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -124,7 +119,6 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(false)
     end
 

@@ -20,3 +20,26 @@ require "bundle"
 
 RSpec.configure do |_config|
 end
+
+
+# Stub out the inclusion of Homebrew's code.
+LIBS_TO_SKIP = ["formula", "tap"]
+
+module Kernel
+  alias :old_require :require
+  def require(path)
+    old_require(path) unless LIBS_TO_SKIP.include?(path)
+  end
+end
+
+module Formula
+  def self.installed
+    []
+  end
+end
+
+module Tap
+  def self.map
+    []
+  end
+end

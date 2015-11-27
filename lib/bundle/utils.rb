@@ -16,16 +16,10 @@ module Bundle
     success
   end
 
-  def self.brew_installed?
-    @brew ||= Kernel.system("brew --version >/dev/null 2>&1")
-  end
-
   def self.cask_installed?
-    @cask ||= Kernel.system("brew command cask >/dev/null 2>&1")
-  end
-
-  def self.services_installed?
-    @services ||= Kernel.system("brew command services >/dev/null 2>&1")
+    @cask ||= begin
+      which("brew-cask") || which("brew-cask.rb")
+    end
   end
 
   def self.brewfile

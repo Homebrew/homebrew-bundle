@@ -5,27 +5,14 @@ describe Bundle::TapInstaller do
     Bundle::TapInstaller.install("phinze/cask", clone_target)
   end
 
-  context "when brew is not installed" do
-    it "raises an error" do
-      allow(Bundle).to receive(:brew_installed?).and_return(false)
-      expect { do_install }.to raise_error(RuntimeError)
-    end
-  end
-
   context ".installed_taps" do
-    before do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
-      allow(Bundle::TapInstaller).to receive(:`)
-    end
-
-    it "shells out" do
+    it "calls Homebrew" do
       Bundler.with_clean_env { Bundle::TapInstaller.installed_taps }
     end
   end
 
   context "when tap is installed" do
     before do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::TapInstaller).to receive(:installed_taps).and_return(["phinze/cask"])
       allow(ARGV).to receive(:verbose?).and_return(false)
     end
@@ -38,7 +25,6 @@ describe Bundle::TapInstaller do
 
   context "when tap is not installed" do
     before do
-      allow(Bundle).to receive(:brew_installed?).and_return(true)
       allow(Bundle::TapInstaller).to receive(:installed_taps).and_return([])
       allow(ARGV).to receive(:verbose?).and_return(false)
     end
