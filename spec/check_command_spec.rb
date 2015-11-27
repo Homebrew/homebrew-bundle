@@ -20,6 +20,7 @@ describe Bundle::Commands::Check do
     end
 
     it "raises an error" do
+      allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)

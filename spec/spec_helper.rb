@@ -23,7 +23,7 @@ end
 
 
 # Stub out the inclusion of Homebrew's code.
-LIBS_TO_SKIP = ["cmd/info", "tap"]
+LIBS_TO_SKIP = ["formula", "tap"]
 
 module Kernel
   alias :old_require :require
@@ -32,8 +32,8 @@ module Kernel
   end
 end
 
-module Homebrew
-  def self.formulae_json
+module Formula
+  def self.installed
     []
   end
 end

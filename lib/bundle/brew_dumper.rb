@@ -55,8 +55,8 @@ module Bundle
     private
 
     def self.formulae_info
-      require "cmd/info"
-      Homebrew.formulae_json.map { |info| formula_inspector info }
+      require "formula"
+      Formula.installed.map { |f| formula_inspector f.to_hash }
     end
 
     def self.formula_inspector(f)

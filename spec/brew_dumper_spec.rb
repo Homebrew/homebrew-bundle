@@ -19,7 +19,7 @@ describe Bundle::BrewDumper do
   context "when Homebrew returns JSON with a malformed linked_keg" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Homebrew).to receive(:formulae_json).and_return([{
+      allow(Formula).to receive(:installed).and_return([{
         "name" => "foo",
         "full_name" => "homebrew/tap/foo",
         "desc" => "",
@@ -66,7 +66,7 @@ describe Bundle::BrewDumper do
   context "formulae `foo` and `bar` are installed" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Homebrew).to receive(:formulae_json).and_return([
+      allow(Formula).to receive(:installed).and_return([
         {
           "name" => "foo",
           "full_name" => "homebrew/tap/foo",

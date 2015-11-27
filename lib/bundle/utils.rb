@@ -16,6 +16,12 @@ module Bundle
     success
   end
 
+  def self.cask_installed?
+    @cask ||= begin
+      which("brew-cask") || which("brew-cask.rb")
+    end
+  end
+
   def self.brewfile
     if ARGV.include?("--global")
       file = Pathname.new("#{ENV["HOME"]}/.Brewfile")

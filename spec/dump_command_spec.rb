@@ -7,6 +7,7 @@ describe Bundle::Commands::Dump do
       allow(ARGV).to receive(:include?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(false)
       allow(ARGV).to receive(:value).and_return(nil)
+      allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
 
     it "raises error" do
@@ -21,6 +22,7 @@ describe Bundle::Commands::Dump do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
       allow(ARGV).to receive(:force?).and_return(true)
       allow(ARGV).to receive(:value).and_return(nil)
+      allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
 
     it "doesn't raise error" do

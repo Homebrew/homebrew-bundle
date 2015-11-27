@@ -1,9 +1,26 @@
 require "spec_helper"
 
 describe Bundle::CaskDumper do
+  context "when brew-cask is not installed" do
+    before do
+      Bundle::CaskDumper.reset!
+      allow(Bundle).to receive(:cask_installed?).and_return(false)
+    end
+    subject { Bundle::CaskDumper }
+
+    it "returns empty list" do
+      expect(subject.casks).to be_empty
+    end
+
+    it "dumps as empty string" do
+      expect(subject.dump([])).to eql(["", ""])
+    end
+  end
+
   context "when there is no cask" do
     before do
       Bundle::CaskDumper.reset!
+      allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Bundle::CaskDumper).to receive(:`).and_return("")
     end
     subject { Bundle::CaskDumper }
@@ -20,6 +37,7 @@ describe Bundle::CaskDumper do
   context "cask `foo`, `bar` and `baz` are installed, while `baz` is required by formula" do
     before do
       Bundle::CaskDumper.reset!
+      allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Bundle::CaskDumper).to receive(:`).and_return("foo\nbar\nbaz")
     end
     subject { Bundle::CaskDumper }

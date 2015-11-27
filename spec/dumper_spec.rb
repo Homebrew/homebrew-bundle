@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe Bundle::Dumper do
   before do
+    allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(ARGV).to receive(:force?).and_return(false)
     allow(ARGV).to receive(:value).and_return(nil)
     Bundle::BrewDumper.reset!
