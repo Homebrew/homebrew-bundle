@@ -17,8 +17,12 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 
 require "bundle"
+require 'bundler'
 
-RSpec.configure do |_config|
+RSpec.configure do |config|
+  config.around(:each) do |example|
+    Bundler.with_clean_env { example.run }
+  end
 end
 
 

@@ -7,7 +7,7 @@ describe Bundle::TapInstaller do
 
   context ".installed_taps" do
     it "calls Homebrew" do
-      Bundler.with_clean_env { Bundle::TapInstaller.installed_taps }
+      Bundle::TapInstaller.installed_taps
     end
   end
 

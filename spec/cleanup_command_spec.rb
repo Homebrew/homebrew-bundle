@@ -21,9 +21,7 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which casks to uninstall" do
       allow(Bundle::CaskDumper).to receive(:casks).and_return(%w[123 456])
-      Bundler.with_clean_env do
-        expect(Bundle::Commands::Cleanup.casks_to_uninstall).to eql(%w[456])
-      end
+      expect(Bundle::Commands::Cleanup.casks_to_uninstall).to eql(%w[456])
     end
 
     it "computes which formulae to uninstall" do
@@ -36,20 +34,16 @@ describe Bundle::Commands::Cleanup do
         { :name => "h", :full_name => "other/tap/h" },
         { :name => "i", :full_name => "homebrew/tap/i", :aliases => ["i2"] },
       ]
-      Bundler.with_clean_env do
-        expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
-          c
-          homebrew/tap/e
-          other/tap/h
-        ]
-      end
+      expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
+        c
+        homebrew/tap/e
+        other/tap/h
+      ]
     end
 
     it "computes which tap to untap" do
       allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z])
-      Bundler.with_clean_env do
-        expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
-      end
+      expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
     end
   end
 

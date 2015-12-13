@@ -6,7 +6,7 @@ describe Bundle::BrewInstaller do
   let(:installer) { Bundle::BrewInstaller.new(formula, options) }
 
   def do_install
-    Bundler.with_clean_env { installer.install_or_upgrade }
+    installer.install_or_upgrade
   end
 
   context "restart_service option is true" do
