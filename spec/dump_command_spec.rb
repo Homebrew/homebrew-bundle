@@ -12,7 +12,7 @@ describe Bundle::Commands::Dump do
 
     it "raises error" do
       expect do
-        Bundler.with_clean_env { Bundle::Commands::Dump.run }
+        Bundle::Commands::Dump.run
       end.to raise_error(RuntimeError)
     end
   end
@@ -30,7 +30,7 @@ describe Bundle::Commands::Dump do
       expect_any_instance_of(Pathname).to receive(:open).with("w") { |&block| block.call io }
       expect(io).to receive(:write)
       expect do
-        Bundler.with_clean_env { Bundle::Commands::Dump.run }
+        Bundle::Commands::Dump.run
       end.to_not raise_error
     end
   end

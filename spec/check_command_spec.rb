@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Bundle::Commands::Check do
   def do_check
-    Bundler.with_clean_env { Bundle::Commands::Check.run }
+    Bundle::Commands::Check.run
   end
 
   context "when dependencies are satisfied" do
