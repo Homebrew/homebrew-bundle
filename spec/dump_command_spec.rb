@@ -15,6 +15,15 @@ describe Bundle::Commands::Dump do
         Bundle::Commands::Dump.run
       end.to raise_error(RuntimeError)
     end
+
+    it "should exit before doing any work" do
+      expect(Bundle::TapDumper).not_to receive(:dump)
+      expect(Bundle::BrewDumper).not_to receive(:dump)
+      expect(Bundle::CaskDumper).not_to receive(:dump)
+      expect do
+        Bundle::Commands::Dump.run
+      end.to raise_error(RuntimeError)
+    end
   end
 
   context "when files existed and `--force` is passed" do
