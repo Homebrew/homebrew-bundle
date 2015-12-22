@@ -12,6 +12,7 @@ module Bundle
         filename ||= "Brewfile"
         file = Pathname.new(filename).expand_path(Dir.pwd)
       end
+      raise "#{file} already exists" if should_not_write_file?(file, ARGV.force?)
       content = []
       content << TapDumper.dump
       casks_required_by_formulae = BrewDumper.cask_requirements
@@ -20,16 +21,16 @@ module Bundle
       content << BrewDumper.dump
       content << cask_after_formula
       content = content.reject(&:empty?).join("\n") + "\n"
-      write_file file, content, ARGV.force?
+      write_file file, content
     end
 
     private
 
-    def self.write_file(file, content, overwrite = false)
-      if file.exist? && !overwrite && file.to_s != "/dev/stdout"
-        raise "#{file} already exists."
-      end
+    def self.should_not_write_file?(file, overwrite = false)
+      file.exist? && !overwrite && file.to_s != "/dev/stdout"
+    end
 
+    def self.write_file(file, content)
       file.open("w") { |io| io.write content }
     end
   end
