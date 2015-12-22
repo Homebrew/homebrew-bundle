@@ -59,7 +59,7 @@ module Bundle::Commands
       current_formulae = Bundle::BrewDumper.formulae
       current_formulae.reject do |f|
         Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
-      end.map {|f| f[:full_name] }
+      end.map { |f| f[:full_name] }
     end
 
     def self.taps_to_untap

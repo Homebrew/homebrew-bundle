@@ -21,7 +21,7 @@ module Bundle
     end
 
     def self.installed_taps
-      @installed_taps ||=  Bundle::TapDumper.tap_names
+      @installed_taps ||= Bundle::TapDumper.tap_names
     end
   end
 end

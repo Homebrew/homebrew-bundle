@@ -19,9 +19,9 @@ describe Bundle::Dsl do
     expect(dsl.entries[3].name).to eql("emacs")
     expect(dsl.entries[3].options).to eql(:args => ["with-cocoa", "with-gnutls"])
     expect(dsl.entries[4].name).to eql("google-chrome")
-    expect(dsl.entries[4].options).to eql(:args => {:appdir=>"/Applications"})
+    expect(dsl.entries[4].options).to eql(:args => { :appdir=>"/Applications" })
     expect(dsl.entries[5].name).to eql("firefox")
-    expect(dsl.entries[5].options).to eql(:args => {:appdir=>"~/my-apps/Applications"})
+    expect(dsl.entries[5].options).to eql(:args => { :appdir=>"~/my-apps/Applications" })
   end
 
   it "handles invalid input" do
