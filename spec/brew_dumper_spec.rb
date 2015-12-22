@@ -19,45 +19,47 @@ describe Bundle::BrewDumper do
   context "when Homebrew returns JSON with a malformed linked_keg" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Formula).to receive(:installed).and_return([{
-        "name" => "foo",
-        "full_name" => "homebrew/tap/foo",
-        "desc" => "",
-        "homepage" => "",
-        "oldname" => nil,
-        "aliases" => [],
-        "versions" => { "stable" => "1.0", "bottle" => false },
-        "revision" => 0,
-        "installed" => [{
-          "version" => "1.0",
-          "used_options" => [],
-          "built_as_bottle" => nil,
-          "poured_from_bottle" => true,
-        }],
-        "linked_keg" => "fish",
-        "keg_only" => nil,
-        "dependencies" => [],
-        "conflicts_with" => [],
-        "caveats" => nil,
-        "requirements" => [],
-        "options" => [],
-        "bottle" => {},
-      }])
+      allow(Formula).to receive(:installed).and_return(
+        [{
+          "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
+          "desc" => "",
+          "homepage" => "",
+          "oldname" => nil,
+          "aliases" => [],
+          "versions" => { "stable" => "1.0", "bottle" => false },
+          "revision" => 0,
+          "installed" => [{
+            "version" => "1.0",
+            "used_options" => [],
+            "built_as_bottle" => nil,
+            "poured_from_bottle" => true,
+          }],
+          "linked_keg" => "fish",
+          "keg_only" => nil,
+          "dependencies" => [],
+          "conflicts_with" => [],
+          "caveats" => nil,
+          "requirements" => [],
+          "options" => [],
+          "bottle" => {},
+        }]
+      )
     end
     subject { Bundle::BrewDumper }
 
     it "returns no version" do
       expect(subject.formulae).to contain_exactly *[
         {
-          name: "foo",
-          full_name: "homebrew/tap/foo",
-          aliases: [],
-          args: [],
-          version: nil,
-          dependencies: [],
-          requirements: [],
-          pinned?: false,
-          outdated?: false,
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :aliases => [],
+          :args => [],
+          :version => nil,
+          :dependencies => [],
+          :requirements => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -100,12 +102,12 @@ describe Bundle::BrewDumper do
           "aliases" => [],
           "versions" => { "stable" => "2.1", "bottle" => false },
           "revision" => 0,
-            "installed" => [{
+          "installed" => [{
             "version" => "2.0",
             "used_options" => ["--with-a", "--with-b"],
             "built_as_bottle" => nil,
             "poured_from_bottle" => true,
-           }],
+          }],
           "linked_keg" => nil,
           "keg_only" => nil,
           "dependencies" => [],
@@ -123,26 +125,26 @@ describe Bundle::BrewDumper do
     it "returns foo and bar with their information" do
       expect(subject.formulae).to contain_exactly *[
         {
-          name: "foo",
-          full_name: "homebrew/tap/foo",
-          aliases: [],
-          args: [],
-          version: "1.0",
-          dependencies: [],
-          requirements: [],
-          pinned?: false,
-          outdated?: false,
+          :name => "foo",
+          :full_name => "homebrew/tap/foo",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
-          name: "bar",
-          full_name: "bar",
-          aliases: [],
-          args: ["with-a", "with-b"],
-          version: "2.0",
-          dependencies: [],
-          requirements: [],
-          pinned?: true,
-          outdated?: true,
+          :name => "bar",
+          :full_name => "bar",
+          :aliases => [],
+          :args => ["with-a", "with-b"],
+          :version => "2.0",
+          :dependencies => [],
+          :requirements => [],
+          :pinned? => true,
+          :outdated? => true,
         },
       ]
     end
@@ -196,7 +198,7 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
-        }
+        },
       ]
     end
     subject { Bundle::BrewDumper.formulae }
@@ -218,7 +220,7 @@ describe Bundle::BrewDumper do
           :version => "2.0",
           :dependencies => [],
           :requirements => [],
-        }
+        },
       ]
     end
     subject { Bundle::BrewDumper.formulae }

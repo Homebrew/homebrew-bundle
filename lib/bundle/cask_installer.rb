@@ -6,7 +6,7 @@ module Bundle
         return true
       end
 
-      args = options.fetch(:args, []).map { |k,v| "--#{k}=#{v}" }
+      args = options.fetch(:args, []).map { |k, v| "--#{k}=#{v}" }
 
       puts "Installing #{name} cask. It is not currently installed." if ARGV.verbose?
       if (success = Bundle.system "brew", "cask", "install", name, *args)

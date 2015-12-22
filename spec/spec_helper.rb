@@ -8,7 +8,7 @@ end
 require "coveralls"
 Coveralls.wear!
 
-PROJECT_ROOT ||= File.expand_path('../..', __FILE__)
+PROJECT_ROOT ||= File.expand_path("../..", __FILE__)
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
@@ -17,7 +17,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 
 require "bundle"
-require 'bundler'
+require "bundler"
 
 RSpec.configure do |config|
   config.around(:each) do |example|
@@ -25,12 +25,11 @@ RSpec.configure do |config|
   end
 end
 
-
 # Stub out the inclusion of Homebrew's code.
 LIBS_TO_SKIP = ["formula", "tap"]
 
 module Kernel
-  alias :old_require :require
+  alias_method :old_require, :require
   def require(path)
     old_require(path) unless LIBS_TO_SKIP.include?(path)
   end

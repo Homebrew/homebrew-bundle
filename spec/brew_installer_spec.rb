@@ -37,11 +37,11 @@ describe Bundle::BrewInstaller do
     it "calls Homebrew" do
       Bundle::BrewInstaller.reset!
       expect(Bundle::BrewDumper).to receive(:formulae).and_return([
-        { name: "a", outdated?: true },
-        { name: "b", outdated?: true },
-        { name: "c", outdated?: false },
+        { :name => "a", :outdated? => true },
+        { :name => "b", :outdated? => true },
+        { :name => "c", :outdated? => false },
       ])
-      expect(Bundle::BrewInstaller.outdated_formulae.map{|f|f[:name]}).to eql(%w[a b])
+      expect(Bundle::BrewInstaller.outdated_formulae.map { |f| f[:name] }).to eql(%w[a b])
     end
   end
 
@@ -49,11 +49,11 @@ describe Bundle::BrewInstaller do
     it "calls Homebrew" do
       Bundle::BrewInstaller.reset!
       expect(Bundle::BrewDumper).to receive(:formulae).and_return([
-        { name: "a", pinned?: true },
-        { name: "b", pinned?: true },
-        { name: "c", pinned?: false },
+        { :name => "a", :pinned? => true },
+        { :name => "b", :pinned? => true },
+        { :name => "c", :pinned? => false },
       ])
-      expect(Bundle::BrewInstaller.pinned_formulae.map{|f|f[:name]}).to eql(%w[a b])
+      expect(Bundle::BrewInstaller.pinned_formulae.map { |f| f[:name] }).to eql(%w[a b])
     end
   end
 
