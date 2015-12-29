@@ -20,12 +20,8 @@ module Bundle
       begin
         process
       rescue => e
-        error_msg = "Invalid Brewfile."
-        if ARGV.verbose?
-          error_msg += "\n#{e}"
-          error_msg += "\n#{e.backtrace.join "\n"}"
-        end
-        raise error_msg
+        error_msg = "Invalid Brewfile: #{e.message}"
+        raise RuntimeError, error_msg, e.backtrace
       end
     end
 
@@ -67,21 +63,28 @@ module Bundle
     end
 
     def cask_args(args)
+      raise "cask_args(#{args.inspect}) should be a Hash object" unless args.is_a? Hash
       @cask_args = args
     end
 
     def brew(name, options = {})
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
       name = Bundle::Dsl.sanitize_brew_name(name)
       @entries << Entry.new(:brew, name, options)
     end
 
     def cask(name, options = {})
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
       name = Bundle::Dsl.sanitize_cask_name(name)
       options[:args] = @cask_args.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
     end
 
     def tap(name, clone_target = nil)
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      raise "clone_target(#{clone_target.inspect}) should be nil or a String object" if clone_target && !clone_target.is_a?(String)
       name = Bundle::Dsl.sanitize_tap_name(name)
       @entries << Entry.new(:tap, name, :clone_target => clone_target)
     end
