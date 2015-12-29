@@ -27,6 +27,13 @@ describe Bundle::Dsl do
   it "handles invalid input" do
     allow(ARGV).to receive(:verbose?).and_return(true)
     expect { Bundle::Dsl.new "abcdef" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "cask_args ''" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "brew 1" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "brew 'foo', ['bad_option']" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "cask 1" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "cask 'foo', ['bad_option']" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "tap 1" }.to raise_error(RuntimeError)
+    expect { Bundle::Dsl.new "tap 'foo', ['bad_clone_target']" }.to raise_error(RuntimeError)
   end
 
   it ".sanitize_brew_name" do
