@@ -14,7 +14,7 @@ end
 # commit d6b31251e20597842afa386f12f32013e3c13f21
 MIN_HOMEBREW_COMMIT_DATE = Time.parse "Fri Nov 27 16:40:16 2015 +0000"
 HOMEBREW_REPOSITORY.cd do
-  if MIN_HOMEBREW_COMMIT_DATE > Time.parse(`git show -s --format=%cd`)
+  if MIN_HOMEBREW_COMMIT_DATE > Time.parse(`git show -s --format=%cD`)
     odie "Your Homebrew is outdated. Please run `brew update`."
   end
 end
