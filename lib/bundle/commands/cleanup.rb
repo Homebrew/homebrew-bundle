@@ -28,7 +28,13 @@ module Bundle::Commands
         end
       else
         if casks.any?
-          Kernel.system "brew", "cask", "uninstall", "--force", *casks
+          if ARGV.include?("--zap")
+            action = "zap"
+          else
+            action = "uninstall"
+          end
+
+          Kernel.system "brew", "cask", action, "--force", *casks
           puts "Uninstalled #{casks.size} cask#{casks.size == 1 ? "" : "s"}"
         end
 
