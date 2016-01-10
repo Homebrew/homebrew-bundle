@@ -19,7 +19,13 @@ module Bundle
         taps = taps_to_untap
         if ARGV.force?
           if casks.any?
-            Kernel.system "brew", "cask", "uninstall", "--force", *casks
+            action = if ARGV.include?("--zap")
+              "zap"
+            else
+              "uninstall"
+            end
+
+            Kernel.system "brew", "cask", action, "--force", *casks
             puts "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
           end
 

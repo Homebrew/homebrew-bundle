@@ -89,6 +89,22 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
+  context "there are casks to zap" do
+    before do
+      Bundle::Commands::Cleanup.reset!
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
+      allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
+      allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      allow(ARGV).to receive(:force?).and_return(true)
+      ARGV << "--zap"
+    end
+
+    it "uninstalls casks" do
+      expect(Kernel).to receive(:system).with("brew", "cask", "zap", "--force", "a", "b")
+      expect { Bundle::Commands::Cleanup.run }.to output(/Uninstalled 2 casks/).to_stdout
+    end
+  end
+
   context "there are formulae to uninstall" do
     before do
       Bundle::Commands::Cleanup.reset!

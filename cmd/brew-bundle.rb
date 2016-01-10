@@ -7,7 +7,7 @@
 #:    `brew bundle dump` [--force] [--file=<path>|--global]
 #:    Write all installed casks/formulae/taps into a Brewfile.
 #:
-#:    `brew bundle cleanup` [--force] [--file=<path>|--global]
+#:    `brew bundle cleanup` [--zap] [--force] [--file=<path>|--global]
 #:    Uninstall all dependencies not listed in a Brewfile.
 #:
 #:    `brew bundle check` [--no-upgrade] [--file=<path>|--global]
