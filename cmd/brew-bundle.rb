@@ -29,7 +29,7 @@ require "bundle"
 usage = <<-EOS.undent
   brew bundle [-v|--verbose] [--file=<path>|--global]
   brew bundle dump [--force] [--file=<path>|--global]
-  brew bundle cleanup [--force] [--file=<path>|--global]
+  brew bundle cleanup [--force] [--zap] [--file=<path>|--global]
   brew bundle check [--file=<path>|--global]
   brew bundle [--version]
   brew bundle [-h|--help]
@@ -45,6 +45,7 @@ usage = <<-EOS.undent
   Options:
   -v, --verbose          print verbose output
   --force                uninstall dependencies or overwrite existing Brewfile
+  --zap                  zaps all files associated with Casks to be uninstalled
   --file=<path>          set Brewfile path
   --global               set Brewfile path to $HOME/.Brewfile
   -h, --help             show this help message and exit
