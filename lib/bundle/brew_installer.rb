@@ -59,11 +59,11 @@ module Bundle
     end
 
     def self.outdated_formulae
-      @outdated_formulae ||= Bundle::BrewDumper.formulae.select { |f| f[:outdated?] }
+      @outdated_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:outdated?] }.compact
     end
 
     def self.pinned_formulae
-      @pinned_formulae ||= Bundle::BrewDumper.formulae.select { |f| f[:pinned?] }
+      @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
     end
 
     def installed?

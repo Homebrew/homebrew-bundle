@@ -41,7 +41,7 @@ describe Bundle::BrewInstaller do
         { :name => "b", :outdated? => true },
         { :name => "c", :outdated? => false },
       ])
-      expect(Bundle::BrewInstaller.outdated_formulae.map { |f| f[:name] }).to eql(%w[a b])
+      expect(Bundle::BrewInstaller.outdated_formulae).to eql(%w[a b])
     end
   end
 
@@ -53,7 +53,7 @@ describe Bundle::BrewInstaller do
         { :name => "b", :pinned? => true },
         { :name => "c", :pinned? => false },
       ])
-      expect(Bundle::BrewInstaller.pinned_formulae.map { |f| f[:name] }).to eql(%w[a b])
+      expect(Bundle::BrewInstaller.pinned_formulae).to eql(%w[a b])
     end
   end
 
