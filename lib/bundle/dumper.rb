@@ -4,15 +4,17 @@ require "pathname"
 module Bundle
   class Dumper
     def self.dump_brewfile
-      if ARGV.include?("--global")
-        file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
-      else
-        filename = ARGV.value("file")
-        filename = "/dev/stdout" if filename == "-"
-        filename ||= "Brewfile"
-        file = Pathname.new(filename).expand_path(Dir.pwd)
+      if !ARGV.include?("--print")
+        if ARGV.include?("--global")
+          file = Pathname.new("#{ENV["HOME"]}/.Brewfile")        
+        else
+          filename = ARGV.value("file")
+          filename = "/dev/stdout" if filename == "-"
+          filename ||= "Brewfile"
+          file = Pathname.new(filename).expand_path(Dir.pwd)
+        end
+        raise "#{file} already exists" if should_not_write_file?(file, ARGV.force?)
       end
-      raise "#{file} already exists" if should_not_write_file?(file, ARGV.force?)
       content = []
       content << TapDumper.dump
       casks_required_by_formulae = BrewDumper.cask_requirements
@@ -21,7 +23,12 @@ module Bundle
       content << BrewDumper.dump
       content << cask_after_formula
       content = content.reject(&:empty?).join("\n") + "\n"
-      write_file file, content
+      
+      if ARGV.include?("--print")
+        puts "#{content}"
+      else
+        write_file file, content
+      end
     end
 
     private

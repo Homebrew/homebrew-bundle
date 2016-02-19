@@ -28,7 +28,7 @@ require "bundle"
 
 usage = <<-EOS.undent
   brew bundle [-v|--verbose] [--file=<path>|--global]
-  brew bundle dump [--force] [--file=<path>|--global]
+  brew bundle dump [--force] [--file=<path>|--global|--print]
   brew bundle cleanup [--force] [--file=<path>|--global]
   brew bundle check [--file=<path>|--global]
   brew bundle [--version]
@@ -49,6 +49,7 @@ usage = <<-EOS.undent
   --global               set Brewfile path to $HOME/.Brewfile
   -h, --help             show this help message and exit
   --version              show the version of homebrew-bundle
+  --print                outputs to the console instead of writing to a file
 EOS
 
 if ARGV.include?("--version")
