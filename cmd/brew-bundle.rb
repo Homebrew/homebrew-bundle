@@ -45,7 +45,7 @@ usage = <<-EOS.undent
   Options:
   -v, --verbose          print verbose output
   --force                uninstall dependencies or overwrite existing Brewfile
-  --file=<path>          set Brewfile path
+  --file=<path>          set Brewfile path (use --file=- to output to console)
   --global               set Brewfile path to $HOME/.Brewfile
   -h, --help             show this help message and exit
   --version              show the version of homebrew-bundle
