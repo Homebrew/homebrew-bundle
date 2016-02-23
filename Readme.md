@@ -73,6 +73,18 @@ You can check there's anything to install/upgrade in the `Brewfile` by running:
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
+### Restarting services
+
+You can choose whether `brew bundle` restarts a service every time it's run, or
+only when the formula is installed or upgraded. In you `Brewfile`:
+`Brewfile`:
+
+    # Always restart myservice
+    brew 'myservice', restart_service: true
+
+    # Only restart when installing or upgrading myservice
+    brew 'myservice', restart_service: :changed
+
 ## Note
 
 Homebrew does not support installing specific versions of a library, only the most recent one so there is no good mechanism for storing installed versions in a .lock file.
