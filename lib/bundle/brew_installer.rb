@@ -39,7 +39,7 @@ module Bundle
     end
 
     def restart_service!
-      BrewServices.restart(@full_name) if restart_service?
+      restart_service? ? BrewServices.restart(@full_name) : true
     end
 
     def self.formula_installed_and_up_to_date?(formula)

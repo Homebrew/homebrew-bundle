@@ -6,14 +6,13 @@ describe Bundle::BrewInstaller do
   let(:installer) { Bundle::BrewInstaller.new(formula, options) }
 
   def do_install
-    installer.install_or_upgrade
+    installer.run
   end
 
   context "restart_service option is true" do
     context "formula is installed successfully" do
       before do
         allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_or_upgrade).and_return(true)
-        allow_any_instance_of(Bundle::BrewInstaller).to receive(:restart_service?).and_return(true)
       end
 
       it "restart service" do
@@ -145,6 +144,12 @@ describe Bundle::BrewInstaller do
           end
         end
       end
+    end
+  end
+
+  context '#changed?' do
+    it 'should be falsy by default' do
+      expect(Bundle::BrewInstaller.new(formula).changed?).to eql(nil)
     end
   end
 
