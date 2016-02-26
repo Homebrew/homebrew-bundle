@@ -7,15 +7,18 @@ module Bundle
     end
 
     def self.install(name, options = {})
-      result = new(name, options).install_or_upgrade
-      result = BrewServices.restart(name) if result && options[:restart_service]
-      result
+      new(name, options).run
     end
 
     def initialize(name, options = {})
       @full_name = name
       @name = name.split("/").last
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
+      @restart_service = options.fetch(:restart_service, false)
+    end
+
+    def run
+      install_or_upgrade and restart_service!
     end
 
     def install_or_upgrade
@@ -24,6 +27,19 @@ module Bundle
       else
         install!
       end
+    end
+
+    def restart_service?
+      # Restart if `restart_service: :always`, or if the formula was installed or upgraded
+      @restart_service && (@restart_service.to_s != 'changed' || changed?)
+    end
+
+    def changed?
+      @changed
+    end
+
+    def restart_service!
+      restart_service? ? BrewServices.restart(@full_name) : true
     end
 
     def self.formula_installed_and_up_to_date?(formula)
@@ -79,6 +95,7 @@ module Bundle
       if (success = Bundle.system("brew", "install", @full_name, *@args))
         BrewInstaller.installed_formulae << @name
       end
+      @changed = true
 
       success
     end
@@ -87,8 +104,10 @@ module Bundle
       if upgradable?
         puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
         Bundle.system("brew", "upgrade", @name)
+        @changed = true
       else
         puts "Skipping install of #{@name} formula. It is already up-to-date." if ARGV.verbose?
+        @changed = false
         true
       end
     end
