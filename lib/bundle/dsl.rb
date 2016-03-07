@@ -100,7 +100,7 @@ module Bundle
         user = $1
         repo = $2
         name = $3
-        "#{user}/#{repo.sub /homebrew-/, ""}/#{name}"
+        "#{user}/#{repo.sub(/homebrew-/, "")}/#{name}"
       else
         name
       end
