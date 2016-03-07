@@ -49,7 +49,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns no version" do
-      expect(subject.formulae).to contain_exactly *[
+      expect(subject.formulae).to contain_exactly(*[
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
@@ -61,7 +61,7 @@ describe Bundle::BrewDumper do
           :pinned? => false,
           :outdated? => false,
         },
-      ]
+      ])
     end
   end
 
@@ -123,7 +123,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns foo and bar with their information" do
-      expect(subject.formulae).to contain_exactly *[
+      expect(subject.formulae).to contain_exactly(*[
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
@@ -146,7 +146,7 @@ describe Bundle::BrewDumper do
           :pinned? => true,
           :outdated? => true,
         },
-      ]
+      ])
     end
 
     it "dumps as foo and bar with args" do
