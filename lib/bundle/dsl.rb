@@ -35,19 +35,16 @@ module Bundle
 
       @entries.each do |entry|
         arg = [entry.name]
-        cls = case entry.type
+        verb, cls = case entry.type
               when :brew
                 arg << entry.options
-                verb = "installing"
-                Bundle::BrewInstaller
+                ["installing", Bundle::BrewInstaller]
               when :cask
                 arg << entry.options
-                verb = "installing"
-                Bundle::CaskInstaller
+                ["installing", Bundle::CaskInstaller]
               when :tap
                 arg << entry.options[:clone_target]
-                verb = "tapping"
-                Bundle::TapInstaller
+                ["tapping", Bundle::TapInstaller]
               end
         if cls.install(*arg)
           puts "Succeeded in #{verb} #{entry.name}"
