@@ -10,12 +10,12 @@ module Bundle
       end
     end
 
-    attr_reader :entries
+    attr_reader :entries, :cask_arguments
 
     def initialize(input)
       @input = input
       @entries = []
-      @cask_args = {}
+      @cask_arguments = {}
 
       begin
         process
@@ -61,7 +61,7 @@ module Bundle
 
     def cask_args(args)
       raise "cask_args(#{args.inspect}) should be a Hash object" unless args.is_a? Hash
-      @cask_args = args
+      @cask_arguments = args
     end
 
     def brew(name, options = {})
@@ -75,7 +75,7 @@ module Bundle
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
       name = Bundle::Dsl.sanitize_cask_name(name)
-      options[:args] = @cask_args.merge options.fetch(:args, {})
+      options[:args] = @cask_arguments.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
     end
 
