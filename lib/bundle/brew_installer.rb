@@ -116,10 +116,10 @@ module Bundle
       conflicts_with.each do |conflict|
         if BrewInstaller.formula_installed?(conflict)
           if ARGV.verbose?
-            puts <<-EOS
-Unlinking #{conflict} formula.
-It is currently installed and conflicts with #{@name}.
-EOS
+            puts <<-EOS.undent
+              Unlinking #{conflict} formula.
+              It is currently installed and conflicts with #{@name}.
+            EOS
           end
           return false unless Bundle.system("brew", "unlink", conflict)
           if @restart_service

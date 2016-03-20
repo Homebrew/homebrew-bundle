@@ -1,7 +1,7 @@
 module Bundle
   class BrewServices
     def self.stop(name)
-      started = !`brew services list | grep "#{name}" | grep -q "started"`.chomp.empty?
+      started = `brew services list`.lines.grep(/^#{name} +started/).any?
       return true unless started
       Bundle.system "brew", "services", "stop", name
     end
