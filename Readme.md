@@ -30,18 +30,17 @@ Create a `Brewfile` in the root of your project:
 
 Then list your Homebrew based dependencies in your `Brewfile`:
 
-    cask_args appdir: '/Applications'
-    tap 'caskroom/cask'
-    tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
-    brew 'emacs', args: ['with-cocoa', 'with-gnutls']
-    brew 'redis', restart_service: true
-    brew 'mongodb'
-    brew 'sphinx'
-    brew 'imagemagick'
-    brew 'mysql'
-    cask 'google-chrome'
-    cask 'java' unless system '/usr/libexec/java_home --failfast'
-    cask 'firefox', args: { appdir: '/Applications' }
+```ruby
+cask_args appdir: '/Applications'
+tap 'caskroom/cask'
+tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
+brew 'imagemagick'
+brew 'mysql', restart_service: true, conflicts_with: ['homebrew/versions/mysql56']
+brew 'emacs', args: ['with-cocoa', 'with-gnutls']
+cask 'google-chrome'
+cask 'java' unless system '/usr/libexec/java_home --failfast'
+cask 'firefox', args: { appdir: '~/my-apps/Applications' }
+```
 
 You can then easily install all of the dependencies with one of the following commands:
 
@@ -76,14 +75,15 @@ This provides a successful exit code if everything is up-to-date so is useful fo
 ### Restarting services
 
 You can choose whether `brew bundle` restarts a service every time it's run, or
-only when the formula is installed or upgraded. In you `Brewfile`:
-`Brewfile`:
+only when the formula is installed or upgraded in your `Brewfile`:
 
-    # Always restart myservice
-    brew 'myservice', restart_service: true
+```ruby
+# Always restart myservice
+brew 'myservice', restart_service: true
 
-    # Only restart when installing or upgrading myservice
-    brew 'myservice', restart_service: :changed
+# Only restart when installing or upgrading myservice
+brew 'myservice', restart_service: :changed
+```
 
 ## Note
 

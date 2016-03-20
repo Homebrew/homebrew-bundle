@@ -19,6 +19,7 @@ describe Bundle::BrewDumper do
   context "when Homebrew returns JSON with a malformed linked_keg" do
     before do
       Bundle::BrewDumper.reset!
+      allow(Formula).to receive(:[]).and_return(nil)
       allow(Formula).to receive(:installed).and_return(
         [{
           "name" => "foo",
@@ -58,6 +59,7 @@ describe Bundle::BrewDumper do
           :version => nil,
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
           :pinned? => false,
           :outdated? => false,
         },
@@ -68,6 +70,31 @@ describe Bundle::BrewDumper do
   context "formulae `foo` and `bar` are installed" do
     before do
       Bundle::BrewDumper.reset!
+      allow(Formula).to receive(:[]).and_return(
+        {
+          "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
+          "desc" => "",
+          "homepage" => "",
+          "oldname" => nil,
+          "aliases" => [],
+          "versions" => { "stable" => "1.0", "bottle" => false },
+          "revision" => 0,
+          "installed" => [{
+            "version" => "1.0",
+            "used_options" => [],
+            "built_as_bottle" => nil,
+            "poured_from_bottle" => true,
+          }],
+          "linked_keg" => "1.0",
+          "keg_only" => nil,
+          "dependencies" => [],
+          "conflicts_with" => [],
+          "caveats" => nil,
+          "requirements" => [],
+          "options" => [],
+          "bottle" => {},
+        })
       allow(Formula).to receive(:installed).and_return([
         {
           "name" => "foo",
@@ -132,6 +159,7 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
           :pinned? => false,
           :outdated? => false,
         },
@@ -143,6 +171,7 @@ describe Bundle::BrewDumper do
           :version => "2.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
           :pinned? => true,
           :outdated? => true,
         },
@@ -151,6 +180,10 @@ describe Bundle::BrewDumper do
 
     it "dumps as foo and bar with args" do
       expect(subject.dump).to eql("brew 'bar', args: ['with-a', 'with-b']\nbrew 'homebrew/tap/foo'")
+    end
+
+    it "formula_info returns the formula" do
+      expect(subject.formula_info('foo')[:name]).to eql("foo")
     end
   end
 
@@ -166,6 +199,9 @@ describe Bundle::BrewDumper do
           :version => "1.1beta",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
           :name => "bar",
@@ -175,6 +211,9 @@ describe Bundle::BrewDumper do
           :version => "HEAD",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -198,6 +237,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -220,6 +262,9 @@ describe Bundle::BrewDumper do
           :version => "2.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -242,6 +287,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => ["b"],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
           :name => "b",
@@ -251,6 +299,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [{ "name" => "foo", "default_formula" => "c", "cask" => "bar" }],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
           :name => "c",
@@ -260,6 +311,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end

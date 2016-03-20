@@ -14,14 +14,16 @@ module Bundle
       @full_name = name
       @name = name.split("/").last
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
+      @conflicts_with_arg = options.fetch(:conflicts_with, [])
       @restart_service = options.fetch(:restart_service, false)
     end
 
     def run
-      install_or_upgrade and restart_service!
+      install_change_state! && service_change_state!
     end
 
-    def install_or_upgrade
+    def install_change_state!
+      return false unless resolve_conflicts!
       if installed?
         upgrade!
       else
@@ -38,8 +40,13 @@ module Bundle
       @changed
     end
 
-    def restart_service!
-      restart_service? ? BrewServices.restart(@full_name) : true
+    def service_change_state!
+      if restart_service?
+        puts "Restarting #{@name} service." if ARGV.verbose?
+        BrewServices.restart(@full_name)
+      else
+        true
+      end
     end
 
     def self.formula_installed_and_up_to_date?(formula)
@@ -88,6 +95,41 @@ module Bundle
 
     def upgradable?
       BrewInstaller.formula_upgradable?(@name)
+    end
+
+    def conflicts_with
+      @conflicts_with ||= begin
+        conflicts_with = Set.new
+        conflicts_with += @conflicts_with_arg
+
+        if (formula_info = Bundle::BrewDumper.formula_info(@full_name))
+          if (formula_conflicts_with = formula_info[:conflicts_with])
+            conflicts_with += formula_conflicts_with
+          end
+        end
+
+        conflicts_with.to_a
+      end
+    end
+
+    def resolve_conflicts!
+      conflicts_with.each do |conflict|
+        if BrewInstaller.formula_installed?(conflict)
+          if ARGV.verbose?
+            puts <<-EOS
+Unlinking #{conflict} formula.
+It is currently installed and conflicts with #{@name}.
+EOS
+          end
+          return false unless Bundle.system("brew", "unlink", conflict)
+          if @restart_service
+            puts "Stopping #{conflict} service (if it is running)." if ARGV.verbose?
+            BrewServices.stop(conflict)
+          end
+        end
+      end
+
+      true
     end
 
     def install!

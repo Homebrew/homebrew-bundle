@@ -52,6 +52,16 @@ module Bundle
       @formula_aliases
     end
 
+    def self.formula_info(name)
+      @formula_info_name ||= {}
+      @formula_info_name[name] ||= begin
+        require "formula"
+        formula = Formula[name]
+        return {} unless formula
+        formula_inspector formula.to_hash
+      end
+    end
+
     private
 
     def self.formulae_info
@@ -86,6 +96,7 @@ module Bundle
         :version => version,
         :dependencies => f["dependencies"],
         :requirements => f["requirements"],
+        :conflicts_with => f["conflicts_with"],
         :pinned? => !!f["pinned"],
         :outdated? => !!f["outdated"],
       }

@@ -16,7 +16,7 @@ describe Bundle::Commands::Install do
 
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).
-        and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
+        and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'")
       expect { Bundle::Commands::Install.run }.to_not raise_error
     end
 
@@ -27,7 +27,7 @@ describe Bundle::Commands::Install do
 
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).
-        and_return("tap 'phinze/cask'\nbrew 'git'\ncask 'google-chrome'")
+        and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'")
       expect { Bundle::Commands::Install.run }.to raise_error(SystemExit)
     end
   end
