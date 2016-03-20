@@ -8,7 +8,11 @@ describe Bundle::BrewServices do
 
     context "stops the service" do
       it "when the service is started" do
-        allow(Bundle::BrewServices).to receive(:`).and_return("nginx  started  homebrew.mxcl.nginx.plist")
+        allow(Bundle::BrewServices).to receive(:`).and_return <<-EOS
+nginx  started  homebrew.mxcl.nginx.plist
+apache stopped  homebrew.mxcl.apache.plist
+mysql  started  homebrew.mxcl.mysql.plist
+EOS
         expect(Bundle).to receive(:system).with("brew", "services", "stop", "nginx").and_return(true)
         expect(Bundle::BrewServices.stop("nginx")).to eql(true)
       end
