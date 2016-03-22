@@ -72,6 +72,14 @@ You can check there's anything to install/upgrade in the `Brewfile` by running:
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
+### Exec
+
+Runs an external command within Homebrew's [superenv](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md#superenv-notes) build environment:
+
+    $ brew bundle exec -- bundle install
+
+This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
+
 ### Restarting services
 
 You can choose whether `brew bundle` restarts a service every time it's run, or
