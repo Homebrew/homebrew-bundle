@@ -66,7 +66,7 @@ module Bundle::Commands
       @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
       current_taps = Bundle::TapDumper.tap_names
-      current_taps - kept_taps
+      current_taps - kept_taps - %w[homebrew/core]
     end
   end
 end
