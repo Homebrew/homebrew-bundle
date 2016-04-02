@@ -45,6 +45,11 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z])
       expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
     end
+
+    it "excludes homebrew/core from the taps to untap" do
+      allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[a homebrew/core w])
+      expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[a w])
+    end
   end
 
   context "no formulae to uninstall and no taps to untap" do
