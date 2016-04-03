@@ -42,7 +42,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "computes which tap to untap" do
-      allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z])
+      allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z homebrew/bundle homebrew/core])
       expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])
     end
   end
