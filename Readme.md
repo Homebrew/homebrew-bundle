@@ -8,11 +8,11 @@ Bundler for non-Ruby dependencies from Homebrew
 
 ## Requirements
 
-[Homebrew](http://github.com/Homebrew/homebrew) or [Linuxbrew](https://github.com/homebrew/linuxbrew) are used for installing the dependencies.
+[Homebrew](http://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/linuxbrew) are used for installing the dependencies.
 Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on Mac OS X.
 This tool is primarily developed for use with Homebrew on Mac OS X but should work with Linuxbrew on Linux, too.
 
-[brew tap](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
+[brew tap](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
 [Homebrew Cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
@@ -74,7 +74,7 @@ This provides a successful exit code if everything is up-to-date so is useful fo
 
 ### Exec
 
-Runs an external command within Homebrew's [superenv](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Formula-Cookbook.md#superenv-notes) build environment:
+Runs an external command within Homebrew's [superenv](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Formula-Cookbook.md#superenv-notes) build environment:
 
     $ brew bundle exec -- bundle install
 
@@ -95,7 +95,7 @@ brew 'myservice', restart_service: :changed
 
 ## Note
 
-Homebrew does not support installing specific versions of a library, only the most recent one so there is no good mechanism for storing installed versions in a .lock file.
+Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for storing installed versions in a .lock file.
 
 If your software needs specific versions then perhaps you'll want to look at using [Vagrant](http://vagrantup.com/) to better match your development and production environments.
 
