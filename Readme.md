@@ -8,13 +8,13 @@ Bundler for non-Ruby dependencies from Homebrew
 
 ## Requirements
 
-[Homebrew](http://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/linuxbrew) are used for installing the dependencies.
+[Homebrew](https://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/linuxbrew) are used for installing the dependencies.
 Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on Mac OS X.
 This tool is primarily developed for use with Homebrew on Mac OS X but should work with Linuxbrew on Linux, too.
 
 [brew tap](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
-[Homebrew Cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
+[Homebrew Cask](https://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
 ## Install
 
@@ -97,7 +97,7 @@ brew 'myservice', restart_service: :changed
 
 Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for storing installed versions in a .lock file.
 
-If your software needs specific versions then perhaps you'll want to look at using [Vagrant](http://vagrantup.com/) to better match your development and production environments.
+If your software needs specific versions then perhaps you'll want to look at using [Vagrant](https://vagrantup.com/) to better match your development and production environments.
 
 ## Contributors
 
@@ -105,8 +105,8 @@ Over 10 different people have contributed to the project, you can see them all h
 
 ## Development
 
-Source hosted at [GitHub](http://github.com/Homebrew/homebrew-bundle).
-Report Issues/Feature requests on [GitHub Issues](http://github.com/Homebrew/homebrew-bundle/issues).
+Source hosted at [GitHub](https://github.com/Homebrew/homebrew-bundle).
+Report Issues/Feature requests on [GitHub Issues](https://github.com/Homebrew/homebrew-bundle/issues).
 
 Tests can be ran with `bundle && bundle exec rake spec`
 
