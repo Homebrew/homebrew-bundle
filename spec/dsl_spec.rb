@@ -6,7 +6,6 @@ describe Bundle::Dsl do
     allow(ARGV).to receive(:verbose?).and_return(true)
     # Keep in sync with the README
     dsl = Bundle::Dsl.new <<-EOS
-      p method(:system)
       cask_args appdir: '/Applications'
       tap 'caskroom/cask'
       tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
@@ -16,6 +15,7 @@ describe Bundle::Dsl do
       cask 'google-chrome'
       cask 'java' unless system '/usr/libexec/java_home --failfast'
       cask 'firefox', args: { appdir: '~/my-apps/Applications' }
+      mas '1Password', id: 443987910
     EOS
     expect(dsl.cask_arguments).to eql(:appdir => "/Applications")
     expect(dsl.entries[0].name).to eql("caskroom/cask")
@@ -30,6 +30,8 @@ describe Bundle::Dsl do
     expect(dsl.entries[6].name).to eql("java")
     expect(dsl.entries[7].name).to eql("firefox")
     expect(dsl.entries[7].options).to eql(:args => { :appdir=>"~/my-apps/Applications" })
+    expect(dsl.entries[8].name).to eql("1Password")
+    expect(dsl.entries[8].options).to eql(:id => 443987910)
   end
 
   it "handles invalid input" do

@@ -35,17 +35,22 @@ module Bundle
 
       @entries.each do |entry|
         arg = [entry.name]
-        verb, cls = case entry.type
-              when :brew
-                arg << entry.options
-                ["installing", Bundle::BrewInstaller]
-              when :cask
-                arg << entry.options
-                ["installing", Bundle::CaskInstaller]
-              when :tap
-                arg << entry.options[:clone_target]
-                ["tapping", Bundle::TapInstaller]
-              end
+        verb = "installing"
+        cls = case entry.type
+        when :brew
+          arg << entry.options
+          Bundle::BrewInstaller
+        when :cask
+          arg << entry.options
+          Bundle::CaskInstaller
+        when :mac_app_store
+          arg << entry.options[:id]
+          Bundle::MacAppStoreInstaller
+        when :tap
+          verb = "tapping"
+          arg << entry.options[:clone_target]
+          Bundle::TapInstaller
+        end
         if cls.install(*arg)
           puts "Succeeded in #{verb} #{entry.name}"
           success += 1
@@ -77,6 +82,13 @@ module Bundle
       name = Bundle::Dsl.sanitize_cask_name(name)
       options[:args] = @cask_arguments.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
+    end
+
+    def mas(name, options = {})
+      id = options[:id]
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
+      @entries << Entry.new(:mac_app_store, name, :id => id)
     end
 
     def tap(name, clone_target = nil)

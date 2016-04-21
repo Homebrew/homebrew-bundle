@@ -16,6 +16,12 @@ module Bundle
     success
   end
 
+  def self.mas_installed?
+    @mas ||= begin
+      !!which("mas")
+    end
+  end
+
   def self.cask_installed?
     @cask ||= begin
       which("brew-cask") || which("brew-cask.rb")
