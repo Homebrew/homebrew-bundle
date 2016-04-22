@@ -20,6 +20,7 @@ module Bundle
       content << cask_before_formula
       content << BrewDumper.dump
       content << cask_after_formula
+      content << MacAppStoreDumper.dump
       content = content.reject(&:empty?).join("\n") + "\n"
       write_file file, content
     end

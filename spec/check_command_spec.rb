@@ -10,6 +10,7 @@ describe Bundle::Commands::Check do
       allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:any_apps_to_install?).and_return(false)
       expect { do_check }.to_not raise_error
     end
   end
@@ -53,6 +54,20 @@ describe Bundle::Commands::Check do
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'abc/def'")
+      expect { do_check }.to raise_error(SystemExit)
+    end
+  end
+
+  context "when apps are not installed" do
+    before do
+      Bundle::Commands::Check.reset!
+    end
+
+    it "raises an error" do
+      allow_any_instance_of(Bundle::MacAppStoreDumper).to receive(:app_ids).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(ARGV).to receive(:include?).and_return(true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123")
       expect { do_check }.to raise_error(SystemExit)
     end
   end

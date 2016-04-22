@@ -16,6 +16,8 @@ This tool is primarily developed for use with Homebrew on Mac OS X but should wo
 
 [Homebrew Cask](https://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
+[mas-cli](https://github.com/argon/mas) is optional and used for installing Mac App Store applications.
+
 ## Install
 
 You can install as a Homebrew tap:
@@ -40,6 +42,7 @@ brew 'emacs', args: ['with-cocoa', 'with-gnutls']
 cask 'google-chrome'
 cask 'java' unless system '/usr/libexec/java_home --failfast'
 cask 'firefox', args: { appdir: '~/my-apps/Applications' }
+mas '1Password', id: 443987910
 ```
 
 You can then easily install all of the dependencies with one of the following commands:

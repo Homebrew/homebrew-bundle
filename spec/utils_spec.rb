@@ -35,4 +35,11 @@ describe Bundle do
       expect(Bundle.cask_installed?).to eql(true)
     end
   end
+
+  context "check for mas" do
+    it "finds it when present" do
+      allow(Bundle).to receive(:which).and_return(true)
+      expect(Bundle.mas_installed?).to eql(true)
+    end
+  end
 end
