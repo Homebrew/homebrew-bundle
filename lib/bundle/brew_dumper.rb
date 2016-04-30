@@ -20,7 +20,7 @@ module Bundle
         if f[:args].empty?
           "brew '#{f[:full_name]}'"
         else
-          args = f[:args].map { |arg| "'#{arg}'" }.join(", ")
+          args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
           "brew '#{f[:full_name]}', args: [#{args}]"
         end
       end.join("\n")

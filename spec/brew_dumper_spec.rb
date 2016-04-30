@@ -327,4 +327,41 @@ describe Bundle::BrewDumper do
       expect(subject.cask_requirements).to eq %w[bar]
     end
   end
+
+  context "when order of args for a formula is different in different environment" do
+    it "dumps args in same order" do
+      formula_info = [
+        [{
+          :name => "a",
+          :full_name => "a",
+          :aliases => [],
+          :args => ['with-1', 'with-2'],
+          :version => "1.0",
+          :dependencies => ["b"],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        }],
+        [{
+          :name => "a",
+          :full_name => "a",
+          :aliases => [],
+          :args => ['with-2', 'with-1'],
+          :version => "1.0",
+          :dependencies => ["b"],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        }]
+      ]
+      dump_lines = formula_info.map do |info|
+        Bundle::BrewDumper.reset!
+        allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(info)
+        Bundle::BrewDumper.dump
+      end
+      expect(dump_lines[0]).to eql(dump_lines[1])
+    end
+  end
 end
