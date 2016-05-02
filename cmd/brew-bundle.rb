@@ -31,6 +31,7 @@ usage = <<-EOS.undent
   brew bundle dump [--force] [--file=<path>|--global]
   brew bundle cleanup [--force] [--file=<path>|--global]
   brew bundle check [--file=<path>|--global]
+  brew bundle exec [command]
   brew bundle [--version]
   brew bundle [-h|--help]
 
@@ -41,6 +42,7 @@ usage = <<-EOS.undent
   brew bundle dump       write all installed casks/formulae/taps into a Brewfile
   brew bundle cleanup    uninstall all dependencies not listed in a Brewfile
   brew bundle check      check if all dependencies are installed in a Brewfile
+  brew bundle exec       run an external command in an isolated build environment
 
   Options:
   -v, --verbose          print verbose output
@@ -61,8 +63,11 @@ if ARGV.flag?("--help")
   exit 0
 end
 
+# Pop the named command from ARGV, leaving everything else in place
+command = ARGV.named.first
+ARGV.delete_at(ARGV.index(command)) unless command.nil?
 begin
-  case ARGV.named[0]
+  case command
   when nil, "install"
     Bundle::Commands::Install.run
   when "dump"
@@ -71,6 +76,8 @@ begin
     Bundle::Commands::Cleanup.run
   when "check"
     Bundle::Commands::Check.run
+  when "exec"
+    Bundle::Commands::Exec.run
   else
     abort usage
   end

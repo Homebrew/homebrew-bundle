@@ -20,7 +20,7 @@ module Bundle
         if f[:args].empty?
           "brew '#{f[:full_name]}'"
         else
-          args = f[:args].map { |arg| "'#{arg}'" }.join(", ")
+          args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
           "brew '#{f[:full_name]}', args: [#{args}]"
         end
       end.join("\n")
@@ -50,6 +50,16 @@ module Bundle
         end
       end
       @formula_aliases
+    end
+
+    def self.formula_info(name)
+      @formula_info_name ||= {}
+      @formula_info_name[name] ||= begin
+        require "formula"
+        formula = Formula[name]
+        return {} unless formula
+        formula_inspector formula.to_hash
+      end
     end
 
     private
@@ -86,6 +96,7 @@ module Bundle
         :version => version,
         :dependencies => f["dependencies"],
         :requirements => f["requirements"],
+        :conflicts_with => f["conflicts_with"],
         :pinned? => !!f["pinned"],
         :outdated? => !!f["outdated"],
       }

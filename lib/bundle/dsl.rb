@@ -10,12 +10,12 @@ module Bundle
       end
     end
 
-    attr_reader :entries
+    attr_reader :entries, :cask_arguments
 
     def initialize(input)
       @input = input
       @entries = []
-      @cask_args = {}
+      @cask_arguments = {}
 
       begin
         process
@@ -35,20 +35,22 @@ module Bundle
 
       @entries.each do |entry|
         arg = [entry.name]
+        verb = "installing"
         cls = case entry.type
-              when :brew
-                arg << entry.options
-                verb = "installing"
-                Bundle::BrewInstaller
-              when :cask
-                arg << entry.options
-                verb = "installing"
-                Bundle::CaskInstaller
-              when :tap
-                arg << entry.options[:clone_target]
-                verb = "tapping"
-                Bundle::TapInstaller
-              end
+        when :brew
+          arg << entry.options
+          Bundle::BrewInstaller
+        when :cask
+          arg << entry.options
+          Bundle::CaskInstaller
+        when :mac_app_store
+          arg << entry.options[:id]
+          Bundle::MacAppStoreInstaller
+        when :tap
+          verb = "tapping"
+          arg << entry.options[:clone_target]
+          Bundle::TapInstaller
+        end
         if cls.install(*arg)
           puts "Succeeded in #{verb} #{entry.name}"
           success += 1
@@ -64,7 +66,7 @@ module Bundle
 
     def cask_args(args)
       raise "cask_args(#{args.inspect}) should be a Hash object" unless args.is_a? Hash
-      @cask_args = args
+      @cask_arguments = args
     end
 
     def brew(name, options = {})
@@ -78,8 +80,15 @@ module Bundle
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
       name = Bundle::Dsl.sanitize_cask_name(name)
-      options[:args] = @cask_args.merge options.fetch(:args, {})
+      options[:args] = @cask_arguments.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
+    end
+
+    def mas(name, options = {})
+      id = options[:id]
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
+      @entries << Entry.new(:mac_app_store, name, :id => id)
     end
 
     def tap(name, clone_target = nil)
@@ -103,7 +112,7 @@ module Bundle
         user = $1
         repo = $2
         name = $3
-        "#{user}/#{repo.sub /homebrew-/, ""}/#{name}"
+        "#{user}/#{repo.sub(/homebrew-/, "")}/#{name}"
       else
         name
       end

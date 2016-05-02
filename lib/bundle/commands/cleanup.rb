@@ -62,11 +62,13 @@ module Bundle::Commands
       end.map { |f| f[:full_name] }
     end
 
+    IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
+
     def self.taps_to_untap
       @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
       current_taps = Bundle::TapDumper.tap_names
-      current_taps - kept_taps
+      current_taps - kept_taps - IGNORED_TAPS
     end
   end
 end

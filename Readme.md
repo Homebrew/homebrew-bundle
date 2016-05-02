@@ -8,13 +8,15 @@ Bundler for non-Ruby dependencies from Homebrew
 
 ## Requirements
 
-[Homebrew](http://github.com/Homebrew/homebrew) or [Linuxbrew](https://github.com/homebrew/linuxbrew) are used for installing the dependencies.
+[Homebrew](https://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/linuxbrew) are used for installing the dependencies.
 Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on Mac OS X.
 This tool is primarily developed for use with Homebrew on Mac OS X but should work with Linuxbrew on Linux, too.
 
-[brew tap](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
+[brew tap](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
-[Homebrew Cask](http://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
+[Homebrew Cask](https://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
+
+[mas-cli](https://github.com/argon/mas) is optional and used for installing Mac App Store applications.
 
 ## Install
 
@@ -30,18 +32,18 @@ Create a `Brewfile` in the root of your project:
 
 Then list your Homebrew based dependencies in your `Brewfile`:
 
-    cask_args appdir: '/Applications'
-    tap 'caskroom/cask'
-    tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
-    brew 'emacs', args: ['with-cocoa', 'with-gnutls']
-    brew 'redis', restart_service: true
-    brew 'mongodb'
-    brew 'sphinx'
-    brew 'imagemagick'
-    brew 'mysql'
-    cask 'google-chrome'
-    cask 'java' unless system '/usr/libexec/java_home --failfast'
-    cask 'firefox', args: { appdir: '/Applications' }
+```ruby
+cask_args appdir: '/Applications'
+tap 'caskroom/cask'
+tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
+brew 'imagemagick'
+brew 'mysql', restart_service: true, conflicts_with: ['homebrew/versions/mysql56']
+brew 'emacs', args: ['with-cocoa', 'with-gnutls']
+cask 'google-chrome'
+cask 'java' unless system '/usr/libexec/java_home --failfast'
+cask 'firefox', args: { appdir: '~/my-apps/Applications' }
+mas '1Password', id: 443987910
+```
 
 You can then easily install all of the dependencies with one of the following commands:
 
@@ -73,11 +75,32 @@ You can check there's anything to install/upgrade in the `Brewfile` by running:
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
+### Exec
+
+Runs an external command within Homebrew's [superenv](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Formula-Cookbook.md#superenv-notes) build environment:
+
+    $ brew bundle exec -- bundle install
+
+This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
+
+### Restarting services
+
+You can choose whether `brew bundle` restarts a service every time it's run, or
+only when the formula is installed or upgraded in your `Brewfile`:
+
+```ruby
+# Always restart myservice
+brew 'myservice', restart_service: true
+
+# Only restart when installing or upgrading myservice
+brew 'myservice', restart_service: :changed
+```
+
 ## Note
 
-Homebrew does not support installing specific versions of a library, only the most recent one so there is no good mechanism for storing installed versions in a .lock file.
+Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for storing installed versions in a .lock file.
 
-If your software needs specific versions then perhaps you'll want to look at using [Vagrant](http://vagrantup.com/) to better match your development and production environments.
+If your software needs specific versions then perhaps you'll want to look at using [Vagrant](https://vagrantup.com/) to better match your development and production environments.
 
 ## Contributors
 
@@ -85,8 +108,8 @@ Over 10 different people have contributed to the project, you can see them all h
 
 ## Development
 
-Source hosted at [GitHub](http://github.com/Homebrew/homebrew-bundle).
-Report Issues/Feature requests on [GitHub Issues](http://github.com/Homebrew/homebrew-bundle/issues).
+Source hosted at [GitHub](https://github.com/Homebrew/homebrew-bundle).
+Report Issues/Feature requests on [GitHub Issues](https://github.com/Homebrew/homebrew-bundle/issues).
 
 Tests can be ran with `bundle && bundle exec rake spec`
 

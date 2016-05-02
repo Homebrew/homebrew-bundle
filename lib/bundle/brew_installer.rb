@@ -7,22 +7,45 @@ module Bundle
     end
 
     def self.install(name, options = {})
-      result = new(name, options).install_or_upgrade
-      result = BrewServices.restart(name) if result && options[:restart_service]
-      result
+      new(name, options).run
     end
 
     def initialize(name, options = {})
       @full_name = name
       @name = name.split("/").last
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
+      @conflicts_with_arg = options.fetch(:conflicts_with, [])
+      @restart_service = options.fetch(:restart_service, false)
     end
 
-    def install_or_upgrade
+    def run
+      install_change_state! && service_change_state!
+    end
+
+    def install_change_state!
+      return false unless resolve_conflicts!
       if installed?
         upgrade!
       else
         install!
+      end
+    end
+
+    def restart_service?
+      # Restart if `restart_service: :always`, or if the formula was installed or upgraded
+      @restart_service && (@restart_service.to_s != 'changed' || changed?)
+    end
+
+    def changed?
+      @changed
+    end
+
+    def service_change_state!
+      if restart_service?
+        puts "Restarting #{@name} service." if ARGV.verbose?
+        BrewServices.restart(@full_name)
+      else
+        true
       end
     end
 
@@ -74,11 +97,47 @@ module Bundle
       BrewInstaller.formula_upgradable?(@name)
     end
 
+    def conflicts_with
+      @conflicts_with ||= begin
+        conflicts_with = Set.new
+        conflicts_with += @conflicts_with_arg
+
+        if (formula_info = Bundle::BrewDumper.formula_info(@full_name))
+          if (formula_conflicts_with = formula_info[:conflicts_with])
+            conflicts_with += formula_conflicts_with
+          end
+        end
+
+        conflicts_with.to_a
+      end
+    end
+
+    def resolve_conflicts!
+      conflicts_with.each do |conflict|
+        if BrewInstaller.formula_installed?(conflict)
+          if ARGV.verbose?
+            puts <<-EOS.undent
+              Unlinking #{conflict} formula.
+              It is currently installed and conflicts with #{@name}.
+            EOS
+          end
+          return false unless Bundle.system("brew", "unlink", conflict)
+          if @restart_service
+            puts "Stopping #{conflict} service (if it is running)." if ARGV.verbose?
+            BrewServices.stop(conflict)
+          end
+        end
+      end
+
+      true
+    end
+
     def install!
       puts "Installing #{@name} formula. It is not currently installed." if ARGV.verbose?
       if (success = Bundle.system("brew", "install", @full_name, *@args))
         BrewInstaller.installed_formulae << @name
       end
+      @changed = true
 
       success
     end
@@ -87,8 +146,10 @@ module Bundle
       if upgradable?
         puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
         Bundle.system("brew", "upgrade", @name)
+        @changed = true
       else
         puts "Skipping install of #{@name} formula. It is already up-to-date." if ARGV.verbose?
+        @changed = false
         true
       end
     end

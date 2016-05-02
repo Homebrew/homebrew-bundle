@@ -19,6 +19,7 @@ describe Bundle::BrewDumper do
   context "when Homebrew returns JSON with a malformed linked_keg" do
     before do
       Bundle::BrewDumper.reset!
+      allow(Formula).to receive(:[]).and_return(nil)
       allow(Formula).to receive(:installed).and_return(
         [{
           "name" => "foo",
@@ -49,7 +50,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns no version" do
-      expect(subject.formulae).to contain_exactly *[
+      expect(subject.formulae).to contain_exactly(*[
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
@@ -58,16 +59,42 @@ describe Bundle::BrewDumper do
           :version => nil,
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
           :pinned? => false,
           :outdated? => false,
         },
-      ]
+      ])
     end
   end
 
   context "formulae `foo` and `bar` are installed" do
     before do
       Bundle::BrewDumper.reset!
+      allow(Formula).to receive(:[]).and_return(
+        {
+          "name" => "foo",
+          "full_name" => "homebrew/tap/foo",
+          "desc" => "",
+          "homepage" => "",
+          "oldname" => nil,
+          "aliases" => [],
+          "versions" => { "stable" => "1.0", "bottle" => false },
+          "revision" => 0,
+          "installed" => [{
+            "version" => "1.0",
+            "used_options" => [],
+            "built_as_bottle" => nil,
+            "poured_from_bottle" => true,
+          }],
+          "linked_keg" => "1.0",
+          "keg_only" => nil,
+          "dependencies" => [],
+          "conflicts_with" => [],
+          "caveats" => nil,
+          "requirements" => [],
+          "options" => [],
+          "bottle" => {},
+        })
       allow(Formula).to receive(:installed).and_return([
         {
           "name" => "foo",
@@ -123,7 +150,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns foo and bar with their information" do
-      expect(subject.formulae).to contain_exactly *[
+      expect(subject.formulae).to contain_exactly(*[
         {
           :name => "foo",
           :full_name => "homebrew/tap/foo",
@@ -132,6 +159,7 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
           :pinned? => false,
           :outdated? => false,
         },
@@ -143,14 +171,19 @@ describe Bundle::BrewDumper do
           :version => "2.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
           :pinned? => true,
           :outdated? => true,
         },
-      ]
+      ])
     end
 
     it "dumps as foo and bar with args" do
       expect(subject.dump).to eql("brew 'bar', args: ['with-a', 'with-b']\nbrew 'homebrew/tap/foo'")
+    end
+
+    it "formula_info returns the formula" do
+      expect(subject.formula_info('foo')[:name]).to eql("foo")
     end
   end
 
@@ -166,6 +199,9 @@ describe Bundle::BrewDumper do
           :version => "1.1beta",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
           :name => "bar",
@@ -175,6 +211,9 @@ describe Bundle::BrewDumper do
           :version => "HEAD",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -198,6 +237,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -220,6 +262,9 @@ describe Bundle::BrewDumper do
           :version => "2.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -242,6 +287,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => ["b"],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
           :name => "b",
@@ -251,6 +299,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [{ "name" => "foo", "default_formula" => "c", "cask" => "bar" }],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
         {
           :name => "c",
@@ -260,6 +311,9 @@ describe Bundle::BrewDumper do
           :version => "1.0",
           :dependencies => [],
           :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
         },
       ]
     end
@@ -271,6 +325,43 @@ describe Bundle::BrewDumper do
 
     it "returns all the cask requirements" do
       expect(subject.cask_requirements).to eq %w[bar]
+    end
+  end
+
+  context "when order of args for a formula is different in different environment" do
+    it "dumps args in same order" do
+      formula_info = [
+        [{
+          :name => "a",
+          :full_name => "a",
+          :aliases => [],
+          :args => ['with-1', 'with-2'],
+          :version => "1.0",
+          :dependencies => ["b"],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        }],
+        [{
+          :name => "a",
+          :full_name => "a",
+          :aliases => [],
+          :args => ['with-2', 'with-1'],
+          :version => "1.0",
+          :dependencies => ["b"],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        }]
+      ]
+      dump_lines = formula_info.map do |info|
+        Bundle::BrewDumper.reset!
+        allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(info)
+        Bundle::BrewDumper.dump
+      end
+      expect(dump_lines[0]).to eql(dump_lines[1])
     end
   end
 end

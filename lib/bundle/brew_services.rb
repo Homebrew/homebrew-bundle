@@ -1,5 +1,11 @@
 module Bundle
   class BrewServices
+    def self.stop(name)
+      started = `brew services list`.lines.grep(/^#{Regexp.escape(name)} +started/).any?
+      return true unless started
+      Bundle.system "brew", "services", "stop", name
+    end
+
     def self.restart(name)
       Bundle.system "brew", "services", "restart", name
     end
