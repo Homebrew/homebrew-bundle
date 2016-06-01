@@ -26,9 +26,9 @@ module Bundle::Commands
             puts "Apps to install:"
             apps_to_install.each {|app| puts "- #{app}" }
           end
-          if formula_to_install.any?
+          if formulae_to_install.any?
             puts "Formulae to install:"
-            formula_to_install.each {|formula| puts "- #{formula}" }
+            formulae_to_install.each {|formula| puts "- #{formula}" }
           end
         end
         exit 1
@@ -64,14 +64,14 @@ module Bundle::Commands
       @requested_formulae ||= dsl.entries.select { |e| e.type == :brew }.map(&:name)
     end
 
-    def self.formula_to_install
+    def self.formulae_to_install
       requested_formulae.reject do |f|
         Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
       end
     end
 
     def self.any_formulae_to_install?
-      formula_to_install.any?
+      formulae_to_install.any?
     end
 
     def self.requested_taps
