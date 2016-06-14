@@ -24,8 +24,9 @@ module Bundle::Commands
       @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
       requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
       return false if requested_casks.empty?
-      current_casks = Bundle::CaskDumper.casks
-      (requested_casks - current_casks).any?
+      requested_casks.any? do |c|
+        !Bundle::CaskInstaller.cask_up_to_date?(c)
+      end
     end
 
     def self.any_formulae_to_install?
