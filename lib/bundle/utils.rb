@@ -1,18 +1,19 @@
 module Bundle
   def self.system(cmd, *args)
-    verbose = ARGV.verbose?
+    if ARGV.verbose?
+      return super cmd, *args
+    end
     logs = []
     success = nil
     IO.popen([cmd, *args], :err => [:child, :out]) do |pipe|
       while buf = pipe.gets
-        puts buf if verbose
         logs << buf
       end
       Process.wait(pipe.pid)
       success = $?.success?
       pipe.close
     end
-    puts logs.join unless success || verbose
+    puts logs.join unless success
     success
   end
 
