@@ -79,7 +79,7 @@ module Bundle
 
       if keg
         args = keg["used_options"].to_a.map { |option| option.gsub(/^--/, "") }
-        args << "HEAD" if keg["version"] == "HEAD"
+        args << "HEAD" if keg["version"].to_s.start_with?("HEAD")
         args << "devel" if keg["version"].to_s.gsub(/_\d+$/, "") == f["versions"]["devel"]
         args.uniq!
         version = keg["version"]
