@@ -1,7 +1,5 @@
 language: objective-c # Force OS X
-rvm:
-  - 2.0.0
-  - 2.2.0
+rvm: 2.0.0
 cache: bundler
 before_install:
   - brew update
