@@ -17,12 +17,10 @@ module Bundle
 
     def self.dump
       formulae.map do |f|
-        if f[:args].empty?
-          "brew '#{f[:full_name]}'"
-        else
-          args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
-          "brew '#{f[:full_name]}', args: [#{args}]"
-        end
+        brewline = "brew '#{f[:full_name]}'"
+        args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
+        brewline += ", args: [#{args}]" unless f[:args].empty?
+        brewline += BrewServices.started?(f[:full_name]) ? ", service_restart: true" : ''
       end.join("\n")
     end
 
