@@ -16,12 +16,16 @@ module Bundle
     end
 
     def self.dump
+      bs = BrewServices.new
       formulae.map do |f|
+        if bs.started?(f[:full_name])
+          restart = 'service_restart: true'
+        end
         if f[:args].empty?
-          "brew '#{f[:full_name]}'"
+          "brew '#{f[:full_name]}', #{restart}"
         else
           args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
-          "brew '#{f[:full_name]}', args: [#{args}]"
+          "brew '#{f[:full_name]}', args: [#{args}], #{restart}"
         end
       end.join("\n")
     end
