@@ -1,16 +1,5 @@
 module Bundle
   class BrewServices
-    attr_accessor :started_services
-
-    def initialize()
-      @started_services = []
-      started = `brew services list`.lines.grep(/started/)
-      for f in started
-        parts=f.split(/\s+/)
-        @started_services << Hash[:name => parts[0], :user => parts[2], :plist => parts[3]]
-      end
-    end
-
     def self.stop(name)
       started = `brew services list`.lines.grep(/^#{Regexp.escape(name)} +started/).any?
       return true unless started
@@ -21,11 +10,21 @@ module Bundle
       Bundle.system "brew", "services", "restart", name
     end
 
-    def started?(name)
-      for svc in @started_services
-        return true if svc[:name] == name
+    def self.started?(name)
+      if @started_services.nil?
+        @started_services = []
+        started = `brew services list`.lines.grep(/started/)
+        for s in started
+          parts=s.split(/\s+/)
+          @started_services << Hash[:name => parts[0], :user => parts[2], :plist => parts[3]]
+        end
       end
-      return false
+
+      ret = false
+      for svc in @started_services
+        ret = true if svc[:name] == name
+      end
+      return ret
     end
   end
 end
