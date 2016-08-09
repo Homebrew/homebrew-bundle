@@ -24,6 +24,10 @@ module Bundle
       end.join("\n")
     end
 
+    def self.started_service?(name)
+      BrewServices.started?(name) ? ', service_restart: true' : ''
+    end
+
     def self.cask_requirements
       formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
     end
