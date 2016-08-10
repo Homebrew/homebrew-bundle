@@ -11,16 +11,9 @@ module Bundle
     end
 
     def self.started?(name)
-      @raw_started_services ||= `brew services list`.lines.grep(/started/)
-      @started_services ||= []
-      @started_names ||= []
-      @raw_started_services.map do |s|
-        s.split(/\s+/).each do |fname, state, user, plist|
-          @started_services << Hash[:name => fname, :user => user, :plist => plist]
-          @started_names << fname
-       end
-     end
-     @started_names.include? name
+      @started_services ||= `brew services list`.lines.grep(/started/)
+      started_service_names = @started_services.map {|s| s.split(/\s+/).first}
+      started_service_names.include? name
     end
   end
 end
