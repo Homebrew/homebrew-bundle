@@ -9,5 +9,11 @@ module Bundle
     def self.restart(name)
       Bundle.system "brew", "services", "restart", name
     end
+
+    def self.started?(name)
+      @started_services ||= `brew services list`.lines.grep(/started/)
+      started_service_names = @started_services.map {|s| s.split(/\s+/).first}
+      started_service_names.include? name
+    end
   end
 end
