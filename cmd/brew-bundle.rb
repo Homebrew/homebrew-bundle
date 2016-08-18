@@ -1,18 +1,6 @@
-# Ruby version check
-unless RUBY_VERSION.split(".").first.to_i >= 2
-  alt_ruby = which "ruby"
-  alt_ruby_version = `#{alt_ruby} --version`.chomp[/\d\.\d/, 0] if alt_ruby
-
-  unless alt_ruby && alt_ruby_version.split(".").first.to_i >= 2
-    abort "Ruby 2.0 or above is required. You can install it with `brew install ruby`."
-  end
-
-  exec alt_ruby, "-W0", "-I#{HOMEBREW_LIBRARY_PATH}", "-rglobal", __FILE__, *ARGV
-end
-
 # Homebrew version check
-# commit d6b31251e20597842afa386f12f32013e3c13f21
-MIN_HOMEBREW_COMMIT_DATE = Time.parse "Fri Nov 27 16:40:16 2015 +0000"
+# commit cf71e30180d44219836ef129d5e5f00325210dfb
+MIN_HOMEBREW_COMMIT_DATE = Time.parse "Wed Aug 17 11:07:17 2016 +0100"
 HOMEBREW_REPOSITORY.cd do
   if MIN_HOMEBREW_COMMIT_DATE > Time.parse(`git show -s --format=%cD`)
     odie "Your Homebrew is outdated. Please run `brew update`."
