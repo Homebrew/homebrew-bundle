@@ -29,6 +29,12 @@ module Bundle
     end
   end
 
+  def self.services_installed?
+    @services ||= begin
+      !!which("brew-services.rb")
+    end
+  end
+
   def self.brewfile
     if ARGV.include?("--global")
       file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
