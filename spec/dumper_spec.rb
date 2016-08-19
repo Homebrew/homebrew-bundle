@@ -10,6 +10,7 @@ describe Bundle::Dumper do
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!
     Bundle::MacAppStoreDumper.reset!
+    Bundle::BrewServices.reset!
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
   subject { Bundle::Dumper }

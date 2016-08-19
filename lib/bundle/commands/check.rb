@@ -6,6 +6,7 @@ module Bundle::Commands
       Bundle::BrewDumper.reset!
       Bundle::MacAppStoreDumper.reset!
       Bundle::TapDumper.reset!
+      Bundle::BrewServices.reset!
     end
 
     def self.run

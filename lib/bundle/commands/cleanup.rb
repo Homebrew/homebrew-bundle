@@ -5,6 +5,7 @@ module Bundle::Commands
       Bundle::CaskDumper.reset!
       Bundle::BrewDumper.reset!
       Bundle::TapDumper.reset!
+      Bundle::BrewServices.reset!
     end
 
     def self.run

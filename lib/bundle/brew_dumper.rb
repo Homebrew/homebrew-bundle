@@ -4,6 +4,7 @@ require "tsort"
 module Bundle
   class BrewDumper
     def self.reset!
+      Bundle::BrewServices.reset!
       @formulae = nil
       @formula_aliases = nil
     end
