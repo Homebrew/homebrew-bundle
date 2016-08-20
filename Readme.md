@@ -45,7 +45,7 @@ cask 'firefox', args: { appdir: '~/my-apps/Applications' }
 mas '1Password', id: 443987910
 ```
 
-You can then easily install all of the dependencies with one of the following commands:
+You can then easily install all of the dependencies with the following command:
 
     $ brew bundle
 
