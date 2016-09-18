@@ -9,8 +9,8 @@ Bundler for non-Ruby dependencies from Homebrew
 ## Requirements
 
 [Homebrew](https://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/brew) are used for installing the dependencies.
-Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on Mac OS X.
-This tool is primarily developed for use with Homebrew on Mac OS X but should work with Linuxbrew on Linux, too.
+Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on macOS.
+This tool is primarily developed for use with Homebrew on macOS but should work with Linuxbrew on Linux, too.
 
 [brew tap](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
