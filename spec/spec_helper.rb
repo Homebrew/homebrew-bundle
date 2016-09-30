@@ -14,7 +14,7 @@ $:.unshift(STUB_PATH)
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+SimpleCov.formatters = [
   Coveralls::SimpleCov::Formatter,
   SimpleCov::Formatter::HTMLFormatter
 ]
