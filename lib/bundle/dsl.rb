@@ -19,7 +19,7 @@ module Bundle
 
       begin
         process
-      rescue => e
+      rescue Exception => e
         error_msg = "Invalid Brewfile: #{e.message}"
         raise RuntimeError, error_msg, e.backtrace
       end
