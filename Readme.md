@@ -1,4 +1,4 @@
-# Brew Bundle
+# Homebrew Bundle
 
 Bundler for non-Ruby dependencies from Homebrew
 
@@ -11,8 +11,6 @@ Bundler for non-Ruby dependencies from Homebrew
 [Homebrew](https://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/brew) are used for installing the dependencies.
 Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on macOS.
 This tool is primarily developed for use with Homebrew on macOS but should work with Linuxbrew on Linux, too.
-
-[brew tap](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/brew-tap.md) is new feature in Homebrew 0.9, adds more GitHub repos to the list of available formulae.
 
 [Homebrew Cask](https://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
 
@@ -98,29 +96,13 @@ brew 'myservice', restart_service: :changed
 
 ## Note
 
-Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for storing installed versions in a .lock file.
+Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for storing installed versions in a `.lock` file.
 
 If your software needs specific versions then perhaps you'll want to look at using [Vagrant](https://vagrantup.com/) to better match your development and production environments.
 
-## Contributors
+## Tests
 
-Over 10 different people have contributed to the project, you can see them all here: https://github.com/Homebrew/homebrew-bundle/graphs/contributors
-
-## Development
-
-Source hosted at [GitHub](https://github.com/Homebrew/homebrew-bundle).
-Report Issues/Feature requests on [GitHub Issues](https://github.com/Homebrew/homebrew-bundle/issues).
-
-Tests can be ran with `bundle && bundle exec rake spec`
-
-### Note on Patches/Pull Requests
-
- * Fork the project.
- * Make your feature addition or bug fix.
- * Add tests for it. This is important so I don't break it in a future version unintentionally.
- * Add documentation if necessary.
- * Commit, do not change Rakefile or history.
- * Send a pull request. Bonus points for topic branches.
+Tests can be run with `bundle && bundle exec rake spec`
 
 ## Copyright
 
