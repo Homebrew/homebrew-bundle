@@ -2,7 +2,7 @@
 
 Bundler for non-Ruby dependencies from Homebrew
 
-[![Coverage Status](https://codecov.io/github/Homebrew/homebrew-bundle/coverage.svg)](https://coveralls.io/r/Homebrew/homebrew-bundle)
+[![Coverage Status](https://codecov.io/github/Homebrew/homebrew-bundle/coverage.svg)](https://codecov.io/github/Homebrew/homebrew-bundle)
 [![Build Status](https://travis-ci.org/Homebrew/homebrew-bundle.svg)](https://travis-ci.org/Homebrew/homebrew-bundle)
 
 ## Requirements
