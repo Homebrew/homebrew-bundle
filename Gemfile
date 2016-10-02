@@ -4,5 +4,5 @@ group :test do
   gem "rspec"
   gem "rake"
   gem "simplecov"
-  gem "coveralls"
+  gem "codecov"
 end

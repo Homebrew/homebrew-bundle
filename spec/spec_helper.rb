@@ -5,8 +5,7 @@ SimpleCov.start do
   minimum_coverage 100
 end
 
-require "coveralls"
-Coveralls.wear!
+require "codecov"
 
 PROJECT_ROOT ||= File.expand_path("../..", __FILE__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
@@ -15,7 +14,7 @@ $:.unshift(STUB_PATH)
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-  Coveralls::SimpleCov::Formatter,
+  SimpleCov::Formatter::Codecov,
   SimpleCov::Formatter::HTMLFormatter
 ]
 
