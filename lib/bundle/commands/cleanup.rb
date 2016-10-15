@@ -59,6 +59,11 @@ module Bundle::Commands
       kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
       current_formulae = Bundle::BrewDumper.formulae
       all_deps = Hash[current_formulae.map { |f| [f[:name], f[:dependencies]] }]
+      all_reqs = Hash[current_formulae.map { |f|
+        [f[:name], f[:requirements].map { |r| r["default_formula"] }.select {
+          |r| ! r.nil? } ]
+      }]
+      all_deps.merge!(all_reqs) { |k, deps, reqs| deps + reqs }
       dependencies = {}
       kept_formulae.each { |f| dependencies[f] = all_deps[f] }
       # Work out nested dependencies

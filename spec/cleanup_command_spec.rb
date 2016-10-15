@@ -26,13 +26,20 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which formulae to uninstall" do
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
-        { :name => "a2", :full_name => "a2", :aliases => ["a"] },
-        { :name => "c", :full_name => "c" },
-        { :name => "d", :full_name => "homebrew/tap/d", :aliases => ["d2"] },
-        { :name => "e", :full_name => "homebrew/tap/e" },
-        { :name => "f", :full_name => "homebrew/tap/f" },
-        { :name => "h", :full_name => "other/tap/h" },
-        { :name => "i", :full_name => "homebrew/tap/i", :aliases => ["i2"] },
+        { :name => "a2", :full_name => "a2", :aliases => ["a"],
+          :dependencies => [], :requirements => []},
+        { :name => "c", :full_name => "c",
+          :dependencies => [], :requirements => []},
+        { :name => "d", :full_name => "homebrew/tap/d", :aliases => ["d2"],
+          :dependencies => [], :requirements => []},
+        { :name => "e", :full_name => "homebrew/tap/e",
+          :dependencies => [], :requirements => []},
+        { :name => "f", :full_name => "homebrew/tap/f",
+          :dependencies => [], :requirements => []},
+        { :name => "h", :full_name => "other/tap/h",
+          :dependencies => [], :requirements => []},
+        { :name => "i", :full_name => "homebrew/tap/i", :aliases => ["i2"],
+          :dependencies => [], :requirements => []},
       ]
       expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
         c
@@ -43,11 +50,21 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which formulae to uninstall with dependencies" do
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
-        { :name => "a", :full_name => "a", :dependencies => ["q"] },
-        { :name => "p", :full_name => "p", :dependencies => [] },
-        { :name => "q", :full_name => "q", :dependencies => ["r"] },
-        { :name => "r", :full_name => "r", :dependencies => [] },
-        { :name => "s", :full_name => "s", :dependencies => [] }
+        { :name => "a", :full_name => "a",
+          :dependencies => ["q"], :requirements => [
+            {"name" => "t", "default_formula" => "t"},
+            {"name" => "u", "default_formula" => nil}
+        ] },
+        { :name => "p", :full_name => "p",
+          :dependencies => [], :requirements => [] },
+        { :name => "q", :full_name => "q",
+          :dependencies => ["r"], :requirements => [] },
+        { :name => "r", :full_name => "r",
+          :dependencies => [], :requirements => [] },
+        { :name => "s", :full_name => "s",
+          :dependencies => [], :requirements => [] },
+        { :name => "t", :full_name => "t",
+          :dependencies => [], :requirements => [] },
       ]
       expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
         p
