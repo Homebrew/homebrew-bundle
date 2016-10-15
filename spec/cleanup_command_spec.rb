@@ -41,6 +41,20 @@ describe Bundle::Commands::Cleanup do
       ]
     end
 
+    it "computes which formulae to uninstall with dependencies" do
+      allow(Bundle::BrewDumper).to receive(:formulae).and_return [
+        { :name => "a", :full_name => "a", :dependencies => ["q"] },
+        { :name => "p", :full_name => "p", :dependencies => [] },
+        { :name => "q", :full_name => "q", :dependencies => ["r"] },
+        { :name => "r", :full_name => "r", :dependencies => [] },
+        { :name => "s", :full_name => "s", :dependencies => [] }
+      ]
+      expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
+        p
+        s
+      ]
+    end
+
     it "computes which tap to untap" do
       allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z homebrew/bundle homebrew/core])
       expect(Bundle::Commands::Cleanup.taps_to_untap).to eql(%w[z])

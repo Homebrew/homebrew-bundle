@@ -58,6 +58,20 @@ module Bundle::Commands
       kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
       kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
       current_formulae = Bundle::BrewDumper.formulae
+      all_deps = Hash[current_formulae.map { |f| [f[:name], f[:dependencies]] }]
+      dependencies = {}
+      kept_formulae.each { |f| dependencies[f] = all_deps[f] }
+      # Work out nested dependencies
+      old_dep_count = 0
+      while old_dep_count != dependencies.count do
+        old_dep_count = dependencies.count
+        nested_deps = {}
+        dependencies.values.flatten.each { |f| nested_deps[f] = all_deps[f] }
+        dependencies.merge!(nested_deps)
+      end
+      kept_dependencies = dependencies.values.flatten.uniq
+      kept_dependencies.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
+      kept_formulae.concat(kept_dependencies)
       current_formulae.reject do |f|
         Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
       end.map { |f| f[:full_name] }
