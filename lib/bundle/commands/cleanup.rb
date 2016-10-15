@@ -64,6 +64,13 @@ module Bundle::Commands
           |r| ! r.nil? } ]
       }]
       all_deps.merge!(all_reqs) { |k, deps, reqs| deps + reqs }
+      current_formulae.each do |f|
+        # Deal with the full name (homebrew/x11/foo) being specified in the
+        # brewfile
+        if f[:name] != f[:full_name]
+          all_deps[f[:full_name]] = f[:name]
+        end
+      end
       dependencies = {}
       kept_formulae.each { |f| dependencies[f] = all_deps[f] }
       # Work out nested dependencies

@@ -55,6 +55,8 @@ describe Bundle::Commands::Cleanup do
             {"name" => "t", "default_formula" => "t"},
             {"name" => "u", "default_formula" => nil}
         ] },
+        { :name => "f", :full_name => "homebrew/tap/f",
+          :dependencies => ["v"], :requirements => [] },
         { :name => "p", :full_name => "p",
           :dependencies => [], :requirements => [] },
         { :name => "q", :full_name => "q",
@@ -64,6 +66,8 @@ describe Bundle::Commands::Cleanup do
         { :name => "s", :full_name => "s",
           :dependencies => [], :requirements => [] },
         { :name => "t", :full_name => "t",
+          :dependencies => [], :requirements => [] },
+        { :name => "v", :full_name => "v",
           :dependencies => [], :requirements => [] },
       ]
       expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
