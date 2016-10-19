@@ -117,7 +117,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "lists casks, formulae and taps" do
-      expect(Bundle::Commands::Cleanup).to receive(:puts_columns).with(%w[a b]).exactly(3).times
+      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(3).times
       expect(Kernel).not_to receive(:system)
       expect { Bundle::Commands::Cleanup.run }.to output(/Would uninstall formulae:.*Would untap:/m).to_stdout
     end

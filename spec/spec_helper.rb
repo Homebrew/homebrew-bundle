@@ -13,7 +13,7 @@ $:.unshift(STUB_PATH)
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new [
   SimpleCov::Formatter::Codecov,
   SimpleCov::Formatter::HTMLFormatter
 ]
@@ -28,12 +28,17 @@ RSpec.configure do |config|
 end
 
 # Stub out the inclusion of Homebrew's code.
-LIBS_TO_SKIP = ["formula", "tap"]
+LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"]
 
 module Kernel
   alias_method :old_require, :require
   def require(path)
     old_require(path) unless LIBS_TO_SKIP.include?(path)
+  end
+end
+
+class Formatter
+  def self.columns(*args)
   end
 end
 
