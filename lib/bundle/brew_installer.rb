@@ -16,6 +16,7 @@ module Bundle
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
       @conflicts_with_arg = options.fetch(:conflicts_with, [])
       @restart_service = options.fetch(:restart_service, false)
+      @linkapps = options.fetch(:linkapps, false)
     end
 
     def run
@@ -136,6 +137,7 @@ module Bundle
       puts "Installing #{@name} formula. It is not currently installed." if ARGV.verbose?
       if (success = Bundle.system("brew", "install", @full_name, *@args))
         BrewInstaller.installed_formulae << @name
+        link! if @linkapps
       end
       @changed = true
 
@@ -152,6 +154,11 @@ module Bundle
         @changed = false
         true
       end
+    end
+
+    def link!
+      puts "Linking #{@full_name}" if ARGV.verbose?
+      Bundle.system("brew", "linkapps", @name)
     end
   end
 end
