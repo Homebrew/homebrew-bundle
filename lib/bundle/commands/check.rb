@@ -10,9 +10,13 @@ module Bundle::Commands
     end
 
     def self.run
-      if any_taps_to_tap? || any_casks_to_install? || any_apps_to_install? || any_formulae_to_install?
+      if any_taps_to_tap? ||
+          any_casks_to_install? ||
+          any_apps_to_install? ||
+          any_formulae_to_install? ||
+          any_formulae_to_start?
         puts "brew bundle can't satisfy your Brewfile's dependencies."
-        puts "Install missing dependencies with `brew bundle install`."
+        puts "Satisfy missing dependencies with `brew bundle install`."
         exit 1
       else
         puts "The Brewfile's dependencies are satisfied."
@@ -51,6 +55,16 @@ module Bundle::Commands
       return false if requested_apps.empty?
       current_apps = Bundle::MacAppStoreDumper.app_ids
       (requested_apps - current_apps).any?
+    end
+
+    def self.any_formulae_to_start?
+      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      @dsl.entries.select { |e| e.type == :brew }.any? do |e|
+        formula = Bundle::BrewInstaller.new(e.name, e.options)
+        needs_to_start = formula.start_service? || formula.restart_service?
+        next unless needs_to_start
+        !Bundle::BrewServices.started?(e.name)
+      end
     end
   end
 end

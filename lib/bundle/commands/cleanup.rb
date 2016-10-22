@@ -13,19 +13,21 @@ module Bundle::Commands
       formulae = formulae_to_uninstall
       taps = taps_to_untap
       unless ARGV.force?
+        require "utils/formatter"
+
         if casks.any?
           puts "Would uninstall casks:"
-          puts_columns casks
+          puts Formatter.columns casks
         end
 
         if formulae.any?
           puts "Would uninstall formulae:"
-          puts_columns formulae
+          puts Formatter.columns formulae
         end
 
         if taps.any?
           puts "Would untap:"
-          puts_columns taps
+          puts Formatter.columns taps
         end
       else
         if casks.any?

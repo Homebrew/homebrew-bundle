@@ -16,6 +16,7 @@ module Bundle
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
       @conflicts_with_arg = options.fetch(:conflicts_with, [])
       @restart_service = options.fetch(:restart_service, false)
+      @start_service = options.fetch(:start_service, false)
     end
 
     def run
@@ -31,7 +32,15 @@ module Bundle
       end
     end
 
+    def start_service?
+      @start_service
+    end
+
     def restart_service?
+      !!@restart_service
+    end
+
+    def restart_service_needed?
       # Restart if `restart_service: :always`, or if the formula was installed or upgraded
       @restart_service && (@restart_service.to_s != 'changed' || changed?)
     end
@@ -41,7 +50,7 @@ module Bundle
     end
 
     def service_change_state!
-      if restart_service?
+      if restart_service_needed?
         puts "Restarting #{@name} service." if ARGV.verbose?
         BrewServices.restart(@full_name)
       else

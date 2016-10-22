@@ -328,6 +328,67 @@ describe Bundle::BrewDumper do
     end
   end
 
+  context "formulae with unsorted dependencies" do
+    before do
+      Bundle::BrewDumper.reset!
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+        {
+          :name => "a",
+          :full_name => "a",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => ["b", "d", "c"],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        },
+        {
+          :name => "b",
+          :full_name => "b",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        },
+        {
+          :name => "c",
+          :full_name => "c",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        },
+        {
+          :name => "d",
+          :full_name => "d",
+          :aliases => [],
+          :args => [],
+          :version => "1.0",
+          :dependencies => [],
+          :requirements => [],
+          :conflicts_with => [],
+          :pinned? => false,
+          :outdated? => false,
+        },
+      ]
+    end
+    subject { Bundle::BrewDumper }
+
+    it "returns formulae with correct order" do
+      expect(subject.formulae.map { |f| f[:name] }).to eq %w[b c d a]
+    end
+  end
+
   context "when order of args for a formula is different in different environment" do
     it "dumps args in same order" do
       formula_info = [
