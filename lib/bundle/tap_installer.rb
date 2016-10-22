@@ -1,6 +1,8 @@
 module Bundle
-  class TapInstaller
-    def self.install(name, clone_target)
+  module TapInstaller
+    module_function
+
+    def install(name, clone_target)
       if installed_taps.include? name
         puts "Skipping install of #{name} tap. It is already installed." if ARGV.verbose?
         return true
@@ -20,7 +22,7 @@ module Bundle
       success
     end
 
-    def self.installed_taps
+    def installed_taps
       @installed_taps ||= Bundle::TapDumper.tap_names
     end
   end

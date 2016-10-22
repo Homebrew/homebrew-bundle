@@ -14,11 +14,17 @@ class Formula
     opt_prefix.join("bin")
   end
 
-  def recursive_dependencies; []; end
+  def recursive_dependencies
+    []
+  end
 
-  def keg_only?; false; end
+  def keg_only?
+    false
+  end
 
-  def installed?; true; end
+  def installed?
+    true
+  end
 end
 
 class Formulary

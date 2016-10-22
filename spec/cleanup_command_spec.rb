@@ -26,13 +26,13 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which formulae to uninstall" do
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
-        { :name => "a2", :full_name => "a2", :aliases => ["a"] },
-        { :name => "c", :full_name => "c" },
-        { :name => "d", :full_name => "homebrew/tap/d", :aliases => ["d2"] },
-        { :name => "e", :full_name => "homebrew/tap/e" },
-        { :name => "f", :full_name => "homebrew/tap/f" },
-        { :name => "h", :full_name => "other/tap/h" },
-        { :name => "i", :full_name => "homebrew/tap/i", :aliases => ["i2"] },
+        { name: "a2", full_name: "a2", aliases: ["a"] },
+        { name: "c", full_name: "c" },
+        { name: "d", full_name: "homebrew/tap/d", aliases: ["d2"] },
+        { name: "e", full_name: "homebrew/tap/e" },
+        { name: "f", full_name: "homebrew/tap/f" },
+        { name: "h", full_name: "other/tap/h" },
+        { name: "i", full_name: "homebrew/tap/i", aliases: ["i2"] },
       ]
       expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
         c
@@ -72,7 +72,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls casks" do
-      expect(Kernel).to receive(:system).with(*%w[brew cask uninstall --force a b])
+      expect(Kernel).to receive(:system).with("brew", "cask", "uninstall", "--force", "a", "b")
       expect { Bundle::Commands::Cleanup.run }.to output(/Uninstalled 2 casks/).to_stdout
     end
   end
@@ -87,7 +87,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls formulae" do
-      expect(Kernel).to receive(:system).with(*%w[brew uninstall --force a b])
+      expect(Kernel).to receive(:system).with("brew", "uninstall", "--force", "a", "b")
       expect { Bundle::Commands::Cleanup.run }.to output(/Uninstalled 2 formulae/).to_stdout
     end
   end
@@ -102,7 +102,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "untaps taps" do
-      expect(Kernel).to receive(:system).with(*%w[brew untap a b])
+      expect(Kernel).to receive(:system).with("brew", "untap", "a", "b")
       Bundle::Commands::Cleanup.run
     end
   end

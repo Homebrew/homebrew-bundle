@@ -15,8 +15,9 @@ module Bundle
       @name = name.split("/").last
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
       @conflicts_with_arg = options.fetch(:conflicts_with, [])
-      @restart_service = options.fetch(:restart_service, false)
-      @start_service = options.fetch(:start_service, false)
+      @restart_service = options[:restart_service]
+      @start_service = options[:start_service]
+      @changed = nil
     end
 
     def run
@@ -33,20 +34,21 @@ module Bundle
     end
 
     def start_service?
-      @start_service
+      !@start_service.nil?
     end
 
     def restart_service?
-      !!@restart_service
+      !@restart_service.nil?
     end
 
     def restart_service_needed?
+      return false unless restart_service?
       # Restart if `restart_service: :always`, or if the formula was installed or upgraded
-      @restart_service && (@restart_service.to_s != 'changed' || changed?)
+      @restart_service.to_s != "changed" || changed?
     end
 
     def changed?
-      @changed
+      !@changed.nil?
     end
 
     def service_change_state!
@@ -72,8 +74,6 @@ module Bundle
       false
     end
 
-    private
-
     def self.formula_installed?(formula)
       formula_in_array?(formula, installed_formulae)
     end
@@ -97,6 +97,8 @@ module Bundle
     def self.pinned_formulae
       @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
     end
+
+    private
 
     def installed?
       BrewInstaller.formula_installed?(@name)
@@ -123,18 +125,17 @@ module Bundle
 
     def resolve_conflicts!
       conflicts_with.each do |conflict|
-        if BrewInstaller.formula_installed?(conflict)
-          if ARGV.verbose?
-            puts <<-EOS.undent
+        next unless BrewInstaller.formula_installed?(conflict)
+        if ARGV.verbose?
+          puts <<-EOS.undent
               Unlinking #{conflict} formula.
               It is currently installed and conflicts with #{@name}.
-            EOS
-          end
-          return false unless Bundle.system("brew", "unlink", conflict)
-          if @restart_service
-            puts "Stopping #{conflict} service (if it is running)." if ARGV.verbose?
-            BrewServices.stop(conflict)
-          end
+          EOS
+        end
+        return false unless Bundle.system("brew", "unlink", conflict)
+        if @restart_service
+          puts "Stopping #{conflict} service (if it is running)." if ARGV.verbose?
+          BrewServices.stop(conflict)
         end
       end
 
@@ -158,7 +159,7 @@ module Bundle
         @changed = true
       else
         puts "Skipping install of #{@name} formula. It is already up-to-date." if ARGV.verbose?
-        @changed = false
+        @changed = nil
         true
       end
     end

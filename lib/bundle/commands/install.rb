@@ -1,7 +1,11 @@
-module Bundle::Commands
-  class Install
-    def self.run
-      Bundle::Dsl.new(Bundle.brewfile).install || exit(1)
+module Bundle
+  module Commands
+    module Install
+      module_function
+
+      def run
+        Bundle::Dsl.new(Bundle.brewfile).install || exit(1)
+      end
     end
   end
 end

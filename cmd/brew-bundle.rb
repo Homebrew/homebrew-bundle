@@ -27,8 +27,6 @@
 #:    If `--global` is passed, set Brewfile path to `$HOME/.Brewfile`.
 #:
 #:    If `-h` or `--help` are passed, print this help message and exit.
-#:
-#:    If `--version` is passed, print the version of `brew bundle`.
 
 # Homebrew version check
 # commit cf71e30180d44219836ef129d5e5f00325210dfb
@@ -45,11 +43,6 @@ BUNDLE_LIB = Pathname.new(BUNDLE_ROOT)/"lib"
 $LOAD_PATH.unshift(BUNDLE_LIB)
 
 require "bundle"
-
-if ARGV.include?("--version")
-  puts Bundle::VERSION
-  exit 0
-end
 
 # Pop the named command from ARGV, leaving everything else in place
 command = ARGV.named.first
@@ -81,7 +74,7 @@ rescue RuntimeError, SystemCallError => e
   onoe e
   puts e.backtrace if ARGV.debug?
   exit 1
-rescue Exception => e
+rescue StandardError => e
   onoe e
   puts "#{Tty.white}Please report this bug:#{Tty.reset}"
   puts "    #{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues/")}"

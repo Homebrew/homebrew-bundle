@@ -2,8 +2,10 @@ require "fileutils"
 require "pathname"
 
 module Bundle
-  class Dumper
-    def self.dump_brewfile
+  module Dumper
+    module_function
+
+    def dump_brewfile
       if ARGV.include?("--global")
         file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
       else
@@ -25,13 +27,11 @@ module Bundle
       write_file file, content
     end
 
-    private
-
-    def self.should_not_write_file?(file, overwrite = false)
+    def should_not_write_file?(file, overwrite = false)
       file.exist? && !overwrite && file.to_s != "/dev/stdout"
     end
 
-    def self.write_file(file, content)
+    def write_file(file, content)
       file.open("w") { |io| io.write content }
     end
   end

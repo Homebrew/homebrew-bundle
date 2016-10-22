@@ -1,6 +1,8 @@
 module Bundle
-  class MacAppStoreInstaller
-    def self.install(name, id)
+  module MacAppStoreInstaller
+    module_function
+
+    def install(name, id)
       unless Bundle.mas_installed?
         puts "Installing mas. It is not currently installed." if ARGV.verbose?
         Bundle.system "brew", "install", "mas"
@@ -15,14 +17,14 @@ module Bundle
       end
 
       puts "Installing #{name} app. It is not currently installed." if ARGV.verbose?
-      if (success = Bundle.system "mas", "install", "#{id}")
+      if (success = Bundle.system "mas", "install", id.to_s)
         installed_app_ids << id
       end
 
       success
     end
 
-    def self.installed_app_ids
+    def installed_app_ids
       @installed_app_ids ||= Bundle::MacAppStoreDumper.app_ids
     end
   end

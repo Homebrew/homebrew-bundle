@@ -1,22 +1,25 @@
 require "json"
 require "tsort"
 
+# rubocop:disable Metrics/ModuleLength
 module Bundle
-  class BrewDumper
-    def self.reset!
+  module BrewDumper
+    module_function
+
+    def reset!
       Bundle::BrewServices.reset!
       @formulae = nil
       @formula_aliases = nil
     end
 
-    def self.formulae
+    def formulae
       @formulae ||= begin
         @formulae = formulae_info
         sort!
       end
     end
 
-    def self.dump
+    def dump
       formulae.map do |f|
         brewline = "brew '#{f[:full_name]}'"
         args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
@@ -26,15 +29,15 @@ module Bundle
       end.join("\n")
     end
 
-    def self.cask_requirements
+    def cask_requirements
       formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
     end
 
-    def self.formula_names
+    def formula_names
       formulae.map { |f| f[:name] }
     end
 
-    def self.formula_aliases
+    def formula_aliases
       return @formula_aliases if @formula_aliases
       @formula_aliases = {}
       formulae.each do |f|
@@ -52,7 +55,7 @@ module Bundle
       @formula_aliases
     end
 
-    def self.formula_info(name)
+    def formula_info(name)
       @formula_info_name ||= {}
       @formula_info_name[name] ||= begin
         require "formula"
@@ -62,14 +65,12 @@ module Bundle
       end
     end
 
-    private
-
-    def self.formulae_info
+    def formulae_info
       require "formula"
       Formula.installed.map { |f| formula_inspector f.to_hash }
     end
 
-    def self.formula_inspector(f)
+    def formula_inspector(f)
       installed = f["installed"]
       if f["linked_keg"].nil?
         keg = installed.last
@@ -89,28 +90,28 @@ module Bundle
       end
 
       {
-        :name => f["name"],
-        :full_name => f["full_name"],
-        :aliases => f["aliases"],
-        :args => args,
-        :version => version,
-        :dependencies => f["dependencies"],
-        :requirements => f["requirements"],
-        :conflicts_with => f["conflicts_with"],
-        :pinned? => !!f["pinned"],
-        :outdated? => !!f["outdated"],
+        name: f["name"],
+        full_name: f["full_name"],
+        aliases: f["aliases"],
+        args: args,
+        version: version,
+        dependencies: f["dependencies"],
+        requirements: f["requirements"],
+        conflicts_with: f["conflicts_with"],
+        pinned?: !f["pinned"].nil?,
+        outdated?: !f["outdated"].nil?,
       }
     end
 
     class Topo < Hash
       include TSort
-      alias_method :tsort_each_node, :each_key
+      alias tsort_each_node each_key
       def tsort_each_child(node, &block)
         fetch(node).sort.each(&block)
       end
     end
 
-    def self.sort!
+    def sort!
       # Step 1: Sort by formula full name while putting tap formulae behind core formulae.
       #         So we can have a nicer output.
       @formulae.sort! do |a, b|

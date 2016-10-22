@@ -1,77 +1,80 @@
-module Bundle::Commands
-  class Cleanup
-    def self.reset!
-      @dsl = nil
-      Bundle::CaskDumper.reset!
-      Bundle::BrewDumper.reset!
-      Bundle::TapDumper.reset!
-      Bundle::BrewServices.reset!
-    end
+module Bundle
+  module Commands
+    module Cleanup
+      module_function
 
-    def self.run
-      casks = casks_to_uninstall
-      formulae = formulae_to_uninstall
-      taps = taps_to_untap
-      unless ARGV.force?
-        require "utils/formatter"
+      def reset!
+        @dsl = nil
+        Bundle::CaskDumper.reset!
+        Bundle::BrewDumper.reset!
+        Bundle::TapDumper.reset!
+        Bundle::BrewServices.reset!
+      end
 
-        if casks.any?
-          puts "Would uninstall casks:"
-          puts Formatter.columns casks
-        end
+      def run
+        casks = casks_to_uninstall
+        formulae = formulae_to_uninstall
+        taps = taps_to_untap
+        if ARGV.force?
+          if casks.any?
+            Kernel.system "brew", "cask", "uninstall", "--force", *casks
+            puts "Uninstalled #{casks.size} cask#{casks.size == 1 ? "" : "s"}"
+          end
 
-        if formulae.any?
-          puts "Would uninstall formulae:"
-          puts Formatter.columns formulae
-        end
+          if formulae.any?
+            Kernel.system "brew", "uninstall", "--force", *formulae
+            puts "Uninstalled #{formulae.size} formula#{formulae.size == 1 ? "" : "e"}"
+          end
 
-        if taps.any?
-          puts "Would untap:"
-          puts Formatter.columns taps
-        end
-      else
-        if casks.any?
-          Kernel.system "brew", "cask", "uninstall", "--force", *casks
-          puts "Uninstalled #{casks.size} cask#{casks.size == 1 ? "" : "s"}"
-        end
+          if taps.any?
+            Kernel.system "brew", "untap", *taps
+          end
+        else
+          require "utils/formatter"
 
-        if formulae.any?
-          Kernel.system "brew", "uninstall", "--force", *formulae
-          puts "Uninstalled #{formulae.size} formula#{formulae.size == 1 ? "" : "e"}"
-        end
+          if casks.any?
+            puts "Would uninstall casks:"
+            puts Formatter.columns casks
+          end
 
-        if taps.any?
-          Kernel.system "brew", "untap", *taps
+          if formulae.any?
+            puts "Would uninstall formulae:"
+            puts Formatter.columns formulae
+          end
+
+          if taps.any?
+            puts "Would untap:"
+            puts Formatter.columns taps
+          end
         end
       end
-    end
 
-    private
+      def casks_to_uninstall
+        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
+        current_casks = Bundle::CaskDumper.casks
+        current_casks - kept_casks
+      end
 
-    def self.casks_to_uninstall
-      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-      current_casks = Bundle::CaskDumper.casks
-      current_casks - kept_casks
-    end
+      def formulae_to_uninstall
+        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+        kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
+        current_formulae = Bundle::BrewDumper.formulae
+        current_formulae.reject! do |f|
+          Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
+        end
+        current_formulae.map { |f| f[:full_name] }
+      end
 
-    def self.formulae_to_uninstall
-      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-      kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
-      current_formulae = Bundle::BrewDumper.formulae
-      current_formulae.reject do |f|
-        Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
-      end.map { |f| f[:full_name] }
-    end
+      IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
 
-    IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
-
-    def self.taps_to_untap
-      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-      kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
-      current_taps = Bundle::TapDumper.tap_names
-      current_taps - kept_taps - IGNORED_TAPS
+      def taps_to_untap
+        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
+        current_taps = Bundle::TapDumper.tap_names
+        current_taps - kept_taps - IGNORED_TAPS
+      end
     end
   end
 end
