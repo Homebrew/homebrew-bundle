@@ -60,6 +60,32 @@ module Bundle::Commands
       kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
       kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
       current_formulae = Bundle::BrewDumper.formulae
+      all_deps = Hash[current_formulae.map { |f| [f[:name], f[:dependencies]] }]
+      all_reqs = Hash[current_formulae.map { |f|
+        [f[:name], f[:requirements].map { |r| r["default_formula"] }.select {
+          |r| ! r.nil? } ]
+      }]
+      all_deps.merge!(all_reqs) { |k, deps, reqs| deps + reqs }
+      current_formulae.each do |f|
+        # Deal with the full name (homebrew/x11/foo) being specified in the
+        # brewfile
+        if f[:name] != f[:full_name]
+          all_deps[f[:full_name]] = f[:name]
+        end
+      end
+      dependencies = {}
+      kept_formulae.each { |f| dependencies[f] = all_deps[f] }
+      # Work out nested dependencies
+      old_dep_count = 0
+      while old_dep_count != dependencies.count do
+        old_dep_count = dependencies.count
+        nested_deps = {}
+        dependencies.values.flatten.each { |f| nested_deps[f] = all_deps[f] }
+        dependencies.merge!(nested_deps)
+      end
+      kept_dependencies = dependencies.values.flatten.uniq
+      kept_dependencies.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
+      kept_formulae.concat(kept_dependencies)
       current_formulae.reject do |f|
         Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
       end.map { |f| f[:full_name] }
