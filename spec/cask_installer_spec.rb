@@ -40,7 +40,7 @@ describe Bundle::CaskInstaller do
 
       it "installs cask with arguments" do
         expect(Bundle).to receive(:system).with("brew", "cask", "install", "firefox", "--appdir=/Applications").and_return(true)
-        expect(Bundle::CaskInstaller.install("firefox", :args => { :appdir => "/Applications" })).to eq(true)
+        expect(Bundle::CaskInstaller.install("firefox", args: { appdir: "/Applications" })).to eq(true)
       end
     end
   end

@@ -1,5 +1,4 @@
-require "bundle/version"
-require "bundle/utils"
+require "bundle/bundle"
 require "bundle/dsl"
 require "bundle/brew_services"
 require "bundle/brew_installer"

@@ -1,6 +1,8 @@
 module Bundle
-  class CaskInstaller
-    def self.install(name, options = {})
+  module CaskInstaller
+    module_function
+
+    def install(name, options = {})
       if installed_casks.include? name
         puts "Skipping install of #{name} cask. It is already installed." if ARGV.verbose?
         return true
@@ -16,7 +18,7 @@ module Bundle
       success
     end
 
-    def self.installed_casks
+    def installed_casks
       @installed_casks ||= Bundle::CaskDumper.casks
     end
   end

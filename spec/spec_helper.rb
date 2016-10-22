@@ -28,17 +28,19 @@ RSpec.configure do |config|
 end
 
 # Stub out the inclusion of Homebrew's code.
-LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"]
+LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"].freeze
 
 module Kernel
-  alias_method :old_require, :require
+  alias old_require require
   def require(path)
     old_require(path) unless LIBS_TO_SKIP.include?(path)
   end
 end
 
-class Formatter
-  def self.columns(*args)
+module Formatter
+  module_function
+
+  def columns(*)
   end
 end
 
@@ -48,7 +50,7 @@ class Formula
   end
 end
 
-module Tap
+class Tap
   def self.map
     []
   end

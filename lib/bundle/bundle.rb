@@ -1,11 +1,13 @@
 module Bundle
-  def self.system(cmd, *args)
+  module_function
+
+  def system(cmd, *args)
     if ARGV.verbose?
       return super cmd, *args
     end
     logs = []
     success = nil
-    IO.popen([cmd, *args], :err => [:child, :out]) do |pipe|
+    IO.popen([cmd, *args], err: [:child, :out]) do |pipe|
       while buf = pipe.gets
         logs << buf
       end
@@ -17,25 +19,25 @@ module Bundle
     success
   end
 
-  def self.mas_installed?
+  def mas_installed?
     @mas ||= begin
-      !!which("mas")
+      !which("mas").nil?
     end
   end
 
-  def self.cask_installed?
+  def cask_installed?
     @cask ||= begin
       which("brew-cask") || which("brew-cask.rb")
     end
   end
 
-  def self.services_installed?
+  def services_installed?
     @services ||= begin
-      !!which("brew-services.rb")
+      !which("brew-services.rb").nil?
     end
   end
 
-  def self.brewfile
+  def brewfile
     if ARGV.include?("--global")
       file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
     else

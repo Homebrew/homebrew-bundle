@@ -19,7 +19,8 @@ module Bundle
 
       begin
         process
-      rescue Exception => e
+      # Want to catch all exceptions for e.g. syntax errors.
+      rescue Exception => e # rubocop:disable Lint/RescueException
         error_msg = "Invalid Brewfile: #{e.message}"
         raise RuntimeError, error_msg, e.backtrace
       end
@@ -88,21 +89,19 @@ module Bundle
       id = options[:id]
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
-      @entries << Entry.new(:mac_app_store, name, :id => id)
+      @entries << Entry.new(:mac_app_store, name, id: id)
     end
 
     def tap(name, clone_target = nil)
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "clone_target(#{clone_target.inspect}) should be nil or a String object" if clone_target && !clone_target.is_a?(String)
       name = Bundle::Dsl.sanitize_tap_name(name)
-      @entries << Entry.new(:tap, name, :clone_target => clone_target)
+      @entries << Entry.new(:tap, name, clone_target: clone_target)
     end
 
-    private
-
-    HOMEBREW_TAP_ARGS_REGEX = %r{^([\w-]+)/(homebrew-)?([\w-]+)$}.freeze
-    HOMEBREW_CORE_FORMULA_REGEX = %r{^homebrew/homebrew/([\w+-.]+)$}i.freeze
-    HOMEBREW_TAP_FORMULA_REGEX = %r{^([\w-]+)/([\w-]+)/([\w+-.]+)$}.freeze
+    HOMEBREW_TAP_ARGS_REGEX = %r{^([\w-]+)/(homebrew-)?([\w-]+)$}
+    HOMEBREW_CORE_FORMULA_REGEX = %r{^homebrew/homebrew/([\w+-.]+)$}i
+    HOMEBREW_TAP_FORMULA_REGEX = %r{^([\w-]+)/([\w-]+)/([\w+-.]+)$}
 
     def self.sanitize_brew_name(name)
       name.downcase!
