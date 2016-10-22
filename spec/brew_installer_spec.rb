@@ -183,9 +183,39 @@ describe Bundle::BrewInstaller do
     end
   end
 
+  context '#start_service?' do
+    it 'should be falsy by default' do
+      expect(Bundle::BrewInstaller.new(formula).start_service?).to eql(false)
+    end
+
+    context 'start_service option is true' do
+      it 'should be true' do
+        expect(Bundle::BrewInstaller.new(formula, start_service: true).start_service?).to eql(true)
+      end
+    end
+  end
+
   context '#restart_service?' do
-    it 'should be false by default' do
+    it 'should be falsy by default' do
       expect(Bundle::BrewInstaller.new(formula).restart_service?).to eql(false)
+    end
+
+    context 'restart_service option is true' do
+      it 'should be true' do
+        expect(Bundle::BrewInstaller.new(formula, restart_service: true).restart_service?).to eql(true)
+      end
+    end
+
+    context 'restart_service option is changed' do
+      it 'should be true' do
+        expect(Bundle::BrewInstaller.new(formula, restart_service: :changed).restart_service?).to eql(true)
+      end
+    end
+  end
+
+  context '#restart_service_needed?' do
+    it 'should be false by default' do
+      expect(Bundle::BrewInstaller.new(formula).restart_service_needed?).to eql(false)
     end
 
     context 'if a service is unchanged' do
@@ -194,11 +224,11 @@ describe Bundle::BrewInstaller do
       end
 
       it 'should be true with {restart_service: true}' do
-        expect(Bundle::BrewInstaller.new(formula, restart_service: true).restart_service?).to eql(true)
+        expect(Bundle::BrewInstaller.new(formula, restart_service: true).restart_service_needed?).to eql(true)
       end
 
       it 'should be false if {restart_service: :changed}' do
-        expect(Bundle::BrewInstaller.new(formula, restart_service: :changed).restart_service?).to eql(false)
+        expect(Bundle::BrewInstaller.new(formula, restart_service: :changed).restart_service_needed?).to eql(false)
       end
     end
 
@@ -208,11 +238,11 @@ describe Bundle::BrewInstaller do
       end
 
       it 'should be true with {restart_service: true}' do
-        expect(Bundle::BrewInstaller.new(formula, restart_service: true).restart_service?).to eql(true)
+        expect(Bundle::BrewInstaller.new(formula, restart_service: true).restart_service_needed?).to eql(true)
       end
 
       it 'should be true if {restart_service: :changed}' do
-        expect(Bundle::BrewInstaller.new(formula, restart_service: :changed).restart_service?).to eql(true)
+        expect(Bundle::BrewInstaller.new(formula, restart_service: :changed).restart_service_needed?).to eql(true)
       end
     end
   end
