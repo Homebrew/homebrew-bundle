@@ -74,7 +74,7 @@ This provides a successful exit code if everything is up-to-date so is useful fo
 
 ### Exec
 
-Runs an external command within Homebrew's [superenv](https://github.com/Homebrew/brew/blob/master/share/doc/homebrew/Formula-Cookbook.md#superenv-notes) build environment:
+Runs an external command within Homebrew's [superenv](https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md#superenv-notes) build environment:
 
     $ brew bundle exec -- bundle install
 
