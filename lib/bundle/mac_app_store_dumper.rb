@@ -10,7 +10,11 @@ module Bundle
 
     def apps
       @apps ||= if Bundle.mas_installed?
-        `mas list 2>/dev/null`.split("\n").map { |app| app.split(" ", 2) }
+        `mas list 2>/dev/null`.split("\n").map do |app|
+          id, name_with_version = app.split(" ", 2)
+          name = name_with_version.gsub(/ \([\d\.]+\)$/, "")
+          [id, name]
+        end
       else
         []
       end
