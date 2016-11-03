@@ -27,7 +27,7 @@ module Bundle
 
   def cask_installed?
     @cask ||= begin
-      which("brew-cask") || which("brew-cask.rb")
+      Tap.fetch("caskroom", "homebrew-cask").installed?
     end
   end
 

@@ -68,6 +68,7 @@ describe Bundle::BrewDumper do
   context "formulae `foo` and `bar` are installed" do
     before do
       Bundle::BrewDumper.reset!
+      allow(Bundle).to receive(:services_installed?).and_return(false)
       allow(Formula).to receive(:[]).and_return(
         "name" => "foo",
         "full_name" => "homebrew/tap/foo",
@@ -417,6 +418,7 @@ describe Bundle::BrewDumper do
       ]
       dump_lines = formula_info.map do |info|
         Bundle::BrewDumper.reset!
+        allow(Bundle).to receive(:services_installed?).and_return(false)
         allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(info)
         Bundle::BrewDumper.dump
       end
