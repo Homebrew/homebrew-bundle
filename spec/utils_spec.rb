@@ -31,7 +31,7 @@ describe Bundle do
 
   context "check for brew cask" do
     it "finds it when present" do
-      allow(Bundle).to receive(:which).and_return(true)
+      allow(Tap).to receive_message_chain("fetch.installed?").and_return(true)
       expect(Bundle.cask_installed?).to eql(true)
     end
   end
