@@ -37,6 +37,9 @@ module Kernel
   end
 end
 
+HOMEBREW_PREFIX = Pathname.new("/usr/local")
+HOMEBREW_REPOSITORY = Pathname.new("/usr/local/Homebrew")
+
 module Formatter
   module_function
 

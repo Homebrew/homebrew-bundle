@@ -27,7 +27,8 @@ module Bundle
 
   def cask_installed?
     @cask ||= begin
-      which("brew-cask") || which("brew-cask.rb")
+      File.directory?("#{HOMEBREW_PREFIX}/Caskroom") ||
+        File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/caskroom")
     end
   end
 
