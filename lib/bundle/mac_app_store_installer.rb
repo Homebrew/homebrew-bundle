@@ -11,6 +11,14 @@ module Bundle
         end
       end
 
+      unless Bundle.mas_signedin?
+        puts "Not signed in to Mac App Store." if ARGV.verbose?
+        Bundle.system "mas", "signin", "--dialog", ""
+        unless Bundle.mas_signedin?
+          raise "Unable to install #{name} app. mas not signed in to Mac App Store."
+        end
+      end
+      
       if installed_app_ids.include? id
         puts "Skipping install of #{name} app. It is already installed." if ARGV.verbose?
         return true
