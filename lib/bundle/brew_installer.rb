@@ -67,10 +67,17 @@ module Bundle
     def self.formula_in_array?(formula, array)
       return true if array.include?(formula)
       return true if array.include?(formula.split("/").last)
+
+      old_names = Bundle::BrewDumper.formula_oldnames
+      old_name = old_names[formula]
+      old_name ||= old_names[formula.split("/").last]
+      return true if old_name && array.include?(old_name)
+
       resolved_full_name = Bundle::BrewDumper.formula_aliases[formula]
       return false unless resolved_full_name
       return true if array.include?(resolved_full_name)
       return true if array.include?(resolved_full_name.split("/").last)
+
       false
     end
 

@@ -53,6 +53,7 @@ describe Bundle::BrewDumper do
       expect(subject.formulae).to contain_exactly(
         name: "foo",
         full_name: "homebrew/tap/foo",
+        oldname: nil,
         aliases: [],
         args: [],
         version: nil,
@@ -153,18 +154,20 @@ describe Bundle::BrewDumper do
       expect(subject.formulae).to contain_exactly(
         {
           name: "foo",
-            full_name: "homebrew/tap/foo",
-            aliases: [],
-            args: [],
-            version: "1.0",
-            dependencies: [],
-            requirements: [],
-            conflicts_with: [],
-            pinned?: false,
-            outdated?: false,
+          full_name: "homebrew/tap/foo",
+          oldname: nil,
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
         },
         name: "bar",
         full_name: "bar",
+        oldname: nil,
         aliases: [],
         args: ["with-a", "with-b"],
         version: "2.0",
@@ -421,6 +424,27 @@ describe Bundle::BrewDumper do
         Bundle::BrewDumper.dump
       end
       expect(dump_lines[0]).to eql(dump_lines[1])
+    end
+  end
+
+  context "#formula_oldnames" do
+    it "works" do
+      formula_info = [{
+          name: "a",
+          full_name: "homebrew/versions/a",
+          oldname: "aold",
+          aliases: [],
+          args: ["with-1", "with-2"],
+          version: "1.0",
+          dependencies: ["b"],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+      }]
+      Bundle::BrewDumper.reset!
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(formula_info)
+      expect(Bundle::BrewDumper.formula_oldnames["aold"]).to eql "homebrew/versions/a"
     end
   end
 end
