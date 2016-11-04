@@ -59,7 +59,11 @@ module Bundle
       def formulae_to_uninstall
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
         kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        kept_formulae.map! { |f| Bundle::BrewDumper.formula_aliases[f] || f }
+        kept_formulae.map! do |f|
+          Bundle::BrewDumper.formula_aliases[f] ||
+            Bundle::BrewDumper.formula_oldnames[f] ||
+            f
+        end
         current_formulae = Bundle::BrewDumper.formulae
         current_formulae.reject! do |f|
           Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)

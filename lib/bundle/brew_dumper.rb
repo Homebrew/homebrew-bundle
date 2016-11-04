@@ -37,19 +37,33 @@ module Bundle
       formulae.map { |f| f[:name] }
     end
 
+    def formula_oldnames
+      return @formula_oldnames if @formula_oldnames
+      @formula_oldnames = {}
+      formulae.each do |f|
+        oldname = f[:oldname]
+        next unless oldname
+        @formula_oldnames[oldname] = f[:full_name]
+        if f[:full_name].include? "/" # tap formula
+          tap_name = f[:full_name].rpartition("/").first
+          @formula_oldnames["#{tap_name}/#{oldname}"] = f[:full_name]
+        end
+      end
+      @formula_oldnames
+    end
+
     def formula_aliases
       return @formula_aliases if @formula_aliases
       @formula_aliases = {}
       formulae.each do |f|
         aliases = f[:aliases]
         next if !aliases || aliases.empty?
-        if f[:full_name].include? "/" # tap formula
-          aliases.each do |a|
-            @formula_aliases[a] = f[:full_name]
-            @formula_aliases["#{f[:full_name].rpartition("/").first}/#{a}"] = f[:full_name]
+        aliases.each do |a|
+          @formula_aliases[a] = f[:full_name]
+          if f[:full_name].include? "/" # tap formula
+            tap_name = f[:full_name].rpartition("/").first
+            @formula_aliases["#{tap_name}/#{a}"] = f[:full_name]
           end
-        else
-          aliases.each { |a| @formula_aliases[a] = f[:full_name] }
         end
       end
       @formula_aliases
@@ -91,6 +105,7 @@ module Bundle
 
       {
         name: f["name"],
+        oldname: f["oldname"],
         full_name: f["full_name"],
         aliases: f["aliases"],
         args: args,
