@@ -25,6 +25,10 @@ module Bundle
     end
   end
 
+  def mas_signedin?
+    Bundle.system "mas", "account"
+  end
+
   def cask_installed?
     @cask ||= begin
       File.directory?("#{HOMEBREW_PREFIX}/Caskroom") ||
