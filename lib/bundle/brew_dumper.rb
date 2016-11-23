@@ -111,6 +111,9 @@ module Bundle
         args: args,
         version: version,
         dependencies: f["dependencies"],
+        recommended_dependencies: f["recommended_dependencies"],
+        optional_dependencies: f["optional_dependencies"],
+        build_dependencies: f["build_dependencies"],
         requirements: f["requirements"],
         conflicts_with: f["conflicts_with"],
         pinned?: !f["pinned"].nil?,
@@ -142,13 +145,23 @@ module Bundle
       # Step 2: Sort by formula dependency topology.
       topo = Topo.new
       @formulae.each do |f|
-        deps = (f[:dependencies] + f[:requirements].map { |req| req["default_formula"] }.compact).uniq
+        deps = (
+          f[:dependencies] \
+          + f[:requirements].map { |req| req["default_formula"] }.compact \
+          - f[:optional_dependencies] \
+          - f[:build_dependencies] \
+        ).uniq
         topo[f[:full_name]] = deps.map do |dep|
           ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
           ff[:full_name] if ff
         end.compact
       end
       @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
+    rescue TSort::Cyclic => e
+      odie <<-EOS.undent
+        #{e.message}
+        Formulae dependency graph sorting failed (likely due to a circular dependency)!
+      EOS
     end
   end
 end
