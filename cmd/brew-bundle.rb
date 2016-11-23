@@ -1,7 +1,7 @@
 #:  * `bundle` <command>:
 #:    Bundler for non-Ruby dependencies from Homebrew.
 #:
-#:    `brew bundle` [-v|--verbose] [--file=<path>|--global]:
+#:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global]:
 #:    Install or upgrade all dependencies in a Brewfile.
 #:
 #:    `brew bundle dump` [--force] [--file=<path>|--global]
@@ -10,13 +10,16 @@
 #:    `brew bundle cleanup` [--force] [--file=<path>|--global]
 #:    Uninstall all dependencies not listed in a Brewfile.
 #:
-#:    `brew bundle check` [--file=<path>|--global]
+#:    `brew bundle check` [--no-upgrade] [--file=<path>|--global]
 #:    Check if all dependencies are installed in a Brewfile.
 #:
 #:    `brew bundle exec` [command]
 #:    Run an external command in an isolated build environment.
 #:
 #:    If `-v` or `--verbose` are passed, print verbose output.
+#:
+#:    If `--no-upgrade` is passed, don't run `brew upgrade` outdated dependencies.
+#:    Note they may still be upgraded by `brew install` if needed.
 #:
 #:    If `--force` is passed, uninstall dependencies or overwrite an existing
 #:    Brewfile.
