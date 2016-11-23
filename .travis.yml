@@ -4,6 +4,7 @@ cache: bundler
 before_install:
   - sudo gem install bundler
   - HOMEBREW_DEVELOPER=1 brew update
+  - rm -rf $(brew --repo)/Library/Taps/homebrew/*
   - ln -s . $(brew --repo)/Library/Taps/homebrew/homebrew-bundle
 script:
   - brew style homebrew/bundle
