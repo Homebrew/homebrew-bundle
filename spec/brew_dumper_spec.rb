@@ -1,4 +1,5 @@
 require "spec_helper"
+require "tsort"
 
 describe Bundle::BrewDumper do
   context "when no formula is installed" do
@@ -39,6 +40,9 @@ describe Bundle::BrewDumper do
           "linked_keg" => "fish",
           "keg_only" => nil,
           "dependencies" => [],
+          "recommended_dependencies" => [],
+          "optional_dependencies" => [],
+          "build_dependencies" => [],
           "conflicts_with" => [],
           "caveats" => nil,
           "requirements" => [],
@@ -58,6 +62,9 @@ describe Bundle::BrewDumper do
         args: [],
         version: nil,
         dependencies: [],
+        recommended_dependencies: [],
+        optional_dependencies: [],
+        build_dependencies: [],
         requirements: [],
         conflicts_with: [],
         pinned?: false,
@@ -87,6 +94,9 @@ describe Bundle::BrewDumper do
         "linked_keg" => "1.0",
         "keg_only" => nil,
         "dependencies" => [],
+        "recommended_dependencies" => [],
+        "optional_dependencies" => [],
+        "build_dependencies" => [],
         "conflicts_with" => [],
         "caveats" => nil,
         "requirements" => [],
@@ -113,6 +123,9 @@ describe Bundle::BrewDumper do
             "linked_keg" => "1.0",
             "keg_only" => nil,
             "dependencies" => [],
+            "recommended_dependencies" => [],
+            "optional_dependencies" => [],
+            "build_dependencies" => [],
             "conflicts_with" => [],
             "caveats" => nil,
             "requirements" => [],
@@ -137,6 +150,9 @@ describe Bundle::BrewDumper do
             "linked_keg" => nil,
             "keg_only" => nil,
             "dependencies" => [],
+            "recommended_dependencies" => [],
+            "optional_dependencies" => [],
+            "build_dependencies" => [],
             "conflicts_with" => [],
             "caveats" => nil,
             "requirements" => [],
@@ -160,6 +176,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -172,6 +191,9 @@ describe Bundle::BrewDumper do
         args: ["with-a", "with-b"],
         version: "2.0",
         dependencies: [],
+        recommended_dependencies: [],
+        optional_dependencies: [],
+        build_dependencies: [],
         requirements: [],
         conflicts_with: [],
         pinned?: true,
@@ -199,6 +221,9 @@ describe Bundle::BrewDumper do
           args: ["devel"],
           version: "1.1beta",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -211,6 +236,9 @@ describe Bundle::BrewDumper do
           args: ["HEAD"],
           version: "HEAD",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -237,6 +265,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -262,6 +293,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "2.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -287,6 +321,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: ["b"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -299,6 +336,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [{ "name" => "foo", "default_formula" => "c", "cask" => "bar" }],
           conflicts_with: [],
           pinned?: false,
@@ -311,6 +351,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -340,6 +383,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: ["b", "d", "c"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -352,6 +398,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -364,6 +413,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -376,6 +428,9 @@ describe Bundle::BrewDumper do
           args: [],
           version: "1.0",
           dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -387,6 +442,19 @@ describe Bundle::BrewDumper do
 
     it "returns formulae with correct order" do
       expect(subject.formulae.map { |f| f[:name] }).to eq %w[b c d a]
+    end
+
+    context "when performing a topological sort" do
+      before do
+        allow(Bundle::BrewDumper::Topo).to \
+          receive(:new).and_raise(TSort::Cyclic)
+        allow_any_instance_of(String).to receive(:undent)
+        allow_any_instance_of(Object).to receive(:odie) { raise }
+      end
+
+      it "dies on cyclic exceptions" do
+        expect { subject.formulae }.to raise_error(TSort::Cyclic)
+      end
     end
   end
 
@@ -400,6 +468,9 @@ describe Bundle::BrewDumper do
           args: ["with-1", "with-2"],
           version: "1.0",
           dependencies: ["b"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -412,6 +483,9 @@ describe Bundle::BrewDumper do
           args: ["with-2", "with-1"],
           version: "1.0",
           dependencies: ["b"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
           requirements: [],
           conflicts_with: [],
           pinned?: false,
@@ -430,17 +504,20 @@ describe Bundle::BrewDumper do
   context "#formula_oldnames" do
     it "works" do
       formula_info = [{
-          name: "a",
-          full_name: "homebrew/versions/a",
-          oldname: "aold",
-          aliases: [],
-          args: ["with-1", "with-2"],
-          version: "1.0",
-          dependencies: ["b"],
-          requirements: [],
-          conflicts_with: [],
-          pinned?: false,
-          outdated?: false,
+        name: "a",
+        full_name: "homebrew/versions/a",
+        oldname: "aold",
+        aliases: [],
+        args: ["with-1", "with-2"],
+        version: "1.0",
+        dependencies: ["b"],
+        recommended_dependencies: [],
+        optional_dependencies: [],
+        build_dependencies: [],
+        requirements: [],
+        conflicts_with: [],
+        pinned?: false,
+        outdated?: false,
       }]
       Bundle::BrewDumper.reset!
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(formula_info)
