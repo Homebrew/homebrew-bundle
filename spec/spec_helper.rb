@@ -14,9 +14,9 @@ $:.unshift(STUB_PATH)
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
 SimpleCov.formatters = [
-  SimpleCov::Formatter::Codecov,
   SimpleCov::Formatter::HTMLFormatter,
 ]
+SimpleCov.formatters << SimpleCov::Formatter::Codecov if ENV["CI"]
 
 require "bundle"
 require "bundler"
