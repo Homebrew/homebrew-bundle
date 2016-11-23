@@ -27,6 +27,7 @@ module Bundle
     def install_change_state!
       return false unless resolve_conflicts!
       if installed?
+        return true if ARGV.include?("--no-upgrade")
         upgrade!
       else
         install!
@@ -61,7 +62,9 @@ module Bundle
     end
 
     def self.formula_installed_and_up_to_date?(formula)
-      formula_installed?(formula) && !formula_upgradable?(formula)
+      return false unless formula_installed?(formula)
+      return true if ARGV.include?("--no-upgrade")
+      !formula_upgradable?(formula)
     end
 
     def self.formula_in_array?(formula, array)
