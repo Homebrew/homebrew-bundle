@@ -1,7 +1,7 @@
 #:  * `bundle` <command>:
 #:    Bundler for non-Ruby dependencies from Homebrew.
 #:
-#:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global]:
+#:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global] [--without=<groups>]:
 #:    Install or upgrade all dependencies in a Brewfile.
 #:
 #:    `brew bundle dump` [--force] [--file=<path>|--global]
@@ -28,6 +28,8 @@
 #:    `--file=-` to output to console).
 #:
 #:    If `--global` is passed, set Brewfile path to `$HOME/.Brewfile`.
+#:
+#:    If `--without=<groups>` is passed, skip installation in specified groups.
 #:
 #:    If `-h` or `--help` are passed, print this help message and exit.
 
