@@ -18,7 +18,7 @@ module Bundle
           raise "Unable to install #{name} app. mas not signed in to Mac App Store."
         end
       end
-      
+
       if installed_app_ids.include? id
         puts "Skipping install of #{name} app. It is already installed." if ARGV.verbose?
         return true
