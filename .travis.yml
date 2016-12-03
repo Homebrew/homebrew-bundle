@@ -16,7 +16,7 @@ before_install:
   - brew update || brew update
   - HOMEBREW_TAP_DIR="$(brew --repo "$TRAVIS_REPO_SLUG")"
   - rm -rf "$HOMEBREW_TAP_DIR"
-  - ln -s . "$HOMEBREW_TAP_DIR"
+  - ln -s "$PWD" "$HOMEBREW_TAP_DIR"
   - export HOMEBREW_DEVELOPER="1"
   - ulimit -n 1024
   - sudo gem install bundler
