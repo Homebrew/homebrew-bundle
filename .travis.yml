@@ -10,17 +10,19 @@ before_install:
   - if [ -f ".git/shallow" ]; then
       travis_retry git fetch --unshallow;
     fi
-  - sudo chown -R $USER "$(brew --repo)"
-  - git -C "$(brew --repo)" reset --hard origin/master
+  - HOMEBREW_REPOSITORY="$(brew --repo)"
+  - sudo chown -R "$USER" "$HOMEBREW_REPOSITORY"
+  - git -C "$HOMEBREW_REPOSITORY" reset --hard origin/master
   - brew update || brew update
-  - rm -rf "$(brew --repo $TRAVIS_REPO_SLUG)"
-  - ln -s . $(brew --repo $TRAVIS_REPO_SLUG)
+  - HOMEBREW_TAP_DIR="$(brew --repo "$TRAVIS_REPO_SLUG")"
+  - rm -rf "$HOMEBREW_TAP_DIR"
+  - ln -s . "$HOMEBREW_TAP_DIR"
   - export HOMEBREW_DEVELOPER="1"
   - ulimit -n 1024
   - sudo gem install bundler
 
 script:
-  - brew style homebrew/bundle
+  - brew style "$TRAVIS_REPO_SLUG"
   - bundle exec rake
 
 notifications:
