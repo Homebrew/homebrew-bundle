@@ -116,8 +116,8 @@ module Bundle
         build_dependencies: f["build_dependencies"],
         requirements: f["requirements"],
         conflicts_with: f["conflicts_with"],
-        pinned?: !f["pinned"].nil?,
-        outdated?: !f["outdated"].nil?,
+        pinned?: (f["pinned"] || false),
+        outdated?: (f["outdated"] || false),
       }
     end
 
