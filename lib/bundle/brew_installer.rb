@@ -21,13 +21,15 @@ module Bundle
     end
 
     def run
-      install_change_state! && service_change_state!
+      install_result = install_change_state!
+      service_change_state! if install_result != :failed
+      install_result
     end
 
     def install_change_state!
       return false unless resolve_conflicts!
       if installed?
-        return true if ARGV.include?("--no-upgrade")
+        return :skipped if ARGV.include?("--no-upgrade")
         upgrade!
       else
         install!
@@ -154,24 +156,31 @@ module Bundle
 
     def install!
       puts "Installing #{@name} formula. It is not currently installed." if ARGV.verbose?
-      if (success = Bundle.system("brew", "install", @full_name, *@args))
-        BrewInstaller.installed_formulae << @name
+      unless Bundle.system("brew", "install", @full_name, *@args)
+        @changed = nil
+        return :failed
       end
-      @changed = true
 
-      success
+      BrewInstaller.installed_formulae << @name
+      @changed = true
+      :success
     end
 
     def upgrade!
-      if upgradable?
-        puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
-        Bundle.system("brew", "upgrade", @name)
-        @changed = true
-      else
+      unless upgradable?
         puts "Skipping install of #{@name} formula. It is already up-to-date." if ARGV.verbose?
         @changed = nil
-        true
+        return :skipped
       end
+
+      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
+      unless Bundle.system("brew", "upgrade", @name)
+        @changed = nil
+        return :failed
+      end
+
+      @changed = true
+      :success
     end
   end
 end

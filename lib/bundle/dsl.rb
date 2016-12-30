@@ -36,7 +36,7 @@ module Bundle
 
       @entries.each do |entry|
         arg = [entry.name]
-        verb = "installing"
+        verb = "Installing"
         cls = case entry.type
         when :brew
           arg << entry.options
@@ -48,19 +48,28 @@ module Bundle
           arg << entry.options[:id]
           Bundle::MacAppStoreInstaller
         when :tap
-          verb = "tapping"
+          verb = "Tapping"
           arg << entry.options[:clone_target]
           Bundle::TapInstaller
         end
-        if cls.install(*arg)
-          puts "Succeeded in #{verb} #{entry.name}"
+        case cls.install(*arg)
+        when :success
+          puts Formatter.success("#{verb} #{entry.name}")
+          success += 1
+        when :skipped
+          puts "Using #{entry.name}"
           success += 1
         else
-          puts "Failed in #{verb} #{entry.name}"
+          puts Formatter.error("#{verb} #{entry.name} has failed!")
           failure += 1
         end
       end
-      puts "\nSuccess: #{success} Fail: #{failure}"
+
+      if failure.zero?
+        puts Formatter.success("Homebrew Bundle complete! #{success} Brewfile dependencies now installed.")
+      else
+        puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile dependencies failed to install.")
+      end
 
       failure.zero?
     end

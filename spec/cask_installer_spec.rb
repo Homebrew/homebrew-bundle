@@ -24,7 +24,7 @@ describe Bundle::CaskInstaller do
 
       it "skips" do
         expect(Bundle).not_to receive(:system)
-        expect(do_install).to eql(true)
+        expect(do_install).to eql(:skipped)
       end
     end
 
@@ -35,12 +35,17 @@ describe Bundle::CaskInstaller do
 
       it "installs cask" do
         expect(Bundle).to receive(:system).with("brew", "cask", "install", "google-chrome").and_return(true)
-        expect(do_install).to eql(true)
+        expect(do_install).to eql(:success)
       end
 
       it "installs cask with arguments" do
         expect(Bundle).to receive(:system).with("brew", "cask", "install", "firefox", "--appdir=/Applications").and_return(true)
-        expect(Bundle::CaskInstaller.install("firefox", args: { appdir: "/Applications" })).to eq(true)
+        expect(Bundle::CaskInstaller.install("firefox", args: { appdir: "/Applications" })).to eq(:success)
+      end
+
+      it "reports a failure" do
+        expect(Bundle).to receive(:system).with("brew", "cask", "install", "google-chrome").and_return(false)
+        expect(do_install).to eql(:failed)
       end
     end
   end

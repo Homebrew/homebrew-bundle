@@ -45,6 +45,14 @@ module Formatter
 
   def columns(*)
   end
+
+  def success(*args)
+    args
+  end
+
+  def error(*args)
+    args
+  end
 end
 
 class Formula
