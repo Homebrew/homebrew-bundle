@@ -21,15 +21,15 @@ module Bundle
 
       if installed_app_ids.include? id
         puts "Skipping install of #{name} app. It is already installed." if ARGV.verbose?
-        return true
+        return :skipped
       end
 
       puts "Installing #{name} app. It is not currently installed." if ARGV.verbose?
-      if (success = Bundle.system "mas", "install", id.to_s)
-        installed_app_ids << id
-      end
 
-      success
+      return :failed unless Bundle.system "mas", "install", id.to_s
+
+      installed_app_ids << id
+      :success
     end
 
     def installed_app_ids

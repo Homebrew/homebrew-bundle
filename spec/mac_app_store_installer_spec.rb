@@ -54,7 +54,7 @@ describe Bundle::MacAppStoreInstaller do
 
         it "skips" do
           expect(Bundle).not_to receive(:system)
-          expect(do_install).to eql(true)
+          expect(do_install).to eql(:skipped)
         end
       end
 
@@ -65,7 +65,7 @@ describe Bundle::MacAppStoreInstaller do
 
         it "installs app" do
           expect(Bundle).to receive(:system).with("mas", "install", "123").and_return(true)
-          expect(do_install).to eql(true)
+          expect(do_install).to eql(:success)
         end
       end
     end

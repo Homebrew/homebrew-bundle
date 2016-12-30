@@ -13,7 +13,7 @@ describe Bundle::BrewInstaller do
     context "formula is installed successfully" do
       before do
         allow(ARGV).to receive(:verbose?).and_return(false)
-        allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_change_state!).and_return(true)
+        allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_change_state!).and_return(:success)
       end
 
       it "restart service" do
@@ -24,7 +24,7 @@ describe Bundle::BrewInstaller do
 
     context "formula isn't installed" do
       before do
-        allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_change_state!).and_return(false)
+        allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_change_state!).and_return(:failed)
       end
 
       it "did not call restart service" do
@@ -136,7 +136,12 @@ describe Bundle::BrewInstaller do
 
       it "install formula" do
         expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option").and_return(true)
-        expect(do_install).to eql(true)
+        expect(do_install).to eql(:success)
+      end
+
+      it "reports a failure" do
+        expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option").and_return(false)
+        expect(do_install).to eql(:failed)
       end
     end
 
@@ -153,7 +158,12 @@ describe Bundle::BrewInstaller do
 
         it "upgrade formula" do
           expect(Bundle).to receive(:system).with("brew", "upgrade", formula).and_return(true)
-          expect(do_install).to eql(true)
+          expect(do_install).to eql(:success)
+        end
+
+        it "reports a failure" do
+          expect(Bundle).to receive(:system).with("brew", "upgrade", formula).and_return(false)
+          expect(do_install).to eql(:failed)
         end
 
         context "when formula pinned" do
@@ -163,7 +173,7 @@ describe Bundle::BrewInstaller do
 
           it "does not upgrade formula" do
             expect(Bundle).not_to receive(:system).with("brew", "upgrade", formula)
-            expect(do_install).to eql(true)
+            expect(do_install).to eql(:skipped)
           end
         end
 
@@ -174,7 +184,7 @@ describe Bundle::BrewInstaller do
 
           it "does not upgrade formula" do
             expect(Bundle).not_to receive(:system)
-            expect(do_install).to eql(true)
+            expect(do_install).to eql(:skipped)
           end
         end
       end

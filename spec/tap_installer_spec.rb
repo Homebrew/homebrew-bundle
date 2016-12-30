@@ -19,7 +19,7 @@ describe Bundle::TapInstaller do
 
     it "skips" do
       expect(Bundle).not_to receive(:system)
-      expect(do_install).to eql(true)
+      expect(do_install).to eql(:skipped)
     end
   end
 
@@ -31,13 +31,13 @@ describe Bundle::TapInstaller do
 
     it "taps" do
       expect(Bundle).to receive(:system).with("brew", "tap", "phinze/cask").and_return(true)
-      expect(do_install).to eql(true)
+      expect(do_install).to eql(:success)
     end
 
     context "with clone target" do
       it "taps" do
         expect(Bundle).to receive(:system).with("brew", "tap", "phinze/cask", "clone_target_path").and_return(true)
-        expect(do_install("clone_target_path")).to eql(true)
+        expect(do_install("clone_target_path")).to eql(:success)
       end
     end
   end
