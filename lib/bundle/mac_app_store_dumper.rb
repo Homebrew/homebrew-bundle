@@ -25,7 +25,7 @@ module Bundle
     end
 
     def dump
-      apps.sort_by { |id, name| name.downcase }.map { |id, name| "mas '#{name}', id: #{id}" }.join("\n")
+      apps.sort_by { |_, name| name.downcase }.map { |id, name| "mas '#{name}', id: #{id}" }.join("\n")
     end
   end
 end
