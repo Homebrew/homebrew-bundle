@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
 group :test do
-  gem "rspec"
-  gem "rake"
-  gem "simplecov"
   gem "codecov"
+  gem "rake"
+  gem "rspec"
+  gem "simplecov"
 end

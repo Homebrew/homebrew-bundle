@@ -37,7 +37,8 @@ describe Bundle::BrewInstaller do
   context "conflicts_with option is provided" do
     before do
       expect(Bundle::BrewDumper).to receive(:formula_info).and_return(
-        name: "mysql", conflicts_with: ["mysql55"]
+        name: "mysql",
+        conflicts_with: ["mysql55"],
       )
       allow(Bundle::BrewInstaller).to receive(:formula_installed?).and_return(true)
       allow_any_instance_of(Bundle::BrewInstaller).to receive(:install).and_return(true)
@@ -69,7 +70,7 @@ describe Bundle::BrewInstaller do
           { name: "a", outdated?: true },
           { name: "b", outdated?: true },
           { name: "c", outdated?: false },
-        ]
+        ],
       )
       expect(Bundle::BrewInstaller.outdated_formulae).to eql(%w[a b])
     end
@@ -83,7 +84,7 @@ describe Bundle::BrewInstaller do
           { name: "a", pinned?: true },
           { name: "b", pinned?: true },
           { name: "c", pinned?: false },
-        ]
+        ],
       )
       expect(Bundle::BrewInstaller.pinned_formulae).to eql(%w[a b])
     end

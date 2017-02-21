@@ -43,8 +43,7 @@ HOMEBREW_REPOSITORY = Pathname.new("/usr/local/Homebrew")
 module Formatter
   module_function
 
-  def columns(*)
-  end
+  def columns(*); end
 
   def success(*args)
     args
