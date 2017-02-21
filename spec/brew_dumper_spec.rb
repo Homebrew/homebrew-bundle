@@ -48,7 +48,7 @@ describe Bundle::BrewDumper do
           "requirements" => [],
           "options" => [],
           "bottle" => {},
-        }]
+        }],
       )
     end
     subject { Bundle::BrewDumper }
@@ -68,7 +68,7 @@ describe Bundle::BrewDumper do
         requirements: [],
         conflicts_with: [],
         pinned?: false,
-        outdated?: false
+        outdated?: false,
       )
     end
   end
@@ -101,7 +101,7 @@ describe Bundle::BrewDumper do
         "caveats" => nil,
         "requirements" => [],
         "options" => [],
-        "bottle" => {}
+        "bottle" => {},
       )
       allow(Formula).to receive(:installed).and_return(
         [
@@ -161,7 +161,7 @@ describe Bundle::BrewDumper do
             "pinned" => true,
             "outdated" => true,
           },
-        ]
+        ],
       )
     end
     subject { Bundle::BrewDumper }
@@ -197,7 +197,7 @@ describe Bundle::BrewDumper do
         requirements: [],
         conflicts_with: [],
         pinned?: true,
-        outdated?: true
+        outdated?: true,
       )
     end
 
