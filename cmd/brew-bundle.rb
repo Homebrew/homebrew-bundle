@@ -28,6 +28,7 @@
 #:    `--file=-` to output to console).
 #:
 #:    If `--global` is passed, set Brewfile path to `$HOME/.Brewfile`.
+#:    A `$BREWFILE` environment variable can be set to override this file path.
 #:
 #:    If `-h` or `--help` are passed, print this help message and exit.
 
