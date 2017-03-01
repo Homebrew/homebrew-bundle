@@ -8,7 +8,15 @@ module Bundle
         return :skipped
       end
 
-      args = options.fetch(:args, []).map { |k, v| "--#{k}=#{v}" }
+      args = options.fetch(:args, []).map do |k, v|
+        if v.is_a?(TrueClass)
+          "--#{k}"
+        elsif v.is_a?(FalseClass)
+          nil
+        else
+          "--#{k}=#{v}"
+        end
+      end.compact
 
       puts "Installing #{name} cask. It is not currently installed." if ARGV.verbose?
 
