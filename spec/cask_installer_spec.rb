@@ -47,6 +47,18 @@ describe Bundle::CaskInstaller do
         expect(Bundle).to receive(:system).with("brew", "cask", "install", "google-chrome").and_return(false)
         expect(do_install).to eql(:failed)
       end
+
+      context "with boolean arguments" do
+        it "includes a flag if true" do
+          expect(Bundle).to receive(:system).with("brew", "cask", "install", "iterm", "--force").and_return(true)
+          expect(Bundle::CaskInstaller.install("iterm", args: { force: true })).to eq(:success)
+        end
+
+        it "does not include a flag if false" do
+          expect(Bundle).to receive(:system).with("brew", "cask", "install", "iterm").and_return(true)
+          expect(Bundle::CaskInstaller.install("iterm", args: { force: false })).to eq(:success)
+        end
+      end
     end
   end
 end
