@@ -65,6 +65,12 @@ module Bundle
             f
         end
         current_formulae = Bundle::BrewDumper.formulae
+        current_formulae.each do |f|
+          next unless kept_formulae.include?(f[:name])
+          next unless f[:dependencies]
+          kept_formulae += f[:dependencies]
+        end
+        kept_formulae.uniq!
         current_formulae.reject! do |f|
           Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
         end

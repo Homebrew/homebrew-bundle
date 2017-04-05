@@ -26,7 +26,7 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which formulae to uninstall" do
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
-        { name: "a2", full_name: "a2", aliases: ["a"] },
+        { name: "a2", full_name: "a2", aliases: ["a"], dependencies: ["d"] },
         { name: "c", full_name: "c" },
         { name: "d", full_name: "homebrew/tap/d", aliases: ["d2"] },
         { name: "e", full_name: "homebrew/tap/e" },

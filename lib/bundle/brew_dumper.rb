@@ -103,11 +103,15 @@ module Bundle
         version = keg["version"]
         installed_as_dependency = keg["installed_as_dependency"] || false
         installed_on_request = keg["installed_on_request"] || false
+        runtime_dependencies = if deps = keg["runtime_dependencies"]
+          deps.map { |dep| dep["full_name"].split("/").last }.compact
+        end
       else
         args = []
         version = nil
         installed_as_dependency = false
         installed_on_request = false
+        runtime_dependencies = nil
       end
 
       {
@@ -119,7 +123,7 @@ module Bundle
         version: version,
         installed_as_dependency?: installed_as_dependency,
         installed_on_request?: installed_on_request,
-        dependencies: f["dependencies"],
+        dependencies: (runtime_dependencies || f["dependencies"]),
         recommended_dependencies: f["recommended_dependencies"],
         optional_dependencies: f["optional_dependencies"],
         build_dependencies: f["build_dependencies"],
