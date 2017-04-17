@@ -64,17 +64,32 @@ module Bundle
             Bundle::BrewDumper.formula_oldnames[f] ||
             f
         end
+
         current_formulae = Bundle::BrewDumper.formulae
-        current_formulae.each do |f|
-          next unless kept_formulae.include?(f[:name])
-          next unless f[:dependencies]
-          kept_formulae += f[:dependencies]
-        end
-        kept_formulae.uniq!
+        kept_formulae += recursive_dependencies(current_formulae, kept_formulae)
         current_formulae.reject! do |f|
           Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
         end
         current_formulae.map { |f| f[:full_name] }
+      end
+
+      def recursive_dependencies(current_formulae, formulae_names, top_level = true)
+        @checked_formulae_names = [] if top_level
+        dependencies = []
+
+        formulae_names.each do |name|
+          next if @checked_formulae_names.include?(name)
+          formula = current_formulae.find { |f| f[:name] == name }
+          next unless formula
+          f_deps = formula[:dependencies]
+          next unless f_deps
+          next if f_deps.empty?
+          @checked_formulae_names << name
+          f_deps += recursive_dependencies(current_formulae, f_deps, false)
+          dependencies += f_deps
+        end
+
+        dependencies.uniq
       end
 
       IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
