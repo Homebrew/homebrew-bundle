@@ -29,7 +29,7 @@ module Bundle
       @started_services ||= if Bundle.services_installed?
         `brew services list`.lines.map do |line|
           name, state, _plist = line.split(/\s+/)
-          next unless state == "started"
+          next if state == "stopped"
           name
         end.compact
       else
