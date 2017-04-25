@@ -45,6 +45,12 @@ BUNDLE_LIB = Pathname.new(BUNDLE_ROOT)/"lib"
 
 $LOAD_PATH.unshift(BUNDLE_LIB)
 
+# Add `brew` back to the PATH if it was filtered out.
+brew_bin = File.dirname ENV["HOMEBREW_BREW_FILE"]
+unless ENV["PATH"].include?(brew_bin)
+  ENV["PATH"] = "#{ENV["PATH"]}:#{brew_bin}"
+end
+
 require "bundle"
 
 # Pop the named command from ARGV, leaving everything else in place
