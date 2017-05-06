@@ -31,7 +31,6 @@ Then list your Homebrew based dependencies in your `Brewfile`:
 
 ```ruby
 cask_args appdir: '/Applications'
-tap 'caskroom/cask'
 tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
 brew 'imagemagick'
 brew 'mysql', restart_service: true, conflicts_with: ['homebrew/versions/mysql56']
