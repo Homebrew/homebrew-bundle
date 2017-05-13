@@ -24,8 +24,8 @@ module Bundle
         f[:installed_on_request?] || !f[:installed_as_dependency?]
       end
       requested_formula.map do |f|
-        brewline = "brew '#{f[:full_name]}'"
-        args = f[:args].map { |arg| "'#{arg}'" }.sort.join(", ")
+        brewline = "brew \"#{f[:full_name]}\""
+        args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
         brewline += ", restart_service: true" if BrewServices.started?(f[:full_name])
         brewline
