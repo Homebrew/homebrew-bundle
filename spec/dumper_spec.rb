@@ -18,7 +18,7 @@ describe Bundle::Dumper do
   it "generates output" do
     expect(subject).to receive(:write_file) do |file, content, _overwrite|
       expect(file).to eql(Pathname.new(Dir.pwd).join("Brewfile"))
-      expect(content).to eql("cask 'google-chrome'\ncask 'java'\n")
+      expect(content).to eql("cask \"google-chrome\"\ncask \"java\"\n")
     end
     subject.dump_brewfile
   end

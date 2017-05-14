@@ -17,8 +17,8 @@ module Bundle
 
     def dump
       taps.map do |tap|
-        remote = ", '#{tap["remote"]}'" if tap["custom_remote"] && tap["remote"]
-        "tap '#{tap["name"]}'#{remote}"
+        remote = ", \"#{tap["remote"]}\"" if tap["custom_remote"] && tap["remote"]
+        "tap \"#{tap["name"]}\"#{remote}"
       end.join("\n")
     end
 

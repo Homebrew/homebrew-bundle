@@ -47,7 +47,7 @@ describe Bundle::CaskDumper do
     end
 
     it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'`" do
-      expect(subject.dump(%w[baz])).to eql ["cask 'baz'", "cask 'foo'\ncask 'bar'"]
+      expect(subject.dump(%w[baz])).to eql ["cask \"baz\"", "cask \"foo\"\ncask \"bar\""]
     end
   end
 end
