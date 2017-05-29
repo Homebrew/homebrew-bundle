@@ -1,7 +1,5 @@
 require "json"
 require "tsort"
-
-# rubocop:disable Metrics/ModuleLength
 module Bundle
   module BrewDumper
     module_function

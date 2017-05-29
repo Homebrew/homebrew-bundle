@@ -21,9 +21,7 @@ module Bundle
 
         # Setup Homebrew's ENV extensions
         ENV.activate_extensions!
-        if args.empty?
-          raise "No command to execute was specified!"
-        end
+        raise "No command to execute was specified!" if args.empty?
 
         command = args[0]
 
