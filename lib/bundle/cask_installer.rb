@@ -20,9 +20,7 @@ module Bundle
 
       puts "Installing #{name} cask. It is not currently installed." if ARGV.verbose?
 
-      unless Bundle.system "brew", "cask", "install", name, *args
-        return :failed
-      end
+      return :failed unless Bundle.system "brew", "cask", "install", name, *args
 
       installed_casks << name
       :success

@@ -47,9 +47,7 @@ $LOAD_PATH.unshift(BUNDLE_LIB)
 
 # Add `brew` back to the PATH if it was filtered out.
 brew_bin = File.dirname ENV["HOMEBREW_BREW_FILE"]
-unless ENV["PATH"].include?(brew_bin)
-  ENV["PATH"] = "#{ENV["PATH"]}:#{brew_bin}"
-end
+ENV["PATH"] = "#{ENV["PATH"]}:#{brew_bin}" unless ENV["PATH"].include?(brew_bin)
 
 require "bundle"
 

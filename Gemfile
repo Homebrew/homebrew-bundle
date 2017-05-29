@@ -5,4 +5,5 @@ group :test do
   gem "rake"
   gem "rspec"
   gem "simplecov"
+  gem "unindent"
 end

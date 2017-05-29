@@ -18,17 +18,15 @@ module Bundle
         if ARGV.force?
           if casks.any?
             Kernel.system "brew", "cask", "uninstall", "--force", *casks
-            puts "Uninstalled #{casks.size} cask#{casks.size == 1 ? "" : "s"}"
+            puts "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
           end
 
           if formulae.any?
             Kernel.system "brew", "uninstall", "--force", *formulae
-            puts "Uninstalled #{formulae.size} formula#{formulae.size == 1 ? "" : "e"}"
+            puts "Uninstalled #{formulae.size} formula#{(formulae.size == 1) ? "" : "e"}"
           end
 
-          if taps.any?
-            Kernel.system "brew", "untap", *taps
-          end
+          Kernel.system "brew", "untap", *taps if taps.any?
         else
           require "utils/formatter"
 
