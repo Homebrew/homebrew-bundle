@@ -7,7 +7,7 @@ module Bundle
 
     def dump_brewfile
       if ARGV.include?("--global")
-        file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
+        file = Pathname.new(ENV["BREWFILE"] || "#{ENV["HOME"]}/.Brewfile")
       else
         filename = ARGV.value("file")
         filename = "/dev/stdout" if filename == "-"

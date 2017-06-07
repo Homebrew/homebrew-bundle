@@ -42,7 +42,7 @@ module Bundle
 
   def brewfile
     if ARGV.include?("--global")
-      file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
+      file = Pathname.new(ENV["BREWFILE"] || "#{ENV["HOME"]}/.Brewfile")
     else
       filename = ARGV.value("file")
       filename = "/dev/stdin" if filename == "-"
