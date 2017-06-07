@@ -17,6 +17,8 @@ module Bundle
       @entries = []
       @cask_arguments = {}
 
+      @groups = %w[default]
+
       begin
         process
       # Want to catch all exceptions for e.g. syntax errors.
@@ -34,7 +36,12 @@ module Bundle
       success = 0
       failure = 0
 
-      @entries.each do |entry|
+      without_groups = ARGV.values(:without).to_a
+      selected_entries = @entries.select do |entry|
+        (without_groups & entry.options[:groups]).empty?
+      end
+
+      selected_entries.each do |entry|
         arg = [entry.name]
         verb = "Installing"
         cls = case entry.type
@@ -83,6 +90,7 @@ module Bundle
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
       name = Bundle::Dsl.sanitize_brew_name(name)
+      options[:groups] = @groups.dup
       @entries << Entry.new(:brew, name, options)
     end
 
@@ -91,6 +99,7 @@ module Bundle
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
       name = Bundle::Dsl.sanitize_cask_name(name)
       options[:args] = @cask_arguments.merge options.fetch(:args, {})
+      options[:groups] = @groups.dup
       @entries << Entry.new(:cask, name, options)
     end
 
@@ -98,14 +107,24 @@ module Bundle
       id = options[:id]
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
-      @entries << Entry.new(:mac_app_store, name, id: id)
+      options[:groups] = @groups.dup
+      @entries << Entry.new(:mac_app_store, name, options)
     end
 
     def tap(name, clone_target = nil)
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "clone_target(#{clone_target.inspect}) should be nil or a String object" if clone_target && !clone_target.is_a?(String)
       name = Bundle::Dsl.sanitize_tap_name(name)
-      @entries << Entry.new(:tap, name, clone_target: clone_target)
+      options = { clone_target: clone_target, groups: @groups.dup }
+      @entries << Entry.new(:tap, name, options)
+    end
+
+    def group(name)
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      @groups.push name
+      yield
+    ensure
+      @groups.pop
     end
 
     HOMEBREW_TAP_ARGS_REGEX = %r{^([\w-]+)/(homebrew-)?([\w-]+)$}
