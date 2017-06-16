@@ -10,7 +10,7 @@ module Bundle
         logs << buf
       end
       Process.wait(pipe.pid)
-      success = $?.success?
+      success = $CHILD_STATUS.success?
       pipe.close
     end
     puts logs.join unless success

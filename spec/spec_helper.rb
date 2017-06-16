@@ -9,7 +9,7 @@ require "codecov"
 
 PROJECT_ROOT ||= File.expand_path("../..", __FILE__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
-$:.unshift(STUB_PATH)
+$LOAD_PATH.unshift(STUB_PATH)
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
@@ -28,6 +28,7 @@ RSpec.configure do |config|
 end
 
 require "unindent"
+require "English"
 
 # Stub out the inclusion of Homebrew's code.
 LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"].freeze

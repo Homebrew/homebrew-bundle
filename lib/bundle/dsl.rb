@@ -115,11 +115,11 @@ module Bundle
     def self.sanitize_brew_name(name)
       name.downcase!
       if name =~ HOMEBREW_CORE_FORMULA_REGEX
-        $1
+        Regexp.last_match(1)
       elsif name =~ HOMEBREW_TAP_FORMULA_REGEX
-        user = $1
-        repo = $2
-        name = $3
+        user = Regexp.last_match(1)
+        repo = Regexp.last_match(2)
+        name = Regexp.last_match(3)
         "#{user}/#{repo.sub(/homebrew-/, "")}/#{name}"
       else
         name
@@ -129,7 +129,7 @@ module Bundle
     def self.sanitize_tap_name(name)
       name.downcase!
       if name =~ HOMEBREW_TAP_ARGS_REGEX
-        "#{$1}/#{$3}"
+        "#{Regexp.last_match(1)}/#{Regexp.last_match(3)}"
       else
         name
       end
