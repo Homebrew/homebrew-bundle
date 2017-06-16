@@ -28,7 +28,6 @@ RSpec.configure do |config|
 end
 
 require "unindent"
-require "English"
 
 # Stub out the inclusion of Homebrew's code.
 LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"].freeze
