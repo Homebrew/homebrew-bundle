@@ -1,3 +1,5 @@
+require "English"
+
 module Bundle
   module_function
 
