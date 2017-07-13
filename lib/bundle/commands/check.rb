@@ -64,12 +64,12 @@ module Bundle
           formula = Bundle::BrewInstaller.new(e.name, e.options)
           needs_to_start = formula.start_service? || formula.restart_service?
           next unless needs_to_start
-          return false if Bundle::BrewServices.started?(e.name)
+          next if Bundle::BrewServices.started?(e.name)
 
           old_names = Bundle::BrewDumper.formula_oldnames
           old_name = old_names[e.name]
           old_name ||= old_names[e.name.split("/").last]
-          return false if old_name && Bundle::BrewServices.started?(old_name)
+          next if old_name && Bundle::BrewServices.started?(old_name)
 
           true
         end

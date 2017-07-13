@@ -74,9 +74,7 @@ module Bundle
       @formula_info_name ||= {}
       @formula_info_name[name] ||= begin
         require "formula"
-        formula = Formula[name]
-        return {} unless formula
-        formula_inspector formula.to_hash
+        formula_inspector Formula[name].to_hash
       end
     end
 

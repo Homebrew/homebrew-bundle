@@ -65,10 +65,11 @@ describe Bundle::Commands::Check do
   context "when service is not started" do
     before do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
-      allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc"])
+      allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
-      allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(false)
+      allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(true)
+      allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
     end
 
     it "should not raises error by default" do
@@ -78,14 +79,14 @@ describe Bundle::Commands::Check do
 
     context "restart_service is true" do
       it "raises an error" do
-        allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc', restart_service: true")
+        allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc', restart_service: true\nbrew 'def', restart_service: true")
         expect { do_check }.to raise_error(SystemExit)
       end
     end
 
     context "start_service is true" do
       it "raises an error" do
-        allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc', start_service: true")
+        allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc', start_service: true\nbrew 'def', start_service: true")
         expect { do_check }.to raise_error(SystemExit)
       end
     end
