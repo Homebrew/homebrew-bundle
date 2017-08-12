@@ -30,14 +30,9 @@
 #:    If `--global` is passed, set Brewfile path to `$HOME/.Brewfile`.
 #:
 #:    If `-h` or `--help` are passed, print this help message and exit.
-
-# Homebrew version check
-# commit cf71e30180d44219836ef129d5e5f00325210dfb
-MIN_HOMEBREW_COMMIT_DATE = Time.parse "Wed Aug 17 11:07:17 2016 +0100"
-HOMEBREW_REPOSITORY.cd do
-  if MIN_HOMEBREW_COMMIT_DATE > Time.parse(`git show -s --format=%cD`)
-    odie "Your Homebrew is outdated. Please run `brew update`."
-  end
+if !defined?(HOMEBREW_VERSION) || !HOMEBREW_VERSION ||
+   Version.new(HOMEBREW_VERSION) < Version.new("1.3.0")
+  odie "Your Homebrew is outdated. Please run `brew update`."
 end
 
 BUNDLE_ROOT = File.expand_path "#{File.dirname(__FILE__)}/.."
