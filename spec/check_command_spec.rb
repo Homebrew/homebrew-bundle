@@ -12,11 +12,11 @@ describe Bundle::Commands::Check do
 
   context "when dependencies are satisfied" do
     it "does not raise an error" do
-      allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_apps_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_formulae_to_start?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:casks_to_install).and_return([])
+      allow(Bundle::Commands::Check).to receive(:formulae_to_install).and_return([])
+      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return([])
+      allow(Bundle::Commands::Check).to receive(:apps_to_install).and_return([])
+      allow(Bundle::Commands::Check).to receive(:formulae_to_start).and_return([])
       expect { do_check }.to_not raise_error
     end
   end
