@@ -1,6 +1,6 @@
 # Homebrew Bundle
 
-Bundler for non-Ruby dependencies from Homebrew
+Bundler for non-Ruby dependencies from Homebrew.
 
 [![Coverage Status](https://codecov.io/github/Homebrew/homebrew-bundle/coverage.svg)](https://codecov.io/github/Homebrew/homebrew-bundle)
 [![Build Status](https://travis-ci.org/Homebrew/homebrew-bundle.svg)](https://travis-ci.org/Homebrew/homebrew-bundle)
@@ -17,9 +17,7 @@ This tool is developed for use with Homebrew on macOS but might work with Linuxb
 
 ## Install
 
-You can install as a Homebrew tap:
-
-    $ brew tap Homebrew/bundle
+`brew bundle` is automatically installed when run.
 
 ## Usage
 
@@ -105,4 +103,4 @@ Tests can be run with `bundle && bundle exec rake spec`
 
 ## Copyright
 
-Copyright (c) 2015 Homebrew maintainers and Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/master/LICENSE) for details.
+Copyright (c) Homebrew maintainers and Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/master/LICENSE) for details.
