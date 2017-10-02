@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require "json"
 require "tsort"
+
 module Bundle
   module BrewDumper
     module_function

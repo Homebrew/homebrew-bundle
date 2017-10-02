@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bundle
   class BrewInstaller
     def self.reset!

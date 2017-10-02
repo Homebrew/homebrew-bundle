@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # check ruby version before requiring any modules.
 RUBY_VERSION_SPLIT = RUBY_VERSION.split "."
 RUBY_X = RUBY_VERSION_SPLIT[0].to_i
