@@ -113,7 +113,7 @@ module Bundle
     HOMEBREW_TAP_FORMULA_REGEX = %r{^([\w-]+)/([\w-]+)/([\w+-.@]+)$}
 
     def self.sanitize_brew_name(name)
-      name.downcase!
+      name = name.downcase
       if name =~ HOMEBREW_CORE_FORMULA_REGEX
         Regexp.last_match(1)
       elsif name =~ HOMEBREW_TAP_FORMULA_REGEX
@@ -127,7 +127,7 @@ module Bundle
     end
 
     def self.sanitize_tap_name(name)
-      name.downcase!
+      name = name.downcase
       if name =~ HOMEBREW_TAP_ARGS_REGEX
         "#{Regexp.last_match(1)}/#{Regexp.last_match(3)}"
       else

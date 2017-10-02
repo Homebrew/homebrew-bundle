@@ -6,6 +6,7 @@ describe Bundle::Dsl do
     allow(ARGV).to receive(:verbose?).and_return(true)
     # Keep in sync with the README
     dsl = Bundle::Dsl.new <<-EOS
+      # frozen_string_literal: true
       cask_args appdir: '/Applications'
       tap 'caskroom/cask'
       tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
