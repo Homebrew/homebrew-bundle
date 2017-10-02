@@ -136,7 +136,7 @@ module Bundle
     end
 
     def self.sanitize_cask_name(name)
-      name = name.downcase
+      name.downcase
     end
   end
 end
