@@ -23,7 +23,7 @@ before_install:
 
 script:
   - brew style "$TRAVIS_REPO_SLUG"
-  - bundle exec rake
+  - RUBYOPT="--enable-frozen-string-literal" bundle exec rake
 
 notifications:
   email:
