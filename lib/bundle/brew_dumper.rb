@@ -170,7 +170,7 @@ module Bundle
       end
       @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
     rescue TSort::Cyclic => e
-      odie <<~EOS
+      odie <<-EOS.undent
         #{e.message}
         Formulae dependency graph sorting failed (likely due to a circular dependency)!
       EOS

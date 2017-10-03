@@ -154,7 +154,7 @@ module Bundle
       conflicts_with.each do |conflict|
         next unless BrewInstaller.formula_installed?(conflict)
         if ARGV.verbose?
-          puts <<~EOS
+          puts <<-EOS.undent
               Unlinking #{conflict} formula.
               It is currently installed and conflicts with #{@name}.
           EOS
