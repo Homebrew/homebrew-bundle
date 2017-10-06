@@ -1,8 +1,7 @@
 language: ruby
 os: osx
-env: OSX=10.12
-osx_image: xcode8.1
-rvm: system
+osx_image: xcode9
+rvm: 2.3.3
 cache: bundler
 
 before_install:
