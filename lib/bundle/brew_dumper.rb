@@ -165,7 +165,8 @@ module Bundle
         ).uniq
         topo[f[:full_name]] = deps.map do |dep|
           ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
-          ff[:full_name] if ff
+          next unless ff
+          ff[:full_name]
         end.compact
       end
       @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
