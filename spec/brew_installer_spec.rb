@@ -34,6 +34,30 @@ describe Bundle::BrewInstaller do
     end
   end
 
+  context "link option is true" do
+    before do
+      allow(ARGV).to receive(:verbose?).and_return(false)
+      allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_change_state!).and_return(:success)
+    end
+
+    it "links formula" do
+      expect(Bundle).to receive(:system).with("brew", "link", "--force", "mysql").and_return(true)
+      Bundle::BrewInstaller.install(formula, link: true)
+    end
+  end
+
+  context "link option is false" do
+    before do
+      allow(ARGV).to receive(:verbose?).and_return(false)
+      allow_any_instance_of(Bundle::BrewInstaller).to receive(:install_change_state!).and_return(:success)
+    end
+
+    it "unlinks formula" do
+      expect(Bundle).to receive(:system).with("brew", "unlink", "mysql").and_return(true)
+      Bundle::BrewInstaller.install(formula, link: false)
+    end
+  end
+
   context "conflicts_with option is provided" do
     before do
       expect(Bundle::BrewDumper).to receive(:formula_info).and_return(

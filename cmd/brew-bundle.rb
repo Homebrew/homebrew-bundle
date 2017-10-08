@@ -78,7 +78,7 @@ rescue RuntimeError, SystemCallError => e
   exit 1
 rescue StandardError => e
   onoe e
-  puts "#{Tty.white}Please report this bug:#{Tty.reset}"
+  puts "#{Tty.bold}Please report this bug:#{Tty.reset}"
   puts "    #{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues/")}"
   puts e.backtrace
   exit 1
