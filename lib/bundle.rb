@@ -1,3 +1,10 @@
+# check ruby version before requiring any modules.
+RUBY_VERSION_SPLIT = RUBY_VERSION.split "."
+RUBY_X = RUBY_VERSION_SPLIT[0].to_i
+RUBY_Y = RUBY_VERSION_SPLIT[1].to_i
+TOO_OLD_RUBY = RUBY_X < 2 || (RUBY_X == 2 && RUBY_Y < 3)
+raise "Homebrew Bundle must be run under Ruby 2.3!" if TOO_OLD_RUBY
+
 require "bundle/bundle"
 require "bundle/dsl"
 require "bundle/brew_services"
