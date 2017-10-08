@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Bundle::BrewServices do
@@ -13,7 +15,7 @@ describe Bundle::BrewServices do
 
     it "returns started services" do
       allow(Bundle).to receive(:services_installed?).and_return(true)
-      allow(Bundle::BrewServices).to receive(:`).and_return <<-EOS.unindent
+      allow(Bundle::BrewServices).to receive(:`).and_return <<~EOS
         nginx  started  homebrew.mxcl.nginx.plist
         apache stopped  homebrew.mxcl.apache.plist
         mysql  started  homebrew.mxcl.mysql.plist

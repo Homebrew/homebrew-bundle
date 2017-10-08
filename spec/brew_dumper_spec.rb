@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "tsort"
 
@@ -460,7 +462,6 @@ describe Bundle::BrewDumper do
       before do
         allow(Bundle::BrewDumper::Topo).to \
           receive(:new).and_raise(TSort::Cyclic)
-        allow_any_instance_of(String).to receive(:undent)
         allow_any_instance_of(Object).to receive(:odie) { raise }
       end
 

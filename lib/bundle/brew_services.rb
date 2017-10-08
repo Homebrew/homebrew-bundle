@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bundle
   module BrewServices
     module_function

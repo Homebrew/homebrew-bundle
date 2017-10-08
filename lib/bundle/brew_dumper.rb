@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require "json"
 require "tsort"
+
 module Bundle
   module BrewDumper
     module_function
@@ -162,12 +165,13 @@ module Bundle
         ).uniq
         topo[f[:full_name]] = deps.map do |dep|
           ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
-          ff[:full_name] if ff
+          next unless ff
+          ff[:full_name]
         end.compact
       end
       @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
     rescue TSort::Cyclic => e
-      odie <<-EOS.undent
+      odie <<~EOS
         #{e.message}
         Formulae dependency graph sorting failed (likely due to a circular dependency)!
       EOS

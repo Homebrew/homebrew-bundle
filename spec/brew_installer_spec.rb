@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Bundle::BrewInstaller do
@@ -80,7 +82,6 @@ describe Bundle::BrewInstaller do
 
     it "prints a message" do
       allow(ARGV).to receive(:verbose?).and_return(true)
-      allow_any_instance_of(String).to receive(:undent).and_return("")
       allow_any_instance_of(Bundle::BrewInstaller).to receive(:puts)
       Bundle::BrewInstaller.install(formula, restart_service: true, conflicts_with: ["mysql56"])
     end

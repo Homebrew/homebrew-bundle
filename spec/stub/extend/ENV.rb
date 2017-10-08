@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV.instance_eval do
   def deps
     @deps || []
