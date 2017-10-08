@@ -31,11 +31,6 @@ end
 
 require "unindent"
 
-class String
-  # Compatibility with Homebrew's String extensions.
-  alias_method :undent, :unindent
-end
-
 # Stub out the inclusion of Homebrew's code.
 LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"].freeze
 
