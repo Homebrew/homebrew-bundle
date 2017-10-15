@@ -60,4 +60,10 @@ describe Bundle::Dsl do
     expect(Bundle::Dsl.send(:sanitize_tap_name, "homebrew/homebrew-foo")).to eql("homebrew/foo")
     expect(Bundle::Dsl.send(:sanitize_tap_name, "homebrew/foo")).to eql("homebrew/foo")
   end
+
+  it ".pluralize_dependency" do
+    expect(Bundle::Dsl.send(:pluralize_dependency, 0)).to eql("dependencies")
+    expect(Bundle::Dsl.send(:pluralize_dependency, 1)).to eql("dependency")
+    expect(Bundle::Dsl.send(:pluralize_dependency, 5)).to eql("dependencies")
+  end
 end
