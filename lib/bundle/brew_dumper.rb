@@ -24,12 +24,16 @@ module Bundle
       requested_formula = formulae.select do |f|
         f[:installed_on_request?] || !f[:installed_as_dependency?]
       end
+      longest_brewline = 0
       requested_formula.map do |f|
         brewline = "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
         brewline += ", restart_service: true" if BrewServices.started?(f[:full_name])
-        brewline
+        longest_brewline = [longest_brewline, brewline.length].max
+        [brewline, f[:desc]]
+      end.map do |brewline, desc|
+        desc.to_s.empty? ? brewline : format("%-#{longest_brewline}s # %s", brewline, desc)
       end.join("\n")
     end
 
@@ -117,6 +121,7 @@ module Bundle
         name: f["name"],
         oldname: f["oldname"],
         full_name: f["full_name"],
+        desc: f["desc"],
         aliases: f["aliases"],
         args: args,
         version: version,
