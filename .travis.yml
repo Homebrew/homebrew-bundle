@@ -18,7 +18,6 @@ before_install:
   - ln -s "$PWD" "$HOMEBREW_TAP_DIR"
   - export HOMEBREW_DEVELOPER="1"
   - ulimit -n 1024
-  - sudo gem install bundler
 
 script:
   - brew style "$TRAVIS_REPO_SLUG"
