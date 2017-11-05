@@ -68,9 +68,9 @@ module Bundle
       end
 
       if failure.zero?
-        puts Formatter.success("Homebrew Bundle complete! #{success} Brewfile dependencies now installed.")
+        puts Formatter.success("Homebrew Bundle complete! #{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed.")
       else
-        puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile dependencies failed to install.")
+        puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install.")
       end
 
       failure.zero?
@@ -139,6 +139,10 @@ module Bundle
 
     def self.sanitize_cask_name(name)
       name.downcase
+    end
+
+    def self.pluralize_dependency(installed_count)
+      (installed_count == 1) ? "dependency" : "dependencies"
     end
   end
 end
