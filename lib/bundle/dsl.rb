@@ -142,7 +142,7 @@ module Bundle
     end
 
     def self.pluralize_dependency(installed_count)
-      installed_count == 1 ? "dependency" : "dependencies"
+      (installed_count == 1) ? "dependency" : "dependencies"
     end
   end
 end
