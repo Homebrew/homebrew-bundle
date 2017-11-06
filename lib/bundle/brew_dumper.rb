@@ -30,7 +30,7 @@ module Bundle
         brewline += ", args: [#{args}]" unless f[:args].empty?
         brewline += ", restart_service: true" if BrewServices.started?(f[:full_name])
         brewline
-      end.join("\n")
+      end.sort.join("\n")
     end
 
     def cask_requirements
