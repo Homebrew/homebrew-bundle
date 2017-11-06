@@ -21,7 +21,7 @@ module Bundle
       taps.map do |tap|
         remote = ", \"#{tap["remote"]}\"" if tap["custom_remote"] && tap["remote"]
         "tap \"#{tap["name"]}\"#{remote}"
-      end.join("\n")
+      end.sort.join("\n")
     end
 
     def tap_names
