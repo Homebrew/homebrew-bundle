@@ -59,6 +59,7 @@ describe Bundle::BrewDumper do
       expect(subject.formulae).to contain_exactly(
         name: "foo",
         full_name: "homebrew/tap/foo",
+        desc: "",
         oldname: nil,
         aliases: [],
         args: [],
@@ -112,7 +113,7 @@ describe Bundle::BrewDumper do
           {
             "name" => "foo",
             "full_name" => "homebrew/tap/foo",
-            "desc" => "",
+            "desc" => "Foo's description",
             "homepage" => "",
             "oldname" => nil,
             "aliases" => [],
@@ -142,7 +143,7 @@ describe Bundle::BrewDumper do
           {
             "name" => "bar",
             "full_name" => "bar",
-            "desc" => "",
+            "desc" => "Bar's description",
             "homepage" => "",
             "oldname" => nil,
             "aliases" => [],
@@ -151,6 +152,38 @@ describe Bundle::BrewDumper do
             "installed" => [{
               "version" => "2.0",
               "used_options" => ["--with-a", "--with-b"],
+              "built_as_bottle" => nil,
+              "poured_from_bottle" => true,
+              "installed_as_dependency" => true,
+              "installed_on_request" => true,
+              "runtime_dependencies" => [],
+            }],
+            "linked_keg" => nil,
+            "keg_only" => nil,
+            "dependencies" => [],
+            "recommended_dependencies" => [],
+            "optional_dependencies" => [],
+            "build_dependencies" => [],
+            "conflicts_with" => [],
+            "caveats" => nil,
+            "requirements" => [],
+            "options" => [],
+            "bottle" => {},
+            "pinned" => true,
+            "outdated" => true,
+          },
+          {
+            "name" => "nodesc",
+            "full_name" => "nodesc",
+            "desc" => "",
+            "homepage" => "",
+            "oldname" => nil,
+            "aliases" => [],
+            "versions" => { "stable" => "2.1", "bottle" => false },
+            "revision" => 0,
+            "installed" => [{
+              "version" => "2.0",
+              "used_options" => [],
               "built_as_bottle" => nil,
               "poured_from_bottle" => true,
               "installed_as_dependency" => true,
@@ -181,6 +214,7 @@ describe Bundle::BrewDumper do
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
+          desc: "Foo's description",
           oldname: nil,
           aliases: [],
           args: [],
@@ -196,8 +230,10 @@ describe Bundle::BrewDumper do
           pinned?: false,
           outdated?: false,
         },
+      {
         name: "bar",
         full_name: "bar",
+        desc: "Bar's description",
         oldname: nil,
         aliases: [],
         args: ["with-a", "with-b"],
@@ -212,11 +248,31 @@ describe Bundle::BrewDumper do
         conflicts_with: [],
         pinned?: true,
         outdated?: true,
+      },
+      {
+        name: "nodesc",
+        full_name: "nodesc",
+        desc: "",
+        oldname: nil,
+        aliases: [],
+        args: [],
+        version: "2.0",
+        installed_as_dependency?: true,
+        installed_on_request?: true,
+        dependencies: [],
+        recommended_dependencies: [],
+        optional_dependencies: [],
+        build_dependencies: [],
+        requirements: [],
+        conflicts_with: [],
+        pinned?: true,
+        outdated?: true,
+      }
       )
     end
 
     it "dumps as foo and bar with args" do
-      expect(subject.dump).to eql("brew \"bar\", args: [\"with-a\", \"with-b\"]\nbrew \"homebrew/tap/foo\"")
+      expect(subject.dump).to eql("brew \"bar\", args: [\"with-a\", \"with-b\"] # Bar's description\nbrew \"nodesc\"\nbrew \"homebrew/tap/foo\"                # Foo's description")
     end
 
     it "formula_info returns the formula" do
