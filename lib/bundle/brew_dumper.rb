@@ -29,6 +29,7 @@ module Bundle
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
         brewline += ", restart_service: true" if BrewServices.started?(f[:full_name])
+        brewline += ", link: #{f[:link?]}" unless f[:link?].nil?
         brewline
       end.join("\n")
     end
@@ -88,10 +89,13 @@ module Bundle
 
     def formula_inspector(f)
       installed = f["installed"]
+      link = nil
       if f["linked_keg"].nil?
         keg = installed.last
+        link = false unless f["keg_only"]
       else
         keg = installed.detect { |k| f["linked_keg"] == k["version"] }
+        link = true if f["keg_only"]
       end
 
       if keg
@@ -130,6 +134,7 @@ module Bundle
         conflicts_with: f["conflicts_with"],
         pinned?: (f["pinned"] || false),
         outdated?: (f["outdated"] || false),
+        link?: link,
       }
     end
 
