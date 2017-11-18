@@ -79,7 +79,7 @@ module Bundle
 
         formulae_names.each do |name|
           next if @checked_formulae_names.include?(name)
-          formula = current_formulae.find { |f| f[:name] == name }
+          formula = current_formulae.find { |f| f[:full_name] == name }
           next unless formula
           f_deps = formula[:dependencies]
           next unless f_deps
