@@ -82,6 +82,10 @@ module Bundle
           formula = current_formulae.find { |f| f[:full_name] == name }
           next unless formula
           f_deps = formula[:dependencies]
+          unless formula[:poured_from_bottle?]
+            f_deps += formula[:build_dependencies]
+            f_deps.uniq!
+          end
           next unless f_deps
           next if f_deps.empty?
           @checked_formulae_names << name

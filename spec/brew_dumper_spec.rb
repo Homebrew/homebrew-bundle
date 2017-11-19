@@ -74,6 +74,7 @@ describe Bundle::BrewDumper do
         pinned?: false,
         outdated?: false,
         link?: nil,
+        poured_from_bottle?: false,
       )
     end
   end
@@ -153,7 +154,7 @@ describe Bundle::BrewDumper do
               "version" => "2.0",
               "used_options" => ["--with-a", "--with-b"],
               "built_as_bottle" => nil,
-              "poured_from_bottle" => true,
+              "poured_from_bottle" => false,
               "installed_as_dependency" => true,
               "installed_on_request" => true,
               "runtime_dependencies" => [],
@@ -197,6 +198,7 @@ describe Bundle::BrewDumper do
           pinned?: false,
           outdated?: false,
           link?: nil,
+          poured_from_bottle?: true,
         },
         name: "bar",
         full_name: "bar",
@@ -215,6 +217,7 @@ describe Bundle::BrewDumper do
         pinned?: true,
         outdated?: true,
         link?: false,
+        poured_from_bottle?: false,
       )
     end
 
