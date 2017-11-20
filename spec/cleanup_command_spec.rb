@@ -19,6 +19,8 @@ describe Bundle::Commands::Cleanup do
         brew 'homebrew/tap/h'
         brew 'homebrew/tap/i2'
         brew 'homebrew/tap/hasdependency'
+        brew 'hasbuilddependency1'
+        brew 'hasbuilddependency2'
       EOS
     end
 
@@ -38,11 +40,16 @@ describe Bundle::Commands::Cleanup do
         { name: "i", full_name: "homebrew/tap/i", aliases: ["i2"] },
         { name: "hasdependency", full_name: "homebrew/tap/hasdependency", dependencies: ["isdependency"] },
         { name: "isdependency", full_name: "homebrew/tap/isdependency" },
-      ]
+        { name: "hasbuilddependency1", full_name: "hasbuilddependency1", poured_from_bottle?: true, build_dependencies: ["builddependency1"] },
+        { name: "hasbuilddependency2", full_name: "hasbuilddependency2", poured_from_bottle?: false, build_dependencies: ["builddependency2"] },
+        { name: "builddependency1", full_name: "builddependency1" },
+        { name: "builddependency2", full_name: "builddependency2" },
+      ].map { |f| { dependencies: [], build_dependencies: [] }.merge(f) }
       expect(Bundle::Commands::Cleanup.formulae_to_uninstall).to eql %w[
         c
         homebrew/tap/e
         other/tap/h
+        builddependency1
       ]
     end
 

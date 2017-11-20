@@ -106,6 +106,7 @@ module Bundle
         version = keg["version"]
         installed_as_dependency = keg["installed_as_dependency"] || false
         installed_on_request = keg["installed_on_request"] || false
+        poured_from_bottle = keg["poured_from_bottle"] || false
         runtime_dependencies = if deps = keg["runtime_dependencies"]
           deps.map { |dep| dep["full_name"].split("/").last }.compact
         end
@@ -115,6 +116,7 @@ module Bundle
         installed_as_dependency = false
         installed_on_request = false
         runtime_dependencies = nil
+        poured_from_bottle = false
       end
 
       {
@@ -135,6 +137,7 @@ module Bundle
         pinned?: (f["pinned"] || false),
         outdated?: (f["outdated"] || false),
         link?: link,
+        poured_from_bottle?: poured_from_bottle,
       }
     end
 
