@@ -4,6 +4,9 @@
 #:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global]:
 #:    Install or upgrade all dependencies in a Brewfile.
 #:
+#:    `brew bundle init` [--force] [--file=<path>|--global]
+#:    Initialize a Brewfile.
+#:
 #:    `brew bundle dump` [--force] [--file=<path>|--global]
 #:    Write all installed casks/formulae/taps into a Brewfile.
 #:
@@ -53,6 +56,8 @@ begin
   case command
   when nil, "install"
     Bundle::Commands::Install.run
+  when "init"
+    Bundle::Commands::Init.run
   when "dump"
     Bundle::Commands::Dump.run
   when "cleanup"
