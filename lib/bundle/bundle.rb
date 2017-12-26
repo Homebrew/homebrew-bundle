@@ -53,8 +53,20 @@ module Bundle
       filename ||= "Brewfile"
       file = Pathname.new(filename).expand_path(Dir.pwd)
     end
-    file.read
+    file
+  end
+
+  def read_brewfile
+    Bundle.brewfile.read
   rescue Errno::ENOENT
     raise "No Brewfile found"
+  end
+
+  def should_not_write_file?(file, overwrite = false)
+    file.exist? && !overwrite && file.to_s != "/dev/stdout"
+  end
+
+  def write_file(file, content)
+    file.open("w") { |io| io.write content }
   end
 end

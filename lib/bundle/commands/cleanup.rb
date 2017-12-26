@@ -50,14 +50,14 @@ module Bundle
       end
 
       def casks_to_uninstall
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
         current_casks = Bundle::CaskDumper.casks
         current_casks - kept_casks
       end
 
       def formulae_to_uninstall
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
         kept_formulae.map! do |f|
           Bundle::BrewDumper.formula_aliases[f] ||
@@ -99,7 +99,7 @@ module Bundle
       IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
 
       def taps_to_untap
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS

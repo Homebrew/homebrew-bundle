@@ -29,7 +29,7 @@ module Bundle
       end
 
       def any_casks_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
         return false if requested_casks.empty?
         current_casks = Bundle::CaskDumper.casks
@@ -37,7 +37,7 @@ module Bundle
       end
 
       def any_formulae_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
         requested_formulae.any? do |f|
           !Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
@@ -45,7 +45,7 @@ module Bundle
       end
 
       def any_taps_to_tap?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         requested_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         return false if requested_taps.empty?
         current_taps = Bundle::TapDumper.tap_names
@@ -53,7 +53,7 @@ module Bundle
       end
 
       def any_apps_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         requested_apps = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| e.options[:id] }
         return false if requested_apps.empty?
         current_apps = Bundle::MacAppStoreDumper.app_ids
@@ -61,7 +61,7 @@ module Bundle
       end
 
       def any_formulae_to_start?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+        @dsl ||= Bundle::Dsl.new(Bundle.read_brewfile)
         @dsl.entries.select { |e| e.type == :brew }.any? do |e|
           formula = Bundle::BrewInstaller.new(e.name, e.options)
           needs_to_start = formula.start_service? || formula.restart_service?
