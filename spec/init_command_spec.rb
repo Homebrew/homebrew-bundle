@@ -6,7 +6,7 @@ describe Bundle::Commands::Init do
   context "when a Brewfile is found" do
     it "raise an error" do
       allow(Bundle).to receive(:should_not_write_file?).and_return(true)
-      expect{ Bundle::Commands::Init.run }.to raise_error
+      expect { Bundle::Commands::Init.run }.to raise_error
     end
   end
 
@@ -17,7 +17,7 @@ describe Bundle::Commands::Init do
     end
 
     it "generates template" do
-      expect( Bundle ).to receive(:write_file) do |file, content, _overwrite|
+      expect(Bundle).to receive(:write_file) do |file, content, _overwrite|
         expect(file).to eql(Pathname.new(Dir.pwd).join("Brewfile"))
         expect(content).to include("# cask \"google-chrome\"\n")
       end
