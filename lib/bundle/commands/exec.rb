@@ -32,7 +32,7 @@ module Bundle
         raise "Error: #{command} was not found on your PATH!" if command_path.nil?
         command_path = command_path.dirname.to_s
 
-        brewfile = Bundle::Dsl.new(Bundle.brewfile)
+        brewfile = Bundle::Dsl.new(Bundle.read_brewfile)
         ENV.deps = brewfile.entries.map do |entry|
           next unless entry.type == :brew
           f = Formulary.factory(entry.name)

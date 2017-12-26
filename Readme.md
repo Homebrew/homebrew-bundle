@@ -23,7 +23,7 @@ This tool is developed for use with Homebrew on macOS but might work with Linuxb
 
 Create a `Brewfile` in the root of your project:
 
-    $ touch Brewfile
+    $ brew bundle init
 
 Then list your Homebrew based dependencies in your `Brewfile`:
 
