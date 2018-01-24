@@ -7,7 +7,7 @@ describe Bundle::Commands::Cleanup do
     before do
       Bundle::Commands::Cleanup.reset!
       allow(ARGV).to receive(:value).and_return(nil)
-      allow_any_instance_of(Pathname).to receive(:read).and_return <<-EOS
+      allow_any_instance_of(Pathname).to receive(:read).and_return <<~EOS
         tap 'x'
         tap 'y'
         cask '123'

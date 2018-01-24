@@ -7,7 +7,7 @@ describe Bundle::Dsl do
     allow_any_instance_of(Bundle::Dsl).to receive(:system).with("/usr/libexec/java_home --failfast").and_return(false)
     allow(ARGV).to receive(:verbose?).and_return(true)
     # Keep in sync with the README
-    dsl = Bundle::Dsl.new <<-EOS
+    dsl = Bundle::Dsl.new <<~EOS
       # frozen_string_literal: true
       cask_args appdir: '/Applications'
       tap 'caskroom/cask'
