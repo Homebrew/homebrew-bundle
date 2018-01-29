@@ -40,12 +40,12 @@ describe Bundle::MacAppStoreDumper do
     before do
       Bundle::MacAppStoreDumper.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
-      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return("foo 123\nbar 456\nbaz 789")
+      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return("123 foo\n456 bar\n789 baz")
     end
     subject { Bundle::MacAppStoreDumper }
 
     it "returns list %w[foo bar baz]" do
-      expect(subject.apps).to eql([["foo", "123"], ["bar", "456"], ["baz", "789"]])
+      expect(subject.apps).to eql([["123", "foo"], ["456", "bar"], ["789", "baz"]])
     end
   end
 end

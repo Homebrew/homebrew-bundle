@@ -24,6 +24,7 @@ require "bundle"
 require "bundler"
 
 RSpec.configure do |config|
+  config.filter_run_when_matching :focus
   config.around(:each) do |example|
     Bundler.with_clean_env { example.run }
   end

@@ -31,9 +31,9 @@ module Bundle
       def any_casks_to_install?
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
         requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-        return false if requested_casks.empty?
-        current_casks = Bundle::CaskDumper.casks
-        (requested_casks - current_casks).any?
+        requested_casks.any? do |c|
+          !Bundle::CaskInstaller.cask_installed_and_up_to_date?(c)
+        end
       end
 
       def any_formulae_to_install?
@@ -54,10 +54,10 @@ module Bundle
 
       def any_apps_to_install?
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_apps = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| e.options[:id] }
-        return false if requested_apps.empty?
-        current_apps = Bundle::MacAppStoreDumper.app_ids
-        (requested_apps - current_apps).any?
+        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| e.options[:id] }
+        requested_app_ids.any? do |id|
+          !Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
+        end
       end
 
       def any_formulae_to_start?
