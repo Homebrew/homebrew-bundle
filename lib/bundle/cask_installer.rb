@@ -4,9 +4,18 @@ module Bundle
   module CaskInstaller
     module_function
 
+    def reset!
+      @installed_casks = nil
+      @outdated_casks = nil
+    end
+
     def install(name, options = {})
       if installed_casks.include? name
-        puts "Skipping install of #{name} cask. It is already installed." if ARGV.verbose?
+        if !ARGV.include?("--no-upgrade") && outdated_casks.include?(name)
+          puts "Upgrading #{name} cask. It is installed but not up-to-date." if ARGV.verbose?
+          return :failed unless Bundle.system "brew", "cask", "upgrade", name
+          return :success
+        end
         return :skipped
       end
 
@@ -28,8 +37,30 @@ module Bundle
       :success
     end
 
+    def self.cask_installed_and_up_to_date?(cask)
+      return false unless cask_installed?(cask)
+      return true if ARGV.include?("--no-upgrade")
+      !cask_upgradable?(cask)
+    end
+
+    def cask_installed?(cask)
+      installed_casks.include? cask
+    end
+
+    def cask_upgradable?(cask)
+      outdated_casks.include? cask
+    end
+
     def installed_casks
       @installed_casks ||= Bundle::CaskDumper.casks
+    end
+
+    def outdated_casks
+      @outdated_casks ||= if Bundle.cask_installed?
+        `brew cask outdated 2>/dev/null`.split("\n")
+      else
+        []
+      end
     end
   end
 end
