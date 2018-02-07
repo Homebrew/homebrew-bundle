@@ -477,6 +477,99 @@ describe Bundle::BrewDumper do
     end
   end
 
+  context "when --describe is not set" do
+    before do
+      ARGV.delete("--describe") if ARGV.include?("--describe")
+      Bundle::BrewDumper.reset!
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+        {
+          name: "a",
+          full_name: "a",
+          desc: "z",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: ["b", "d", "c"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+        {
+          name: "b",
+          full_name: "b",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+      ]
+    end
+    it "does not output a comment with dependency description" do
+      expect(Bundle::BrewDumper.dump).not_to include("#")
+    end
+  end
+
+  context "when --describe is set" do
+    before do
+      ARGV << "--describe" unless ARGV.include?("--describe")
+      Bundle::BrewDumper.reset!
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+        {
+          name: "a",
+          full_name: "a",
+          desc: "z",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: ["b", "d", "c"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+        {
+          name: "b",
+          full_name: "b",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+      ]
+    end
+    after do
+      ARGV.delete("--describe") if ARGV.include?("--describe")
+    end
+    it "outputs a comment on the line before a dependency with a description" do
+      expect(Bundle::BrewDumper.dump).to include("# z")
+    end
+    it "does not output a comment if a formula lacks a description" do
+      lines_with_comments = Bundle::BrewDumper.dump.split.select { |line| line.include?("#") }
+      expect(lines_with_comments.size).to eq(1)
+    end
+  end
+
   context "when order of args for a formula is different in different environment" do
     it "dumps args in same order" do
       formula_info = [
