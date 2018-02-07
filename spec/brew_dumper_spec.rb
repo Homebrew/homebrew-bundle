@@ -59,6 +59,7 @@ describe Bundle::BrewDumper do
       expect(subject.formulae).to contain_exactly(
         name: "foo",
         full_name: "homebrew/tap/foo",
+        desc: "",
         oldname: nil,
         aliases: [],
         args: [],
@@ -183,6 +184,7 @@ describe Bundle::BrewDumper do
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
+          desc: "",
           oldname: nil,
           aliases: [],
           args: [],
@@ -202,6 +204,7 @@ describe Bundle::BrewDumper do
         },
         name: "bar",
         full_name: "bar",
+        desc: "",
         oldname: nil,
         aliases: [],
         args: ["with-a", "with-b"],
