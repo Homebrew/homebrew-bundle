@@ -26,7 +26,7 @@ module Bundle
       end
       requested_formula.map do |f|
         brewline = ""
-        brewline += "# #{f[:desc]}\n" if ARGV.include?("--describe")
+        brewline += "# #{f[:desc]}\n" if ARGV.include?("--describe") && f[:desc]
         brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
