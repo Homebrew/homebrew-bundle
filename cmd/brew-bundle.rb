@@ -16,6 +16,10 @@
 #:    `brew bundle exec` [command]
 #:    Run an external command in an isolated build environment.
 #:
+#:    `brew bundle list` [--all|--brews|--casks|--taps|--mas] [--file=<path>|--global]
+#:    List all dependencies present in a Brewfile, optionally limiting by types.
+#:    By default, only brew dependencies are output.
+#:
 #:    If `-v` or `--verbose` are passed, print verbose output.
 #:
 #:    If `--no-upgrade` is passed, don't run `brew upgrade` outdated dependencies.
@@ -61,6 +65,8 @@ begin
     Bundle::Commands::Check.run
   when "exec"
     Bundle::Commands::Exec.run
+  when "list"
+    Bundle::Commands::List.run
   else
     onoe "Unknown command `#{command}`!"
     abort `brew bundle --help`
