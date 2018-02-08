@@ -5,6 +5,8 @@ module Bundle
     module Check
       module_function
 
+      @arrow = "\u21B3".encode("utf-8")
+
       def reset!
         @dsl = nil
         Bundle::CaskDumper.reset!
@@ -15,12 +17,13 @@ module Bundle
       end
 
       def run
-        if any_taps_to_tap? ||
-           any_casks_to_install? ||
-           any_apps_to_install? ||
-           any_formulae_to_install? ||
-           any_formulae_to_start?
+        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+
+        work_to_be_done = [taps_to_tap, casks_to_install, formulae_to_install, apps_to_install].flatten.reject { |p| p.nil? || p == false}
+
+        if work_to_be_done.any? || any_formulae_to_start?
           puts "brew bundle can't satisfy your Brewfile's dependencies."
+          work_to_be_done.each { |package| puts "#{@arrow} #{package}" }
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
@@ -28,36 +31,48 @@ module Bundle
         end
       end
 
-      def any_casks_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      def casks_to_install
         requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-        requested_casks.any? do |c|
-          !Bundle::CaskInstaller.cask_installed_and_up_to_date?(c)
-        end
+        requested_casks.reject do |c|
+          Bundle::CaskInstaller.cask_installed_and_up_to_date?(c)
+        end.map { |entry| "Cask #{entry} needs to be installed or updated." }
+      end
+
+      def any_casks_to_install?
+        casks_to_install.any?
+      end
+
+      def formulae_to_install
+        requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+        requested_formulae.reject do |f|
+          Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
+        end.map { |entry| "Formula #{entry} needs to be installed or updated." }
       end
 
       def any_formulae_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        requested_formulae.any? do |f|
-          !Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
-        end
+        formulae_to_install.any?
       end
 
-      def any_taps_to_tap?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      def taps_to_tap
         requested_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         return false if requested_taps.empty?
         current_taps = Bundle::TapDumper.tap_names
-        (requested_taps - current_taps).any?
+        (requested_taps - current_taps).map { |entry| "Tap #{entry} needs to be tapped." }
+      end
+
+      def any_taps_to_tap?
+        taps_to_tap.any?
+      end
+
+      def apps_to_install
+        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| [ e.options[:id], e.name ] }.to_h
+        requested_app_ids.reject do |id,name|
+          Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
+        end.map { |id,name| "App #{name} needs to be installed or updated." }
       end
 
       def any_apps_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| e.options[:id] }
-        requested_app_ids.any? do |id|
-          !Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
-        end
+        apps_to_install.any?
       end
 
       def any_formulae_to_start?
