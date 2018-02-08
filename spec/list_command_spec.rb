@@ -13,28 +13,37 @@ describe Bundle::Commands::List do
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
     end
+
     it "only shows brew deps when no options are passed" do
-      allow(ARGV).to receive(:value).and_return(nil)
       expect { Bundle::Commands::List.run }.to output("mysql\n").to_stdout
     end
-    it "only shows brew deps when --brews is passed" do
-      ARGV << "--brews"
-      expect { Bundle::Commands::List.run }.to output("mysql\n").to_stdout
+
+    types_and_deps = {
+      "--taps" => "phinze/cask",
+      "--brews" => "mysql",
+      "--casks" => "google-chrome",
+      "--mas" => "1Password",
+    }
+
+    context "limiting when certain options are passed" do
+      combinations = 1.upto(types_and_deps.length).flat_map do |i|
+        types_and_deps.keys.combination(i).take((1..types_and_deps.length).inject(:*) || 1)
+      end.sort
+
+      combinations.each do |options_list|
+        words = options_list.map { |type| type[2..-1] }.join(" and ")
+        opts = options_list.join(" and ")
+        verb = options_list.length == 1 && "is" || "are"
+        it "shows only #{words} when #{opts} #{verb} passed" do
+          options_list.each { |opt| ARGV << opt }
+          expected = options_list.map { |opt| types_and_deps[opt] }.join("\n")
+          expect { Bundle::Commands::List.run }.to output("#{expected}\n").to_stdout
+        end
+      end
     end
-    it "only shows cask deps when --casks is passed" do
-      ARGV << "--casks"
-      expect { Bundle::Commands::List.run }.to output("google-chrome\n").to_stdout
-    end
-    it "only shows taps when --taps is passed" do
-      ARGV << "--taps"
-      expect { Bundle::Commands::List.run }.to output("phinze/cask\n").to_stdout
-    end
-    it "only shows mas when --mas is passed" do
-      ARGV << "--mas"
-      expect { Bundle::Commands::List.run }.to output("1Password\n").to_stdout
-    end
+
     after(:example) do
-      ["--taps", "--mas", "--brews", "--casks"].each do |option|
+      types_and_deps.each_key do |option|
         ARGV.delete option if ARGV.include? option
       end
     end
