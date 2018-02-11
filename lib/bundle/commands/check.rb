@@ -19,7 +19,7 @@ module Bundle
       def run
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
-        work_to_be_done = [taps_to_tap, casks_to_install, formulae_to_install, apps_to_install].flatten.reject { |p| p.nil? || p == false}
+        work_to_be_done = [taps_to_tap, casks_to_install, formulae_to_install, apps_to_install].flatten.reject { |p| p.nil? || p == false }
 
         if work_to_be_done.any? || any_formulae_to_start?
           puts "brew bundle can't satisfy your Brewfile's dependencies."
@@ -33,16 +33,18 @@ module Bundle
 
       def casks_to_install
         requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-        requested_casks.reject do |c|
+        actionable = requested_casks.reject do |c|
           Bundle::CaskInstaller.cask_installed_and_up_to_date?(c)
-        end.map { |entry| "Cask #{entry} needs to be installed or updated." }
+        end
+        actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
       end
 
       def formulae_to_install
         requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        requested_formulae.reject do |f|
+        actionable = requested_formulae.reject do |f|
           Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
-        end.map { |entry| "Formula #{entry} needs to be installed or updated." }
+        end
+        actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
       end
 
       def taps_to_tap
@@ -53,10 +55,11 @@ module Bundle
       end
 
       def apps_to_install
-        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| [ e.options[:id], e.name ] }.to_h
-        requested_app_ids.reject do |id,name|
+        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| [e.options[:id], e.name] }.to_h
+        actionable = requested_app_ids.reject do |id, _name|
           Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
-        end.map { |id,name| "App #{name} needs to be installed or updated." }
+        end
+        actionable.map { |_id, name| "App #{name} needs to be installed or updated." }
       end
 
       def any_formulae_to_start?
