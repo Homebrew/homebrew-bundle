@@ -14,6 +14,8 @@ describe Bundle::Commands::Check do
 
   context "when dependencies are satisfied" do
     it "does not raise an error" do
+      allow(ARGV).to receive(:value).and_return(nil)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
