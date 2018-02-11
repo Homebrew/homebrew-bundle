@@ -38,19 +38,11 @@ module Bundle
         end.map { |entry| "Cask #{entry} needs to be installed or updated." }
       end
 
-      def any_casks_to_install?
-        casks_to_install.any?
-      end
-
       def formulae_to_install
         requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
         requested_formulae.reject do |f|
           Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
         end.map { |entry| "Formula #{entry} needs to be installed or updated." }
-      end
-
-      def any_formulae_to_install?
-        formulae_to_install.any?
       end
 
       def taps_to_tap
@@ -60,19 +52,11 @@ module Bundle
         (requested_taps - current_taps).map { |entry| "Tap #{entry} needs to be tapped." }
       end
 
-      def any_taps_to_tap?
-        taps_to_tap.any?
-      end
-
       def apps_to_install
         requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| [ e.options[:id], e.name ] }.to_h
         requested_app_ids.reject do |id,name|
           Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
         end.map { |id,name| "App #{name} needs to be installed or updated." }
-      end
-
-      def any_apps_to_install?
-        apps_to_install.any?
       end
 
       def any_formulae_to_start?
