@@ -16,6 +16,19 @@ describe Bundle::Commands::Check do
     it "does not raise an error" do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
+      nothing = []
+      allow(Bundle::Commands::Check).to receive(:casks_to_install).and_return(nothing)
+      allow(Bundle::Commands::Check).to receive(:formulae_to_install).and_return(nothing)
+      allow(Bundle::Commands::Check).to receive(:apps_to_install).and_return(nothing)
+      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return(nothing)
+      expect { do_check }.to_not raise_error
+    end
+  end
+
+  context "no dependencies are specified" do
+    it "does not raise an error" do
+      allow(ARGV).to receive(:value).and_return(nil)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow_any_instance_of(Bundle::Dsl).to receive(:entries).and_return([])
       expect { do_check }.to_not raise_error
     end
