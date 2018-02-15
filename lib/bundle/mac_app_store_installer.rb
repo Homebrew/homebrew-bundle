@@ -50,11 +50,11 @@ module Bundle
     end
 
     def app_id_installed?(id)
-      installed_app_ids.include? id.to_s
+      installed_app_ids.include? id
     end
 
     def app_id_upgradable?(id)
-      outdated_app_ids.include? id.to_s
+      outdated_app_ids.include? id
     end
 
     def installed_app_ids
@@ -64,7 +64,7 @@ module Bundle
     def outdated_app_ids
       @outdated_app_ids ||= if Bundle.mas_installed?
         `mas outdated 2>/dev/null`.split("\n").map do |app|
-          app.split(" ", 2).first
+          app.split(" ", 2).first.to_i
         end
       else
         []
