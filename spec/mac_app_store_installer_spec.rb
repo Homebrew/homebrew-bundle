@@ -15,8 +15,8 @@ describe Bundle::MacAppStoreInstaller do
 
   context ".app_id_installed_and_up_to_date?" do
     it "returns result" do
-      allow(Bundle::MacAppStoreInstaller).to receive(:installed_app_ids).and_return(["123", "456"])
-      allow(Bundle::MacAppStoreInstaller).to receive(:outdated_app_ids).and_return(["456"])
+      allow(Bundle::MacAppStoreInstaller).to receive(:installed_app_ids).and_return([123, 456])
+      allow(Bundle::MacAppStoreInstaller).to receive(:outdated_app_ids).and_return([456])
       expect(Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(123)).to eql(true)
       expect(Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(456)).to eql(false)
     end
@@ -77,7 +77,7 @@ describe Bundle::MacAppStoreInstaller do
 
       context "when app is installed" do
         before do
-          allow(Bundle::MacAppStoreInstaller).to receive(:installed_app_ids).and_return(["123"])
+          allow(Bundle::MacAppStoreInstaller).to receive(:installed_app_ids).and_return([123])
         end
 
         it "skips" do
@@ -88,8 +88,8 @@ describe Bundle::MacAppStoreInstaller do
 
       context "when app is outdated" do
         before do
-          allow(Bundle::MacAppStoreInstaller).to receive(:installed_app_ids).and_return(["123"])
-          allow(Bundle::MacAppStoreInstaller).to receive(:outdated_app_ids).and_return(["123"])
+          allow(Bundle::MacAppStoreInstaller).to receive(:installed_app_ids).and_return([123])
+          allow(Bundle::MacAppStoreInstaller).to receive(:outdated_app_ids).and_return([123])
         end
 
         it "upgrades" do
