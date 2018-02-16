@@ -482,7 +482,7 @@ describe Bundle::BrewDumper do
 
   context "when --describe is not set" do
     before do
-      ARGV.delete("--describe") if ARGV.include?("--describe")
+      stub_const("ARGV", [])
       Bundle::BrewDumper.reset!
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
         {
@@ -518,6 +518,7 @@ describe Bundle::BrewDumper do
         },
       ]
     end
+
     it "does not output a comment with dependency description" do
       expect(Bundle::BrewDumper.dump).not_to include("#")
     end
@@ -525,7 +526,7 @@ describe Bundle::BrewDumper do
 
   context "when --describe is set" do
     before do
-      ARGV << "--describe" unless ARGV.include?("--describe")
+      stub_const("ARGV", ["--describe"])
       Bundle::BrewDumper.reset!
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
         {
@@ -561,9 +562,7 @@ describe Bundle::BrewDumper do
         },
       ]
     end
-    after do
-      ARGV.delete("--describe") if ARGV.include?("--describe")
-    end
+
     it "outputs a comment on the line before a dependency with a description" do
       expect(Bundle::BrewDumper.dump).to include("# z")
     end
