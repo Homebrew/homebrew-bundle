@@ -70,6 +70,16 @@ You can check there's anything to install/upgrade in the `Brewfile` by running:
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
+### List
+
+Outputs a list of all of the entries in the Brewfile.
+
+    $ brew bundle list
+
+Pass one of `--casks`, `--taps`, `--mas`, or `--brews` to limit output to that type. Defaults to `--brews`. Pass `--all` to see everything.
+
+Note that the _type_ of the package is **not** included in this output.
+
 ### Exec
 
 Runs an external command within Homebrew's superenv build environment:
