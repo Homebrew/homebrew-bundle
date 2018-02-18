@@ -4,7 +4,7 @@
 #:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global]:
 #:    Install or upgrade all dependencies in a Brewfile.
 #:
-#:    `brew bundle dump` [--force] [--file=<path>|--global]
+#:    `brew bundle dump` [--force] [--file=<path>|--global] [--describe]
 #:    Write all installed casks/formulae/taps into a Brewfile.
 #:
 #:    `brew bundle cleanup` [--zap] [--force] [--file=<path>|--global]
@@ -28,6 +28,10 @@
 #:    `--file=-` to output to console).
 #:
 #:    If `--global` is passed, set Brewfile path to `$HOME/.Brewfile`.
+#:
+#:    If `--describe` is passed, output a comment above each line containing the
+#:    description of the dependency at the time of the dump for dependencies
+#:    that have a description.
 #:
 #:    If `-h` or `--help` are passed, print this help message and exit.
 if !defined?(HOMEBREW_VERSION) || !HOMEBREW_VERSION ||

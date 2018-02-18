@@ -59,6 +59,7 @@ describe Bundle::BrewDumper do
       expect(subject.formulae).to contain_exactly(
         name: "foo",
         full_name: "homebrew/tap/foo",
+        desc: "",
         oldname: nil,
         aliases: [],
         args: [],
@@ -183,6 +184,7 @@ describe Bundle::BrewDumper do
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
+          desc: "",
           oldname: nil,
           aliases: [],
           args: [],
@@ -202,6 +204,7 @@ describe Bundle::BrewDumper do
         },
         name: "bar",
         full_name: "bar",
+        desc: "",
         oldname: nil,
         aliases: [],
         args: ["with-a", "with-b"],
@@ -474,6 +477,98 @@ describe Bundle::BrewDumper do
       it "dies on cyclic exceptions" do
         expect { subject.formulae }.to raise_error(TSort::Cyclic)
       end
+    end
+  end
+
+  context "when --describe is not set" do
+    before do
+      stub_const("ARGV", [])
+      Bundle::BrewDumper.reset!
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+        {
+          name: "a",
+          full_name: "a",
+          desc: "z",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: ["b", "d", "c"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+        {
+          name: "b",
+          full_name: "b",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+      ]
+    end
+
+    it "does not output a comment with dependency description" do
+      expect(Bundle::BrewDumper.dump).not_to include("#")
+    end
+  end
+
+  context "when --describe is set" do
+    before do
+      stub_const("ARGV", ["--describe"])
+      Bundle::BrewDumper.reset!
+      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+        {
+          name: "a",
+          full_name: "a",
+          desc: "z",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: ["b", "d", "c"],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+        {
+          name: "b",
+          full_name: "b",
+          aliases: [],
+          args: [],
+          version: "1.0",
+          dependencies: [],
+          recommended_dependencies: [],
+          optional_dependencies: [],
+          build_dependencies: [],
+          requirements: [],
+          conflicts_with: [],
+          pinned?: false,
+          outdated?: false,
+        },
+      ]
+    end
+
+    it "outputs a comment on the line before a dependency with a description" do
+      expect(Bundle::BrewDumper.dump).to include("# z")
+    end
+    it "does not output a comment if a formula lacks a description" do
+      lines_with_comments = Bundle::BrewDumper.dump.split.select { |line| line.include?("#") }
+      expect(lines_with_comments.size).to eq(1)
     end
   end
 

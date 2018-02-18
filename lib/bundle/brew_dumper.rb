@@ -25,7 +25,9 @@ module Bundle
         f[:installed_on_request?] || !f[:installed_as_dependency?]
       end
       requested_formula.map do |f|
-        brewline = "brew \"#{f[:full_name]}\""
+        brewline = ""
+        brewline += "# #{f[:desc]}\n" if ARGV.include?("--describe") && f[:desc]
+        brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
         brewline += ", restart_service: true" if BrewServices.started?(f[:full_name])
@@ -121,6 +123,7 @@ module Bundle
 
       {
         name: f["name"],
+        desc: f["desc"],
         oldname: f["oldname"],
         full_name: f["full_name"],
         aliases: f["aliases"],
