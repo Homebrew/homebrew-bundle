@@ -107,29 +107,32 @@ describe Bundle::Commands::Check do
 
   context "when there are taps to install" do
     before do
-      allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(true)
+      allow(ARGV).to receive(:value).and_return(nil)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
+      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return(true)
     end
     it "does not check for tasks" do
-      expect(Bundle::Commands::Check).not_to receive(:any_casks_to_install?)
+      expect(Bundle::Commands::Check).not_to receive(:casks_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
     it "does not check for formulae" do
-      expect(Bundle::Commands::Check).not_to receive(:any_formulae_to_install?)
+      expect(Bundle::Commands::Check).not_to receive(:formulae_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
     it "does not check for apps" do
-      expect(Bundle::Commands::Check).not_to receive(:any_apps_to_install?)
+      expect(Bundle::Commands::Check).not_to receive(:apps_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
   end
 
   context "when there are formulae to install" do
     before do
-      allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_apps_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(true)
-      allow(Bundle::Commands::Check).to receive(:any_formulae_to_start?).and_return(false)
+      allow(ARGV).to receive(:value).and_return(nil)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
+      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return([])
+      allow(Bundle::Commands::Check).to receive(:casks_to_install).and_return([])
+      allow(Bundle::Commands::Check).to receive(:apps_to_install).and_return([])
+      allow(Bundle::Commands::Check).to receive(:formulae_to_install).and_return(["one"])
     end
     it "does not start formulae" do
       expect(Bundle::Commands::Check).not_to receive(:any_formulae_to_start?)
