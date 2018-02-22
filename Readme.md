@@ -81,6 +81,10 @@ $ brew bundle check
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
+For a list of dependencies that are missing, pass `--verbose`.
+
+To check all dependencies by not exiting on the first missing dependency category, pass `--all`.
+
 ### List
 
 Outputs a list of all of the entries in the Brewfile.
