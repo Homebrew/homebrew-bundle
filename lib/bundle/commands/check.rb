@@ -20,6 +20,10 @@ module Bundle
         !ARGV.include?("--all")
       end
 
+      def output_errors?
+        ARGV.include?("--verbose")
+      end
+
       def run
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
@@ -42,7 +46,9 @@ module Bundle
 
         if work_to_be_done || any_formulae_to_start?
           puts "brew bundle can't satisfy your Brewfile's dependencies."
-          errors.each { |package| puts "#{@arrow} #{package}" }
+          if output_errors?
+            errors.each { |package| puts "#{@arrow} #{package}" }
+          end
           unchecked_checks = (checks.keys - completed_checks)
           unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
           puts "Run `brew bundle check --all` to check all dependency categories."
