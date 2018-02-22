@@ -93,4 +93,37 @@ describe Bundle::Commands::Check do
       end
     end
   end
+
+  context "when there are taps to install" do
+    before do
+      allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(true)
+    end
+    it "does not check for tasks" do
+      expect(Bundle::Commands::Check).not_to receive(:any_casks_to_install?)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+    it "does not check for formulae" do
+      expect(Bundle::Commands::Check).not_to receive(:any_formulae_to_install?)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+    it "does not check for apps" do
+      expect(Bundle::Commands::Check).not_to receive(:any_apps_to_install?)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+  end
+
+  context "when there are formulae to install" do
+    before do
+      allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:any_apps_to_install?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(true)
+      allow(Bundle::Commands::Check).to receive(:any_formulae_to_start?).and_return(false)
+    end
+    it "does not start formulae" do
+      expect(Bundle::Commands::Check).not_to receive(:any_formulae_to_start?)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+  end
+
 end
