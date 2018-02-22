@@ -16,6 +16,10 @@ module Bundle
         Bundle::BrewServices.reset!
       end
 
+      def exit_on_first_error?
+        !ARGV.include?("--all")
+      end
+
       def run
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
@@ -27,7 +31,8 @@ module Bundle
         }
         completed_checks = []
         errors = []
-        work_to_be_done = checks.keys.any? do |check_method|
+        enumerator = exit_on_first_error? ? :any? : :each
+        work_to_be_done = checks.keys.send(enumerator) do |check_method|
           check_errors = send(check_method)
           completed_checks << check_method
           any_errors = check_errors.any?
@@ -40,6 +45,7 @@ module Bundle
           errors.each { |package| puts "#{@arrow} #{package}" }
           unchecked_checks = (checks.keys - completed_checks)
           unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
+          puts "Run `brew bundle check --all` to check all dependency categories."
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
