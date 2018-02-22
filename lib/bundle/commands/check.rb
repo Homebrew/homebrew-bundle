@@ -19,10 +19,17 @@ module Bundle
       def run
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
-        checks = [:taps_to_tap, :casks_to_install, :apps_to_install, :formulae_to_install]
+        checks = {
+          taps_to_tap: "Taps",
+          casks_to_install: "Casks",
+          apps_to_install: "Apps",
+          formulae_to_install: "Formulae",
+        }
+        completed_checks = []
         errors = []
-        work_to_be_done = checks.any? do |check|
-          check_errors = send(check)
+        work_to_be_done = checks.keys.any? do |check_method|
+          check_errors = send(check_method)
+          completed_checks << check_method
           any_errors = check_errors.any?
           errors.concat(check_errors) if any_errors
           any_errors
@@ -31,6 +38,8 @@ module Bundle
         if work_to_be_done || any_formulae_to_start?
           puts "brew bundle can't satisfy your Brewfile's dependencies."
           errors.each { |package| puts "#{@arrow} #{package}" }
+          unchecked_checks = (checks.keys - completed_checks)
+          unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
