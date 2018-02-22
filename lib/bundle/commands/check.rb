@@ -19,11 +19,18 @@ module Bundle
       def run
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
-        work_to_be_done = [taps_to_tap, casks_to_install, formulae_to_install, apps_to_install].flatten.reject { |p| p.nil? || p == false }
+        checks = [:taps_to_tap, :casks_to_install, :apps_to_install, :formulae_to_install]
+        errors = []
+        work_to_be_done = checks.any? do |check|
+          check_errors = send(check)
+          any_errors = check_errors.any?
+          errors.concat(check_errors) if any_errors
+          any_errors
+        end
 
-        if work_to_be_done.any? || any_formulae_to_start?
+        if work_to_be_done || any_formulae_to_start?
           puts "brew bundle can't satisfy your Brewfile's dependencies."
-          work_to_be_done.each { |package| puts "#{@arrow} #{package}" }
+          errors.each { |package| puts "#{@arrow} #{package}" }
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
@@ -49,7 +56,7 @@ module Bundle
 
       def taps_to_tap
         requested_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
-        return false if requested_taps.empty?
+        return [] if requested_taps.empty?
         current_taps = Bundle::TapDumper.tap_names
         (requested_taps - current_taps).map { |entry| "Tap #{entry} needs to be tapped." }
       end

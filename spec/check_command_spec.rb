@@ -109,7 +109,7 @@ describe Bundle::Commands::Check do
     before do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
-      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return(true)
+      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return(["asdf"])
     end
     it "does not check for tasks" do
       expect(Bundle::Commands::Check).not_to receive(:casks_to_install)
@@ -139,5 +139,4 @@ describe Bundle::Commands::Check do
       expect { do_check }.to raise_error(SystemExit)
     end
   end
-
 end
