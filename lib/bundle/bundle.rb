@@ -22,7 +22,7 @@ module Bundle
   end
 
   def mas_installed?
-    @mas ||= begin
+    @mas_installed ||= begin
       !which("mas").nil?
     end
   end
@@ -32,14 +32,14 @@ module Bundle
   end
 
   def cask_installed?
-    @cask ||= begin
+    @cask_installed ||= begin
       File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
         File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/caskroom")
     end
   end
 
   def services_installed?
-    @services ||= begin
+    @services_installed ||= begin
       !which("brew-services.rb").nil?
     end
   end
