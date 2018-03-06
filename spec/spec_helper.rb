@@ -9,7 +9,7 @@ end
 
 require "codecov"
 
-PROJECT_ROOT ||= File.expand_path("../..", __FILE__)
+PROJECT_ROOT ||= File.expand_path("..", __dir__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
 $LOAD_PATH.unshift(STUB_PATH)
 

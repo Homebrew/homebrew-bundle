@@ -89,21 +89,21 @@ module Bundle
       Formula.installed.map { |f| formula_inspector f.to_hash }
     end
 
-    def formula_inspector(f)
-      installed = f["installed"]
+    def formula_inspector(formula)
+      installed = formula["installed"]
       link = nil
-      if f["linked_keg"].nil?
+      if formula["linked_keg"].nil?
         keg = installed.last
-        link = false unless f["keg_only"]
+        link = false unless formula["keg_only"]
       else
-        keg = installed.detect { |k| f["linked_keg"] == k["version"] }
-        link = true if f["keg_only"]
+        keg = installed.detect { |k| formula["linked_keg"] == k["version"] }
+        link = true if formula["keg_only"]
       end
 
       if keg
         args = keg["used_options"].to_a.map { |option| option.gsub(/^--/, "") }
         args << "HEAD" if keg["version"].to_s.start_with?("HEAD")
-        args << "devel" if keg["version"].to_s.gsub(/_\d+$/, "") == f["versions"]["devel"]
+        args << "devel" if keg["version"].to_s.gsub(/_\d+$/, "") == formula["versions"]["devel"]
         args.uniq!
         version = keg["version"]
         installed_as_dependency = keg["installed_as_dependency"] || false
@@ -122,23 +122,23 @@ module Bundle
       end
 
       {
-        name: f["name"],
-        desc: f["desc"],
-        oldname: f["oldname"],
-        full_name: f["full_name"],
-        aliases: f["aliases"],
+        name: formula["name"],
+        desc: formula["desc"],
+        oldname: formula["oldname"],
+        full_name: formula["full_name"],
+        aliases: formula["aliases"],
         args: args,
         version: version,
         installed_as_dependency?: installed_as_dependency,
         installed_on_request?: installed_on_request,
-        dependencies: (runtime_dependencies || f["dependencies"]),
-        recommended_dependencies: f["recommended_dependencies"],
-        optional_dependencies: f["optional_dependencies"],
-        build_dependencies: f["build_dependencies"],
-        requirements: f["requirements"],
-        conflicts_with: f["conflicts_with"],
-        pinned?: (f["pinned"] || false),
-        outdated?: (f["outdated"] || false),
+        dependencies: (runtime_dependencies || formula["dependencies"]),
+        recommended_dependencies: formula["recommended_dependencies"],
+        optional_dependencies: formula["optional_dependencies"],
+        build_dependencies: formula["build_dependencies"],
+        requirements: formula["requirements"],
+        conflicts_with: formula["conflicts_with"],
+        pinned?: (formula["pinned"] || false),
+        outdated?: (formula["outdated"] || false),
         link?: link,
         poured_from_bottle?: poured_from_bottle,
       }
