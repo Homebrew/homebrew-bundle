@@ -1,22 +1,22 @@
 #:  * `bundle` <command>:
 #:    Bundler for non-Ruby dependencies from Homebrew.
 #:
-#:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global]:
+#:    `bundle` [`install`] [`-v`|`--verbose`] [`--no-upgrade`] [`--file=`<path>|`--global`]:
 #:    Install or upgrade all dependencies in a Brewfile.
 #:
-#:    `brew bundle dump` [--force] [--describe] [--file=<path>|--global]
+#:    `brew bundle dump` [`--force`] [`--describe`] [`--file=`<path>|`--global`]
 #:    Write all installed casks/formulae/taps into a Brewfile.
 #:
-#:    `brew bundle cleanup` [--force] [--zap] [--file=<path>|--global]
+#:    `brew bundle cleanup` [`--force`] [`--zap`] [`--file=`<path>|`--global`]
 #:    Uninstall all dependencies not listed in a Brewfile.
 #:
-#:    `brew bundle check` [--no-upgrade] [--file=<path>|--global]
+#:    `brew bundle check` [`--no-upgrade`] [`--file`=<path>|`--global`]
 #:    Check if all dependencies are installed in a Brewfile.
 #:
-#:    `brew bundle exec` [command]
+#:    `brew bundle exec` <command>
 #:    Run an external command in an isolated build environment.
 #:
-#:    `brew bundle list` [--all|--brews|--casks|--taps|--mas] [--file=<path>|--global]
+#:    `brew bundle list` [`--all`|`--brews`|`--casks`|`--taps`|`--mas`] [`--file=`<path>|`--global`]
 #:    List all dependencies present in a Brewfile, optionally limiting by types.
 #:    By default, only brew dependencies are output.
 #:
@@ -25,17 +25,15 @@
 #:    If `--no-upgrade` is passed, don't run `brew upgrade` outdated dependencies.
 #:    Note they may still be upgraded by `brew install` if needed.
 #:
-#:    If `--force` is passed, uninstall dependencies or overwrite an existing
-#:    Brewfile.
+#:    If `--force` is passed, uninstall dependencies or overwrite an existing Brewfile.
 #:
-#:    If `--file=<path>` is passed, the Brewfile path is set accordingly (use
-#:    `--file=-` to output to console).
+#:    If `--file=<path>` is passed, the Brewfile path is set accordingly
+#:    Use `--file=-` to output to console.
 #:
 #:    If `--global` is passed, set Brewfile path to `$HOME/.Brewfile`.
 #:
-#:    If `--describe` is passed, output a comment above each line containing the
-#:    description of the dependency at the time of the dump for dependencies
-#:    that have a description.
+#:    If `--describe` is passed, output a description comment above each line.
+#:    This comment will not be output if the dependency does not have a description.
 #:
 #:    If `-h` or `--help` are passed, print this help message and exit.
 if !defined?(HOMEBREW_VERSION) || !HOMEBREW_VERSION ||

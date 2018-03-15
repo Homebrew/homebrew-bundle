@@ -21,11 +21,13 @@ This tool is developed for use with Homebrew on macOS but might work with Linuxb
 
 ## Usage
 
-Create a `Brewfile` in the root of your project:
+Create a `Brewfile` in the root of your project with:
 
-    $ touch Brewfile
+```
+touch Brewfile
+```
 
-Then list your Homebrew based dependencies in your `Brewfile`:
+Add your dependencies in your `Brewfile`:
 
 ```ruby
 cask_args appdir: "/Applications"
@@ -40,17 +42,22 @@ cask "firefox", args: { appdir: "~/my-apps/Applications" }
 mas "1Password", id: 443987910
 ```
 
-You can then easily install all of the dependencies with the following command:
+### Install
 
-    $ brew bundle
+You can then easily install all of the dependencies with:
+```
+$ brew bundle
+```
 
-If a dependency is already installed and there is an update available it will be upgraded.
+If a dependency is already installed and there is an upgrade available it will be upgraded.
 
 ### Dump
 
 You can create a `Brewfile` from all the existing Homebrew packages you have installed with:
 
-    $ brew bundle dump
+```
+$ brew bundle dump
+```
 
 The `--force` option will allow an existing `Brewfile` to be overwritten as well.
 
@@ -58,15 +65,19 @@ The `--force` option will allow an existing `Brewfile` to be overwritten as well
 
 You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
 
-    $ brew bundle cleanup
+```
+$ brew bundle cleanup
+```
 
-Unless the `--force` option is passed, formulae will be listed rather than actually uninstalled.
+Unless the `--force` option is passed, formulae that would be uninstalled will be listed rather than actually be uninstalled.
 
 ### Check
 
 You can check there's anything to install/upgrade in the `Brewfile` by running:
 
-    $ brew bundle check
+```
+$ brew bundle check
+```
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
 
@@ -74,7 +85,9 @@ This provides a successful exit code if everything is up-to-date so is useful fo
 
 Outputs a list of all of the entries in the Brewfile.
 
-    $ brew bundle list
+```
+$ brew bundle list
+```
 
 Pass one of `--casks`, `--taps`, `--mas`, or `--brews` to limit output to that type. Defaults to `--brews`. Pass `--all` to see everything.
 
@@ -84,7 +97,9 @@ Note that the _type_ of the package is **not** included in this output.
 
 Runs an external command within Homebrew's superenv build environment:
 
-    $ brew bundle exec -- bundle install
+```
+$ brew bundle exec -- bundle install
+```
 
 This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
 
