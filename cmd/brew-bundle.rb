@@ -4,10 +4,10 @@
 #:    `brew bundle` [-v|--verbose] [--no-upgrade] [--file=<path>|--global]:
 #:    Install or upgrade all dependencies in a Brewfile.
 #:
-#:    `brew bundle dump` [--force] [--file=<path>|--global] [--describe]
+#:    `brew bundle dump` [--force] [--describe] [--file=<path>|--global]
 #:    Write all installed casks/formulae/taps into a Brewfile.
 #:
-#:    `brew bundle cleanup` [--zap] [--force] [--file=<path>|--global]
+#:    `brew bundle cleanup` [--force] [--zap] [--file=<path>|--global]
 #:    Uninstall all dependencies not listed in a Brewfile.
 #:
 #:    `brew bundle check` [--no-upgrade] [--file=<path>|--global]
