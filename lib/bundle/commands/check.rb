@@ -17,7 +17,7 @@ module Bundle
       end
 
       def exit_on_first_error?
-        !ARGV.include?("--all")
+        !ARGV.include?("--verbose")
       end
 
       def output_errors?
