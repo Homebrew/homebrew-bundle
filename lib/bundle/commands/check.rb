@@ -5,7 +5,7 @@ module Bundle
     module Check
       module_function
 
-      @arrow = "\u21B3".encode("utf-8")
+      @arrow = "→"
 
       def reset!
         @dsl = nil
