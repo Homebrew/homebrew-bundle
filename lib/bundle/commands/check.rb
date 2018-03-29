@@ -33,10 +33,13 @@ module Bundle
           apps_to_install: "Apps",
           formulae_to_install: "Formulae",
         }
+        check_method_names = checks.keys
+
         completed_checks = []
         errors = []
         enumerator = exit_on_first_error? ? :any? : :each
-        work_to_be_done = checks.keys.send(enumerator) do |check_method|
+
+        work_to_be_done = check_method_names.send(enumerator) do |check_method|
           check_errors = send(check_method)
           completed_checks << check_method
           any_errors = check_errors.any?
