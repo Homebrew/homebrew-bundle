@@ -24,7 +24,7 @@ module Bundle
     def full_check(casks)
       actionable = casks.reject { |f| ok? f }
       actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
-   end
+    end
 
     def find_actionable(entries)
       requested = entries.select { |e| e.type == :cask }.map(&:name)

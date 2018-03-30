@@ -24,7 +24,7 @@ module Bundle
     def full_check(formulae)
       actionable = formulae.reject { |f| ok? f }
       actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
-   end
+    end
 
     def find_actionable(entries)
       requested_formulae = entries.select { |e| e.type == :brew }.map(&:name)

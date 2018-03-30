@@ -24,7 +24,7 @@ module Bundle
     def full_check(app_ids)
       actionable = app_ids.reject { |id, _name| ok? id }
       actionable.map { |_id, name| "App #{name} needs to be installed or updated." }
-   end
+    end
 
     def find_actionable(entries)
       requested_app_ids = entries.select { |e| e.type == :mac_app_store }.map { |e| [e.options[:id], e.name] }.to_h
