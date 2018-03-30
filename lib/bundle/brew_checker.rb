@@ -4,11 +4,11 @@ module Bundle
   module BrewChecker
     module_function
 
-    def ok? formula
+    def ok?(formula)
       Bundle::BrewInstaller.formula_installed_and_up_to_date? formula
     end
 
-    def exit_early_check formulae
+    def exit_early_check(formulae)
       last_checked = ""
       work_to_be_done = formulae.any? do |f|
           last_checked = f
@@ -21,12 +21,12 @@ module Bundle
       end
     end
 
-    def full_check formulae
+    def full_check(formulae)
      actionable = formulae.reject { |f| ok? f }
      actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
    end
 
-   def find_actionable entries
+   def find_actionable(entries)
      requested_formulae = entries.select { |e| e.type == :brew }.map(&:name)
 
      if Bundle::Checker::exit_on_first_error?

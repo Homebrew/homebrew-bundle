@@ -4,7 +4,7 @@ module Bundle
   module TapChecker
     module_function
 
-    def find_actionable entries
+    def find_actionable(entries)
       requested_taps = entries.select { |e| e.type == :tap }.map(&:name)
       return Bundle::Checker::NO_ACTION if requested_taps.empty?
 
