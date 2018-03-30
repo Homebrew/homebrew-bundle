@@ -54,7 +54,6 @@ module Bundle
           end
           unchecked_checks = (checks.keys - completed_checks)
           unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
-          puts "Run `brew bundle check --all` to check all dependency categories."
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
