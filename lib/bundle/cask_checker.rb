@@ -15,7 +15,7 @@ module Bundle
           !ok?(f)
         end
       if work_to_be_done
-        Bundle::Checker::ACTION_REQUIRED(last_checked)
+        Bundle::Checker.action_required_for(last_checked)
       else
         Bundle::Checker::NO_ACTION
       end
