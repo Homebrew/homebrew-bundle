@@ -11,9 +11,9 @@ module Bundle
     def exit_early_check(casks)
       last_checked = ""
       work_to_be_done = casks.any? do |f|
-          last_checked = f
-          !ok?(f)
-        end
+        last_checked = f
+        !ok?(f)
+      end
       if work_to_be_done
         Bundle::Checker.action_required_for(last_checked)
       else
@@ -22,18 +22,18 @@ module Bundle
     end
 
     def full_check(casks)
-     actionable = casks.reject { |f| ok? f }
-     actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
+      actionable = casks.reject { |f| ok? f }
+      actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
    end
 
-   def find_actionable(entries)
-     requested = entries.select { |e| e.type == :cask }.map(&:name)
+    def find_actionable(entries)
+      requested = entries.select { |e| e.type == :cask }.map(&:name)
 
-     if Bundle::Checker.exit_on_first_error?
-       exit_early_check requested
-     else
-       full_check requested
-     end
-   end
+      if Bundle::Checker.exit_on_first_error?
+        exit_early_check requested
+      else
+        full_check requested
+      end
+    end
   end
 end

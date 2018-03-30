@@ -11,9 +11,9 @@ module Bundle
     def exit_early_check(formulae)
       last_checked = ""
       work_to_be_done = formulae.any? do |f|
-          last_checked = f
-          !ok?(f)
-        end
+        last_checked = f
+        !ok?(f)
+      end
       if work_to_be_done
         Bundle::Checker.action_required_for(last_checked)
       else
@@ -22,18 +22,18 @@ module Bundle
     end
 
     def full_check(formulae)
-     actionable = formulae.reject { |f| ok? f }
-     actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
+      actionable = formulae.reject { |f| ok? f }
+      actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
    end
 
-   def find_actionable(entries)
-     requested_formulae = entries.select { |e| e.type == :brew }.map(&:name)
+    def find_actionable(entries)
+      requested_formulae = entries.select { |e| e.type == :brew }.map(&:name)
 
-     if Bundle::Checker.exit_on_first_error?
-       exit_early_check requested_formulae
-     else
-       full_check requested_formulae
-     end
-   end
+      if Bundle::Checker.exit_on_first_error?
+        exit_early_check requested_formulae
+      else
+        full_check requested_formulae
+      end
+    end
   end
 end
