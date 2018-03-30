@@ -62,11 +62,7 @@ module Bundle
       end
 
       def casks_to_install
-        requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-        actionable = requested_casks.reject do |c|
-          Bundle::CaskInstaller.cask_installed_and_up_to_date?(c)
-        end
-        actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
+        Bundle::CaskChecker.find_actionable @dsl.entries
       end
 
       def formulae_to_install
@@ -74,18 +70,11 @@ module Bundle
       end
 
       def taps_to_tap
-        requested_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
-        return [] if requested_taps.empty?
-        current_taps = Bundle::TapDumper.tap_names
-        (requested_taps - current_taps).map { |entry| "Tap #{entry} needs to be tapped." }
+        Bundle::TapChecker.find_actionable @dsl.entries
       end
 
       def apps_to_install
-        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| [e.options[:id], e.name] }.to_h
-        actionable = requested_app_ids.reject do |id, _name|
-          Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
-        end
-        actionable.map { |_id, name| "App #{name} needs to be installed or updated." }
+        Bundle::MacAppStoreChecker.find_actionable @dsl.entries
       end
 
       def any_formulae_to_start?
