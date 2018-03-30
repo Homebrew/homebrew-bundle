@@ -10,10 +10,10 @@
 #:    `brew bundle cleanup` [`--force`] [`--zap`] [`--file=`<path>|`--global`]
 #:    Uninstall all dependencies not listed in a Brewfile.
 #:
-#:    `brew bundle check` [`--no-upgrade`] [`--file`=<path>|`--global`] [`--verbose`] [`--all`]
+#:    `brew bundle check` [`--no-upgrade`] [`--file`=<path>|`--global`] [`--verbose`]
 #:    Check if all dependencies are installed in a Brewfile. Missing dependencies
 #:    are listed in verbose mode. `check` will exit on the first category
-#:    missing a dependency; use `--all` to check all dependency categories.
+#:    missing a dependency unless in verbose mode.
 #:
 #:    `brew bundle exec` <command>
 #:    Run an external command in an isolated build environment.
