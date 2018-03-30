@@ -17,7 +17,7 @@ module Bundle
       end
 
       def exit_on_first_error?
-        !ARGV.include?("--verbose")
+        Bundle::Checker::exit_on_first_error?
       end
 
       def output_errors?
@@ -71,11 +71,7 @@ module Bundle
       end
 
       def formulae_to_install
-        requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        actionable = requested_formulae.reject do |f|
-          Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
-        end
-        actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
+        Bundle::BrewChecker.find_actionable @dsl.entries
       end
 
       def taps_to_tap

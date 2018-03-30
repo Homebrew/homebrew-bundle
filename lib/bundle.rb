@@ -9,8 +9,10 @@ raise "Homebrew Bundle must be run under Ruby 2.3!" if TOO_OLD_RUBY
 
 require "bundle/bundle"
 require "bundle/dsl"
+require "bundle/checker"
 require "bundle/brew_services"
 require "bundle/brew_installer"
+require "bundle/brew_checker"
 require "bundle/cask_installer"
 require "bundle/mac_app_store_installer"
 require "bundle/tap_installer"
