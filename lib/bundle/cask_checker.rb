@@ -29,12 +29,11 @@ module Bundle
    def find_actionable(entries)
      requested = entries.select { |e| e.type == :cask }.map(&:name)
 
-     if Bundle::Checker::exit_on_first_error?
+     if Bundle::Checker.exit_on_first_error?
        exit_early_check requested
      else
        full_check requested
      end
    end
-
   end
 end

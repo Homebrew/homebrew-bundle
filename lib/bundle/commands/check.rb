@@ -17,7 +17,7 @@ module Bundle
       end
 
       def exit_on_first_error?
-        Bundle::Checker::exit_on_first_error?
+        Bundle::Checker.exit_on_first_error?
       end
 
       def output_errors?

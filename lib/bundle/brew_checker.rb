@@ -29,12 +29,11 @@ module Bundle
    def find_actionable(entries)
      requested_formulae = entries.select { |e| e.type == :brew }.map(&:name)
 
-     if Bundle::Checker::exit_on_first_error?
+     if Bundle::Checker.exit_on_first_error?
        exit_early_check requested_formulae
      else
        full_check requested_formulae
      end
    end
-
   end
 end

@@ -29,7 +29,7 @@ module Bundle
    def find_actionable(entries)
      requested_app_ids = entries.select { |e| e.type == :mac_app_store }.map { |e| [e.options[:id], e.name] }.to_h
 
-     if Bundle::Checker::exit_on_first_error?
+     if Bundle::Checker.exit_on_first_error?
        exit_early_check requested_app_ids
      else
        full_check requested_app_ids
