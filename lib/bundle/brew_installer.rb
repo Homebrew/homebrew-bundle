@@ -3,9 +3,9 @@
 module Bundle
   class BrewInstaller
     def self.reset!
-      @installed_formulae = nil
-      @outdated_formulae = nil
-      @pinned_formulae = nil
+      @installed_formulas = nil
+      @outdated_formulas = nil
+      @pinned_formulas = nil
     end
 
     def self.install(name, options = {})
@@ -102,27 +102,27 @@ module Bundle
     end
 
     def self.formula_installed?(formula)
-      formula_in_array?(formula, installed_formulae)
+      formula_in_array?(formula, installed_formulas)
     end
 
     def self.formula_upgradable?(formula)
-      formula_in_array?(formula, upgradable_formulae)
+      formula_in_array?(formula, upgradable_formulas)
     end
 
-    def self.installed_formulae
-      @installed_formulae ||= Bundle::BrewDumper.formula_names
+    def self.installed_formulas
+      @installed_formulas ||= Bundle::BrewDumper.formula_names
     end
 
-    def self.upgradable_formulae
-      outdated_formulae - pinned_formulae
+    def self.upgradable_formulas
+      outdated_formulas - pinned_formulas
     end
 
-    def self.outdated_formulae
-      @outdated_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:outdated?] }.compact
+    def self.outdated_formulas
+      @outdated_formulas ||= Bundle::BrewDumper.formulas.map { |f| f[:name] if f[:outdated?] }.compact
     end
 
-    def self.pinned_formulae
-      @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
+    def self.pinned_formulas
+      @pinned_formulas ||= Bundle::BrewDumper.formulas.map { |f| f[:name] if f[:pinned?] }.compact
     end
 
     private
@@ -176,7 +176,7 @@ module Bundle
         return :failed
       end
 
-      BrewInstaller.installed_formulae << @name
+      BrewInstaller.installed_formulas << @name
       @changed = true
       :success
     end

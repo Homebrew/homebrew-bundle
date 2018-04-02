@@ -19,8 +19,8 @@ module Bundle
       raise "#{file} already exists" if should_not_write_file?(file, ARGV.force?)
       content = []
       content << TapDumper.dump
-      casks_required_by_formulae = BrewDumper.cask_requirements
-      cask_before_formula, cask_after_formula = CaskDumper.dump(casks_required_by_formulae)
+      casks_required_by_formulas = BrewDumper.cask_requirements
+      cask_before_formula, cask_after_formula = CaskDumper.dump(casks_required_by_formulas)
       content << cask_before_formula
       content << BrewDumper.dump
       content << cask_after_formula

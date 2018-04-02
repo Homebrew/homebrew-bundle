@@ -15,7 +15,7 @@ module Bundle
 
       def run
         casks = casks_to_uninstall
-        formulae = formulae_to_uninstall
+        formulas = formulas_to_uninstall
         taps = taps_to_untap
         if ARGV.force?
           if casks.any?
@@ -29,9 +29,9 @@ module Bundle
             puts "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
           end
 
-          if formulae.any?
-            Kernel.system "brew", "uninstall", "--force", *formulae
-            puts "Uninstalled #{formulae.size} formula#{(formulae.size == 1) ? "" : "e"}"
+          if formulas.any?
+            Kernel.system "brew", "uninstall", "--force", *formulas
+            puts "Uninstalled #{formulas.size} formula#{(formulas.size == 1) ? "" : "e"}"
           end
 
           Kernel.system "brew", "untap", *taps if taps.any?
@@ -43,9 +43,9 @@ module Bundle
             puts Formatter.columns casks
           end
 
-          if formulae.any?
-            puts "Would uninstall formulae:"
-            puts Formatter.columns formulae
+          if formulas.any?
+            puts "Would uninstall formulas:"
+            puts Formatter.columns formulas
           end
 
           if taps.any?
@@ -62,30 +62,30 @@ module Bundle
         current_casks - kept_casks
       end
 
-      def formulae_to_uninstall
+      def formulas_to_uninstall
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        kept_formulae.map! do |f|
+        kept_formulas = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+        kept_formulas.map! do |f|
           Bundle::BrewDumper.formula_aliases[f] ||
             Bundle::BrewDumper.formula_oldnames[f] ||
             f
         end
 
-        current_formulae = Bundle::BrewDumper.formulae
-        kept_formulae += recursive_dependencies(current_formulae, kept_formulae)
-        current_formulae.reject! do |f|
-          Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
+        current_formulas = Bundle::BrewDumper.formulas
+        kept_formulas += recursive_dependencies(current_formulas, kept_formulas)
+        current_formulas.reject! do |f|
+          Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulas)
         end
-        current_formulae.map { |f| f[:full_name] }
+        current_formulas.map { |f| f[:full_name] }
       end
 
-      def recursive_dependencies(current_formulae, formulae_names, top_level = true)
-        @checked_formulae_names = [] if top_level
+      def recursive_dependencies(current_formulas, formulas_names, top_level = true)
+        @checked_formulas_names = [] if top_level
         dependencies = []
 
-        formulae_names.each do |name|
-          next if @checked_formulae_names.include?(name)
-          formula = current_formulae.find { |f| f[:full_name] == name }
+        formulas_names.each do |name|
+          next if @checked_formulas_names.include?(name)
+          formula = current_formulas.find { |f| f[:full_name] == name }
           next unless formula
           f_deps = formula[:dependencies]
           unless formula[:poured_from_bottle?]
@@ -94,8 +94,8 @@ module Bundle
           end
           next unless f_deps
           next if f_deps.empty?
-          @checked_formulae_names << name
-          f_deps += recursive_dependencies(current_formulae, f_deps, false)
+          @checked_formulas_names << name
+          f_deps += recursive_dependencies(current_formulas, f_deps, false)
           dependencies += f_deps
         end
 

@@ -63,13 +63,13 @@ The `--force` option will allow an existing `Brewfile` to be overwritten as well
 
 ### Cleanup
 
-You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
+You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers who regularly install lots of formulas. To uninstall all Homebrew formulas not listed in `Brewfile`:
 
 ```
 $ brew bundle cleanup
 ```
 
-Unless the `--force` option is passed, formulae that would be uninstalled will be listed rather than actually be uninstalled.
+Unless the `--force` option is passed, formulas that would be uninstalled will be listed rather than actually be uninstalled.
 
 ### Check
 
