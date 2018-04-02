@@ -18,8 +18,8 @@ module Bundle
         if any_taps_to_tap? ||
            any_casks_to_install? ||
            any_apps_to_install? ||
-           any_formulae_to_install? ||
-           any_formulae_to_start?
+           any_formulas_to_install? ||
+           any_formulas_to_start?
           puts "brew bundle can't satisfy your Brewfile's dependencies."
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
@@ -36,10 +36,10 @@ module Bundle
         end
       end
 
-      def any_formulae_to_install?
+      def any_formulas_to_install?
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        requested_formulae.any? do |f|
+        requested_formulas = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+        requested_formulas.any? do |f|
           !Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
         end
       end
@@ -60,7 +60,7 @@ module Bundle
         end
       end
 
-      def any_formulae_to_start?
+      def any_formulas_to_start?
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
         @dsl.entries.select { |e| e.type == :brew }.any? do |e|
           formula = Bundle::BrewInstaller.new(e.name, e.options)

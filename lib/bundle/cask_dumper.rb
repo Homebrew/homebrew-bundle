@@ -16,10 +16,10 @@ module Bundle
       end
     end
 
-    def dump(casks_required_by_formulae)
+    def dump(casks_required_by_formulas)
       [
-        (casks & casks_required_by_formulae).map { |cask| "cask \"#{cask}\"" }.join("\n"),
-        (casks - casks_required_by_formulae).map { |cask| "cask \"#{cask}\"" }.join("\n"),
+        (casks & casks_required_by_formulas).map { |cask| "cask \"#{cask}\"" }.join("\n"),
+        (casks - casks_required_by_formulas).map { |cask| "cask \"#{cask}\"" }.join("\n"),
       ]
     end
   end

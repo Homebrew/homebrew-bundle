@@ -9,19 +9,19 @@ module Bundle
 
     def reset!
       Bundle::BrewServices.reset!
-      @formulae = nil
+      @formulas = nil
       @formula_aliases = nil
     end
 
-    def formulae
-      @formulae ||= begin
-        @formulae = formulae_info
+    def formulas
+      @formulas ||= begin
+        @formulas = formulas_info
         sort!
       end
     end
 
     def dump
-      requested_formula = formulae.select do |f|
+      requested_formula = formulas.select do |f|
         f[:installed_on_request?] || !f[:installed_as_dependency?]
       end
       requested_formula.map do |f|
@@ -37,17 +37,17 @@ module Bundle
     end
 
     def cask_requirements
-      formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
+      formulas.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
     end
 
     def formula_names
-      formulae.map { |f| f[:name] }
+      formulas.map { |f| f[:name] }
     end
 
     def formula_oldnames
       return @formula_oldnames if @formula_oldnames
       @formula_oldnames = {}
-      formulae.each do |f|
+      formulas.each do |f|
         oldname = f[:oldname]
         next unless oldname
         @formula_oldnames[oldname] = f[:full_name]
@@ -62,7 +62,7 @@ module Bundle
     def formula_aliases
       return @formula_aliases if @formula_aliases
       @formula_aliases = {}
-      formulae.each do |f|
+      formulas.each do |f|
         aliases = f[:aliases]
         next if !aliases || aliases.empty?
         aliases.each do |a|
@@ -84,7 +84,7 @@ module Bundle
       end
     end
 
-    def formulae_info
+    def formulas_info
       require "formula"
       Formula.installed.map { |f| formula_inspector f.to_hash }
     end
@@ -153,9 +153,9 @@ module Bundle
     end
 
     def sort!
-      # Step 1: Sort by formula full name while putting tap formulae behind core formulae.
+      # Step 1: Sort by formula full name while putting tap formulas behind core formulas.
       #         So we can have a nicer output.
-      @formulae.sort! do |a, b|
+      @formulas.sort! do |a, b|
         if !a[:full_name].include?("/") && b[:full_name].include?("/")
           -1
         elsif a[:full_name].include?("/") && !b[:full_name].include?("/")
@@ -167,7 +167,7 @@ module Bundle
 
       # Step 2: Sort by formula dependency topology.
       topo = Topo.new
-      @formulae.each do |f|
+      @formulas.each do |f|
         deps = (
           f[:dependencies] \
           + f[:requirements].map { |req| req["default_formula"] }.compact \
@@ -175,12 +175,12 @@ module Bundle
           - f[:build_dependencies] \
         ).uniq
         topo[f[:full_name]] = deps.map do |dep|
-          ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
+          ff = @formulas.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
           next unless ff
           ff[:full_name]
         end.compact
       end
-      @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
+      @formulas = topo.tsort.map { |name| @formulas.detect { |formula| formula[:full_name] == name } }
     rescue TSort::Cyclic => e
       odie <<~EOS
         #{e.message}

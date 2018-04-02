@@ -87,39 +87,39 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context ".outdated_formulae" do
+  context ".outdated_formulas" do
     it "calls Homebrew" do
       Bundle::BrewInstaller.reset!
-      expect(Bundle::BrewDumper).to receive(:formulae).and_return(
+      expect(Bundle::BrewDumper).to receive(:formulas).and_return(
         [
           { name: "a", outdated?: true },
           { name: "b", outdated?: true },
           { name: "c", outdated?: false },
         ],
       )
-      expect(Bundle::BrewInstaller.outdated_formulae).to eql(%w[a b])
+      expect(Bundle::BrewInstaller.outdated_formulas).to eql(%w[a b])
     end
   end
 
-  context ".pinned_formulae" do
+  context ".pinned_formulas" do
     it "calls Homebrew" do
       Bundle::BrewInstaller.reset!
-      expect(Bundle::BrewDumper).to receive(:formulae).and_return(
+      expect(Bundle::BrewDumper).to receive(:formulas).and_return(
         [
           { name: "a", pinned?: true },
           { name: "b", pinned?: true },
           { name: "c", pinned?: false },
         ],
       )
-      expect(Bundle::BrewInstaller.pinned_formulae).to eql(%w[a b])
+      expect(Bundle::BrewInstaller.pinned_formulas).to eql(%w[a b])
     end
   end
 
   context ".formula_installed_and_up_to_date?" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return(%w[bar])
-      allow(Bundle::BrewDumper).to receive(:formulae).and_return [
+      allow(Bundle::BrewInstaller).to receive(:outdated_formulas).and_return(%w[bar])
+      allow(Bundle::BrewDumper).to receive(:formulas).and_return [
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
@@ -156,7 +156,7 @@ describe Bundle::BrewInstaller do
 
     context "when no formula is installed" do
       before do
-        allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return([])
+        allow(Bundle::BrewInstaller).to receive(:installed_formulas).and_return([])
         allow_any_instance_of(Bundle::BrewInstaller).to receive(:conflicts_with).and_return([])
       end
 
@@ -173,13 +173,13 @@ describe Bundle::BrewInstaller do
 
     context "when formula is installed" do
       before do
-        allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return([formula])
+        allow(Bundle::BrewInstaller).to receive(:installed_formulas).and_return([formula])
         allow_any_instance_of(Bundle::BrewInstaller).to receive(:conflicts_with).and_return([])
       end
 
       context "when formula upgradable" do
         before do
-          allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return([formula])
+          allow(Bundle::BrewInstaller).to receive(:outdated_formulas).and_return([formula])
         end
 
         it "upgrade formula" do
@@ -194,7 +194,7 @@ describe Bundle::BrewInstaller do
 
         context "when formula pinned" do
           before do
-            allow(Bundle::BrewInstaller).to receive(:pinned_formulae).and_return([formula])
+            allow(Bundle::BrewInstaller).to receive(:pinned_formulas).and_return([formula])
           end
 
           it "does not upgrade formula" do
@@ -205,7 +205,7 @@ describe Bundle::BrewInstaller do
 
         context "when formula not upgraded" do
           before do
-            allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return([])
+            allow(Bundle::BrewInstaller).to receive(:outdated_formulas).and_return([])
           end
 
           it "does not upgrade formula" do

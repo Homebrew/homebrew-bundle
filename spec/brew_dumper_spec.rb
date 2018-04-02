@@ -11,7 +11,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns empty list" do
-      expect(subject.formulae).to be_empty
+      expect(subject.formulas).to be_empty
     end
 
     it "dumps as empty string" do
@@ -56,7 +56,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns no version" do
-      expect(subject.formulae).to contain_exactly(
+      expect(subject.formulas).to contain_exactly(
         name: "foo",
         full_name: "homebrew/tap/foo",
         desc: "",
@@ -80,7 +80,7 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "formulae `foo` and `bar` are installed" do
+  context "formulas `foo` and `bar` are installed" do
     before do
       Bundle::BrewDumper.reset!
       allow(Formula).to receive(:[]).and_return(
@@ -180,7 +180,7 @@ describe Bundle::BrewDumper do
     subject { Bundle::BrewDumper }
 
     it "returns foo and bar with their information" do
-      expect(subject.formulae).to contain_exactly(
+      expect(subject.formulas).to contain_exactly(
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
@@ -233,10 +233,10 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "HEAD and devel formulae are installed" do
+  context "HEAD and devel formulas are installed" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "foo",
           full_name: "foo",
@@ -269,7 +269,7 @@ describe Bundle::BrewDumper do
         },
       ]
     end
-    subject { Bundle::BrewDumper.formulae }
+    subject { Bundle::BrewDumper.formulas }
 
     it "returns with args `devel` and `HEAD`" do
       expect(subject[0][:args]).to include("devel")
@@ -280,7 +280,7 @@ describe Bundle::BrewDumper do
   context "A formula link to the old keg" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
@@ -298,7 +298,7 @@ describe Bundle::BrewDumper do
         },
       ]
     end
-    subject { Bundle::BrewDumper.formulae }
+    subject { Bundle::BrewDumper.formulas }
 
     it "returns with linked keg" do
       expect(subject[0][:version]).to eql("1.0")
@@ -308,7 +308,7 @@ describe Bundle::BrewDumper do
   context "A formula with no linked keg" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
@@ -326,17 +326,17 @@ describe Bundle::BrewDumper do
         },
       ]
     end
-    subject { Bundle::BrewDumper.formulae }
+    subject { Bundle::BrewDumper.formulas }
 
     it "returns with last one" do
       expect(subject[0][:version]).to eql("2.0")
     end
   end
 
-  context "several formulae with dependant relations" do
+  context "several formulas with dependant relations" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "a",
           full_name: "a",
@@ -386,8 +386,8 @@ describe Bundle::BrewDumper do
     end
     subject { Bundle::BrewDumper }
 
-    it "returns formulae with correct order" do
-      expect(subject.formulae.map { |f| f[:name] }).to eq %w[c b a]
+    it "returns formulas with correct order" do
+      expect(subject.formulas.map { |f| f[:name] }).to eq %w[c b a]
     end
 
     it "returns all the cask requirements" do
@@ -395,10 +395,10 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "formulae with unsorted dependencies" do
+  context "formulas with unsorted dependencies" do
     before do
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "a",
           full_name: "a",
@@ -463,8 +463,8 @@ describe Bundle::BrewDumper do
     end
     subject { Bundle::BrewDumper }
 
-    it "returns formulae with correct order" do
-      expect(subject.formulae.map { |f| f[:name] }).to eq %w[b c d a]
+    it "returns formulas with correct order" do
+      expect(subject.formulas.map { |f| f[:name] }).to eq %w[b c d a]
     end
 
     context "when performing a topological sort" do
@@ -475,7 +475,7 @@ describe Bundle::BrewDumper do
       end
 
       it "dies on cyclic exceptions" do
-        expect { subject.formulae }.to raise_error(TSort::Cyclic)
+        expect { subject.formulas }.to raise_error(TSort::Cyclic)
       end
     end
   end
@@ -484,7 +484,7 @@ describe Bundle::BrewDumper do
     before do
       stub_const("ARGV", [])
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "a",
           full_name: "a",
@@ -528,7 +528,7 @@ describe Bundle::BrewDumper do
     before do
       stub_const("ARGV", ["--describe"])
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return [
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return [
         {
           name: "a",
           full_name: "a",
@@ -608,7 +608,7 @@ describe Bundle::BrewDumper do
       ]
       dump_lines = formula_info.map do |info|
         Bundle::BrewDumper.reset!
-        allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(info)
+        allow(Bundle::BrewDumper).to receive(:formulas_info).and_return(info)
         Bundle::BrewDumper.dump
       end
       expect(dump_lines[0]).to eql(dump_lines[1])
@@ -634,7 +634,7 @@ describe Bundle::BrewDumper do
         outdated?: false,
       }]
       Bundle::BrewDumper.reset!
-      allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(formula_info)
+      allow(Bundle::BrewDumper).to receive(:formulas_info).and_return(formula_info)
       expect(Bundle::BrewDumper.formula_oldnames["aold"]).to eql "homebrew/versions/a"
     end
   end

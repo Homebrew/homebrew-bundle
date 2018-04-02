@@ -15,10 +15,10 @@ describe Bundle::Commands::Check do
   context "when dependencies are satisfied" do
     it "does not raise an error" do
       allow(Bundle::Commands::Check).to receive(:any_casks_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_formulae_to_install?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:any_formulas_to_install?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_taps_to_tap?).and_return(false)
       allow(Bundle::Commands::Check).to receive(:any_apps_to_install?).and_return(false)
-      allow(Bundle::Commands::Check).to receive(:any_formulae_to_start?).and_return(false)
+      allow(Bundle::Commands::Check).to receive(:any_formulas_to_start?).and_return(false)
       expect { do_check }.to_not raise_error
     end
   end
@@ -27,17 +27,17 @@ describe Bundle::Commands::Check do
     it "raises an error" do
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
-      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulas).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'")
       expect { do_check }.to raise_error(SystemExit)
     end
   end
 
-  context "when formulae are not installed" do
+  context "when formulas are not installed" do
     it "raises an error" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
-      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulas).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       expect { do_check }.to raise_error(SystemExit)
@@ -47,7 +47,7 @@ describe Bundle::Commands::Check do
   context "when taps are not tapped" do
     it "raises an error" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
-      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulas).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'abc/def'")
       expect { do_check }.to raise_error(SystemExit)
@@ -57,7 +57,7 @@ describe Bundle::Commands::Check do
   context "when apps are not installed" do
     it "raises an error" do
       allow_any_instance_of(Bundle::MacAppStoreDumper).to receive(:app_ids).and_return([])
-      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulas).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123")
       expect { do_check }.to raise_error(SystemExit)
@@ -67,8 +67,8 @@ describe Bundle::Commands::Check do
   context "when service is not started" do
     before do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
-      allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
-      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:installed_formulas).and_return(["abc", "def"])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulas).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
       allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(true)
       allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
