@@ -11,7 +11,7 @@ Bundler for non-Ruby dependencies from Homebrew.
 Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on macOS.
 This tool is developed for use with Homebrew on macOS but might work with Linuxbrew (but is unsupported so don't file Linux issues, please).
 
-[Homebrew Cask](https://github.com/caskroom/homebrew-cask) is optional and used for installing Mac applications.
+[Homebrew Cask](https://github.com/Homebrew/homebrew-cask) is optional and used for installing Mac applications.
 
 [mas-cli](https://github.com/argon/mas) is optional and used for installing Mac App Store applications.
 
@@ -31,7 +31,7 @@ Add your dependencies in your `Brewfile`:
 
 ```ruby
 cask_args appdir: "/Applications"
-tap "caskroom/cask"
+tap "homebrew/cask"
 tap "telemachus/brew", "https://telemachus@bitbucket.org/telemachus/brew.git"
 brew "imagemagick"
 brew "mysql@5.6", restart_service: true, link: true, conflicts_with: ["mysql"]

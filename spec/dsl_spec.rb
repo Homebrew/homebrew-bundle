@@ -10,7 +10,7 @@ describe Bundle::Dsl do
     dsl = Bundle::Dsl.new <<~EOS
       # frozen_string_literal: true
       cask_args appdir: '/Applications'
-      tap 'caskroom/cask'
+      tap 'homebrew/cask'
       tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
       brew 'imagemagick'
       brew 'mysql@5.6', restart_service: true, link: true, conflicts_with: ['mysql']
@@ -21,7 +21,7 @@ describe Bundle::Dsl do
       mas '1Password', id: 443987910
     EOS
     expect(dsl.cask_arguments).to eql(appdir: "/Applications")
-    expect(dsl.entries[0].name).to eql("caskroom/cask")
+    expect(dsl.entries[0].name).to eql("homebrew/cask")
     expect(dsl.entries[1].name).to eql("telemachus/brew")
     expect(dsl.entries[1].options).to eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git")
     expect(dsl.entries[2].name).to eql("imagemagick")
