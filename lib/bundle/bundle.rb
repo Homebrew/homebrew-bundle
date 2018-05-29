@@ -34,7 +34,7 @@ module Bundle
   def cask_installed?
     @cask_installed ||= begin
       File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
-        File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/cask")
+        File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask")
     end
   end
 
