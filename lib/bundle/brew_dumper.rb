@@ -110,7 +110,11 @@ module Bundle
         installed_on_request = keg["installed_on_request"] || false
         poured_from_bottle = keg["poured_from_bottle"] || false
         runtime_dependencies = if deps = keg["runtime_dependencies"]
-          deps.map { |dep| dep["full_name"].split("/").last }.compact
+          deps.map do |dep|
+            full_name = dep["full_name"]
+            next unless full_name
+            full_name.split("/").last
+          end.compact
         end
       else
         args = []
