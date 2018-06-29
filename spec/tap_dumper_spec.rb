@@ -18,19 +18,24 @@ describe Bundle::TapDumper do
     end
   end
 
-  context "there are tap `homebrew/foo` and `bitbucket/bar`" do
+  context "there are tap `bitbucket/bar`, `homebrew/baz` and `homebrew/foo`" do
     before do
       Bundle::TapDumper.reset!
       allow(Tap).to receive(:map).and_return [
         {
-          "name" => "homebrew/foo",
-          "remote" => "https://github.com/Homebrew/homebrew-foo",
-          "custom_remote" => false,
-        },
-        {
           "name" => "bitbucket/bar",
           "remote" => "https://bitbucket.org/bitbucket/bar.git",
           "custom_remote" => true,
+        },
+        {
+          "name" => "homebrew/baz",
+          "remote" => "https://github.com/Homebrew/homebrew-baz",
+          "custom_remote" => false,
+        },
+        {
+          "name" => "homebrew/foo",
+          "remote" => "https://github.com/Homebrew/homebrew-foo",
+          "custom_remote" => false,
         },
       ]
     end
@@ -41,7 +46,7 @@ describe Bundle::TapDumper do
     end
 
     it "dumps output" do
-      expect(subject.dump).to eql("tap \"homebrew/foo\"\ntap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"")
+      expect(subject.dump).to eql("tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\ntap \"homebrew/baz\"\ntap \"homebrew/foo\"")
     end
   end
 end
