@@ -35,6 +35,11 @@ module Bundle
           end
 
           Kernel.system "brew", "untap", *taps if taps.any?
+
+          cleanup = system_output_no_stderr("brew", "cleanup")
+          unless cleanup.empty?
+            puts cleanup
+          end
         else
           require "utils/formatter"
 
@@ -51,6 +56,12 @@ module Bundle
           if taps.any?
             puts "Would untap:"
             puts Formatter.columns taps
+          end
+
+          cleanup = system_output_no_stderr("brew", "cleanup", "--dry-run")
+          unless cleanup.empty?
+            puts "Would 'brew cleanup':"
+            puts cleanup
           end
         end
       end
@@ -109,6 +120,10 @@ module Bundle
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS
+      end
+
+      def system_output_no_stderr(cmd, *args)
+        IO.popen([cmd, *args], err: :close).read
       end
     end
   end
