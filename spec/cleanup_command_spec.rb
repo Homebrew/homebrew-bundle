@@ -150,4 +150,34 @@ describe Bundle::Commands::Cleanup do
       expect { Bundle::Commands::Cleanup.run }.to output(/Would uninstall formulae:.*Would untap:/m).to_stdout
     end
   end
+
+  context "there is brew cleanup output" do
+    before do
+      Bundle::Commands::Cleanup.reset!
+      allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
+      allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
+      allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return(["cleaned"])
+    end
+
+    context "with --force" do
+      before do
+        allow(ARGV).to receive(:force?).and_return(true)
+      end
+
+      it "prints output" do
+        expect { Bundle::Commands::Cleanup.run }.to output(/cleaned/).to_stdout
+      end
+    end
+
+    context "without --force" do
+      before do
+        allow(ARGV).to receive(:force?).and_return(false)
+      end
+
+      it "prints output" do
+        expect { Bundle::Commands::Cleanup.run }.to output(/cleaned/).to_stdout
+      end
+    end
+  end
 end
