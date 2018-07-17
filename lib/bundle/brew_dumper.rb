@@ -80,16 +80,25 @@ module Bundle
       @formula_info_name ||= {}
       @formula_info_name[name] ||= begin
         require "formula"
-        formula_inspector Formula[name].to_hash
+        formula_inspector formula_hash(Formula[name])
       end
     end
 
     def formulae_info
       require "formula"
-      Formula.installed.map { |f| formula_inspector f.to_hash }
+      Formula.installed.map do |f|
+        formula_inspector formula_hash(f)
+      end.compact
+    end
+
+    def formula_hash(formula)
+      formula.to_hash
+    rescue NoMethodError, ArgumentError, ScriptError => e
+      opoo "'#{formula.name}' formula is unreadable: #{e}"
     end
 
     def formula_inspector(formula)
+      return unless formula
       installed = formula["installed"]
       link = nil
       if formula["linked_keg"].nil?
