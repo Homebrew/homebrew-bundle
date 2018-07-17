@@ -572,6 +572,7 @@ describe Bundle::BrewDumper do
     it "outputs a comment on the line before a dependency with a description" do
       expect(Bundle::BrewDumper.dump).to include("# z")
     end
+
     it "does not output a comment if a formula lacks a description" do
       lines_with_comments = Bundle::BrewDumper.dump.split.select { |line| line.include?("#") }
       expect(lines_with_comments.size).to eq(1)
@@ -642,6 +643,16 @@ describe Bundle::BrewDumper do
       Bundle::BrewDumper.reset!
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(formula_info)
       expect(Bundle::BrewDumper.formula_oldnames["aold"]).to eql "homebrew/versions/a"
+    end
+  end
+
+  context "#formula_hash" do
+    let(:f) { OpenStruct.new }
+
+    it "handles formula syntax errors" do
+      allow(f).to receive(:to_hash).and_raise(NoMethodError)
+      expect(Bundle::BrewDumper).to receive(:opoo).once
+      Bundle::BrewDumper.formula_hash(f)
     end
   end
 end
