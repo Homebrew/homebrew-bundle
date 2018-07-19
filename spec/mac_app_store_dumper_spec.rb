@@ -40,7 +40,7 @@ describe Bundle::MacAppStoreDumper do
     before do
       Bundle::MacAppStoreDumper.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
-      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return("123 foo\n456 bar\n789 baz")
+      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return("123 foo (1.0)\n456 bar (2.0)\n789 baz (3.0)")
     end
     subject { Bundle::MacAppStoreDumper }
 
