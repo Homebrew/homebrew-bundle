@@ -13,13 +13,16 @@ module Bundle
     def apps
       @apps ||= if Bundle.mas_installed?
         `mas list 2>/dev/null`.split("\n").map do |app|
-          id, name_with_version = app.split(" ", 2)
-          name = name_with_version.gsub(/ \([\d\.]+\)$/, "")
-          [id, name]
+          app_details = app.match(/\A(?<id>\d+)\s+(?<name>[\w\s]*)\s+\((?<version>[\d\.]*)\)\Z/)
+
+          # Only add the application details should we have a valid match.
+          if app_details
+            [app_details[:id], app_details[:name]]
+          end
         end
       else
         []
-      end
+      end.compact
     end
 
     def app_ids
