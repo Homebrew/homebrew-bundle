@@ -93,7 +93,8 @@ module Bundle
 
     def formula_hash(formula)
       formula.to_hash
-    rescue NoMethodError, ArgumentError, ScriptError => e
+    rescue NoMethodError, ArgumentError, ScriptError,
+           FormulaUnavailableError => e
       opoo "'#{formula.name}' formula is unreadable: #{e}"
     end
 
