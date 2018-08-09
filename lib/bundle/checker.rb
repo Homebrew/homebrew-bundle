@@ -5,6 +5,7 @@ module Bundle
     module_function
 
     NO_ACTION = [].freeze
+
     def action_required_for(formula)
       [formula]
     end

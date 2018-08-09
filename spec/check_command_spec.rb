@@ -148,4 +148,33 @@ describe Bundle::Commands::Check do
       expect { do_check }.to raise_error(SystemExit)
     end
   end
+
+  context "when verbose mode is enabled" do
+    it "stops checking after the first missing formula" do
+      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::Checker).to receive(:exit_on_first_error?).and_return(true)
+      allow(ARGV).to receive(:include?).and_return(true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
+
+      expect(Bundle::Checker).to receive(:action_required_for).once.and_call_original
+      expect { do_check }.to raise_error(SystemExit)
+    end
+    it "stops checking after the first missing cask" do
+      allow(Bundle::Checker).to receive(:exit_on_first_error?).and_return(true)
+      allow(ARGV).to receive(:include?).and_return(true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
+
+      expect(Bundle::Checker).to receive(:action_required_for).once.and_call_original
+      expect { do_check }.to raise_error(SystemExit)
+    end
+    it "stops checking after the first missing formula" do
+      allow(Bundle::Checker).to receive(:exit_on_first_error?).and_return(true)
+      allow(ARGV).to receive(:include?).and_return(true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
+
+      expect(Bundle::Checker).to receive(:action_required_for).once.and_call_original
+      expect { do_check }.to raise_error(SystemExit)
+    end
+  end
 end
