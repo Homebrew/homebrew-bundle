@@ -10,10 +10,6 @@ module Bundle
         @name = name
         @options = options
       end
-
-      def to_s
-        "Entry(#{type} #{name} #{options})"
-      end
     end
 
     attr_reader :entries, :cask_arguments
