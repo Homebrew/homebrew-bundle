@@ -37,7 +37,7 @@ module Bundle
 
         completed_checks = []
         errors = []
-        enumerator = exit_on_first_error? ? :any? : :each
+        enumerator = exit_on_first_error? ? :any? : :map
 
         work_to_be_done = check_method_names.send(enumerator) do |check_method|
           check_errors = send(check_method)
@@ -47,7 +47,9 @@ module Bundle
           any_errors
         end
 
-        if work_to_be_done || any_formulae_to_start?
+        work_to_be_done = work_to_be_done.any? if work_to_be_done.class == Array
+
+        if work_to_be_done
           puts "brew bundle can't satisfy your Brewfile's dependencies."
           unchecked_checks = (checks.keys - completed_checks)
           completed_checks.each { |checked| puts "#{checks[checked]} were checked." }
@@ -56,6 +58,10 @@ module Bundle
             errors.each { |package| puts "#{@arrow} #{package}" }
           end
           puts "Satisfy missing dependencies with `brew bundle install`."
+          exit 1
+        elsif any_formulae_to_start?
+          puts "brew bundle can't satisfy your Brewfile's dependencies."
+          puts "At least one brew formula must be started."
           exit 1
         else
           puts "The Brewfile's dependencies are satisfied."
@@ -79,7 +85,6 @@ module Bundle
       end
 
       def any_formulae_to_start?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
         @dsl.entries.select { |e| e.type == :brew }.any? do |e|
           formula = Bundle::BrewInstaller.new(e.name, e.options)
           needs_to_start = formula.start_service? || formula.restart_service?

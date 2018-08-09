@@ -77,6 +77,7 @@ describe Bundle::Commands::Check do
 
   context "when service is not started" do
     before do
+      Bundle::Commands::Check.reset!
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
@@ -85,8 +86,16 @@ describe Bundle::Commands::Check do
       allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
     end
 
-    it "should not raises error by default" do
+    it "should not raise error when no service needs to be started" do
+      Bundle::Commands::Check.reset!
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
+      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(ARGV).to receive(:include?).and_return(true)
+
+      expect(Bundle::BrewInstaller.installed_formulae).to include("abc")
+      expect(Bundle::CaskInstaller.installed_casks).not_to include("abc")
+      expect(Bundle::BrewServices.started?("abc")).to be(true)
+
       expect { do_check }.not_to raise_error
     end
 
