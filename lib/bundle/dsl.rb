@@ -12,7 +12,7 @@ module Bundle
       end
 
       def to_s
-        "Entry(#{type.to_s} #{name} #{options})"
+        "Entry(#{type} #{name} #{options})"
       end
     end
 
