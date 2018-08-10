@@ -5,7 +5,7 @@ module Bundle
     module Check
       module_function
 
-      ARROW = "→".freeze
+      ARROW = "→"
 
       def reset!
         @dsl = nil
