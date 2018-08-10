@@ -13,8 +13,12 @@ module Bundle
       actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
     end
 
+    def select_checkable(entries)
+      entries.select { |e| e.type == :cask }.map(&:name)
+    end
+
     def find_actionable(entries)
-      requested = entries.select { |e| e.type == :cask }.map(&:name)
+      requested = select_checkable entries
 
       if Bundle::Checker.exit_on_first_error?
         Bundle::Checker.exit_early_check(requested){ |pkg| !installed_and_up_to_date?(pkg) }

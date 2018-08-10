@@ -13,13 +13,17 @@ module Bundle
       actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
     end
 
+    def select_checkable(entries)
+      entries.select { |e| e.type == :brew }.map(&:name)
+    end
+
     def find_actionable(entries)
-      requested_formulae = entries.select { |e| e.type == :brew }.map(&:name)
+      requested = select_checkable entries
 
       if Bundle::Checker.exit_on_first_error?
-        Bundle::Checker.exit_early_check(requested_formulae){ |pkg| !installed_and_up_to_date?(pkg) }
+        Bundle::Checker.exit_early_check(requested){ |pkg| !installed_and_up_to_date?(pkg) }
       else
-        full_check requested_formulae
+        full_check requested
       end
     end
   end
