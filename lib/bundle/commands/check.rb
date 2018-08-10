@@ -51,10 +51,11 @@ module Bundle
 
         if work_to_be_done
           puts "brew bundle can't satisfy your Brewfile's dependencies."
-          unchecked_checks = (checks.keys - completed_checks)
-          completed_checks.each { |checked| puts "#{checks[checked]} were checked." }
-          unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
+
           if output_errors?
+            unchecked_checks = (checks.keys - completed_checks)
+            completed_checks.each { |checked| puts "#{checks[checked]} were checked." }
+            unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
             errors.each { |package| puts "#{ARROW} #{package}" }
           end
           puts "Satisfy missing dependencies with `brew bundle install`."
