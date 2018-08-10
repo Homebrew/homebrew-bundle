@@ -15,13 +15,11 @@ module Bundle
     end
 
     def exit_early_check(packages)
-      last_checked = ""
-      work_to_be_done = packages.any? do |pkg|
-        last_checked = pkg
+      work_to_be_done = packages.find do |pkg|
         yield pkg
       end
       if work_to_be_done
-        Bundle::Checker.action_required_for(last_checked)
+        Bundle::Checker.action_required_for(work_to_be_done)
       else
         Bundle::Checker::NO_ACTION
       end
