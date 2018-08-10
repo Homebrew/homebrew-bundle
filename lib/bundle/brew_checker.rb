@@ -4,7 +4,7 @@ module Bundle
   module BrewChecker
     module_function
 
-    def ok?(formula)
+    def installed_and_up_to_date?(formula)
       Bundle::BrewInstaller.formula_installed_and_up_to_date? formula
     end
 
@@ -12,7 +12,7 @@ module Bundle
       last_checked = ""
       work_to_be_done = formulae.any? do |f|
         last_checked = f
-        !ok?(f)
+        !installed_and_up_to_date?(f)
       end
       if work_to_be_done
         Bundle::Checker.action_required_for(last_checked)
@@ -22,7 +22,7 @@ module Bundle
     end
 
     def full_check(formulae)
-      actionable = formulae.reject { |f| ok? f }
+      actionable = formulae.reject { |f| installed_and_up_to_date? f }
       actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
     end
 

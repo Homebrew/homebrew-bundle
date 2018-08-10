@@ -4,7 +4,7 @@ module Bundle
   module MacAppStoreChecker
     module_function
 
-    def ok?(id)
+    def installed_and_up_to_date?(id)
       Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date? id
     end
 
@@ -12,7 +12,7 @@ module Bundle
       last_checked = ""
       work_to_be_done = app_ids.any? do |f|
         last_checked = f
-        !ok?(f)
+        !installed_and_up_to_date?(f)
       end
       if work_to_be_done
         Bundle::Checker.action_required_for(last_checked)
@@ -22,7 +22,7 @@ module Bundle
     end
 
     def full_check(app_ids)
-      actionable = app_ids.reject { |id, _name| ok? id }
+      actionable = app_ids.reject { |id, _name| installed_and_up_to_date? id }
       actionable.map { |_id, name| "App #{name} needs to be installed or updated." }
     end
 

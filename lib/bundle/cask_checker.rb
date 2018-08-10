@@ -4,7 +4,7 @@ module Bundle
   module CaskChecker
     module_function
 
-    def ok?(formula)
+    def installed_and_up_to_date?(formula)
       Bundle::CaskInstaller.cask_installed_and_up_to_date? formula
     end
 
@@ -12,7 +12,7 @@ module Bundle
       last_checked = ""
       work_to_be_done = casks.any? do |f|
         last_checked = f
-        !ok?(f)
+        !installed_and_up_to_date?(f)
       end
       if work_to_be_done
         Bundle::Checker.action_required_for(last_checked)
@@ -22,7 +22,7 @@ module Bundle
     end
 
     def full_check(casks)
-      actionable = casks.reject { |f| ok? f }
+      actionable = casks.reject { |f| installed_and_up_to_date? f }
       actionable.map { |entry| "Cask #{entry} needs to be installed or updated." }
     end
 
