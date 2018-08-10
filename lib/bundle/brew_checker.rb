@@ -9,12 +9,13 @@ module Bundle
     end
 
     def full_check(formulae)
-      actionable = formulae.reject { |f| installed_and_up_to_date? f }
-      actionable.map { |entry| "Formula #{entry} needs to be installed or updated." }
+      formulae.reject { |f| installed_and_up_to_date? f }
+              .map { |entry| "Formula #{entry} needs to be installed or updated." }
     end
 
     def select_checkable(entries)
-      entries.select { |e| e.type == :brew }.map(&:name)
+      entries.select { |e| e.type == :brew }
+             .map(&:name)
     end
 
     def find_actionable(entries)

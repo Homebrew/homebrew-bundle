@@ -9,12 +9,14 @@ module Bundle
     end
 
     def full_check(app_ids)
-      actionable = app_ids.reject { |id, _name| installed_and_up_to_date? id }
-      actionable.map { |_id, name| "App #{name} needs to be installed or updated." }
+      app_ids.reject { |id, _name| installed_and_up_to_date? id }
+             .map { |_id, name| "App #{name} needs to be installed or updated." }
     end
 
     def select_checkable(entries)
-      entries.select { |e| e.type == :mac_app_store }.map { |e| [e.options[:id], e.name] }.to_h
+      entries.select { |e| e.type == :mac_app_store }
+             .map { |e| [e.options[:id], e.name] }
+             .to_h
     end
 
     def find_actionable(entries)
