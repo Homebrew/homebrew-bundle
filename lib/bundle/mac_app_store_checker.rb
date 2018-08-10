@@ -23,7 +23,7 @@ module Bundle
       requested = select_checkable entries
 
       if Bundle::Checker.exit_on_first_error?
-        Bundle::Checker.exit_early_check(requested){ |pkg| !installed_and_up_to_date?(pkg) }
+        Bundle::Checker.exit_early_check(requested) { |pkg| !installed_and_up_to_date?(pkg) }
       else
         full_check requested
       end
