@@ -5,7 +5,7 @@ module Bundle
     module Check
       module_function
 
-      @arrow = "→"
+      ARROW = "→".freeze
 
       def reset!
         @dsl = nil
@@ -55,7 +55,7 @@ module Bundle
           completed_checks.each { |checked| puts "#{checks[checked]} were checked." }
           unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
           if output_errors?
-            errors.each { |package| puts "#{@arrow} #{package}" }
+            errors.each { |package| puts "#{ARROW} #{package}" }
           end
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
