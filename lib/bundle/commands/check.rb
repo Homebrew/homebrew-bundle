@@ -16,14 +16,6 @@ module Bundle
         Bundle::BrewServices.reset!
       end
 
-      def exit_on_first_error?
-        Bundle::Checker.exit_on_first_error?
-      end
-
-      def output_errors?
-        ARGV.include?("--verbose")
-      end
-
       def run
         @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
@@ -37,7 +29,7 @@ module Bundle
 
         completed_checks = []
         errors = []
-        enumerator = exit_on_first_error? ? :any? : :map
+        enumerator = Bundle::Checker.exit_on_first_error? ? :any? : :map
 
         work_to_be_done = check_method_names.send(enumerator) do |check_method|
           check_errors = send(check_method)
@@ -52,7 +44,7 @@ module Bundle
         if work_to_be_done
           puts "brew bundle can't satisfy your Brewfile's dependencies."
 
-          if output_errors?
+          if Bundle::Checker.output_errors?
             unchecked_checks = (checks.keys - completed_checks)
             completed_checks.each { |checked| puts "#{checks[checked]} were checked." }
             unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }

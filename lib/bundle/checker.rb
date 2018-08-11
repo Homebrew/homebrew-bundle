@@ -10,10 +10,6 @@ module Bundle
       [formula]
     end
 
-    def exit_on_first_error?
-      !ARGV.include?("--verbose")
-    end
-
     def exit_early_check(packages)
       work_to_be_done = packages.find do |pkg|
         yield pkg
@@ -23,6 +19,14 @@ module Bundle
       else
         Bundle::Checker::NO_ACTION
       end
+    end
+
+    def exit_on_first_error?
+      !ARGV.include?("--verbose")
+    end
+
+    def output_errors?
+      ARGV.include?("--verbose")
     end
   end
 end
