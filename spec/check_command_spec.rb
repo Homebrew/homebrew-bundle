@@ -8,7 +8,7 @@ describe Bundle::Commands::Check do
   end
 
   before do
-    Bundle::Commands::Check.reset!
+    Bundle::Checker.reset!
     allow_any_instance_of(IO).to receive(:puts)
   end
 
@@ -17,10 +17,10 @@ describe Bundle::Commands::Check do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       nothing = []
-      allow(Bundle::Commands::Check).to receive(:casks_to_install).and_return(nothing)
-      allow(Bundle::Commands::Check).to receive(:formulae_to_install).and_return(nothing)
-      allow(Bundle::Commands::Check).to receive(:apps_to_install).and_return(nothing)
-      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return(nothing)
+      allow(Bundle::Checker).to receive(:casks_to_install).and_return(nothing)
+      allow(Bundle::Checker).to receive(:formulae_to_install).and_return(nothing)
+      allow(Bundle::Checker).to receive(:apps_to_install).and_return(nothing)
+      allow(Bundle::Checker).to receive(:taps_to_tap).and_return(nothing)
       expect { do_check }.to_not raise_error
     end
   end
@@ -77,7 +77,7 @@ describe Bundle::Commands::Check do
 
   context "when service is not started" do
     before do
-      Bundle::Commands::Check.reset!
+      Bundle::Checker.reset!
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
@@ -87,7 +87,7 @@ describe Bundle::Commands::Check do
     end
 
     it "should not raise error when no service needs to be started" do
-      Bundle::Commands::Check.reset!
+      Bundle::Checker.reset!
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(ARGV).to receive(:include?).and_return(true)
@@ -118,18 +118,18 @@ describe Bundle::Commands::Check do
     before do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
-      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return(["asdf"])
+      allow(Bundle::Checker).to receive(:taps_to_tap).and_return(["asdf"])
     end
     it "does not check for tasks" do
-      expect(Bundle::Commands::Check).not_to receive(:casks_to_install)
+      expect(Bundle::Checker).not_to receive(:casks_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
     it "does not check for formulae" do
-      expect(Bundle::Commands::Check).not_to receive(:formulae_to_install)
+      expect(Bundle::Checker).not_to receive(:formulae_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
     it "does not check for apps" do
-      expect(Bundle::Commands::Check).not_to receive(:apps_to_install)
+      expect(Bundle::Checker).not_to receive(:apps_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
   end
@@ -138,22 +138,22 @@ describe Bundle::Commands::Check do
     before do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
-      allow(Bundle::Commands::Check).to receive(:taps_to_tap).and_return([])
-      allow(Bundle::Commands::Check).to receive(:casks_to_install).and_return([])
-      allow(Bundle::Commands::Check).to receive(:apps_to_install).and_return([])
-      allow(Bundle::Commands::Check).to receive(:formulae_to_install).and_return(["one"])
+      allow(Bundle::Checker).to receive(:taps_to_tap).and_return([])
+      allow(Bundle::Checker).to receive(:casks_to_install).and_return([])
+      allow(Bundle::Checker).to receive(:apps_to_install).and_return([])
+      allow(Bundle::Checker).to receive(:formulae_to_install).and_return(["one"])
     end
     it "does not start formulae" do
-      expect(Bundle::Commands::Check).not_to receive(:any_formulae_to_start?)
+      expect(Bundle::Checker).not_to receive(:any_formulae_to_start?)
       expect { do_check }.to raise_error(SystemExit)
     end
   end
 
-  context "when verbose mode is enabled" do
+  context "when verbose mode is not enabled" do
     it "stops checking after the first missing formula" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(Bundle::Checker).to receive(:exit_on_first_error?).and_return(true)
+      allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
 
@@ -161,7 +161,7 @@ describe Bundle::Commands::Check do
       expect { do_check }.to raise_error(SystemExit)
     end
     it "stops checking after the first missing cask" do
-      allow(Bundle::Checker).to receive(:exit_on_first_error?).and_return(true)
+      allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
 
@@ -169,7 +169,7 @@ describe Bundle::Commands::Check do
       expect { do_check }.to raise_error(SystemExit)
     end
     it "stops checking after the first missing formula" do
-      allow(Bundle::Checker).to receive(:exit_on_first_error?).and_return(true)
+      allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 

@@ -21,12 +21,78 @@ module Bundle
       end
     end
 
-    def exit_on_first_error?
-      !ARGV.include?("--verbose")
+    CheckResult = Struct.new :work_to_be_done, :completed_checks, :errors, :unchecked_checks
+
+    CHECKS = {
+      taps_to_tap: "Taps",
+      casks_to_install: "Casks",
+      apps_to_install: "Apps",
+      formulae_to_install: "Formulae",
+    }
+
+    def check exit_on_first_error
+      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+
+      check_method_names = CHECKS.keys
+
+      completed_checks = []
+      errors = []
+      enumerator = exit_on_first_error ? :any? : :map
+
+      work_to_be_done = check_method_names.send(enumerator) do |check_method|
+        check_errors = send(check_method)
+        completed_checks << check_method
+        any_errors = check_errors.any?
+        errors.concat(check_errors) if any_errors
+        any_errors
+      end
+
+      work_to_be_done = work_to_be_done.any? if work_to_be_done.class == Array
+
+      unchecked_checks = (check_method_names - completed_checks)
+
+      CheckResult.new work_to_be_done, completed_checks, errors, unchecked_checks
     end
 
-    def output_errors?
-      ARGV.include?("--verbose")
+    def casks_to_install
+      Bundle::CaskChecker.find_actionable @dsl.entries
+    end
+
+    def formulae_to_install
+      Bundle::BrewChecker.find_actionable @dsl.entries
+    end
+
+    def taps_to_tap
+      Bundle::TapChecker.find_actionable @dsl.entries
+    end
+
+    def apps_to_install
+      Bundle::MacAppStoreChecker.find_actionable @dsl.entries
+    end
+
+    def any_formulae_to_start?
+      @dsl.entries.select { |e| e.type == :brew }.any? do |e|
+        formula = Bundle::BrewInstaller.new(e.name, e.options)
+        needs_to_start = formula.start_service? || formula.restart_service?
+        next unless needs_to_start
+        next if Bundle::BrewServices.started?(e.name)
+
+        old_names = Bundle::BrewDumper.formula_oldnames
+        old_name = old_names[e.name]
+        old_name ||= old_names[e.name.split("/").last]
+        next if old_name && Bundle::BrewServices.started?(old_name)
+
+        true
+      end
+    end
+
+    def reset!
+      @dsl = nil
+      Bundle::CaskDumper.reset!
+      Bundle::BrewDumper.reset!
+      Bundle::MacAppStoreDumper.reset!
+      Bundle::TapDumper.reset!
+      Bundle::BrewServices.reset!
     end
   end
 end

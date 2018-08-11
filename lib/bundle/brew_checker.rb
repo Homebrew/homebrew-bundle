@@ -21,7 +21,7 @@ module Bundle
     def find_actionable(entries)
       requested = select_checkable entries
 
-      if Bundle::Checker.exit_on_first_error?
+      if Bundle::Commands::Check.exit_on_first_error?
         Bundle::Checker.exit_early_check(requested) { |pkg| !installed_and_up_to_date?(pkg) }
       else
         full_check requested
