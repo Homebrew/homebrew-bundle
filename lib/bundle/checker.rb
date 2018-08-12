@@ -2,6 +2,51 @@
 
 module Bundle
   module Checker
+    class Base
+      PACKAGE_TYPE = :pkg
+      PACKAGE_TYPE_NAME = "Package"
+
+      NO_ACTION = [].freeze
+
+      def action_required_for(formula)
+        [formula]
+      end
+
+      def exit_early_check(packages)
+        work_to_be_done = packages.find do |pkg|
+          yield pkg
+        end
+        if work_to_be_done
+          action_required_for(work_to_be_done)
+        else
+          NO_ACTION
+        end
+      end
+
+      def full_check(packages)
+        packages.reject { |f| installed_and_up_to_date? f }
+                .map { |entry| "#{self.class::PACKAGE_TYPE_NAME} #{entry} needs to be installed or updated." }
+      end
+
+      def select_checkable(entries)
+        entries.select { |e| e.type == self.class::PACKAGE_TYPE }
+      end
+
+      def installed_and_up_to_date?(_pkg)
+        raise "unimplemented"
+      end
+
+      def find_actionable(entries)
+        requested = select_checkable entries
+
+        if Bundle::Commands::Check.exit_on_first_error?
+          exit_early_check(requested) { |pkg| !installed_and_up_to_date?(pkg) }
+        else
+          full_check requested
+        end
+      end
+    end
+
     module_function
 
     NO_ACTION = [].freeze
@@ -28,9 +73,9 @@ module Bundle
       casks_to_install: "Casks",
       apps_to_install: "Apps",
       formulae_to_install: "Formulae",
-    }
+    }.freeze
 
-    def check exit_on_first_error
+    def check(exit_on_first_error)
       @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
 
       check_method_names = CHECKS.keys
@@ -59,7 +104,7 @@ module Bundle
     end
 
     def formulae_to_install
-      Bundle::BrewChecker.find_actionable @dsl.entries
+      Bundle::Checker::BrewChecker.new.find_actionable @dsl.entries
     end
 
     def taps_to_tap
