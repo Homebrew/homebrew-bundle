@@ -6,8 +6,8 @@ module Bundle
       PACKAGE_TYPE = :cask
       PACKAGE_TYPE_NAME = "Cask"
 
-      def installed_and_up_to_date?(formula)
-        Bundle::CaskInstaller.cask_installed_and_up_to_date? formula
+      def installed_and_up_to_date?(cask)
+        Bundle::CaskInstaller.cask_installed_and_up_to_date? cask
       end
     end
   end
