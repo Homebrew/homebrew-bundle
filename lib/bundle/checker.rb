@@ -70,7 +70,7 @@ module Bundle
 
       completed_checks = []
       errors = []
-      enumerator = exit_on_first_error ? :any? : :map
+      enumerator = exit_on_first_error ? :find : :map
 
       work_to_be_done = check_method_names.send(enumerator) do |check_method|
         check_errors = send(check_method)
@@ -80,7 +80,7 @@ module Bundle
         any_errors
       end
 
-      work_to_be_done = work_to_be_done.any? if work_to_be_done.class == Array
+      work_to_be_done = Array(work_to_be_done).flatten.any?
 
       unchecked_checks = (check_method_names - completed_checks)
 
