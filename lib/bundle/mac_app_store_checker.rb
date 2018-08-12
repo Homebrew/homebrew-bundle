@@ -10,9 +10,8 @@ module Bundle
         Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date? id
       end
 
-      def select_checkable(entries)
-        super(entries).map { |e| [e.options[:id], e.name] }
-                      .to_h
+      def format_checkable(entries)
+        checkable_entries(entries).map { |e| [e.options[:id], e.name] }.to_h
       end
 
       def full_check(app_ids_with_names)

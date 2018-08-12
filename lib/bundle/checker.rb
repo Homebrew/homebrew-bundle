@@ -28,8 +28,12 @@ module Bundle
                 .map { |entry| "#{self.class::PACKAGE_TYPE_NAME} #{entry} needs to be installed or updated." }
       end
 
-      def select_checkable(entries)
-        entries.select { |e| e.type == self.class::PACKAGE_TYPE }
+      def checkable_entries(all_entries)
+        all_entries.select { |e| e.type == self.class::PACKAGE_TYPE }
+      end
+
+      def format_checkable(entries)
+        checkable_entries(entries).map(&:name)
       end
 
       def installed_and_up_to_date?(_pkg)
@@ -37,7 +41,7 @@ module Bundle
       end
 
       def find_actionable(entries)
-        requested = select_checkable entries
+        requested = format_checkable entries
 
         if Bundle::Commands::Check.exit_on_first_error?
           exit_early_check(requested) { |pkg| !installed_and_up_to_date?(pkg) }

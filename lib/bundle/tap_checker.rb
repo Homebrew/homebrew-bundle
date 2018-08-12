@@ -6,12 +6,8 @@ module Bundle
       PACKAGE_TYPE = :tap
       PACKAGE_TYPE_NAME = "Tap"
 
-      def select_checkable(entries)
-        super(entries).map(&:name)
-      end
-
       def find_actionable(entries)
-        requested_taps = select_checkable(entries)
+        requested_taps = format_checkable(entries)
         return NO_ACTION if requested_taps.empty?
 
         current_taps = Bundle::TapDumper.tap_names

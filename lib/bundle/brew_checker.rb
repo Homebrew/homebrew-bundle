@@ -9,10 +9,6 @@ module Bundle
       def installed_and_up_to_date?(formula)
         Bundle::BrewInstaller.formula_installed_and_up_to_date? formula
       end
-
-      def select_checkable(entries)
-        super(entries).map(&:name)
-      end
     end
   end
 end
