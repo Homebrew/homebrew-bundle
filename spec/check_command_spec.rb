@@ -165,7 +165,7 @@ describe Bundle::Commands::Check do
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
 
-      expect(Bundle::Checker).to receive(:action_required_for).once.and_call_original
+      expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:action_required_for).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
     it "stops checking after the first missing formula" do

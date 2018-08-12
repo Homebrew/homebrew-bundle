@@ -100,7 +100,7 @@ module Bundle
     end
 
     def casks_to_install
-      Bundle::CaskChecker.find_actionable @dsl.entries
+      Bundle::Checker::CaskChecker.new.find_actionable @dsl.entries
     end
 
     def formulae_to_install
