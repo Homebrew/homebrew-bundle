@@ -30,7 +30,7 @@ module Bundle
           exit 1
         elsif Bundle::Checker.any_formulae_to_start?
           puts FAILURE_MESSAGE
-          puts "At least one brew formula must be started."
+          puts "At least one service still needs to be started."
           exit 1
         else
           puts "The Brewfile's dependencies are satisfied."
