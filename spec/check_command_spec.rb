@@ -173,7 +173,7 @@ describe Bundle::Commands::Check do
       expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:action_required_for).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
-    
+
     it "stops checking after the first missing mac app" do
       allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
@@ -187,7 +187,7 @@ describe Bundle::Commands::Check do
   context "when a new checker fails to implement installed_and_up_to_date" do
     it "raises an exception" do
       TestChecker = Class.new(Bundle::Checker::Base) do
-        class_eval("PACKAGE_TYPE = :test")
+        class_eval("PACKAGE_TYPE = :test", __FILE__, __LINE__)
       end
 
       test_entry = Bundle::Dsl::Entry.new(:test, "test")

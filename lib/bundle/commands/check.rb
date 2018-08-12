@@ -23,7 +23,6 @@ module Bundle
           puts FAILURE_MESSAGE
 
           if output_errors?
-            checks = Bundle::Checker::CHECKS
             check_result.errors.each { |package| puts "#{ARROW} #{package}" }
           end
           puts "Satisfy missing dependencies with `brew bundle install`."
