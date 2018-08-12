@@ -120,14 +120,17 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow(Bundle::Checker).to receive(:taps_to_tap).and_return(["asdf"])
     end
+
     it "does not check for tasks" do
       expect(Bundle::Checker).not_to receive(:casks_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
+
     it "does not check for formulae" do
       expect(Bundle::Checker).not_to receive(:formulae_to_install)
       expect { do_check }.to raise_error(SystemExit)
     end
+
     it "does not check for apps" do
       expect(Bundle::Checker).not_to receive(:apps_to_install)
       expect { do_check }.to raise_error(SystemExit)
@@ -143,6 +146,7 @@ describe Bundle::Commands::Check do
       allow(Bundle::Checker).to receive(:apps_to_install).and_return([])
       allow(Bundle::Checker).to receive(:formulae_to_install).and_return(["one"])
     end
+
     it "does not start formulae" do
       expect(Bundle::Checker).not_to receive(:any_formulae_to_start?)
       expect { do_check }.to raise_error(SystemExit)
@@ -160,6 +164,7 @@ describe Bundle::Commands::Check do
       expect_any_instance_of(Bundle::Checker::BrewChecker).to receive(:action_required_for).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
+
     it "stops checking after the first missing cask" do
       allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
@@ -168,6 +173,7 @@ describe Bundle::Commands::Check do
       expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:action_required_for).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
+    
     it "stops checking after the first missing mac app" do
       allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
