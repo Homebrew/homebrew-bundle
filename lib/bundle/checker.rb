@@ -108,7 +108,7 @@ module Bundle
     end
 
     def taps_to_tap
-      Bundle::TapChecker.find_actionable @dsl.entries
+      Bundle::Checker::TapChecker.new.find_actionable @dsl.entries
     end
 
     def apps_to_install
