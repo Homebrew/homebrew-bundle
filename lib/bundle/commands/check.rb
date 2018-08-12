@@ -7,7 +7,6 @@ module Bundle
 
       ARROW = "→"
       FAILURE_MESSAGE = "brew bundle can't satisfy your Brewfile's dependencies."
-      SUCCESS_MESSAGE = "The Brewfile's dependencies are satisfied."
 
       def output_errors?
         ARGV.include?("--verbose")
@@ -36,7 +35,7 @@ module Bundle
           puts "At least one brew formula must be started."
           exit 1
         else
-          puts SUCCESS_MESSAGE
+          puts "The Brewfile's dependencies are satisfied."
         end
       end
     end
