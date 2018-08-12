@@ -37,7 +37,7 @@ module Bundle
       end
 
       def installed_and_up_to_date?(_pkg)
-        raise "unimplemented"
+        raise NotImplementedError
       end
 
       def find_actionable(entries)
