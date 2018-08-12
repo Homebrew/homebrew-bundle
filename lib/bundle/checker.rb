@@ -3,8 +3,9 @@
 module Bundle
   module Checker
     class Base
-      PACKAGE_TYPE = :pkg
-      PACKAGE_TYPE_NAME = "Package"
+      # Implement these in any subclass
+      # PACKAGE_TYPE = :pkg
+      # PACKAGE_TYPE_NAME = "Package"
 
       NO_ACTION = [].freeze
 
