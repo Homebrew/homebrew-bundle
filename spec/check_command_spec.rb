@@ -161,7 +161,7 @@ describe Bundle::Commands::Check do
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
 
-      expect_any_instance_of(Bundle::Checker::BrewChecker).to receive(:action_required_for).once.and_call_original
+      expect_any_instance_of(Bundle::Checker::BrewChecker).to receive(:exit_early_check).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
 
@@ -170,7 +170,7 @@ describe Bundle::Commands::Check do
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
 
-      expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:action_required_for).once.and_call_original
+      expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:exit_early_check).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
 
@@ -179,7 +179,7 @@ describe Bundle::Commands::Check do
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 
-      expect_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:action_required_for).once.and_call_original
+      expect_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:exit_early_check).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
   end

@@ -7,21 +7,12 @@ module Bundle
       # PACKAGE_TYPE = :pkg
       # PACKAGE_TYPE_NAME = "Package"
 
-      NO_ACTION = [].freeze
-
-      def action_required_for(formula)
-        [formula]
-      end
-
       def exit_early_check(packages)
         work_to_be_done = packages.find do |pkg|
           yield pkg
         end
-        if work_to_be_done
-          action_required_for(work_to_be_done)
-        else
-          NO_ACTION
-        end
+
+        Array(work_to_be_done)
       end
 
       def full_check(packages)
