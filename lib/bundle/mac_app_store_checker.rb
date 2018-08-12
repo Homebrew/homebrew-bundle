@@ -1,31 +1,23 @@
 # frozen_string_literal: true
 
 module Bundle
-  module MacAppStoreChecker
-    module_function
+  module Checker
+    class MacAppStoreChecker < Bundle::Checker::Base
+      PACKAGE_TYPE = :mac_app_store
+      PACKAGE_TYPE_NAME = "App"
 
-    def installed_and_up_to_date?(id)
-      Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date? id
-    end
+      def installed_and_up_to_date?(id)
+        Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date? id
+      end
 
-    def full_check(app_ids)
-      app_ids.reject { |id, _name| installed_and_up_to_date? id }
-             .map { |_id, name| "App #{name} needs to be installed or updated." }
-    end
+      def select_checkable(entries)
+        super(entries).map { |e| [e.options[:id], e.name] }
+                      .to_h
+      end
 
-    def select_checkable(entries)
-      entries.select { |e| e.type == :mac_app_store }
-             .map { |e| [e.options[:id], e.name] }
-             .to_h
-    end
-
-    def find_actionable(entries)
-      requested = select_checkable entries
-
-      if Bundle::Commands::Check.exit_on_first_error?
-        Bundle::Checker.exit_early_check(requested) { |pkg| !installed_and_up_to_date?(pkg) }
-      else
-        full_check requested
+      def full_check(app_ids_with_names)
+        app_ids_with_names.reject { |id, _name| installed_and_up_to_date? id }
+                          .map { |_id, name| "App #{name} needs to be installed or updated." }
       end
     end
   end

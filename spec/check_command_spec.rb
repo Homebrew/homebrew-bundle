@@ -168,12 +168,12 @@ describe Bundle::Commands::Check do
       expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:action_required_for).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
-    it "stops checking after the first missing formula" do
+    it "stops checking after the first missing mac app" do
       allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 
-      expect(Bundle::Checker).to receive(:action_required_for).once.and_call_original
+      expect_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:action_required_for).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
   end

@@ -112,7 +112,7 @@ module Bundle
     end
 
     def apps_to_install
-      Bundle::MacAppStoreChecker.find_actionable @dsl.entries
+      Bundle::Checker::MacAppStoreChecker.new.find_actionable @dsl.entries
     end
 
     def any_formulae_to_start?
