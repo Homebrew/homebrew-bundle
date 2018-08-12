@@ -24,8 +24,6 @@ module Bundle
 
           if output_errors?
             checks = Bundle::Checker::CHECKS
-            check_result.completed_checks.each { |checked| puts "#{checks[checked]} were checked." }
-            check_result.unchecked_checks.each { |unchecked| puts "#{checks[unchecked]} were not checked." }
             check_result.errors.each { |package| puts "#{ARROW} #{package}" }
           end
           puts "Satisfy missing dependencies with `brew bundle install`."

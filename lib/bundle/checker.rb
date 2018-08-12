@@ -54,7 +54,7 @@ module Bundle
 
     module_function
 
-    CheckResult = Struct.new :work_to_be_done, :completed_checks, :errors, :unchecked_checks
+    CheckResult = Struct.new :work_to_be_done, :errors
 
     CHECKS = {
       taps_to_tap: "Taps",
@@ -68,13 +68,11 @@ module Bundle
 
       check_method_names = CHECKS.keys
 
-      completed_checks = []
       errors = []
       enumerator = exit_on_first_error ? :find : :map
 
       work_to_be_done = check_method_names.send(enumerator) do |check_method|
         check_errors = send(check_method)
-        completed_checks << check_method
         any_errors = check_errors.any?
         errors.concat(check_errors) if any_errors
         any_errors
@@ -82,9 +80,7 @@ module Bundle
 
       work_to_be_done = Array(work_to_be_done).flatten.any?
 
-      unchecked_checks = (check_method_names - completed_checks)
-
-      CheckResult.new work_to_be_done, completed_checks, errors, unchecked_checks
+      CheckResult.new work_to_be_done, errors
     end
 
     def casks_to_install
