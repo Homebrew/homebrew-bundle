@@ -65,6 +65,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -80,6 +81,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -95,6 +97,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
       ARGV << "--zap"
     end
@@ -111,6 +114,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -126,6 +130,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
@@ -141,6 +146,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return(%w[a b])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(false)
     end
 
@@ -157,7 +163,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:casks_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:formulae_to_uninstall).and_return([])
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
-      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return(["cleaned"])
+      expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("cleaned")
     end
 
     context "with --force" do
@@ -178,6 +184,13 @@ describe Bundle::Commands::Cleanup do
       it "prints output" do
         expect { Bundle::Commands::Cleanup.run }.to output(/cleaned/).to_stdout
       end
+    end
+  end
+
+  context "#system_output_no_stderr" do
+    it "shells out" do
+      expect(IO).to receive(:popen).and_return(StringIO.new("true"))
+      Bundle::Commands::Cleanup.system_output_no_stderr("true")
     end
   end
 end
