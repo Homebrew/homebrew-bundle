@@ -13,6 +13,8 @@ PROJECT_ROOT ||= File.expand_path("..", __dir__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
 $LOAD_PATH.unshift(STUB_PATH)
 
+require "bundle"
+
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
 
 SimpleCov.formatters = [
@@ -20,7 +22,6 @@ SimpleCov.formatters = [
 ]
 SimpleCov.formatters << SimpleCov::Formatter::Codecov if ENV["CI"]
 
-require "bundle"
 require "bundler"
 require "rspec/support/object_formatter"
 

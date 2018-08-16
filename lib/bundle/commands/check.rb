@@ -5,75 +5,30 @@ module Bundle
     module Check
       module_function
 
-      def reset!
-        @dsl = nil
-        Bundle::CaskDumper.reset!
-        Bundle::BrewDumper.reset!
-        Bundle::MacAppStoreDumper.reset!
-        Bundle::TapDumper.reset!
-        Bundle::BrewServices.reset!
+      ARROW = "→"
+      FAILURE_MESSAGE = "brew bundle can't satisfy your Brewfile's dependencies."
+
+      def output_errors?
+        ARGV.include?("--verbose")
+      end
+
+      def exit_on_first_error?
+        !ARGV.include?("--verbose")
       end
 
       def run
-        if any_taps_to_tap? ||
-           any_casks_to_install? ||
-           any_apps_to_install? ||
-           any_formulae_to_install? ||
-           any_formulae_to_start?
-          puts "brew bundle can't satisfy your Brewfile's dependencies."
+        check_result = Bundle::Checker.check(exit_on_first_error?)
+
+        if check_result.work_to_be_done
+          puts FAILURE_MESSAGE
+
+          if output_errors?
+            check_result.errors.each { |package| puts "#{ARROW} #{package}" }
+          end
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
           puts "The Brewfile's dependencies are satisfied."
-        end
-      end
-
-      def any_casks_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-        requested_casks.any? do |c|
-          !Bundle::CaskInstaller.cask_installed_and_up_to_date?(c)
-        end
-      end
-
-      def any_formulae_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        requested_formulae.any? do |f|
-          !Bundle::BrewInstaller.formula_installed_and_up_to_date?(f)
-        end
-      end
-
-      def any_taps_to_tap?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
-        return false if requested_taps.empty?
-        current_taps = Bundle::TapDumper.tap_names
-        (requested_taps - current_taps).any?
-      end
-
-      def any_apps_to_install?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        requested_app_ids = @dsl.entries.select { |e| e.type == :mac_app_store }.map { |e| e.options[:id] }
-        requested_app_ids.any? do |id|
-          !Bundle::MacAppStoreInstaller.app_id_installed_and_up_to_date?(id)
-        end
-      end
-
-      def any_formulae_to_start?
-        @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
-        @dsl.entries.select { |e| e.type == :brew }.any? do |e|
-          formula = Bundle::BrewInstaller.new(e.name, e.options)
-          needs_to_start = formula.start_service? || formula.restart_service?
-          next unless needs_to_start
-          next if Bundle::BrewServices.started?(e.name)
-
-          old_names = Bundle::BrewDumper.formula_oldnames
-          old_name = old_names[e.name]
-          old_name ||= old_names[e.name.split("/").last]
-          next if old_name && Bundle::BrewServices.started?(old_name)
-
-          true
         end
       end
     end
