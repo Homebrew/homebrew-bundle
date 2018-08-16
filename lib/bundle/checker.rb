@@ -53,6 +53,7 @@ module Bundle
       casks_to_install: "Casks",
       apps_to_install: "Apps",
       formulae_to_install: "Formulae",
+      formulae_to_start: "Services",
     }.freeze
 
     def check(exit_on_first_error)

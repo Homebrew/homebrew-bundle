@@ -27,10 +27,6 @@ module Bundle
           end
           puts "Satisfy missing dependencies with `brew bundle install`."
           exit 1
-        elsif !Bundle::Checker.formulae_to_start.empty?
-          puts FAILURE_MESSAGE
-          puts "At least one service still needs to be started."
-          exit 1
         else
           puts "The Brewfile's dependencies are satisfied."
         end
