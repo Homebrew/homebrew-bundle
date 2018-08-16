@@ -6,6 +6,7 @@ module Bundle
       # Implement these in any subclass
       # PACKAGE_TYPE = :pkg
       # PACKAGE_TYPE_NAME = "Package"
+      PACKAGE_ACTION_PREDICATE = "needs to be installed or updated."
 
       def exit_early_check(packages)
         work_to_be_done = packages.find do |pkg|
@@ -17,7 +18,7 @@ module Bundle
 
       def full_check(packages)
         packages.reject { |f| installed_and_up_to_date? f }
-                .map { |entry| "#{self.class::PACKAGE_TYPE_NAME} #{entry} needs to be installed or updated." }
+                .map { |entry| "#{self.class::PACKAGE_TYPE_NAME} #{entry} #{self.class::PACKAGE_ACTION_PREDICATE}" }
       end
 
       def checkable_entries(all_entries)
@@ -90,20 +91,8 @@ module Bundle
       Bundle::Checker::MacAppStoreChecker.new.find_actionable @dsl.entries
     end
 
-    def any_formulae_to_start?
-      @dsl.entries.select { |e| e.type == :brew }.any? do |e|
-        formula = Bundle::BrewInstaller.new(e.name, e.options)
-        needs_to_start = formula.start_service? || formula.restart_service?
-        next unless needs_to_start
-        next if Bundle::BrewServices.started?(e.name)
-
-        old_names = Bundle::BrewDumper.formula_oldnames
-        old_name = old_names[e.name]
-        old_name ||= old_names[e.name.split("/").last]
-        next if old_name && Bundle::BrewServices.started?(old_name)
-
-        true
-      end
+    def formulae_to_start
+      Bundle::Checker::BrewServiceChecker.new.find_actionable @dsl.entries
     end
 
     def reset!
