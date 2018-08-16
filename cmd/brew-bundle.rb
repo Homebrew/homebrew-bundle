@@ -11,9 +11,7 @@
 #:    Uninstall all dependencies not listed in a Brewfile.
 #:
 #:    `brew bundle check` [`--no-upgrade`] [`--file`=<path>|`--global`] [`--verbose`]
-#:    Check if all dependencies are installed in a Brewfile. Missing dependencies
-#:    are listed in verbose mode. `check` will exit on the first category
-#:    missing a dependency unless in verbose mode.
+#:    Check if all dependencies are installed in a Brewfile. Missing dependencies are listed in verbose mode. `check` will exit on the first category missing a dependency unless in verbose mode.
 #:
 #:    `brew bundle exec` <command>
 #:    Run an external command in an isolated build environment.
