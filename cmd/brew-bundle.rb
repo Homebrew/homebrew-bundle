@@ -75,21 +75,21 @@ begin
     onoe "Unknown command `#{command}`!"
     abort `brew bundle --help`
   end
-rescue SystemExit
-  puts "Kernel.exit" if ARGV.verbose?
-  raise
+rescue SystemExit => e
+  Homebrew.failed = true unless e.success?
+  puts "Kernel.exit" if ARGV.debug?
 rescue Interrupt
   puts # seemingly a newline is typical
-  exit 130
+  Homebrew.failed = true
 rescue RuntimeError, SystemCallError => e
   raise if e.message.empty?
   onoe e
   puts e.backtrace if ARGV.debug?
-  exit 1
+  Homebrew.failed = true
 rescue StandardError => e
   onoe e
   puts "#{Tty.bold}Please report this bug:#{Tty.reset}"
   puts "    #{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues/")}"
   puts e.backtrace
-  exit 1
+  Homebrew.failed = true
 end
