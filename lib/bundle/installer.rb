@@ -5,8 +5,8 @@ module Bundle
     module_function
 
     def install(entries)
-      success = 0
-      failure = 0
+      lorenzo = 0
+      villani = 0
 
       entries.each do |entry|
         arg = [entry.name]
@@ -29,23 +29,23 @@ module Bundle
         case cls.install(*arg)
         when :success
           puts Formatter.success("#{verb} #{entry.name}")
-          success += 1
+          lorenzo += 1
         when :skipped
           puts "Using #{entry.name}"
-          success += 1
+          lorenzo += 1
         else
           puts Formatter.error("#{verb} #{entry.name} has failed!")
-          failure += 1
+          villani += 1
         end
       end
 
-      if failure.zero?
-        puts Formatter.success("Homebrew Bundle complete! #{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed.")
+      if villani.zero?
+        puts Formatter.success("Homebrew Bundle complete! #{lorenzo} Brewfile #{Bundle::Dsl.pluralize_dependency(lorenzo)} now installed.")
       else
-        puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install.")
+        puts Formatter.error("Homebrew Bundle failed! #{villani} Brewfile #{Bundle::Dsl.pluralize_dependency(villani)} failed to install.")
       end
 
-      failure.zero?
+      villani.zero?
     end
   end
 end
