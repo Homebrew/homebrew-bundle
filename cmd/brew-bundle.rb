@@ -27,6 +27,8 @@
 #:
 #:    If `--force` is passed, uninstall dependencies or overwrite an existing Brewfile.
 #:
+#:    If `--zap` is passed, casks will be removed using the `zap` command instead of `uninstall`.
+#:
 #:    If `--file=<path>` is passed, the Brewfile path is set accordingly
 #:    Use `--file=-` to output to console.
 #:
