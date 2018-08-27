@@ -59,6 +59,18 @@ describe Bundle::MacAppStoreDumper do
         409201541 Pages (7.1)
         123456789 123AppNameWithNumbers (1.0)
         409203825 Numbers (5.1)
+        944924917 Pastebin It! (1.0)
+        123456789 My (cool) app (1.0)
+        987654321 an-app-i-use (2.1)
+        123457867 App name with many spaces (1.0)
+        893489734 my,comma,app (2.2)
+        832423434 another_app_name (1.0)
+        543213432 My App? (1.0)
+        688963445 app;with;semicolons (1.0)
+        123345384 my 😊 app (2.0)
+        896732467 你好 (1.1)
+        634324555 مرحبا (1.0)
+        234324325 áéíóú (1.0)
       HEREDOC
     end
 
@@ -70,17 +82,41 @@ describe Bundle::MacAppStoreDumper do
         ["409201541", "Pages"],
         ["123456789", "123AppNameWithNumbers"],
         ["409203825", "Numbers"],
+        ["944924917", "Pastebin It!"],
+        ["123456789", "My (cool) app"],
+        ["987654321", "an-app-i-use"],
+        ["123457867", "App name with many spaces"],
+        ["893489734", "my,comma,app"],
+        ["832423434", "another_app_name"],
+        ["543213432", "My App?"],
+        ["688963445", "app;with;semicolons"],
+        ["123345384", "my 😊 app"],
+        ["896732467", "你好"],
+        ["634324555", "مرحبا"],
+        ["234324325", "áéíóú"],
       ]
     end
 
     let(:expected_mas_dumped_output) do
       <<~HEREDOC
         mas "123AppNameWithNumbers", id: 123456789
+        mas "an-app-i-use", id: 987654321
+        mas "another_app_name", id: 832423434
+        mas "App name with many spaces", id: 123457867
+        mas "app;with;semicolons", id: 688963445
         mas "iMovie", id: 08981434
+        mas "My (cool) app", id: 123456789
+        mas "My App?", id: 543213432
+        mas "my 😊 app", id: 123345384
+        mas "my,comma,app", id: 893489734
         mas "Numbers", id: 409203825
         mas "Pages", id: 409201541
+        mas "Pastebin It!", id: 944924917
         mas "The Unarchiver", id: 425424353
         mas "Xcode", id: 497799835
+        mas "áéíóú", id: 234324325
+        mas "مرحبا", id: 634324555
+        mas "你好", id: 896732467
       HEREDOC
     end
 
