@@ -36,6 +36,7 @@ describe Bundle::TapDumper do
           "name" => "homebrew/foo",
           "remote" => "https://github.com/Homebrew/homebrew-foo",
           "custom_remote" => false,
+          "pinned" => true,
         },
       ]
     end
@@ -46,7 +47,7 @@ describe Bundle::TapDumper do
     end
 
     it "dumps output" do
-      expect(subject.dump).to eql("tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\ntap \"homebrew/baz\"\ntap \"homebrew/foo\"")
+      expect(subject.dump).to eql("tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\ntap \"homebrew/baz\"\ntap \"homebrew/foo\", pin: true")
     end
   end
 end

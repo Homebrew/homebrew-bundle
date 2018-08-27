@@ -23,7 +23,7 @@ module Bundle
           Bundle::MacAppStoreInstaller
         when :tap
           verb = "Tapping"
-          arg << entry.options[:clone_target]
+          arg << entry.options
           Bundle::TapInstaller
         end
         case cls.install(*arg)
