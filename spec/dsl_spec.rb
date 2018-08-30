@@ -11,7 +11,7 @@ describe Bundle::Dsl do
       # frozen_string_literal: true
       cask_args appdir: '/Applications'
       tap 'homebrew/cask'
-      tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
+      tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git', pin: true
       brew 'imagemagick'
       brew 'mysql@5.6', restart_service: true, link: true, conflicts_with: ['mysql']
       brew 'emacs', args: ['with-cocoa', 'with-gnutls']
@@ -23,7 +23,7 @@ describe Bundle::Dsl do
     expect(dsl.cask_arguments).to eql(appdir: "/Applications")
     expect(dsl.entries[0].name).to eql("homebrew/cask")
     expect(dsl.entries[1].name).to eql("telemachus/brew")
-    expect(dsl.entries[1].options).to eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git")
+    expect(dsl.entries[1].options).to eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git", pin: true)
     expect(dsl.entries[2].name).to eql("imagemagick")
     expect(dsl.entries[3].name).to eql("mysql@5.6")
     expect(dsl.entries[3].options).to eql(restart_service: true, link: true, conflicts_with: ["mysql"])
