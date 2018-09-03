@@ -4,7 +4,8 @@ require "json"
 require "tsort"
 
 module Bundle
-  module BrewDumper
+  # TODO: refactor into multiple modules
+  module BrewDumper # rubocop:disable Metrics/ModuleLength
     module_function
 
     def reset!
@@ -93,7 +94,7 @@ module Bundle
 
     def formula_hash(formula)
       formula.to_hash
-    rescue NoMethodError, ArgumentError, ScriptError,
+    rescue NameError, ArgumentError, ScriptError,
            FormulaUnavailableError => e
       opoo "'#{formula.name}' formula is unreadable: #{e}"
     end
@@ -106,7 +107,7 @@ module Bundle
         keg = installed.last
         link = false unless formula["keg_only"]
       else
-        keg = installed.detect { |k| formula["linked_keg"] == k["version"] }
+        keg = installed.find { |k| formula["linked_keg"] == k["version"] }
         link = true if formula["keg_only"]
       end
 
@@ -189,12 +190,12 @@ module Bundle
           - f[:build_dependencies] \
         ).uniq
         topo[f[:full_name]] = deps.map do |dep|
-          ff = @formulae.detect { |formula| formula[:name] == dep || formula[:full_name] == dep }
+          ff = @formulae.find { |formula| formula[:name] == dep || formula[:full_name] == dep }
           next unless ff
           ff[:full_name]
         end.compact
       end
-      @formulae = topo.tsort.map { |name| @formulae.detect { |formula| formula[:full_name] == name } }
+      @formulae = topo.tsort.map { |name| @formulae.find { |formula| formula[:full_name] == name } }
     rescue TSort::Cyclic => e
       odie <<~EOS
         #{e.message}
