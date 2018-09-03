@@ -2,7 +2,8 @@
 
 module Bundle
   module Commands
-    module Cleanup
+    # TODO: refactor into multiple modules
+    module Cleanup # rubocop:disable Metrics/ModuleLength
       module_function
 
       def reset!

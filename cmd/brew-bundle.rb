@@ -86,7 +86,7 @@ rescue RuntimeError, SystemCallError => e
   onoe e
   puts e.backtrace if ARGV.debug?
   Homebrew.failed = true
-rescue StandardError => e
+rescue => e
   onoe e
   puts "#{Tty.bold}Please report this bug:#{Tty.reset}"
   puts "    #{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues/")}"

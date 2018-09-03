@@ -14,7 +14,10 @@ ENV.instance_eval do
   end
 
   def self.activate_extensions!; end
+
   def setup_build_environment; end
+
   def refurbish_args; end
+
   def prepend_path(*args); end
 end
