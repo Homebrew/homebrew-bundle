@@ -118,6 +118,7 @@ describe Bundle::BrewInstaller do
   context ".formula_installed_and_up_to_date?" do
     before do
       Bundle::BrewDumper.reset!
+      Bundle::BrewInstaller.reset!
       allow(Bundle::BrewInstaller).to receive(:outdated_formulae).and_return(%w[bar])
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         {
