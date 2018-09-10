@@ -99,7 +99,7 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::Commands::Cleanup).to receive(:taps_to_untap).and_return([])
       expect(Bundle::Commands::Cleanup).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
-      ARGV << "--zap"
+      allow(ARGV).to receive(:include?).with("--zap").and_return(true)
     end
 
     it "uninstalls casks" do
