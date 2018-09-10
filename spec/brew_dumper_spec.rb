@@ -623,7 +623,8 @@ describe Bundle::BrewDumper do
   end
 
   context "#formula_oldnames" do
-    it "works" do
+    before do
+      Bundle::BrewDumper.reset!
       formula_info = [{
         name: "a",
         full_name: "homebrew/versions/a",
@@ -640,8 +641,10 @@ describe Bundle::BrewDumper do
         pinned?: false,
         outdated?: false,
       }]
-      Bundle::BrewDumper.reset!
       allow(Bundle::BrewDumper).to receive(:formulae_info).and_return(formula_info)
+    end
+
+    it "works" do
       expect(Bundle::BrewDumper.formula_oldnames["aold"]).to eql "homebrew/versions/a"
     end
   end

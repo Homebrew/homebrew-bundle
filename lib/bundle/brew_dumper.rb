@@ -12,6 +12,7 @@ module Bundle
       Bundle::BrewServices.reset!
       @formulae = nil
       @formula_aliases = nil
+      @formula_oldnames = nil
     end
 
     def formulae
