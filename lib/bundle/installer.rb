@@ -26,6 +26,9 @@ module Bundle
           arg << entry.options
           Bundle::TapInstaller
         end
+
+        next if Bundle::Bouncer.refused? entry
+
         case cls.install(*arg)
         when :success
           puts Formatter.success("#{verb} #{entry.name}")
