@@ -27,10 +27,8 @@ class Formula
   def installed?
     true
   end
-end
 
-class Formulary
-  def self.factory(name)
-    Formula.new(name)
+  def self.installed
+    []
   end
 end

@@ -28,7 +28,7 @@ module Bundle
   end
 
   def mas_signedin?
-    Bundle.system "mas", "account"
+    Kernel.system "mas account &>/dev/null"
   end
 
   def cask_installed?

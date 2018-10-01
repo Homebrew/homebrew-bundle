@@ -13,6 +13,7 @@ PROJECT_ROOT ||= File.expand_path("..", __dir__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
 $LOAD_PATH.unshift(STUB_PATH)
 
+require "global"
 require "bundle"
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
@@ -43,42 +44,3 @@ RSpec.configure do |config|
 end
 
 require "unindent"
-
-# Stub out the inclusion of Homebrew's code.
-LIBS_TO_SKIP = ["formula", "tap", "utils/formatter"].freeze
-
-module Kernel
-  alias old_require require
-  def require(path)
-    old_require(path) unless LIBS_TO_SKIP.include?(path)
-  end
-end
-
-HOMEBREW_PREFIX = Pathname.new("/usr/local")
-HOMEBREW_REPOSITORY = Pathname.new("/usr/local/Homebrew")
-
-module Formatter
-  module_function
-
-  def columns(*); end
-
-  def success(*args)
-    args
-  end
-
-  def error(*args)
-    args
-  end
-end
-
-class Formula
-  def self.installed
-    []
-  end
-end
-
-class Tap
-  def self.map
-    []
-  end
-end
