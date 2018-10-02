@@ -60,6 +60,7 @@ $ brew bundle dump
 ```
 
 The `--force` option will allow an existing `Brewfile` to be overwritten as well.
+The `--describe` option will output a description comment above each line.
 
 ### Cleanup
 
