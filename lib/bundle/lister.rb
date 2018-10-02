@@ -10,7 +10,6 @@ module Bundle
       end
     end
 
-    private_class_method
     def self.show?(type)
       return true if ARGV.include?("--all")
       return true if ARGV.include?("--casks") && type == :cask
