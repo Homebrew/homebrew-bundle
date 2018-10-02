@@ -191,7 +191,7 @@ module Bundle
           - f[:build_dependencies] \
         ).uniq
         topo[f[:full_name]] = deps.map do |dep|
-          ff = @formulae.find { |formula| formula[:name] == dep || formula[:full_name] == dep }
+          ff = @formulae.find { |formula| [formula[:name], formula[:full_name]].include?(dep) }
           next unless ff
           ff[:full_name]
         end.compact
