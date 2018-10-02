@@ -28,12 +28,9 @@ require "rspec/support/object_formatter"
 
 RSpec.configure do |config|
   config.filter_run_when_matching :focus
-
-  # TODO: when https://github.com/rspec/rspec-expectations/pull/1056
-  #       makes it into a stable release:
-  # config.expect_with :rspec do |c|
-  #   c.max_formatted_output_length = 200
-  # end
+  config.expect_with :rspec do |c|
+    c.max_formatted_output_length = 200
+  end
 
   # Never truncate output objects.
   RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil
@@ -42,5 +39,3 @@ RSpec.configure do |config|
     Bundler.with_clean_env { example.run }
   end
 end
-
-require "unindent"
