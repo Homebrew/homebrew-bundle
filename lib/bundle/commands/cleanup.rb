@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "utils/formatter"
+
 module Bundle
   module Commands
     # TODO: refactor into multiple modules
@@ -42,8 +44,6 @@ module Bundle
             puts cleanup
           end
         else
-          require "utils/formatter"
-
           if casks.any?
             puts "Would uninstall casks:"
             puts Formatter.columns casks

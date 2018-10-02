@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "os"
+
 module Bundle
   module MacAppStoreInstaller
     module_function
@@ -18,21 +20,23 @@ module Bundle
         end
       end
 
+      if app_id_installed?(id) &&
+         (ARGV.include?("--no-upgrade") || !app_id_upgradable?(id))
+        return :skipped
+      end
+
       unless Bundle.mas_signedin?
         puts "Not signed in to Mac App Store." if ARGV.verbose?
-        Bundle.system "mas", "signin", "--dialog", ""
+        Bundle.system "mas", "signin", "--dialog", "" if MacOS.version < :mojave
         unless Bundle.mas_signedin?
           raise "Unable to install #{name} app. mas not signed in to Mac App Store."
         end
       end
 
       if app_id_installed?(id)
-        if !ARGV.include?("--no-upgrade") && app_id_upgradable?(id)
-          puts "Upgrading #{name} app. It is installed but not up-to-date." if ARGV.verbose?
-          return :failed unless Bundle.system "mas", "upgrade", id.to_s
-          return :success
-        end
-        return :skipped
+        puts "Upgrading #{name} app. It is installed but not up-to-date." if ARGV.verbose?
+        return :failed unless Bundle.system "mas", "upgrade", id.to_s
+        return :success
       end
 
       puts "Installing #{name} app. It is not currently installed." if ARGV.verbose?

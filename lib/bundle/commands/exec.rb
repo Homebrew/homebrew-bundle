@@ -2,6 +2,7 @@
 
 require "extend/ENV"
 require "formula"
+require "formulary"
 require "utils"
 
 module Bundle
