@@ -43,18 +43,4 @@ module Bundle
       !which("brew-services.rb").nil?
     end
   end
-
-  def brewfile
-    if ARGV.include?("--global")
-      file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
-    else
-      filename = ARGV.value("file")
-      filename = "/dev/stdin" if filename == "-"
-      filename ||= "Brewfile"
-      file = Pathname.new(filename).expand_path(Dir.pwd)
-    end
-    file.read
-  rescue Errno::ENOENT
-    raise "No Brewfile found"
-  end
 end

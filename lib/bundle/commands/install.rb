@@ -6,7 +6,7 @@ module Bundle
       module_function
 
       def run
-        parsed_entries = Bundle::Dsl.new(Bundle.brewfile).entries
+        parsed_entries = Bundle::Dsl.new(Brewfile.read).entries
         Bundle::Installer.install(parsed_entries) || exit(1)
       end
     end

@@ -8,15 +8,8 @@ module Bundle
     module_function
 
     def dump_brewfile
-      if ARGV.include?("--global")
-        file = Pathname.new("#{ENV["HOME"]}/.Brewfile")
-      else
-        filename = ARGV.value("file")
-        filename = "/dev/stdout" if filename == "-"
-        filename ||= "Brewfile"
-        file = Pathname.new(filename).expand_path(Dir.pwd)
-      end
-      raise "#{file} already exists" if should_not_write_file?(file, ARGV.force?)
+      brewfile_path = Brewfile.path
+      raise "#{brewfile_path} already exists" if should_not_write_file?(brewfile_path, ARGV.force?)
       content = []
       content << TapDumper.dump
       casks_required_by_formulae = BrewDumper.cask_requirements
@@ -26,7 +19,7 @@ module Bundle
       content << cask_after_formula
       content << MacAppStoreDumper.dump
       content = content.reject(&:empty?).join("\n") + "\n"
-      write_file file, content
+      write_file brewfile_path, content
     end
 
     def should_not_write_file?(file, overwrite = false)
