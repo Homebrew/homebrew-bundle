@@ -4,10 +4,11 @@ require "spec_helper"
 
 describe Bundle::TapDumper do
   context "when there is no tap" do
+    subject { described_class }
+
     before do
-      Bundle::TapDumper.reset!
+      described_class.reset!
     end
-    subject { Bundle::TapDumper }
 
     it "returns empty list" do
       expect(subject.taps).to be_empty
@@ -19,8 +20,10 @@ describe Bundle::TapDumper do
   end
 
   context "there are tap `bitbucket/bar`, `homebrew/baz` and `homebrew/foo`" do
+    subject { described_class }
+
     before do
-      Bundle::TapDumper.reset!
+      described_class.reset!
       allow(Tap).to receive(:map).and_return [
         {
           "name" => "bitbucket/bar",
@@ -40,7 +43,6 @@ describe Bundle::TapDumper do
         },
       ]
     end
-    subject { Bundle::TapDumper }
 
     it "returns list of information" do
       expect(subject.taps).not_to be_empty

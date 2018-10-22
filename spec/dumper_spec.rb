@@ -3,6 +3,8 @@
 require "spec_helper"
 
 describe Bundle::Dumper do
+  subject { described_class }
+
   before do
     allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(Bundle).to receive(:mas_installed?).and_return(false)
@@ -15,7 +17,6 @@ describe Bundle::Dumper do
     Bundle::BrewServices.reset!
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
-  subject { Bundle::Dumper }
 
   it "generates output" do
     expect(subject).to receive(:write_file) do |file, content, _overwrite|

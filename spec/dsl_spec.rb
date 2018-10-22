@@ -4,10 +4,10 @@ require "spec_helper"
 
 describe Bundle::Dsl do
   it "processes input" do
-    allow_any_instance_of(Bundle::Dsl).to receive(:system).with("/usr/libexec/java_home --failfast").and_return(false)
+    allow_any_instance_of(described_class).to receive(:system).with("/usr/libexec/java_home --failfast").and_return(false)
     allow(ARGV).to receive(:verbose?).and_return(true)
     # Keep in sync with the README
-    dsl = Bundle::Dsl.new <<~EOS
+    dsl = described_class.new <<~EOS
       # frozen_string_literal: true
       cask_args appdir: '/Applications'
       tap 'homebrew/cask'
@@ -39,31 +39,31 @@ describe Bundle::Dsl do
 
   it "handles invalid input" do
     allow(ARGV).to receive(:verbose?).and_return(true)
-    expect { Bundle::Dsl.new "abcdef" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "cask_args ''" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "brew 1" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "brew 'foo', ['bad_option']" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "cask 1" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "cask 'foo', ['bad_option']" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "tap 1" }.to raise_error(RuntimeError)
-    expect { Bundle::Dsl.new "tap 'foo', ['bad_clone_target']" }.to raise_error(RuntimeError)
+    expect { described_class.new "abcdef" }.to raise_error(RuntimeError)
+    expect { described_class.new "cask_args ''" }.to raise_error(RuntimeError)
+    expect { described_class.new "brew 1" }.to raise_error(RuntimeError)
+    expect { described_class.new "brew 'foo', ['bad_option']" }.to raise_error(RuntimeError)
+    expect { described_class.new "cask 1" }.to raise_error(RuntimeError)
+    expect { described_class.new "cask 'foo', ['bad_option']" }.to raise_error(RuntimeError)
+    expect { described_class.new "tap 1" }.to raise_error(RuntimeError)
+    expect { described_class.new "tap 'foo', ['bad_clone_target']" }.to raise_error(RuntimeError)
   end
 
   it ".sanitize_brew_name" do
-    expect(Bundle::Dsl.send(:sanitize_brew_name, "homebrew/homebrew/foo")).to eql("foo")
-    expect(Bundle::Dsl.send(:sanitize_brew_name, "homebrew/homebrew-bar/foo")).to eql("homebrew/bar/foo")
-    expect(Bundle::Dsl.send(:sanitize_brew_name, "homebrew/bar/foo")).to eql("homebrew/bar/foo")
-    expect(Bundle::Dsl.send(:sanitize_brew_name, "foo")).to eql("foo")
+    expect(described_class.send(:sanitize_brew_name, "homebrew/homebrew/foo")).to eql("foo")
+    expect(described_class.send(:sanitize_brew_name, "homebrew/homebrew-bar/foo")).to eql("homebrew/bar/foo")
+    expect(described_class.send(:sanitize_brew_name, "homebrew/bar/foo")).to eql("homebrew/bar/foo")
+    expect(described_class.send(:sanitize_brew_name, "foo")).to eql("foo")
   end
 
   it ".sanitize_tap_name" do
-    expect(Bundle::Dsl.send(:sanitize_tap_name, "homebrew/homebrew-foo")).to eql("homebrew/foo")
-    expect(Bundle::Dsl.send(:sanitize_tap_name, "homebrew/foo")).to eql("homebrew/foo")
+    expect(described_class.send(:sanitize_tap_name, "homebrew/homebrew-foo")).to eql("homebrew/foo")
+    expect(described_class.send(:sanitize_tap_name, "homebrew/foo")).to eql("homebrew/foo")
   end
 
   it ".pluralize_dependency" do
-    expect(Bundle::Dsl.send(:pluralize_dependency, 0)).to eql("dependencies")
-    expect(Bundle::Dsl.send(:pluralize_dependency, 1)).to eql("dependency")
-    expect(Bundle::Dsl.send(:pluralize_dependency, 5)).to eql("dependencies")
+    expect(described_class.send(:pluralize_dependency, 0)).to eql("dependencies")
+    expect(described_class.send(:pluralize_dependency, 1)).to eql("dependency")
+    expect(described_class.send(:pluralize_dependency, 5)).to eql("dependencies")
   end
 end

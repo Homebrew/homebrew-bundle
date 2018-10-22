@@ -10,7 +10,7 @@ describe Bundle::Commands::Install do
   context "when a Brewfile is not found" do
     it "raises an error" do
       allow(ARGV).to receive(:value).and_return(nil)
-      expect { Bundle::Commands::Install.run }.to raise_error(RuntimeError)
+      expect { described_class.run }.to raise_error(RuntimeError)
     end
   end
 
@@ -24,7 +24,7 @@ describe Bundle::Commands::Install do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
-      expect { Bundle::Commands::Install.run }.to_not raise_error
+      expect { described_class.run }.not_to raise_error
     end
 
     it "exits on failures" do
@@ -36,7 +36,7 @@ describe Bundle::Commands::Install do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\n\nmas '1Password', id: 443987910")
-      expect { Bundle::Commands::Install.run }.to raise_error(SystemExit)
+      expect { described_class.run }.to raise_error(SystemExit)
     end
   end
 end

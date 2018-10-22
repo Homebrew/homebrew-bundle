@@ -21,7 +21,7 @@ describe Bundle::Commands::Check do
       allow(Bundle::Checker).to receive(:formulae_to_install).and_return(nothing)
       allow(Bundle::Checker).to receive(:apps_to_install).and_return(nothing)
       allow(Bundle::Checker).to receive(:taps_to_tap).and_return(nothing)
-      expect { do_check }.to_not raise_error
+      expect { do_check }.not_to raise_error
     end
   end
 
@@ -30,7 +30,7 @@ describe Bundle::Commands::Check do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow_any_instance_of(Bundle::Dsl).to receive(:entries).and_return([])
-      expect { do_check }.to_not raise_error
+      expect { do_check }.not_to raise_error
     end
   end
 
@@ -86,7 +86,7 @@ describe Bundle::Commands::Check do
       allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
     end
 
-    it "should not raise error when no service needs to be started" do
+    it "does not raise error when no service needs to be started" do
       Bundle::Checker.reset!
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
@@ -157,7 +157,7 @@ describe Bundle::Commands::Check do
     it "stops checking after the first missing formula" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
+      allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
 
@@ -166,7 +166,7 @@ describe Bundle::Commands::Check do
     end
 
     it "stops checking after the first missing cask" do
-      allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
+      allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
 
@@ -175,7 +175,7 @@ describe Bundle::Commands::Check do
     end
 
     it "stops checking after the first missing mac app" do
-      allow(Bundle::Commands::Check).to receive(:exit_on_first_error?).and_return(true)
+      allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 
