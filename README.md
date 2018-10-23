@@ -3,7 +3,7 @@
 Bundler for non-Ruby dependencies from Homebrew.
 
 [![Coverage Status](https://codecov.io/github/Homebrew/homebrew-bundle/coverage.svg)](https://codecov.io/github/Homebrew/homebrew-bundle)
-[![Build Status](https://travis-ci.org/Homebrew/homebrew-bundle.svg)](https://travis-ci.org/Homebrew/homebrew-bundle)
+[![Azure Pipelines](https://img.shields.io/vso/build/Homebrew/56a87eb4-3180-495a-9117-5ed6c79da737/5.svg)](https://dev.azure.com/Homebrew/Homebrew/_build/latest?definitionId=5)
 
 ## Requirements
 
@@ -15,7 +15,7 @@ This tool is developed for use with Homebrew on macOS but might work with Linuxb
 
 [mas-cli](https://github.com/argon/mas) is optional and used for installing Mac App Store applications.
 
-## Install
+## Installation
 
 `brew bundle` is automatically installed when run.
 
@@ -23,7 +23,7 @@ This tool is developed for use with Homebrew on macOS but might work with Linuxb
 
 Create a `Brewfile` in the root of your project with:
 
-```
+```bash
 touch Brewfile
 ```
 
@@ -45,8 +45,9 @@ mas "1Password", id: 443987910
 ### Install
 
 You can then easily install all of the dependencies with:
-```
-$ brew bundle
+
+```bash
+brew bundle
 ```
 
 If a dependency is already installed and there is an upgrade available it will be upgraded.
@@ -55,8 +56,8 @@ If a dependency is already installed and there is an upgrade available it will b
 
 You can create a `Brewfile` from all the existing Homebrew packages you have installed with:
 
-```
-$ brew bundle dump
+```bash
+brew bundle dump
 ```
 
 The `--force` option will allow an existing `Brewfile` to be overwritten as well.
@@ -66,8 +67,8 @@ The `--describe` option will output a description comment above each line.
 
 You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
 
-```
-$ brew bundle cleanup
+```bash
+brew bundle cleanup
 ```
 
 Unless the `--force` option is passed, formulae that would be uninstalled will be listed rather than actually be uninstalled.
@@ -76,8 +77,8 @@ Unless the `--force` option is passed, formulae that would be uninstalled will b
 
 You can check there's anything to install/upgrade in the `Brewfile` by running:
 
-```
-$ brew bundle check
+```bash
+brew bundle check
 ```
 
 This provides a successful exit code if everything is up-to-date so is useful for scripting.
@@ -88,8 +89,8 @@ For a list of dependencies that are missing, pass `--verbose`. This will also ch
 
 Outputs a list of all of the entries in the Brewfile.
 
-```
-$ brew bundle list
+```bash
+brew bundle list
 ```
 
 Pass one of `--casks`, `--taps`, `--mas`, or `--brews` to limit output to that type. Defaults to `--brews`. Pass `--all` to see everything.
@@ -100,8 +101,8 @@ Note that the _type_ of the package is **not** included in this output.
 
 Runs an external command within Homebrew's superenv build environment:
 
-```
-$ brew bundle exec -- bundle install
+```bash
+brew bundle exec -- bundle install
 ```
 
 This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
