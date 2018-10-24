@@ -57,7 +57,7 @@ module Bundle
     }.freeze
 
     def check(exit_on_first_error)
-      @dsl ||= Bundle::Dsl.new(Bundle.brewfile)
+      @dsl ||= Bundle::Dsl.new(Brewfile.read)
 
       check_method_names = CHECKS.keys
 
