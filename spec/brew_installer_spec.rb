@@ -62,12 +62,15 @@ describe Bundle::BrewInstaller do
 
   context "conflicts_with option is provided" do
     before do
-      expect(Bundle::BrewDumper).to receive(:formula_info).and_return(
+      allow(Bundle::BrewDumper).to receive(:formula_info).and_return(
         name: "mysql",
         conflicts_with: ["mysql55"],
       )
       allow(described_class).to receive(:formula_installed?).and_return(true)
       allow_any_instance_of(described_class).to receive(:install).and_return(true)
+    end
+
+    def sane?
       expect(Bundle).to receive(:system).with("brew", "unlink", "mysql55").and_return(true)
       expect(Bundle).to receive(:system).with("brew", "unlink", "mysql56").and_return(true)
       expect(Bundle::BrewServices).to receive(:stop).with("mysql55").and_return(true)
@@ -77,12 +80,14 @@ describe Bundle::BrewInstaller do
 
     it "unlinks conflicts and stops their services" do
       allow(ARGV).to receive(:verbose?).and_return(false)
+      sane?
       described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"])
     end
 
     it "prints a message" do
       allow(ARGV).to receive(:verbose?).and_return(true)
       allow_any_instance_of(described_class).to receive(:puts)
+      sane?
       described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"])
     end
   end

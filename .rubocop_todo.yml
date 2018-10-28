@@ -53,12 +53,6 @@ RSpec/ExampleLength:
     - 'spec/exec_command_spec.rb'
     - 'spec/install_command_spec.rb'
 
-# Offense count: 13
-RSpec/ExpectInHook:
-  Exclude:
-    - 'spec/brew_installer_spec.rb'
-    - 'spec/cleanup_command_spec.rb'
-
 # Offense count: 18
 # Configuration parameters: CustomTransform, IgnoreMethods.
 RSpec/FilePath:
