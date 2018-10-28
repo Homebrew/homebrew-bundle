@@ -64,14 +64,6 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Max: 15
 
-# Offense count: 33
-RSpec/NamedSubject:
-  Exclude:
-    - 'spec/brew_dumper_spec.rb'
-    - 'spec/cask_dumper_spec.rb'
-    - 'spec/dumper_spec.rb'
-    - 'spec/mac_app_store_dumper_spec.rb'
-    - 'spec/tap_dumper_spec.rb'
 
 # Offense count: 10
 RSpec/NestedGroups:
