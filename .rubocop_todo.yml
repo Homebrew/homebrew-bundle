@@ -89,8 +89,3 @@ RSpec/NestedGroups:
   Max: 5
 
 
-# Offense count: 1
-# Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
-RSpec/VerifiedDoubles:
-  Exclude:
-    - 'spec/dump_command_spec.rb'
