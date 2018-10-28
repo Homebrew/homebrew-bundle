@@ -14,6 +14,13 @@ describe Bundle::Commands::List do
         .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
     end
 
+    types_and_deps = {
+      "--taps" => "phinze/cask",
+      "--brews" => "mysql",
+      "--casks" => "google-chrome",
+      "--mas" => "1Password",
+    }
+
     after do
       types_and_deps.each_key do |option|
         ARGV.delete option if ARGV.include? option
@@ -23,13 +30,6 @@ describe Bundle::Commands::List do
     it "only shows brew deps when no options are passed" do
       expect { described_class.run }.to output("mysql\n").to_stdout
     end
-
-    types_and_deps = {
-      "--taps" => "phinze/cask",
-      "--brews" => "mysql",
-      "--casks" => "google-chrome",
-      "--mas" => "1Password",
-    }
 
     context "limiting when certain options are passed" do
       combinations = 1.upto(types_and_deps.length).flat_map do |i|
