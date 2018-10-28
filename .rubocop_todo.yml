@@ -88,10 +88,6 @@ RSpec/NamedSubject:
 RSpec/NestedGroups:
   Max: 5
 
-# Offense count: 1
-RSpec/SubjectStub:
-  Exclude:
-    - 'spec/dumper_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
