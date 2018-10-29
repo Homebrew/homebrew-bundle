@@ -3,6 +3,8 @@
 require "spec_helper"
 
 describe Bundle::Dumper do
+  subject(:dumper) { described_class }
+
   before do
     allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(Bundle).to receive(:mas_installed?).and_return(false)
@@ -15,13 +17,12 @@ describe Bundle::Dumper do
     Bundle::BrewServices.reset!
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
-  subject { Bundle::Dumper }
 
   it "generates output" do
-    expect(subject).to receive(:write_file) do |file, content, _overwrite|
-      expect(file).to eql(Pathname.new(Dir.pwd).join("Brewfile"))
-      expect(content).to eql("cask \"google-chrome\"\ncask \"java\"\n")
-    end
-    subject.dump_brewfile
+    expect(dumper.build_brewfile).to eql("cask \"google-chrome\"\ncask \"java\"\n")
+  end
+
+  it "determines the brewfile correctly" do
+    expect(dumper.brewfile_path).to eql(Pathname.new(Dir.pwd).join("Brewfile"))
   end
 end

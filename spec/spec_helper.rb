@@ -31,7 +31,7 @@ RSpec.configure do |config|
   # Never truncate output objects.
   RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil
 
-  config.around(:each) do |example|
+  config.around do |example|
     Bundler.with_clean_env { example.run }
   end
 end

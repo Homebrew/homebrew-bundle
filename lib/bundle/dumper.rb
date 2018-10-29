@@ -7,9 +7,12 @@ module Bundle
   module Dumper
     module_function
 
-    def dump_brewfile
-      brewfile_path = Brewfile.path
+    def can_write_to_brewfile?(brewfile_path)
       raise "#{brewfile_path} already exists" if should_not_write_file?(brewfile_path, ARGV.force?)
+      true
+    end
+
+    def build_brewfile
       content = []
       content << TapDumper.dump
       casks_required_by_formulae = BrewDumper.cask_requirements
@@ -19,7 +22,17 @@ module Bundle
       content << cask_after_formula
       content << MacAppStoreDumper.dump
       content = content.reject(&:empty?).join("\n") + "\n"
+      content
+    end
+
+    def dump_brewfile
+      can_write_to_brewfile? brewfile_path
+      content = build_brewfile
       write_file brewfile_path, content
+    end
+
+    def brewfile_path
+      Brewfile.path
     end
 
     def should_not_write_file?(file, overwrite = false)

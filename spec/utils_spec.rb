@@ -6,12 +6,12 @@ describe Bundle do
   context "system call succeed" do
     it "omits all stdout output if ARGV.verbose? is false" do
       allow(ARGV).to receive(:verbose?).and_return(false)
-      expect { Bundle.system "echo", "foo" }.to_not output.to_stdout_from_any_process
+      expect { described_class.system "echo", "foo" }.not_to output.to_stdout_from_any_process
     end
 
     it "emits all stdout output if ARGV.verbose? is true" do
       allow(ARGV).to receive(:verbose?).and_return(true)
-      expect { Bundle.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
+      expect { described_class.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
     end
   end
 
@@ -22,12 +22,12 @@ describe Bundle do
 
     it "emits all stdout output even if ARGV.verbose? is false" do
       allow(ARGV).to receive(:verbose?).and_return(false)
-      expect { Bundle.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
+      expect { described_class.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
     end
 
     it "emits all stdout output only once if ARGV.verbose? is true" do
       allow(ARGV).to receive(:verbose?).and_return(true)
-      expect { Bundle.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
+      expect { described_class.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
     end
   end
 
@@ -35,21 +35,21 @@ describe Bundle do
     it "finds it when present" do
       allow(File).to receive(:directory?).with("#{HOMEBREW_PREFIX}/Caskroom").and_return(true)
       allow(File).to receive(:directory?).with("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask").and_return(true)
-      expect(Bundle.cask_installed?).to eql(true)
+      expect(described_class.cask_installed?).to be(true)
     end
   end
 
   context "check for brew services" do
     it "finds it when present" do
-      allow(Bundle).to receive(:which).and_return(true)
-      expect(Bundle.services_installed?).to eql(true)
+      allow(described_class).to receive(:which).and_return(true)
+      expect(described_class.services_installed?).to be(true)
     end
   end
 
   context "check for mas" do
     it "finds it when present" do
-      allow(Bundle).to receive(:which).and_return(true)
-      expect(Bundle.mas_installed?).to eql(true)
+      allow(described_class).to receive(:which).and_return(true)
+      expect(described_class.mas_installed?).to be(true)
     end
   end
 end

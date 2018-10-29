@@ -10,6 +10,8 @@ jobs:
         # TODO: RuboCop needs fixed in
         # https://github.com/Homebrew/homebrew-bundle/pull/384
         # brew style homebrew/bundle
+        # Use local config until then
+        rubocop --force-exclusion --parallel --except FormulaAudit,FormulaAuditStrict,NewFormulaAudit --format simple
         bundle install
         bundle exec rake
       displayName: Tests

@@ -14,7 +14,7 @@ describe Bundle::Brewfile do
         let(:file_value) { "path/to/Brewfile" }
 
         it "returns the expected path" do
-          expect(Bundle::Brewfile.path).to eq(Pathname.new("path/to/Brewfile").expand_path(Dir.pwd))
+          expect(described_class.path).to eq(Pathname.new("path/to/Brewfile").expand_path(Dir.pwd))
         end
       end
 
@@ -22,7 +22,7 @@ describe Bundle::Brewfile do
         let(:file_value) { "/tmp/random_file" }
 
         it "returns the expected path" do
-          expect(Bundle::Brewfile.path).to eq(Pathname.new("/tmp/random_file"))
+          expect(described_class.path).to eq(Pathname.new("/tmp/random_file"))
         end
       end
 
@@ -30,7 +30,7 @@ describe Bundle::Brewfile do
         let(:file_value) { "-" }
 
         it "returns the expected path" do
-          expect(Bundle::Brewfile.path).to eq(Pathname.new("/dev/stdin"))
+          expect(described_class.path).to eq(Pathname.new("/dev/stdin"))
         end
       end
     end
@@ -41,7 +41,7 @@ describe Bundle::Brewfile do
       end
 
       it "returns the expected path" do
-        expect(Bundle::Brewfile.path).to eq(Pathname.new("#{ENV["HOME"]}/.Brewfile"))
+        expect(described_class.path).to eq(Pathname.new("#{ENV["HOME"]}/.Brewfile"))
       end
     end
   end

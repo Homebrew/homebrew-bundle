@@ -3,49 +3,48 @@
 require "spec_helper"
 
 describe Bundle::MacAppStoreDumper do
+  subject(:dumper) { described_class }
+
   context "when mas is not installed" do
     before do
-      Bundle::MacAppStoreDumper.reset!
+      described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(false)
     end
-    subject { Bundle::MacAppStoreDumper }
 
     it "returns empty list" do
-      expect(subject.apps).to be_empty
+      expect(dumper.apps).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.dump).to eql("")
+      expect(dumper.dump).to eql("")
     end
   end
 
   context "when there is no apps" do
     before do
-      Bundle::MacAppStoreDumper.reset!
+      described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
-      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return("")
+      allow(described_class).to receive(:`).and_return("")
     end
-    subject { Bundle::MacAppStoreDumper }
 
     it "returns empty list" do
-      expect(subject.apps).to be_empty
+      expect(dumper.apps).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.dump).to eql("")
+      expect(dumper.dump).to eql("")
     end
   end
 
   context "apps `foo`, `bar` and `baz` are installed" do
     before do
-      Bundle::MacAppStoreDumper.reset!
+      described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
-      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return("123 foo (1.0)\n456 bar (2.0)\n789 baz (3.0)")
+      allow(described_class).to receive(:`).and_return("123 foo (1.0)\n456 bar (2.0)\n789 baz (3.0)")
     end
-    subject { Bundle::MacAppStoreDumper }
 
     it "returns list %w[foo bar baz]" do
-      expect(subject.apps).to eql([["123", "foo"], ["456", "bar"], ["789", "baz"]])
+      expect(dumper.apps).to eql([["123", "foo"], ["456", "bar"], ["789", "baz"]])
     end
   end
 
@@ -121,18 +120,17 @@ describe Bundle::MacAppStoreDumper do
     end
 
     before do
-      Bundle::MacAppStoreDumper.reset!
+      described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
-      allow(Bundle::MacAppStoreDumper).to receive(:`).and_return(invalid_mas_output)
+      allow(described_class).to receive(:`).and_return(invalid_mas_output)
     end
-    subject { Bundle::MacAppStoreDumper }
 
     it "returns only valid apps" do
-      expect(subject.apps).to eql(expected_app_details_array)
+      expect(dumper.apps).to eql(expected_app_details_array)
     end
 
     it "dumps excluding invalid apps" do
-      expect(subject.dump).to eq(expected_mas_dumped_output.strip)
+      expect(dumper.dump).to eq(expected_mas_dumped_output.strip)
     end
   end
 end

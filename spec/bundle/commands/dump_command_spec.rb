@@ -14,16 +14,16 @@ describe Bundle::Commands::Dump do
 
     it "raises error" do
       expect do
-        Bundle::Commands::Dump.run
+        described_class.run
       end.to raise_error(RuntimeError)
     end
 
-    it "should exit before doing any work" do
+    it "exits before doing any work" do
       expect(Bundle::TapDumper).not_to receive(:dump)
       expect(Bundle::BrewDumper).not_to receive(:dump)
       expect(Bundle::CaskDumper).not_to receive(:dump)
       expect do
-        Bundle::Commands::Dump.run
+        described_class.run
       end.to raise_error(RuntimeError)
     end
   end
@@ -37,12 +37,12 @@ describe Bundle::Commands::Dump do
     end
 
     it "doesn't raise error" do
-      io = double("File", write: true)
+      io = instance_double("File", write: true)
       expect_any_instance_of(Pathname).to receive(:open).with("w") { |&block| block.call io }
       expect(io).to receive(:write)
       expect do
-        Bundle::Commands::Dump.run
-      end.to_not raise_error
+        described_class.run
+      end.not_to raise_error
     end
   end
 end
