@@ -3,25 +3,23 @@
 require "spec_helper"
 
 describe Bundle::TapDumper do
-  context "when there is no tap" do
-    subject { described_class }
+  subject(:dumper) { described_class }
 
+  context "when there is no tap" do
     before do
       described_class.reset!
     end
 
     it "returns empty list" do
-      expect(subject.taps).to be_empty
+      expect(dumper.taps).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.dump).to eql("")
+      expect(dumper.dump).to eql("")
     end
   end
 
   context "there are tap `bitbucket/bar`, `homebrew/baz` and `homebrew/foo`" do
-    subject { described_class }
-
     before do
       described_class.reset!
       allow(Tap).to receive(:map).and_return [
@@ -45,11 +43,11 @@ describe Bundle::TapDumper do
     end
 
     it "returns list of information" do
-      expect(subject.taps).not_to be_empty
+      expect(dumper.taps).not_to be_empty
     end
 
     it "dumps output" do
-      expect(subject.dump).to eql("tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\ntap \"homebrew/baz\"\ntap \"homebrew/foo\", pin: true")
+      expect(dumper.dump).to eql("tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\ntap \"homebrew/baz\"\ntap \"homebrew/foo\", pin: true")
     end
   end
 end
