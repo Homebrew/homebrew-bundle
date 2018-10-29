@@ -9,15 +9,15 @@
 # Offense count: 54
 RSpec/AnyInstance:
   Exclude:
-    - 'spec/brew_dumper_spec.rb'
-    - 'spec/brew_installer_spec.rb'
-    - 'spec/check_command_spec.rb'
-    - 'spec/cleanup_command_spec.rb'
-    - 'spec/dsl_spec.rb'
-    - 'spec/dump_command_spec.rb'
-    - 'spec/exec_command_spec.rb'
-    - 'spec/install_command_spec.rb'
-    - 'spec/list_command_spec.rb'
+    - 'spec/bundle/brew_dumper_spec.rb'
+    - 'spec/bundle/brew_installer_spec.rb'
+    - 'spec/bundle/commands/check_command_spec.rb'
+    - 'spec/bundle/commands/cleanup_command_spec.rb'
+    - 'spec/bundle/dsl_spec.rb'
+    - 'spec/bundle/commands/dump_command_spec.rb'
+    - 'spec/bundle/commands/exec_command_spec.rb'
+    - 'spec/bundle/commands/install_command_spec.rb'
+    - 'spec/bundle/commands/list_command_spec.rb'
     - 'spec/utils_spec.rb'
 
 # Offense count: 60
@@ -25,44 +25,31 @@ RSpec/AnyInstance:
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Exclude:
-    - 'spec/brew_dumper_spec.rb'
-    - 'spec/brew_installer_spec.rb'
-    - 'spec/brew_services_spec.rb'
-    - 'spec/cask_dumper_spec.rb'
-    - 'spec/cask_installer_spec.rb'
-    - 'spec/check_command_spec.rb'
-    - 'spec/cleanup_command_spec.rb'
-    - 'spec/list_command_spec.rb'
-    - 'spec/mac_app_store_dumper_spec.rb'
-    - 'spec/mac_app_store_installer_spec.rb'
-    - 'spec/tap_dumper_spec.rb'
-    - 'spec/tap_installer_spec.rb'
+    - 'spec/bundle/brew_dumper_spec.rb'
+    - 'spec/bundle/brew_installer_spec.rb'
+    - 'spec/bundle/brew_services_spec.rb'
+    - 'spec/bundle/cask_dumper_spec.rb'
+    - 'spec/bundle/cask_installer_spec.rb'
+    - 'spec/bundle/commands/check_command_spec.rb'
+    - 'spec/bundle/commands/cleanup_command_spec.rb'
+    - 'spec/bundle/commands/list_command_spec.rb'
+    - 'spec/bundle/mac_app_store_dumper_spec.rb'
+    - 'spec/bundle/mac_app_store_installer_spec.rb'
+    - 'spec/bundle/tap_dumper_spec.rb'
+    - 'spec/bundle/tap_installer_spec.rb'
     - 'spec/utils_spec.rb'
 
 # Offense count: 23
 # Configuration parameters: Max.
 RSpec/ExampleLength:
   Exclude:
-    - 'spec/brew_dumper_spec.rb'
-    - 'spec/brew_installer_spec.rb'
-    - 'spec/brew_services_spec.rb'
-    - 'spec/check_command_spec.rb'
-    - 'spec/cleanup_command_spec.rb'
-    - 'spec/dsl_spec.rb'
-    - 'spec/dump_command_spec.rb'
-    - 'spec/exec_command_spec.rb'
-    - 'spec/install_command_spec.rb'
-
-# Offense count: 13
-RSpec/ExpectInHook:
-  Exclude:
-    - 'spec/brew_installer_spec.rb'
-    - 'spec/cleanup_command_spec.rb'
-
-# Offense count: 18
-# Configuration parameters: CustomTransform, IgnoreMethods.
-RSpec/FilePath:
-  Enabled: false
+    - 'spec/bundle/brew_installer_spec.rb'
+    - 'spec/bundle/brew_services_spec.rb'
+    - 'spec/bundle/commands/check_command_spec.rb'
+    - 'spec/bundle/commands/cleanup_command_spec.rb'
+    - 'spec/bundle/commands/dump_command_spec.rb'
+    - 'spec/bundle/commands/exec_command_spec.rb'
+    - 'spec/bundle/commands/install_command_spec.rb'
 
 # Offense count: 72
 # Configuration parameters: .
@@ -75,26 +62,11 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Max: 15
 
-# Offense count: 33
-RSpec/NamedSubject:
-  Exclude:
-    - 'spec/brew_dumper_spec.rb'
-    - 'spec/cask_dumper_spec.rb'
-    - 'spec/dumper_spec.rb'
-    - 'spec/mac_app_store_dumper_spec.rb'
-    - 'spec/tap_dumper_spec.rb'
 
 # Offense count: 10
 RSpec/NestedGroups:
   Max: 5
 
-# Offense count: 1
-RSpec/SubjectStub:
-  Exclude:
-    - 'spec/dumper_spec.rb'
 
-# Offense count: 1
-# Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
-RSpec/VerifiedDoubles:
-  Exclude:
-    - 'spec/dump_command_spec.rb'
+Style/HashSyntax:
+  Enabled: false

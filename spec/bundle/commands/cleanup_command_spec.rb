@@ -65,12 +65,12 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "does nothing" do
       expect(Kernel).not_to receive(:system)
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       described_class.run
     end
   end
@@ -81,12 +81,12 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "uninstalls casks" do
       expect(Kernel).to receive(:system).with("brew", "cask", "uninstall", "--force", "a", "b")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run }.to output(/Uninstalled 2 casks/).to_stdout
     end
   end
@@ -97,13 +97,13 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
       allow(ARGV).to receive(:include?).with("--zap").and_return(true)
     end
 
     it "uninstalls casks" do
       expect(Kernel).to receive(:system).with("brew", "cask", "zap", "--force", "a", "b")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run }.to output(/Uninstalled 2 casks/).to_stdout
     end
   end
@@ -114,12 +114,12 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "uninstalls formulae" do
       expect(Kernel).to receive(:system).with("brew", "uninstall", "--force", "a", "b")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run }.to output(/Uninstalled 2 formulae/).to_stdout
     end
   end
@@ -130,12 +130,12 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
-      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(true)
     end
 
     it "untaps taps" do
       expect(Kernel).to receive(:system).with("brew", "untap", "a", "b")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       described_class.run
     end
   end
@@ -146,13 +146,13 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
-      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       allow(ARGV).to receive(:force?).and_return(false)
     end
 
     it "lists casks, formulae and taps" do
       expect(Formatter).to receive(:columns).with(%w[a b]).exactly(3).times
       expect(Kernel).not_to receive(:system)
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run }.to output(/Would uninstall formulae:.*Would untap:/m).to_stdout
     end
   end
@@ -163,6 +163,9 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
+    end
+
+    def sane?
       expect(described_class).to receive(:system_output_no_stderr).and_return("cleaned")
     end
 
@@ -172,6 +175,7 @@ describe Bundle::Commands::Cleanup do
       end
 
       it "prints output" do
+        sane?
         expect { described_class.run }.to output(/cleaned/).to_stdout
       end
     end
@@ -182,6 +186,7 @@ describe Bundle::Commands::Cleanup do
       end
 
       it "prints output" do
+        sane?
         expect { described_class.run }.to output(/cleaned/).to_stdout
       end
     end

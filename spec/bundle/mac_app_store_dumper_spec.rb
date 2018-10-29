@@ -3,26 +3,24 @@
 require "spec_helper"
 
 describe Bundle::MacAppStoreDumper do
-  context "when mas is not installed" do
-    subject { described_class }
+  subject(:dumper) { described_class }
 
+  context "when mas is not installed" do
     before do
       described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(false)
     end
 
     it "returns empty list" do
-      expect(subject.apps).to be_empty
+      expect(dumper.apps).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.dump).to eql("")
+      expect(dumper.dump).to eql("")
     end
   end
 
   context "when there is no apps" do
-    subject { described_class }
-
     before do
       described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
@@ -30,17 +28,15 @@ describe Bundle::MacAppStoreDumper do
     end
 
     it "returns empty list" do
-      expect(subject.apps).to be_empty
+      expect(dumper.apps).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.dump).to eql("")
+      expect(dumper.dump).to eql("")
     end
   end
 
   context "apps `foo`, `bar` and `baz` are installed" do
-    subject { described_class }
-
     before do
       described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
@@ -48,13 +44,11 @@ describe Bundle::MacAppStoreDumper do
     end
 
     it "returns list %w[foo bar baz]" do
-      expect(subject.apps).to eql([["123", "foo"], ["456", "bar"], ["789", "baz"]])
+      expect(dumper.apps).to eql([["123", "foo"], ["456", "bar"], ["789", "baz"]])
     end
   end
 
   context "with invalid app details" do
-    subject { described_class }
-
     let(:invalid_mas_output) do
       <<~HEREDOC
         497799835 Xcode (9.2)
@@ -132,11 +126,11 @@ describe Bundle::MacAppStoreDumper do
     end
 
     it "returns only valid apps" do
-      expect(subject.apps).to eql(expected_app_details_array)
+      expect(dumper.apps).to eql(expected_app_details_array)
     end
 
     it "dumps excluding invalid apps" do
-      expect(subject.dump).to eq(expected_mas_dumped_output.strip)
+      expect(dumper.dump).to eq(expected_mas_dumped_output.strip)
     end
   end
 end

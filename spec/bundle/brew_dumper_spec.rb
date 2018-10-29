@@ -4,87 +4,85 @@ require "spec_helper"
 require "tsort"
 
 describe Bundle::BrewDumper do
-  context "when no formula is installed" do
-    subject { described_class }
+  subject(:dumper) { described_class }
 
+  context "when no formula is installed" do
     before do
       described_class.reset!
     end
 
     it "returns empty list" do
-      expect(subject.formulae).to be_empty
+      expect(dumper.formulae).to be_empty
     end
 
     it "dumps as empty string" do
-      expect(subject.dump).to eql("")
+      expect(dumper.dump).to eql("")
     end
   end
 
   context "when Homebrew returns JSON with a malformed linked_keg" do
-    subject { described_class }
+    installed_data = [{
+      "name" => "foo",
+      "full_name" => "homebrew/tap/foo",
+      "desc" => "",
+      "homepage" => "",
+      "oldname" => nil,
+      "aliases" => [],
+      "versions" => { "stable" => "1.0", "bottle" => false },
+      "revision" => 0,
+      "installed" => [{
+        "version" => "1.0",
+        "used_options" => [],
+        "built_as_bottle" => nil,
+        "poured_from_bottle" => true,
+      }],
+      "linked_keg" => "fish",
+      "keg_only" => nil,
+      "dependencies" => [],
+      "recommended_dependencies" => [],
+      "optional_dependencies" => [],
+      "build_dependencies" => [],
+      "conflicts_with" => [],
+      "caveats" => nil,
+      "requirements" => [],
+      "options" => [],
+      "bottle" => {},
+    }]
+
+    parsed_data = {
+      name: "foo",
+      full_name: "homebrew/tap/foo",
+      desc: "",
+      oldname: nil,
+      aliases: [],
+      args: [],
+      version: nil,
+      installed_as_dependency?: false,
+      installed_on_request?: false,
+      dependencies: [],
+      recommended_dependencies: [],
+      optional_dependencies: [],
+      build_dependencies: [],
+      requirements: [],
+      conflicts_with: [],
+      pinned?: false,
+      outdated?: false,
+      link?: nil,
+      poured_from_bottle?: false,
+    }
 
     before do
       described_class.reset!
       allow(Formula).to receive(:[]).and_return(nil)
-      allow(Formula).to receive(:installed).and_return(
-        [{
-          "name" => "foo",
-          "full_name" => "homebrew/tap/foo",
-          "desc" => "",
-          "homepage" => "",
-          "oldname" => nil,
-          "aliases" => [],
-          "versions" => { "stable" => "1.0", "bottle" => false },
-          "revision" => 0,
-          "installed" => [{
-            "version" => "1.0",
-            "used_options" => [],
-            "built_as_bottle" => nil,
-            "poured_from_bottle" => true,
-          }],
-          "linked_keg" => "fish",
-          "keg_only" => nil,
-          "dependencies" => [],
-          "recommended_dependencies" => [],
-          "optional_dependencies" => [],
-          "build_dependencies" => [],
-          "conflicts_with" => [],
-          "caveats" => nil,
-          "requirements" => [],
-          "options" => [],
-          "bottle" => {},
-        }],
-      )
+      allow(Formula).to receive(:installed).and_return(installed_data)
     end
 
     it "returns no version" do
-      expect(subject.formulae).to contain_exactly(
-        name: "foo",
-        full_name: "homebrew/tap/foo",
-        desc: "",
-        oldname: nil,
-        aliases: [],
-        args: [],
-        version: nil,
-        installed_as_dependency?: false,
-        installed_on_request?: false,
-        dependencies: [],
-        recommended_dependencies: [],
-        optional_dependencies: [],
-        build_dependencies: [],
-        requirements: [],
-        conflicts_with: [],
-        pinned?: false,
-        outdated?: false,
-        link?: nil,
-        poured_from_bottle?: false,
-      )
+      expect(dumper.formulae).to contain_exactly(parsed_data)
     end
   end
 
   context "formulae `foo` and `bar` are installed" do
-    subject { described_class }
-
     before do
       described_class.reset!
       allow(Formula).to receive(:[]).and_return(
@@ -188,8 +186,8 @@ describe Bundle::BrewDumper do
       )
     end
 
-    it "returns foo and bar with their information" do
-      expect(subject.formulae).to contain_exactly(
+    it "returns foo and bar with their information" do # rubocop:disable RSpec/ExampleLength
+      expect(dumper.formulae).to contain_exactly(
         {
           name: "foo",
           full_name: "homebrew/tap/foo",
@@ -234,16 +232,16 @@ describe Bundle::BrewDumper do
     end
 
     it "dumps as foo and bar with args and link" do
-      expect(subject.dump).to eql("brew \"bar\", args: [\"with-a\", \"with-b\"], link: false\nbrew \"homebrew/tap/foo\"")
+      expect(dumper.dump).to eql("brew \"bar\", args: [\"with-a\", \"with-b\"], link: false\nbrew \"homebrew/tap/foo\"")
     end
 
     it "formula_info returns the formula" do
-      expect(subject.formula_info("foo")[:name]).to eql("foo")
+      expect(dumper.formula_info("foo")[:name]).to eql("foo")
     end
   end
 
   context "HEAD and devel formulae are installed" do
-    subject { described_class.formulae }
+    subject(:formulae_list) { described_class.formulae }
 
     before do
       described_class.reset!
@@ -282,13 +280,13 @@ describe Bundle::BrewDumper do
     end
 
     it "returns with args `devel` and `HEAD`" do
-      expect(subject[0][:args]).to include("devel")
-      expect(subject[1][:args]).to include("HEAD")
+      expect(formulae_list[0][:args]).to include("devel")
+      expect(formulae_list[1][:args]).to include("HEAD")
     end
   end
 
   context "A formula link to the old keg" do
-    subject { described_class.formulae }
+    subject(:formulae_list) { described_class.formulae }
 
     before do
       described_class.reset!
@@ -312,12 +310,12 @@ describe Bundle::BrewDumper do
     end
 
     it "returns with linked keg" do
-      expect(subject[0][:version]).to eql("1.0")
+      expect(formulae_list[0][:version]).to eql("1.0")
     end
   end
 
   context "A formula with no linked keg" do
-    subject { described_class.formulae }
+    subject(:formulae_list) { described_class.formulae }
 
     before do
       described_class.reset!
@@ -341,13 +339,11 @@ describe Bundle::BrewDumper do
     end
 
     it "returns with last one" do
-      expect(subject[0][:version]).to eql("2.0")
+      expect(formulae_list[0][:version]).to eql("2.0")
     end
   end
 
   context "several formulae with dependant relations" do
-    subject { described_class }
-
     before do
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
@@ -400,17 +396,15 @@ describe Bundle::BrewDumper do
     end
 
     it "returns formulae with correct order" do
-      expect(subject.formulae.map { |f| f[:name] }).to eq %w[c b a]
+      expect(dumper.formulae.map { |f| f[:name] }).to eq %w[c b a]
     end
 
     it "returns all the cask requirements" do
-      expect(subject.cask_requirements).to eq %w[bar]
+      expect(dumper.cask_requirements).to eq %w[bar]
     end
   end
 
   context "formulae with unsorted dependencies" do
-    subject { described_class }
-
     before do
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
@@ -478,7 +472,7 @@ describe Bundle::BrewDumper do
     end
 
     it "returns formulae with correct order" do
-      expect(subject.formulae.map { |f| f[:name] }).to eq %w[b c d a]
+      expect(dumper.formulae.map { |f| f[:name] }).to eq %w[b c d a]
     end
 
     context "when performing a topological sort" do
@@ -489,7 +483,7 @@ describe Bundle::BrewDumper do
       end
 
       it "dies on cyclic exceptions" do
-        expect { subject.formulae }.to raise_error(TSort::Cyclic)
+        expect { dumper.formulae }.to raise_error(TSort::Cyclic)
       end
     end
   end
@@ -588,8 +582,8 @@ describe Bundle::BrewDumper do
   end
 
   context "when order of args for a formula is different in different environment" do
-    it "dumps args in same order" do
-      formula_info = [
+    let(:formula_info) do
+      [
         [{
           name: "a",
           full_name: "a",
@@ -621,11 +615,17 @@ describe Bundle::BrewDumper do
           outdated?: false,
         }],
       ]
-      dump_lines = formula_info.map do |info|
+    end
+
+    let(:dump_lines) do
+      formula_info.map do |info|
         described_class.reset!
         allow(described_class).to receive(:formulae_info).and_return(info)
         described_class.dump
       end
+    end
+
+    it "dumps args in same order" do
       expect(dump_lines[0]).to eql(dump_lines[1])
     end
   end
