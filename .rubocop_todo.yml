@@ -48,7 +48,6 @@ RSpec/ExampleLength:
     - 'spec/bundle/brew_services_spec.rb'
     - 'spec/bundle/commands/check_command_spec.rb'
     - 'spec/bundle/commands/cleanup_command_spec.rb'
-    - 'spec/bundle/dsl_spec.rb'
     - 'spec/bundle/commands/dump_command_spec.rb'
     - 'spec/bundle/commands/exec_command_spec.rb'
     - 'spec/bundle/commands/install_command_spec.rb'
