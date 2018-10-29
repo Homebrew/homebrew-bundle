@@ -43,7 +43,6 @@ RSpec/ContextWording:
 # Configuration parameters: Max.
 RSpec/ExampleLength:
   Exclude:
-    - 'spec/bundle/brew_dumper_spec.rb'
     - 'spec/bundle/brew_installer_spec.rb'
     - 'spec/bundle/brew_services_spec.rb'
     - 'spec/bundle/commands/check_command_spec.rb'
@@ -69,3 +68,5 @@ RSpec/NestedGroups:
   Max: 5
 
 
+Style/HashSyntax:
+  Enabled: false

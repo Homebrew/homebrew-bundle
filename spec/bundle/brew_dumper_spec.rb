@@ -21,62 +21,64 @@ describe Bundle::BrewDumper do
   end
 
   context "when Homebrew returns JSON with a malformed linked_keg" do
+    installed_data = [{
+      "name" => "foo",
+      "full_name" => "homebrew/tap/foo",
+      "desc" => "",
+      "homepage" => "",
+      "oldname" => nil,
+      "aliases" => [],
+      "versions" => { "stable" => "1.0", "bottle" => false },
+      "revision" => 0,
+      "installed" => [{
+        "version" => "1.0",
+        "used_options" => [],
+        "built_as_bottle" => nil,
+        "poured_from_bottle" => true,
+      }],
+      "linked_keg" => "fish",
+      "keg_only" => nil,
+      "dependencies" => [],
+      "recommended_dependencies" => [],
+      "optional_dependencies" => [],
+      "build_dependencies" => [],
+      "conflicts_with" => [],
+      "caveats" => nil,
+      "requirements" => [],
+      "options" => [],
+      "bottle" => {},
+    }]
+
+    parsed_data = {
+      name: "foo",
+      full_name: "homebrew/tap/foo",
+      desc: "",
+      oldname: nil,
+      aliases: [],
+      args: [],
+      version: nil,
+      installed_as_dependency?: false,
+      installed_on_request?: false,
+      dependencies: [],
+      recommended_dependencies: [],
+      optional_dependencies: [],
+      build_dependencies: [],
+      requirements: [],
+      conflicts_with: [],
+      pinned?: false,
+      outdated?: false,
+      link?: nil,
+      poured_from_bottle?: false,
+    }
+
     before do
       described_class.reset!
       allow(Formula).to receive(:[]).and_return(nil)
-      allow(Formula).to receive(:installed).and_return(
-        [{
-          "name" => "foo",
-          "full_name" => "homebrew/tap/foo",
-          "desc" => "",
-          "homepage" => "",
-          "oldname" => nil,
-          "aliases" => [],
-          "versions" => { "stable" => "1.0", "bottle" => false },
-          "revision" => 0,
-          "installed" => [{
-            "version" => "1.0",
-            "used_options" => [],
-            "built_as_bottle" => nil,
-            "poured_from_bottle" => true,
-          }],
-          "linked_keg" => "fish",
-          "keg_only" => nil,
-          "dependencies" => [],
-          "recommended_dependencies" => [],
-          "optional_dependencies" => [],
-          "build_dependencies" => [],
-          "conflicts_with" => [],
-          "caveats" => nil,
-          "requirements" => [],
-          "options" => [],
-          "bottle" => {},
-        }],
-      )
+      allow(Formula).to receive(:installed).and_return(installed_data)
     end
 
     it "returns no version" do
-      expect(dumper.formulae).to contain_exactly(
-        name: "foo",
-        full_name: "homebrew/tap/foo",
-        desc: "",
-        oldname: nil,
-        aliases: [],
-        args: [],
-        version: nil,
-        installed_as_dependency?: false,
-        installed_on_request?: false,
-        dependencies: [],
-        recommended_dependencies: [],
-        optional_dependencies: [],
-        build_dependencies: [],
-        requirements: [],
-        conflicts_with: [],
-        pinned?: false,
-        outdated?: false,
-        link?: nil,
-        poured_from_bottle?: false,
-      )
+      expect(dumper.formulae).to contain_exactly(parsed_data)
     end
   end
 
@@ -184,7 +186,7 @@ describe Bundle::BrewDumper do
       )
     end
 
-    it "returns foo and bar with their information" do
+    it "returns foo and bar with their information" do # rubocop:disable RSpec/ExampleLength
       expect(dumper.formulae).to contain_exactly(
         {
           name: "foo",
@@ -580,8 +582,8 @@ describe Bundle::BrewDumper do
   end
 
   context "when order of args for a formula is different in different environment" do
-    it "dumps args in same order" do
-      formula_info = [
+    let(:formula_info) do
+      [
         [{
           name: "a",
           full_name: "a",
@@ -613,11 +615,17 @@ describe Bundle::BrewDumper do
           outdated?: false,
         }],
       ]
-      dump_lines = formula_info.map do |info|
+    end
+
+    let(:dump_lines) do
+      formula_info.map do |info|
         described_class.reset!
         allow(described_class).to receive(:formulae_info).and_return(info)
         described_class.dump
       end
+    end
+
+    it "dumps args in same order" do
       expect(dump_lines[0]).to eql(dump_lines[1])
     end
   end
