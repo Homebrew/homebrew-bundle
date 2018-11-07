@@ -63,7 +63,7 @@ describe Bundle::BrewInstaller do
   context "conflicts_with option is provided" do
     before do
       allow(Bundle::BrewDumper).to receive(:formula_info).and_return(
-        name: "mysql",
+        name:           "mysql",
         conflicts_with: ["mysql55"],
       )
       allow(described_class).to receive(:formula_installed?).and_return(true)
@@ -127,20 +127,20 @@ describe Bundle::BrewInstaller do
       allow(described_class).to receive(:outdated_formulae).and_return(%w[bar])
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         {
-          name: "foo",
-          full_name: "homebrew/tap/foo",
-          aliases: ["foobar"],
-          args: [],
-          version: "1.0",
+          name:         "foo",
+          full_name:    "homebrew/tap/foo",
+          aliases:      ["foobar"],
+          args:         [],
+          version:      "1.0",
           dependencies: [],
           requirements: [],
         },
         {
-          name: "bar",
-          full_name: "bar",
-          aliases: [],
-          args: [],
-          version: "1.0",
+          name:         "bar",
+          full_name:    "bar",
+          aliases:      [],
+          args:         [],
+          version:      "1.0",
           dependencies: [],
           requirements: [],
         },

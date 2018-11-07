@@ -24,20 +24,20 @@ describe Bundle::TapDumper do
       described_class.reset!
       allow(Tap).to receive(:map).and_return [
         {
-          "name" => "bitbucket/bar",
-          "remote" => "https://bitbucket.org/bitbucket/bar.git",
+          "name"          => "bitbucket/bar",
+          "remote"        => "https://bitbucket.org/bitbucket/bar.git",
           "custom_remote" => true,
         },
         {
-          "name" => "homebrew/baz",
-          "remote" => "https://github.com/Homebrew/homebrew-baz",
+          "name"          => "homebrew/baz",
+          "remote"        => "https://github.com/Homebrew/homebrew-baz",
           "custom_remote" => false,
         },
         {
-          "name" => "homebrew/foo",
-          "remote" => "https://github.com/Homebrew/homebrew-foo",
+          "name"          => "homebrew/foo",
+          "remote"        => "https://github.com/Homebrew/homebrew-foo",
           "custom_remote" => false,
-          "pinned" => true,
+          "pinned"        => true,
         },
       ]
     end
