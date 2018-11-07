@@ -49,11 +49,11 @@ module Bundle
     CheckResult = Struct.new :work_to_be_done, :errors
 
     CHECKS = {
-      taps_to_tap: "Taps",
-      casks_to_install: "Casks",
-      apps_to_install: "Apps",
+      taps_to_tap:         "Taps",
+      casks_to_install:    "Casks",
+      apps_to_install:     "Apps",
       formulae_to_install: "Formulae",
-      formulae_to_start: "Services",
+      formulae_to_start:   "Services",
     }.freeze
 
     def check(exit_on_first_error)

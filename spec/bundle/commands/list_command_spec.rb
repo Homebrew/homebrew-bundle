@@ -15,10 +15,10 @@ describe Bundle::Commands::List do
     end
 
     types_and_deps = {
-      "--taps" => "phinze/cask",
+      "--taps"  => "phinze/cask",
       "--brews" => "mysql",
       "--casks" => "google-chrome",
-      "--mas" => "1Password",
+      "--mas"   => "1Password",
     }
 
     after do
