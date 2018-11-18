@@ -657,6 +657,27 @@ describe Bundle::BrewDumper do
     end
   end
 
+  context "#formula_info" do
+    let(:f) { OpenStruct.new }
+
+    it "handles formula syntax errors" do
+      allow(Formula).to receive(:[]).and_raise(NoMethodError)
+      expect(described_class).to receive(:opoo).once
+      described_class.instance_variable_set("@formula_info_name", nil)
+      described_class.formula_info("foo")
+    end
+  end
+
+  context "#formulae_info" do
+    let(:f) { OpenStruct.new }
+
+    it "handles formula syntax errors" do
+      allow(Formula).to receive(:installed).and_raise(NoMethodError)
+      expect(described_class).to receive(:opoo).once
+      described_class.formulae_info
+    end
+  end
+
   context "#formula_hash" do
     let(:f) { OpenStruct.new }
 
