@@ -658,8 +658,6 @@ describe Bundle::BrewDumper do
   end
 
   context "#formula_info" do
-    let(:f) { OpenStruct.new }
-
     it "handles formula syntax errors" do
       allow(Formula).to receive(:[]).and_raise(NoMethodError)
       expect(described_class).to receive(:opoo).once
@@ -669,8 +667,6 @@ describe Bundle::BrewDumper do
   end
 
   context "#formulae_info" do
-    let(:f) { OpenStruct.new }
-
     it "handles formula syntax errors" do
       allow(Formula).to receive(:installed).and_raise(NoMethodError)
       expect(described_class).to receive(:opoo).once
