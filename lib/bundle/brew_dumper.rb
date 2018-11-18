@@ -84,6 +84,9 @@ module Bundle
         require "formula"
         formula_inspector formula_hash(Formula[name])
       end
+    rescue NameError, ArgumentError, ScriptError,
+           FormulaUnavailableError => e
+      opoo "'#{name}' formula is unreadable: #{e}"
     end
 
     def formulae_info
@@ -91,6 +94,9 @@ module Bundle
       Formula.installed.map do |f|
         formula_inspector formula_hash(f)
       end.compact
+    rescue NameError, ArgumentError, ScriptError,
+           FormulaUnavailableError => e
+      opoo "Unreadable formula: #{e}"
     end
 
     def formula_hash(formula)
