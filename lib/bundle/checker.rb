@@ -10,14 +10,14 @@ module Bundle
 
       def exit_early_check(packages)
         work_to_be_done = packages.find do |pkg|
-          yield pkg
+          !installed_and_up_to_date?(pkg)
         end
 
         Array(work_to_be_done)
       end
 
       def full_check(packages)
-        packages.reject { |f| installed_and_up_to_date? f }
+        packages.reject { |pkg| installed_and_up_to_date? pkg }
                 .map { |entry| "#{self.class::PACKAGE_TYPE_NAME} #{entry} #{self.class::PACKAGE_ACTION_PREDICATE}" }
       end
 
@@ -37,7 +37,7 @@ module Bundle
         requested = format_checkable entries
 
         if Bundle::Commands::Check.exit_on_first_error?
-          exit_early_check(requested) { |pkg| !installed_and_up_to_date?(pkg) }
+          exit_early_check requested
         else
           full_check requested
         end

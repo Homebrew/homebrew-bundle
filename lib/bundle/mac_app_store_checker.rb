@@ -14,6 +14,14 @@ module Bundle
         checkable_entries(entries).map { |e| [e.options[:id], e.name] }.to_h
       end
 
+      def exit_early_check(app_ids_with_names)
+        work_to_be_done = app_ids_with_names.find do |id, _name|
+          !installed_and_up_to_date?(id)
+        end
+
+        Array(work_to_be_done)
+      end
+
       def full_check(app_ids_with_names)
         app_ids_with_names.reject { |id, _name| installed_and_up_to_date? id }
                           .map { |_id, name| "App #{name} needs to be installed or updated." }
