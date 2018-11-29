@@ -9,7 +9,13 @@ module Bundle
         Pathname.new("#{ENV["HOME"]}/.Brewfile")
       else
         filename = ARGV.value("file")
-        filename = "/dev/stdin" if filename == "-"
+        if filename == "-"
+          filename = if ARGV.include?("dump")
+            "/dev/stdout"
+          else
+            "/dev/stdin"
+          end
+        end
         filename ||= "Brewfile"
         Pathname.new(filename).expand_path(Dir.pwd)
       end
