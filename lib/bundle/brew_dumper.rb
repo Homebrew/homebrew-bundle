@@ -39,7 +39,9 @@ module Bundle
     end
 
     def cask_requirements
-      formulae.map { |f| f[:requirements].map { |req| req["cask"] } }.flatten.compact.uniq
+      formulae.flat_map do |f|
+        f[:requirements].map { |req| req["cask"]&.split("/")&.last }
+      end.compact.uniq
     end
 
     def formula_names
