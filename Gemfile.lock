@@ -78,7 +78,7 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
     thor (0.20.3)
-    unicode-display_width (1.4.0)
+    unicode-display_width (1.4.1)
 
 PLATFORMS
   ruby
