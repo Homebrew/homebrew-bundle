@@ -51,7 +51,7 @@ brew bundle
 
 If a dependency is already installed and there is an upgrade available it will be upgraded.
 
-Note: `brew bundle` will look for the Brewfile on the directory in which it's run. To specify a path use `brew bundle --file=path`
+`brew bundle` will look for `Brewfile` in the current directory. Use `--file` to specify a path to a different `Brewfile`.
 
 ### Dump
 
