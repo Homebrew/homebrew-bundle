@@ -51,6 +51,8 @@ brew bundle
 
 If a dependency is already installed and there is an upgrade available it will be upgraded.
 
+Note: `brew bundle` will look for the Brewfile on the directory in which it's run. To specify a path use `brew bundle --file=path`
+
 ### Dump
 
 You can create a `Brewfile` from all the existing Homebrew packages you have installed with:
