@@ -206,9 +206,15 @@ module Bundle
       end
       @formulae = topo.tsort.map { |name| @formulae.find { |formula| formula[:full_name] == name } }
     rescue TSort::Cyclic => e
+      e.message =~ /\["(.*)", "(.*)"\]/
+      cycle_first = Regexp.last_match(1)
+      cycle_last = Regexp.last_match(2)
+      odie e.message if !cycle_first || !cycle_last
+
       odie <<~EOS
-        #{e.message}
-        Formulae dependency graph sorting failed (likely due to a circular dependency)!
+        Formulae dependency graph sorting failed (likely due to a circular dependency):
+        #{cycle_first}: #{topo[cycle_first]}
+        #{cycle_last}: #{topo[cycle_last]}
       EOS
     end
   end
