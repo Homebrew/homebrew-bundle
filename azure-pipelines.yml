@@ -15,3 +15,13 @@ jobs:
         bundle install
         bundle exec rake
       displayName: Tests
+      env:
+        COVERALLS_REPO_TOKEN: $(coveralls.homebrewBundleApiToken)
+
+    - task: PublishCodeCoverageResults@1
+      displayName: Publish code coverage
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: $(Build.SourcesDirectory)/coverage/coverage.xml
+        reportDirectory: $(Build.SourcesDirectory)/coverage
+        failIfCoverageEmpty: true
