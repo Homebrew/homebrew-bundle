@@ -215,7 +215,10 @@ module Bundle
         Formulae dependency graph sorting failed (likely due to a circular dependency):
         #{cycle_first}: #{topo[cycle_first]}
         #{cycle_last}: #{topo[cycle_last]}
-        Please run `brew reinstall #{cycle_first} #{cycle_last}` and try again.
+        Please run the following commands and try again:
+          brew update
+          brew uninstall --ignore-dependencies --force #{cycle_first} #{cycle_last}
+          brew install #{cycle_first} #{cycle_last}
       EOS
     end
   end
