@@ -35,6 +35,8 @@ if ENV["COVERALLS_REPO_TOKEN"] && ENV["TF_BUILD"]
   formatters << SimpleCov::Formatter::CoberturaFormatter
 end
 
+STDERR.puts "Configured Simplecov formatters: #{formatters}"
+
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)
 
 require "bundler"
