@@ -478,8 +478,8 @@ describe Bundle::BrewDumper do
     context "when performing a topological sort" do
       before do
         allow_any_instance_of(Bundle::BrewDumper::Topo).to \
-          receive(:tsort).
-          and_raise(TSort::Cyclic, "topological sort failed: [\"libidn2\", \"wget\"]")
+          receive(:tsort)
+          .and_raise(TSort::Cyclic, "topological sort failed: [\"libidn2\", \"wget\"]")
         allow_any_instance_of(Object).to receive(:odie) { raise }
       end
 
