@@ -32,7 +32,7 @@ module Bundle
     end
 
     def brewfile_path
-      Brewfile.path
+      Brewfile.path(dash_writes_to_stdout: true)
     end
 
     def should_not_write_file?(file, overwrite = false)

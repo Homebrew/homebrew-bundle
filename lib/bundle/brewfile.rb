@@ -4,13 +4,13 @@ module Bundle
   module Brewfile
     module_function
 
-    def path
+    def path(dash_writes_to_stdout: false)
       if ARGV.include?("--global")
         Pathname.new("#{ENV["HOME"]}/.Brewfile")
       else
         filename = ARGV.value("file")
         if filename == "-"
-          filename = if ARGV.include?("dump")
+          filename = if dash_writes_to_stdout
             "/dev/stdout"
           else
             "/dev/stdin"
