@@ -29,14 +29,13 @@ describe Bundle::Brewfile do
       context "with `-`" do
         let(:file_value) { "-" }
 
-        it "returns stdout for dump command" do
-          allow(ARGV).to receive(:include?).with("dump").and_return(true)
-          expect(described_class.path).to eq(Pathname.new("/dev/stdout"))
-        end
-
-        it "returns stdin for non-dump commands" do
+        it "returns stdin by default" do
           allow(ARGV).to receive(:include?).with("dump").and_return(false)
           expect(described_class.path).to eq(Pathname.new("/dev/stdin"))
+        end
+
+        it "returns stdout for dash_writes_to_stdout" do
+          expect(described_class.path(dash_writes_to_stdout: true)).to eq(Pathname.new("/dev/stdout"))
         end
       end
     end
