@@ -7,12 +7,8 @@ jobs:
         sudo xcode-select --switch /Applications/Xcode_10.app/Contents/Developer
         brew update-reset
         ln -s "$PWD" "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-bundle"
-        # TODO: RuboCop needs fixed in
-        # https://github.com/Homebrew/homebrew-bundle/pull/384
-        # brew style homebrew/bundle
-        # Use local config until then
+        brew style homebrew/bundle
         bundle install
-        rubocop --force-exclusion --parallel --except FormulaAudit,FormulaAuditStrict,NewFormulaAudit --format simple
         bundle exec rake
       displayName: Tests
       env:
