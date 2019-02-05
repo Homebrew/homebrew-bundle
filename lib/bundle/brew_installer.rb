@@ -26,7 +26,7 @@ module Bundle
     def run
       install_result = install_change_state!
       service_change_state! if install_result != :failed
-      link_change_state! unless @link.nil?
+      link_change_state!
       install_result
     end
 
@@ -78,6 +78,11 @@ module Bundle
       when false
         puts "Unlinking #{@name} formula." if ARGV.verbose?
         Bundle.system("brew", "unlink", @name)
+      when nil
+        if unlinked?
+          puts "Linking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "link", @name)
+        end
       end
     end
 
@@ -109,6 +114,10 @@ module Bundle
       formula_in_array?(formula, installed_formulae)
     end
 
+    def self.formula_unlinked?(formula)
+      formula_in_array?(formula, unlinked_formulae)
+    end
+
     def self.formula_upgradable?(formula)
       formula_in_array?(formula, upgradable_formulae)
     end
@@ -129,10 +138,18 @@ module Bundle
       @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
     end
 
+    def self.unlinked_formulae
+      @unlinked_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == false }.compact
+    end
+
     private
 
     def installed?
       BrewInstaller.formula_installed?(@name)
+    end
+
+    def unlinked?
+      BrewInstaller.formula_unlinked?(@name)
     end
 
     def upgradable?
