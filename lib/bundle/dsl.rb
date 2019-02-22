@@ -34,12 +34,14 @@ module Bundle
 
     def cask_args(args)
       raise "cask_args(#{args.inspect}) should be a Hash object" unless args.is_a? Hash
+
       @cask_arguments = args
     end
 
     def brew(name, options = {})
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
+
       name = Bundle::Dsl.sanitize_brew_name(name)
       @entries << Entry.new(:brew, name, options)
     end
@@ -47,6 +49,7 @@ module Bundle
     def cask(name, options = {})
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
+
       name = Bundle::Dsl.sanitize_cask_name(name)
       options[:args] = @cask_arguments.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
@@ -56,12 +59,14 @@ module Bundle
       id = options[:id]
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
+
       @entries << Entry.new(:mac_app_store, name, id: id)
     end
 
     def tap(name, clone_target = nil, pin: false)
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "clone_target(#{clone_target.inspect}) should be nil or a String object" if clone_target && !clone_target.is_a?(String)
+
       name = Bundle::Dsl.sanitize_tap_name(name)
       @entries << Entry.new(:tap, name, clone_target: clone_target, pin: pin)
     end

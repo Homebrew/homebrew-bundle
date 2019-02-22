@@ -32,8 +32,10 @@ module Bundle
 
     def install_change_state!
       return :failed unless resolve_conflicts!
+
       if installed?
         return :skipped if ARGV.include?("--no-upgrade")
+
         upgrade!
       else
         install!
@@ -50,6 +52,7 @@ module Bundle
 
     def restart_service_needed?
       return false unless restart_service?
+
       # Restart if `restart_service: :always`, or if the formula was installed or upgraded
       @restart_service.to_s != "changed" || changed?
     end
@@ -81,6 +84,7 @@ module Bundle
     def self.formula_installed_and_up_to_date?(formula)
       return false unless formula_installed?(formula)
       return true if ARGV.include?("--no-upgrade")
+
       !formula_upgradable?(formula)
     end
 
@@ -153,6 +157,7 @@ module Bundle
     def resolve_conflicts!
       conflicts_with.each do |conflict|
         next unless BrewInstaller.formula_installed?(conflict)
+
         if ARGV.verbose?
           puts <<~EOS
             Unlinking #{conflict} formula.
@@ -160,6 +165,7 @@ module Bundle
           EOS
         end
         return false unless Bundle.system("brew", "unlink", conflict)
+
         if @restart_service
           puts "Stopping #{conflict} service (if it is running)." if ARGV.verbose?
           BrewServices.stop(conflict)

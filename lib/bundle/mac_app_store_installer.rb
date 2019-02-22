@@ -36,6 +36,7 @@ module Bundle
       if app_id_installed?(id)
         puts "Upgrading #{name} app. It is installed but not up-to-date." if ARGV.verbose?
         return :failed unless Bundle.system "mas", "upgrade", id.to_s
+
         return :success
       end
 
@@ -50,6 +51,7 @@ module Bundle
     def self.app_id_installed_and_up_to_date?(id)
       return false unless app_id_installed?(id)
       return true if ARGV.include?("--no-upgrade")
+
       !app_id_upgradable?(id)
     end
 

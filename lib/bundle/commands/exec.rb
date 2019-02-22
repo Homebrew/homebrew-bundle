@@ -31,11 +31,13 @@ module Bundle
         # Save the command path, since this will be blown away by superenv
         command_path = which(command)
         raise "Error: #{command} was not found on your PATH!" if command_path.nil?
+
         command_path = command_path.dirname.to_s
 
         brewfile = Bundle::Dsl.new(Brewfile.read)
         ENV.deps = brewfile.entries.map do |entry|
           next unless entry.type == :brew
+
           f = Formulary.factory(entry.name)
           [f, f.recursive_dependencies.map(&:to_formula)]
         end.flatten.compact

@@ -8,6 +8,7 @@ module Bundle
       if installed_taps.include? name
         puts "Skipping install of #{name} tap. It is already installed." if ARGV.verbose?
         return :failed unless check_pinning(name, options)
+
         return :skipped
       end
 
@@ -40,10 +41,12 @@ module Bundle
       if pin && !currently_pinned
         puts "Pinning #{name} tap." if ARGV.verbose?
         return :failed unless Bundle.system "brew", "tap-pin", name
+
         pinned_installed_taps << name
       elsif currently_pinned && !pin
         puts "Unpinning #{name} tap." if ARGV.verbose?
         return :failed unless Bundle.system "brew", "tap-unpin", name
+
         pinned_installed_taps.delete(name)
       end
       :success
