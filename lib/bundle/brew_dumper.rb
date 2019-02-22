@@ -50,10 +50,12 @@ module Bundle
 
     def formula_oldnames
       return @formula_oldnames if @formula_oldnames
+
       @formula_oldnames = {}
       formulae.each do |f|
         oldname = f[:oldname]
         next unless oldname
+
         @formula_oldnames[oldname] = f[:full_name]
         if f[:full_name].include? "/" # tap formula
           tap_name = f[:full_name].rpartition("/").first
@@ -65,10 +67,12 @@ module Bundle
 
     def formula_aliases
       return @formula_aliases if @formula_aliases
+
       @formula_aliases = {}
       formulae.each do |f|
         aliases = f[:aliases]
         next if !aliases || aliases.empty?
+
         aliases.each do |a|
           @formula_aliases[a] = f[:full_name]
           if f[:full_name].include? "/" # tap formula
@@ -110,6 +114,7 @@ module Bundle
 
     def formula_inspector(formula)
       return unless formula
+
       installed = formula["installed"]
       link = nil
       if formula["linked_keg"].nil?
@@ -133,6 +138,7 @@ module Bundle
           deps.map do |dep|
             full_name = dep["full_name"]
             next unless full_name
+
             full_name.split("/").last
           end.compact
         end
@@ -201,6 +207,7 @@ module Bundle
         topo[f[:full_name]] = deps.map do |dep|
           ff = @formulae.find { |formula| [formula[:name], formula[:full_name]].include?(dep) }
           next unless ff
+
           ff[:full_name]
         end.compact
       end

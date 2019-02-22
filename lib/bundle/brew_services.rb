@@ -10,6 +10,7 @@ module Bundle
 
     def stop(name)
       return true unless started?(name)
+
       if Bundle.system "brew", "services", "stop", name
         started_services.delete(name)
         true
@@ -32,6 +33,7 @@ module Bundle
         `brew services list`.lines.map do |line|
           name, state, _plist = line.split(/\s+/)
           next if state == "stopped"
+
           name
         end.compact
       else

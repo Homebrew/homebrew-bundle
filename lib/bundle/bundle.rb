@@ -7,6 +7,7 @@ module Bundle
 
   def system(cmd, *args)
     return super cmd, *args if ARGV.verbose?
+
     logs = []
     success = nil
     IO.popen([cmd, *args], err: [:child, :out]) do |pipe|

@@ -14,6 +14,7 @@ module Bundle
         if !ARGV.include?("--no-upgrade") && outdated_casks.include?(name)
           puts "Upgrading #{name} cask. It is installed but not up-to-date." if ARGV.verbose?
           return :failed unless Bundle.system "brew", "cask", "upgrade", name
+
           return :success
         end
         return :skipped
@@ -40,6 +41,7 @@ module Bundle
     def self.cask_installed_and_up_to_date?(cask)
       return false unless cask_installed?(cask)
       return true if ARGV.include?("--no-upgrade")
+
       !cask_upgradable?(cask)
     end
 

@@ -92,6 +92,7 @@ rescue Interrupt
   Homebrew.failed = true
 rescue RuntimeError, SystemCallError => e
   raise if e.message.empty?
+
   onoe e
   puts e.backtrace if ARGV.debug?
   Homebrew.failed = true
