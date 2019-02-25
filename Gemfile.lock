@@ -51,7 +51,7 @@ GEM
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    parallel (1.13.0)
+    parallel (1.14.0)
     parser (2.6.0.0)
       ast (~> 2.4.0)
     powerpack (0.1.2)
