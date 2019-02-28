@@ -73,11 +73,15 @@ module Bundle
     def link_change_state!
       case @link
       when true
-        puts "Force linking #{@name} formula." if ARGV.verbose?
-        Bundle.system("brew", "link", "--force", @name)
+        unless linked_and_keg_only?
+          puts "Force linking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "link", "--force", @name)
+        end
       when false
-        puts "Unlinking #{@name} formula." if ARGV.verbose?
-        Bundle.system("brew", "unlink", @name)
+        unless unlinked_and_not_keg_only?
+          puts "Unlinking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "unlink", @name)
+        end
       when nil
         if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if ARGV.verbose?
