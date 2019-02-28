@@ -79,9 +79,12 @@ module Bundle
         puts "Unlinking #{@name} formula." if ARGV.verbose?
         Bundle.system("brew", "unlink", @name)
       when nil
-        if unlinked?
+        if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if ARGV.verbose?
           Bundle.system("brew", "link", @name)
+        elsif linked_and_keg_only?
+          puts "Unlinking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "unlink", @name)
         end
       end
     end
@@ -114,8 +117,12 @@ module Bundle
       formula_in_array?(formula, installed_formulae)
     end
 
-    def self.formula_unlinked?(formula)
-      formula_in_array?(formula, unlinked_formulae)
+    def self.formula_linked_and_keg_only?(formula)
+      formula_in_array?(formula, linked_and_keg_only_formulae)
+    end
+
+    def self.formula_unlinked_and_not_keg_only?(formula)
+      formula_in_array?(formula, unlinked_and_not_keg_only_formulae)
     end
 
     def self.formula_upgradable?(formula)
@@ -138,8 +145,12 @@ module Bundle
       @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
     end
 
-    def self.unlinked_formulae
-      @unlinked_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == false }.compact
+    def self.linked_and_keg_only_formulae
+      @linked_and_keg_only_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == true }.compact
+    end
+
+    def self.unlinked_and_not_keg_only_formulae
+      @unlinked_and_not_keg_only_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == false }.compact
     end
 
     private
@@ -148,8 +159,12 @@ module Bundle
       BrewInstaller.formula_installed?(@name)
     end
 
-    def unlinked?
-      BrewInstaller.formula_unlinked?(@name)
+    def linked_and_keg_only?
+      BrewInstaller.formula_linked_and_keg_only?(@name)
+    end
+
+    def unlinked_and_not_keg_only?
+      BrewInstaller.formula_unlinked_and_not_keg_only?(@name)
     end
 
     def upgradable?
