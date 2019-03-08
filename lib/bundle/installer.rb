@@ -7,6 +7,7 @@ module Bundle
     def install(entries)
       success = 0
       failure = 0
+      errored_entries = {}
 
       entries.each do |entry|
         arg = [entry.name]
@@ -26,16 +27,21 @@ module Bundle
           arg << entry.options
           Bundle::TapInstaller
         end
-        case cls.install(*arg)
-        when :success
-          puts Formatter.success("#{verb} #{entry.name}")
-          success += 1
-        when :skipped
-          puts "Using #{entry.name}"
-          success += 1
-        else
-          puts Formatter.error("#{verb} #{entry.name} has failed!")
-          failure += 1
+        begin
+          case cls.install(*arg)
+          when :success
+            puts Formatter.success("#{verb} #{entry.name}")
+            success += 1
+          when :skipped
+            puts "Using #{entry.name}"
+            success += 1
+          else
+            puts Formatter.error("#{verb} #{entry.name} has failed!")
+            failure += 1
+          end
+        rescue => e
+          puts Formatter.error("#{verb} #{entry.name} errored: #{e}")
+          errored_entries[entry.name] = e
         end
       end
 
@@ -45,7 +51,14 @@ module Bundle
         puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install.")
       end
 
-      failure.zero?
+      unless errored_entries.empty?
+        puts Formatter.error("Homebrew Bundle encountered some errors! #{errored_entries.size} Brewfile #{Bundle::Dsl.pluralize_dependency(errored_entries.size)} failed badly:")
+        errored_entries.each do |entry, error|
+          puts Formatter.error("\t#{entry}\t => \t#{error}")
+        end
+      end
+
+      failure.zero? && errored_entries.empty?
     end
   end
 end
