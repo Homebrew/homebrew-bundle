@@ -15,7 +15,7 @@ describe Bundle::Commands::Install do
   end
 
   context "when an installer raises an error" do
-    it "does not bubble the error to the top" do
+    it "rescues the error" do
       allow(ARGV).to receive(:value).and_return(nil)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_throw(RuntimeError)
       allow_any_instance_of(Pathname).to receive(:read)
