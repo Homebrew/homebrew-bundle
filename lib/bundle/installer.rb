@@ -52,7 +52,10 @@ module Bundle
       end
 
       unless errored_entries.empty?
-        puts Formatter.error("Homebrew Bundle encountered some errors! #{errored_entries.size} Brewfile #{Bundle::Dsl.pluralize_dependency(errored_entries.size)} failed badly:")
+        error_count = errored_entries.size
+        words = Bundle::Dsl.pluralize_dependency(error_count)
+        error_text = "Homebrew Bundle encountered some errors. #{error_count} Brewfile #{words} failed badly:"
+        puts Formatter.error(error_text)
         errored_entries.each do |entry, error|
           puts Formatter.error("\t#{entry}\t => \t#{error}")
         end
