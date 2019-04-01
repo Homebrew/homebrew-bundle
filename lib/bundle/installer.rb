@@ -40,7 +40,7 @@ module Bundle
             failure += 1
           end
         rescue => e
-          puts Formatter.error("#{verb} #{entry.name} errored: #{e}")
+          puts Formatter.error("#{verb} #{entry.name} raised an exception: #{e}")
           errored_entries[entry.name] = e
         end
       end
