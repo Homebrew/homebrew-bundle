@@ -51,7 +51,7 @@ module Bundle
         puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install.")
       end
 
-      unless errored_entries.empty?
+      if errored_entries.any?
         error_count = errored_entries.size
         words = Bundle::Dsl.pluralize_dependency(error_count)
         error_text = "Homebrew Bundle encountered some errors. #{error_count} Brewfile #{words} failed badly:"
