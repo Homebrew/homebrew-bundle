@@ -582,6 +582,64 @@ describe Bundle::BrewDumper do
     end
   end
 
+  describe "restarting" do
+    before do
+      described_class.reset!
+      allow(described_class).to receive(:formulae_info).and_return [
+        {
+          name:                     "a",
+          full_name:                "a",
+          desc:                     "z",
+          aliases:                  [],
+          args:                     [],
+          version:                  "1.0",
+          dependencies:             ["b", "d", "c"],
+          recommended_dependencies: [],
+          optional_dependencies:    [],
+          build_dependencies:       [],
+          requirements:             [],
+          conflicts_with:           [],
+          pinned?:                  false,
+          outdated?:                false,
+        },
+        {
+          name:                     "b",
+          full_name:                "b",
+          aliases:                  [],
+          args:                     [],
+          version:                  "1.0",
+          dependencies:             [],
+          recommended_dependencies: [],
+          optional_dependencies:    [],
+          build_dependencies:       [],
+          requirements:             [],
+          conflicts_with:           [],
+          pinned?:                  false,
+          outdated?:                false,
+        },
+      ]
+      allow(Bundle::BrewServices).to receive(:started?).with("a").and_return(true)
+      allow(Bundle::BrewServices).to receive(:started?).with("b").and_return(false)
+    end
+
+    it "adds restart_service for started services" do
+      expect(described_class.dump).to include('brew "a", restart_service: true')
+    end
+
+    it "does not add restart_service for stopped services" do
+      expect(described_class.dump).to include('brew "b"')
+      expect(described_class.dump).not_to include('brew "b", restart_service: true')
+    end
+
+    context "when --no-restart is set" do
+      before { stub_const("ARGV", ["--no-restart"]) }
+
+      it "does not add a restart_service bit if the service is running" do
+        expect(described_class.dump).not_to include("restart_service")
+      end
+    end
+  end
+
   context "when order of args for a formula is different in different environment" do
     let(:formula_info) do
       [
