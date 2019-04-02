@@ -12,12 +12,13 @@
 #:       -v, --verbose                  print the output from commands as they are run.
 #:       --no-upgrade                   don't run `brew upgrade` on outdated dependencies. Note they may still be upgraded by `brew install` if needed.
 #:
-#:  `brew bundle dump` [`--force`] [`--describe`] [`--file=`<path>|`--global`]
+#:  `brew bundle dump` [`--force`] [`--describe`] [`--no-restart`] [`--file=`<path>|`--global`]
 #:
 #:  Write all installed casks/formulae/taps into a Brewfile.
 #:
 #:       --force                        overwrite an existing `Brewfile`.
 #:       --describe                     output a description comment above each line. This comment will not be output if the dependency does not have a description.
+#:       --no-restart                   do not add `restart_service` to formula lines.
 #:
 #:  `brew bundle cleanup` [`--force`] [`--zap`] [`--file=`<path>|`--global`]
 #:

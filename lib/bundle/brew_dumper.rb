@@ -32,7 +32,9 @@ module Bundle
         brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
-        brewline += ", restart_service: true" if BrewServices.started?(f[:full_name])
+        if !ARGV.include?("--no-restart") && BrewServices.started?(f[:full_name])
+          brewline += ", restart_service: true"
+        end
         brewline += ", link: #{f[:link?]}" unless f[:link?].nil?
         brewline
       end.join("\n")

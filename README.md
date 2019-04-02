@@ -63,6 +63,7 @@ brew bundle dump
 
 The `--force` option will allow an existing `Brewfile` to be overwritten as well.
 The `--describe` option will output a description comment above each line.
+The `--no-restart` option will prevent `restart_service` from being added to ``brew`` lines with running services.
 
 ### Cleanup
 
