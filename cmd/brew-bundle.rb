@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #:  * `bundle` <subcommand>
 #:
 #:  Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask and the Mac App Store.
