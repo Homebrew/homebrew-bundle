@@ -26,7 +26,7 @@ module Bundle
     def run
       install_result = install_change_state!
       service_change_state! if install_result != :failed
-      link_change_state! unless @link.nil?
+      link_change_state!
       install_result
     end
 
@@ -73,11 +73,23 @@ module Bundle
     def link_change_state!
       case @link
       when true
-        puts "Force linking #{@name} formula." if ARGV.verbose?
-        Bundle.system("brew", "link", "--force", @name)
+        unless linked_and_keg_only?
+          puts "Force linking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "link", "--force", @name)
+        end
       when false
-        puts "Unlinking #{@name} formula." if ARGV.verbose?
-        Bundle.system("brew", "unlink", @name)
+        unless unlinked_and_not_keg_only?
+          puts "Unlinking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "unlink", @name)
+        end
+      when nil
+        if unlinked_and_not_keg_only?
+          puts "Linking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "link", @name)
+        elsif linked_and_keg_only?
+          puts "Unlinking #{@name} formula." if ARGV.verbose?
+          Bundle.system("brew", "unlink", @name)
+        end
       end
     end
 
@@ -109,6 +121,14 @@ module Bundle
       formula_in_array?(formula, installed_formulae)
     end
 
+    def self.formula_linked_and_keg_only?(formula)
+      formula_in_array?(formula, linked_and_keg_only_formulae)
+    end
+
+    def self.formula_unlinked_and_not_keg_only?(formula)
+      formula_in_array?(formula, unlinked_and_not_keg_only_formulae)
+    end
+
     def self.formula_upgradable?(formula)
       formula_in_array?(formula, upgradable_formulae)
     end
@@ -129,10 +149,26 @@ module Bundle
       @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
     end
 
+    def self.linked_and_keg_only_formulae
+      @linked_and_keg_only_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == true }.compact
+    end
+
+    def self.unlinked_and_not_keg_only_formulae
+      @unlinked_and_not_keg_only_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == false }.compact
+    end
+
     private
 
     def installed?
       BrewInstaller.formula_installed?(@name)
+    end
+
+    def linked_and_keg_only?
+      BrewInstaller.formula_linked_and_keg_only?(@name)
+    end
+
+    def unlinked_and_not_keg_only?
+      BrewInstaller.formula_unlinked_and_not_keg_only?(@name)
     end
 
     def upgradable?
