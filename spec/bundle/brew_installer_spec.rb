@@ -60,6 +60,32 @@ describe Bundle::BrewInstaller do
     end
   end
 
+  context "link option is nil and formula is unlinked and not keg-only" do
+    before do
+      allow(ARGV).to receive(:verbose?).and_return(false)
+      allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
+    end
+
+    it "links formula" do
+      allow_any_instance_of(described_class).to receive(:unlinked_and_not_keg_only?).and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "link", "mysql").and_return(true)
+      described_class.install(formula, link: nil)
+    end
+  end
+
+  context "link option is nil and formula is linked and keg-only" do
+    before do
+      allow(ARGV).to receive(:verbose?).and_return(false)
+      allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
+    end
+
+    it "unlinks formula" do
+      allow_any_instance_of(described_class).to receive(:linked_and_keg_only?).and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "unlink", "mysql").and_return(true)
+      described_class.install(formula, link: nil)
+    end
+  end
+
   context "conflicts_with option is provided" do
     before do
       allow(Bundle::BrewDumper).to receive(:formula_info).and_return(
