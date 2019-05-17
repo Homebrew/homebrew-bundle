@@ -67,7 +67,7 @@ The `--no-restart` option will prevent `restart_service` from being added to ``b
 
 ### Cleanup
 
-You can also use `Brewfile` as a whitelist. It's useful for maintainers/testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
+You can also use `Brewfile` as a allow-list. It's useful for maintainers/testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
 
 ```bash
 brew bundle cleanup
