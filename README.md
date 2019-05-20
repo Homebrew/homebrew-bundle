@@ -67,7 +67,7 @@ The `--no-restart` option will prevent `restart_service` from being added to ``b
 
 ### Cleanup
 
-You can also use `Brewfile` to list the packages that should be installed exclusively, removing any package not present or dependent. This workflow is useful for maintainers or testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
+You can also use `Brewfile` to list the only packages that should be installed exclusively, removing any package not present or dependent. This workflow is useful for maintainers or testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
 
 ```bash
 brew bundle cleanup
