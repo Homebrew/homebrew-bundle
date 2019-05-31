@@ -86,7 +86,7 @@ GEM
     term-ansicolor (1.7.1)
       tins (~> 1.0)
     thor (0.20.3)
-    tins (1.20.2)
+    tins (1.20.3)
     unicode-display_width (1.6.0)
 
 PLATFORMS
