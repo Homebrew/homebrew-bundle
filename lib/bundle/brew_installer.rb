@@ -232,8 +232,12 @@ module Bundle
 
       puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
       unless Bundle.system("brew", "upgrade", @name)
-        @changed = nil
-        return :failed
+        # Formula may have been upgraded by a previous installation.
+        BrewInstaller.reset!
+        unless BrewInstaller.formula_installed_and_up_to_date?(@name)
+          @changed = nil
+          return :failed
+        end
       end
 
       @changed = true
