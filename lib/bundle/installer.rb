@@ -27,7 +27,7 @@ module Bundle
           Bundle::TapInstaller
         end
 
-        next if Bundle::Bouncer.refused? entry
+        next if Bundle::Skipper.skip? entry
 
         case cls.install(*arg)
         when :success

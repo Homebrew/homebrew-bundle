@@ -23,7 +23,7 @@ module Bundle
 
       def checkable_entries(all_entries)
         all_entries.select { |e| e.type == self.class::PACKAGE_TYPE }
-          .reject(&Bundle::Bouncer.method(:refused?))
+          .reject(&Bundle::Skipper.method(:skip?))
       end
 
       def format_checkable(entries)
