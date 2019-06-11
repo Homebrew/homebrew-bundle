@@ -9,6 +9,7 @@ describe Bundle::Commands::Install do
 
   context "when a Brewfile is not found" do
     it "raises an error" do
+      allow_any_instance_of(Pathname).to receive(:read).and_raise(Errno::ENOENT)
       allow(ARGV).to receive(:value).and_return(nil)
       expect { described_class.run }.to raise_error(RuntimeError)
     end
