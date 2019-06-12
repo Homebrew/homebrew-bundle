@@ -53,6 +53,13 @@ If a dependency is already installed and there is an upgrade available it will b
 
 `brew bundle` will look for `Brewfile` in the current directory. Use `--file` to specify a path to a different `Brewfile`.
 
+You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables:
+
+- `HOMEBREW_BUNDLE_BREW_SKIP`
+- `HOMEBREW_BUNDLE_CASK_SKIP`
+- `HOMEBREW_BUNDLE_MAS_SKIP`
+- `HOMEBREW_BUNDLE_TAP_SKIP`
+
 ### Dump
 
 You can create a `Brewfile` from all the existing Homebrew packages you have installed with:

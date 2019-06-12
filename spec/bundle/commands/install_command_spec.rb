@@ -9,6 +9,7 @@ describe Bundle::Commands::Install do
 
   context "when a Brewfile is not found" do
     it "raises an error" do
+      allow_any_instance_of(Pathname).to receive(:read).and_raise(Errno::ENOENT)
       allow(ARGV).to receive(:value).and_return(nil)
       expect { described_class.run }.to raise_error(RuntimeError)
     end
@@ -24,6 +25,16 @@ describe Bundle::Commands::Install do
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
+      expect { described_class.run }.not_to raise_error
+    end
+
+    it "does not raise an error when skippable" do
+      expect(Bundle::BrewInstaller).not_to receive(:install)
+
+      allow(Bundle::Skipper).to receive(:skip?).and_return(true)
+      allow(ARGV).to receive(:value).and_return(nil)
+      allow_any_instance_of(Pathname).to receive(:read)
+        .and_return("brew 'mysql'")
       expect { described_class.run }.not_to raise_error
     end
 
