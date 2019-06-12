@@ -28,6 +28,16 @@ describe Bundle::Commands::Install do
       expect { described_class.run }.not_to raise_error
     end
 
+    it "does not raise an error when skippable" do
+      expect(Bundle::BrewInstaller).not_to receive(:install)
+
+      allow(Bundle::Skipper).to receive(:skip?).and_return(true)
+      allow(ARGV).to receive(:value).and_return(nil)
+      allow_any_instance_of(Pathname).to receive(:read)
+        .and_return("brew 'mysql'")
+      expect { described_class.run }.not_to raise_error
+    end
+
     it "exits on failures" do
       allow(Bundle::BrewInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::CaskInstaller).to receive(:install).and_return(:failed)

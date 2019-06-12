@@ -53,6 +53,15 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       expect { do_check }.to raise_error(SystemExit)
     end
+
+    it "does not raise error on skippable formula" do
+      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(ARGV).to receive(:include?).and_return(true)
+      allow(Bundle::Skipper).to receive(:skip?).and_return(true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
+      expect { do_check }.not_to raise_error
+    end
   end
 
   context "when taps are not tapped" do
