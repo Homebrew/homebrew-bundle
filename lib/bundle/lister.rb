@@ -15,7 +15,7 @@ module Bundle
       return true if ARGV.include?("--all")
       return true if ARGV.include?("--casks") && type == :cask
       return true if ARGV.include?("--taps") && type == :tap
-      return true if ARGV.include?("--mas") && type == :mac_app_store
+      return true if ARGV.include?("--mas") && type == :mas
       return true if ARGV.include?("--brews") && type == :brew
       return true if type == :brew && ["--casks", "--taps", "--mas"].none? { |e| ARGV.include?(e) }
     end

@@ -18,7 +18,7 @@ module Bundle
         when :cask
           arg << entry.options
           Bundle::CaskInstaller
-        when :mac_app_store
+        when :mas
           arg << entry.options[:id]
           Bundle::MacAppStoreInstaller
         when :tap

@@ -60,7 +60,7 @@ module Bundle
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
 
-      @entries << Entry.new(:mac_app_store, name, id: id)
+      @entries << Entry.new(:mas, name, id: id)
     end
 
     def tap(name, clone_target = nil, pin: false)

@@ -3,7 +3,7 @@
 module Bundle
   module Checker
     class MacAppStoreChecker < Bundle::Checker::Base
-      PACKAGE_TYPE = :mac_app_store
+      PACKAGE_TYPE = :mas
       PACKAGE_TYPE_NAME = "App"
 
       def installed_and_up_to_date?(id)
