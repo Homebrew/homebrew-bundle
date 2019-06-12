@@ -6,7 +6,6 @@ module Bundle
 
     def list(entries)
       entries.each do |entry|
-        next if Bundle::Skipper.skip? entry
         puts entry.name if show? entry.type
       end
     end
