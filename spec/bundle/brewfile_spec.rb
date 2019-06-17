@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe Bundle::Brewfile do
   describe "path" do
-    let(:env_bundle_file_value) { "" }
+    let(:env_bundle_file_value) { nil }
     let(:has_file) { false }
     let(:file_value) { "" }
     let(:has_global) { false }
@@ -14,7 +14,15 @@ describe Bundle::Brewfile do
       allow(ARGV).to receive(:value).with("file").and_return(file_value)
       allow(ARGV).to receive(:include?).with("--global").and_return(has_global)
 
-      allow(ENV).to receive(:fetch).with("HOMEBREW_BUNDLE_FILE", "").and_return(env_bundle_file_value)
+      original_method = ENV.method(:[])
+      allow(ENV).to receive(:[]) do |env_string|
+        case env_string
+        when "HOMEBREW_BUNDLE_FILE"
+          env_bundle_file_value
+        else
+          original_method.call(env_string)
+        end
+      end
     end
 
     context "when `--file` is passed" do
@@ -35,6 +43,14 @@ describe Bundle::Brewfile do
             expect(described_class.path).to eq(expected_pathname)
           end
         end
+
+        context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+          let(:env_bundle_file_value) { "" }
+
+          it "returns the value specified by `--file` path" do
+            expect(described_class.path).to eq(expected_pathname)
+          end
+        end
       end
 
       context "with an absolute path" do
@@ -47,6 +63,14 @@ describe Bundle::Brewfile do
 
         context "and HOMEBREW_BUNDLE_FILE is set" do
           let(:env_bundle_file_value) { "/path/to/Brewfile" }
+
+          it "returns the value specified by `--file` path" do
+            expect(described_class.path).to eq(expected_pathname)
+          end
+        end
+
+        context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+          let(:env_bundle_file_value) { "" }
 
           it "returns the value specified by `--file` path" do
             expect(described_class.path).to eq(expected_pathname)
@@ -71,6 +95,14 @@ describe Bundle::Brewfile do
           end
         end
 
+        context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+          let(:env_bundle_file_value) { "" }
+
+          it "returns the value specified by `--file` path" do
+            expect(described_class.path).to eq(expected_pathname)
+          end
+        end
+
         context "when `dash_writes_to_stdout` is true" do
           let(:expected_pathname) { Pathname.new("/dev/stdout") }
 
@@ -87,14 +119,40 @@ describe Bundle::Brewfile do
             expect(described_class.path(dash_writes_to_stdout: true)).to eq(expected_pathname)
           end
         end
+
+        context "when `dash_writes_to_stdout` is true and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+          let(:expected_pathname) { Pathname.new("/dev/stdout") }
+          let(:env_bundle_file_value) { "" }
+
+          it "returns the value specified by `--file` path" do
+            expect(described_class.path(dash_writes_to_stdout: true)).to eq(expected_pathname)
+          end
+        end
       end
     end
 
     context "when `--global` is passed" do
       let(:has_global) { true }
+      let(:expected_pathname) { Pathname.new("#{ENV["HOME"]}/.Brewfile") }
 
       it "returns the expected path" do
-        expect(described_class.path).to eq(Pathname.new("#{ENV["HOME"]}/.Brewfile"))
+        expect(described_class.path).to eq(expected_pathname)
+      end
+
+      context "and HOMEBREW_BUNDLE_FILE is set" do
+        let(:env_bundle_file_value) { "/path/to/Brewfile" }
+
+        it "returns the value specified by `--file` path" do
+          expect { described_class.path }.to raise_error(RuntimeError)
+        end
+      end
+
+      context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+        let(:env_bundle_file_value) { "" }
+
+        it "returns the value specified by `--file` path" do
+          expect(described_class.path).to eq(expected_pathname)
+        end
       end
     end
 
@@ -107,6 +165,14 @@ describe Bundle::Brewfile do
 
       context "that is `` (empty)" do
         let(:env_bundle_file_value) { "" }
+
+        it "defaults to `${PWD}/Brewfile`" do
+          expect(described_class.path).to eq(Pathname.new("Brewfile").expand_path(Dir.pwd))
+        end
+      end
+
+      context "that is `nil`" do
+        let(:env_bundle_file_value) { nil }
 
         it "defaults to `${PWD}/Brewfile`" do
           expect(described_class.path).to eq(Pathname.new("Brewfile").expand_path(Dir.pwd))

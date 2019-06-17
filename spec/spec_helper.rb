@@ -11,6 +11,7 @@ PROJECT_ROOT ||= File.expand_path("..", __dir__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
 $LOAD_PATH.unshift(STUB_PATH)
 
+require "object"
 require "global"
 require "bundle"
 
