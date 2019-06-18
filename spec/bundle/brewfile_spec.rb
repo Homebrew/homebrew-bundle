@@ -5,12 +5,10 @@ require "spec_helper"
 describe Bundle::Brewfile do
   describe "path" do
     let(:env_bundle_file_value) { nil }
-    let(:has_file) { false }
     let(:file_value) { "" }
     let(:has_global) { false }
 
     before do
-      allow(ARGV).to receive(:include?).with("--file").and_return(has_file)
       allow(ARGV).to receive(:value).with("file").and_return(file_value)
       allow(ARGV).to receive(:include?).with("--global").and_return(has_global)
 
@@ -26,8 +24,6 @@ describe Bundle::Brewfile do
     end
 
     context "when `--file` is passed" do
-      let(:has_file) { true }
-
       context "with a relative path" do
         let(:file_value) { "path/to/Brewfile" }
         let(:expected_pathname) { Pathname.new(file_value).expand_path(Dir.pwd) }

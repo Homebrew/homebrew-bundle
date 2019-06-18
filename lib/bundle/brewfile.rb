@@ -11,7 +11,7 @@ module Bundle
           if ARGV.include?("--global")
             raise "'HOMEBREW_BUNDLE_FILE' can not be specified with '--global'" if env_bundle_file.present?
             "#{ENV["HOME"]}/.Brewfile"
-          elsif ARGV.include?("--file")
+          elsif not ARGV.value("file").to_s.empty?
             handle_file_value(ARGV.value("file"), dash_writes_to_stdout)
           elsif env_bundle_file.present?
             env_bundle_file
