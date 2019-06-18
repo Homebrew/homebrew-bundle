@@ -51,7 +51,7 @@
 #:       --mas                          output Mac App Store dependencies.
 
 if !defined?(HOMEBREW_VERSION) || !HOMEBREW_VERSION ||
-   Version.new(HOMEBREW_VERSION) < Version.new("1.3.0")
+   Version.new(HOMEBREW_VERSION) < Version.new("2.1.0")
   odie "Your Homebrew is outdated. Please run `brew update`."
 end
 
