@@ -5,26 +5,37 @@ module Bundle
     module_function
 
     def path(dash_writes_to_stdout: false)
-      if ARGV.include?("--global")
-        Pathname.new("#{ENV["HOME"]}/.Brewfile")
-      else
-        filename = ARGV.value("file")
-        if filename == "-"
-          filename = if dash_writes_to_stdout
-            "/dev/stdout"
+      env_bundle_file = ENV["HOMEBREW_BUNDLE_FILE"]
+
+      filename =
+          if ARGV.include?("--global")
+            raise "'HOMEBREW_BUNDLE_FILE' can not be specified with '--global'" if env_bundle_file.present?
+            "#{ENV["HOME"]}/.Brewfile"
+          elsif ARGV.include?("--file")
+            handle_file_value(ARGV.value("file"), dash_writes_to_stdout)
+          elsif env_bundle_file.present?
+            env_bundle_file
           else
-            "/dev/stdin"
+            "Brewfile"
           end
-        end
-        filename ||= "Brewfile"
-        Pathname.new(filename).expand_path(Dir.pwd)
-      end
+
+      Pathname.new(filename).expand_path(Dir.pwd)
     end
 
     def read
       Brewfile.path.read
     rescue Errno::ENOENT
       raise "No Brewfile found"
+    end
+
+    def handle_file_value(filename, dash_writes_to_stdout)
+      if filename != "-"
+        filename
+      elsif dash_writes_to_stdout
+        "/dev/stdout"
+      else
+        "/dev/stdin"
+      end
     end
   end
 end
