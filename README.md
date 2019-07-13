@@ -6,9 +6,8 @@ Bundler for non-Ruby dependencies from Homebrew.
 
 ## Requirements
 
-[Homebrew](https://github.com/Homebrew/brew) or [Linuxbrew](https://github.com/Linuxbrew/brew) are used for installing the dependencies.
-Linuxbrew is a fork of Homebrew for Linux, while Homebrew only works on macOS.
-This tool is developed for use with Homebrew on macOS but might work with Linuxbrew (but is unsupported so don't file Linux issues, please).
+[Homebrew](https://github.com/Homebrew/brew) on macOS for installing the dependencies.
+This tool might work with [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) but is unsupported so don't file Linux issues.
 
 [Homebrew Cask](https://github.com/Homebrew/homebrew-cask) is optional and used for installing Mac applications.
 
