@@ -5,9 +5,17 @@ module Bundle
     module_function
 
     def skip?(entry)
-      Array(skipped_entries[entry.type]).include?(entry.name).tap do |skipped|
-        puts Formatter.warning "Skipping #{entry.name}" if skipped
-      end
+      entry_type_skips = Array(skipped_entries[entry.type])
+      return false if entry_type_skips.empty?
+
+      # Check the name or ID particularly for Mac App Store entries where they
+      # can have spaces in the names (and the `mas` output format changes on
+      # occasion).
+      entry_ids = [entry.name, entry.options[:id]&.to_s].compact
+      return false if (entry_type_skips & entry_ids).empty?
+
+      puts Formatter.warning "Skipping #{entry.name}"
+      true
     end
 
     private_class_method
