@@ -70,7 +70,7 @@ module Bundle
       def casks_to_uninstall
         @dsl ||= Bundle::Dsl.new(Brewfile.read)
         kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
-        current_casks = Bundle::CaskDumper.casks
+        current_casks = Bundle::CaskDumper.casks(full_names_only: true)
         current_casks - kept_casks
       end
 
