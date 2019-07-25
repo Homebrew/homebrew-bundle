@@ -12,10 +12,15 @@ STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
 $LOAD_PATH.unshift(STUB_PATH)
 
 require "object"
+require "os"
 require "global"
 require "bundle"
 
-Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each { |f| require f }
+Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each do |file|
+  next if file.include?("/extend/os/")
+
+  require file
+end
 
 formatters = [SimpleCov::Formatter::HTMLFormatter]
 
