@@ -6,8 +6,7 @@ Bundler for non-Ruby dependencies from Homebrew.
 
 ## Requirements
 
-[Homebrew](https://github.com/Homebrew/brew) on macOS for installing the dependencies.
-This tool might work with [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) but is unsupported so don't file Linux issues.
+[Homebrew](https://github.com/Homebrew/brew) (on macOS or [Linux](https://docs.brew.sh/Homebrew-on-Linux)) for installing the dependencies.
 
 [Homebrew Cask](https://github.com/Homebrew/homebrew-cask) is optional and used for installing Mac applications.
 
@@ -43,6 +42,9 @@ cask "homebrew/cask-fonts/font-charter"
 
 mas "1Password", id: 443987910
 ```
+
+`cask` and `mas` entries are automatically skipped on Linux.
+Other entries can be run only on (or not on) Linux with `if OS.mac?` or `if OS.linux?`.
 
 ### Install
 
