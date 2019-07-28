@@ -31,7 +31,7 @@ describe Bundle do
     end
   end
 
-  context "check for brew cask" do
+  context "check for brew cask", :needs_macos do
     it "finds it when present" do
       allow(File).to receive(:directory?).with("#{HOMEBREW_PREFIX}/Caskroom").and_return(true)
       allow(File).to receive(:directory?).with("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask").and_return(true)
@@ -39,14 +39,14 @@ describe Bundle do
     end
   end
 
-  context "check for brew services" do
+  context "check for brew services", :needs_macos do
     it "finds it when present" do
       allow(described_class).to receive(:which).and_return(true)
       expect(described_class.services_installed?).to be(true)
     end
   end
 
-  context "check for mas" do
+  context "check for mas", :needs_macos do
     it "finds it when present" do
       allow(described_class).to receive(:which).and_return(true)
       expect(described_class.mas_installed?).to be(true)

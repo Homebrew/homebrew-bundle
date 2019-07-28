@@ -21,7 +21,7 @@ describe Bundle::Skipper do
       end
     end
 
-    context "with an unlisted cask" do
+    context "with an unlisted cask", :needs_macos do
       let(:entry) { Bundle::Dsl::Entry.new(:cask, "java") }
 
       it "returns false" do

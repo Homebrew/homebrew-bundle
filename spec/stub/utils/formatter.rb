@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 module Formatter
-  module_function
+  class << self
+    def columns(*); end
 
-  def columns(*); end
-
-  def success(*args)
-    args
-  end
-
-  def error(*args)
-    args
+    def success(*args)
+      args
+    end
+    alias warning success
+    alias error success
   end
 end

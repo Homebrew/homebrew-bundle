@@ -34,7 +34,7 @@ describe Bundle::Commands::Check do
     end
   end
 
-  context "when casks are not installed" do
+  context "when casks are not installed", :needs_macos do
     it "raises an error" do
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
@@ -74,7 +74,7 @@ describe Bundle::Commands::Check do
     end
   end
 
-  context "when apps are not installed" do
+  context "when apps are not installed", :needs_macos do
     it "raises an error" do
       allow_any_instance_of(Bundle::MacAppStoreDumper).to receive(:app_ids).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
@@ -174,7 +174,7 @@ describe Bundle::Commands::Check do
       expect { do_check }.to raise_error(SystemExit)
     end
 
-    it "stops checking after the first missing cask" do
+    it "stops checking after the first missing cask", :needs_macos do
       allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
@@ -183,7 +183,7 @@ describe Bundle::Commands::Check do
       expect { do_check }.to raise_error(SystemExit)
     end
 
-    it "stops checking after the first missing mac app" do
+    it "stops checking after the first missing mac app", :needs_macos do
       allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
