@@ -1,10 +1,22 @@
 # frozen_string_literal: true
 
+def macos?
+  RUBY_PLATFORM[/darwin/]
+end
+
+def linux?
+  RUBY_PLATFORM[/linux/]
+end
+
 require "simplecov"
 SimpleCov.start do
   add_filter "/test/"
   add_filter "/vendor/"
-  minimum_coverage 100
+  if macos?
+    minimum_coverage 100
+  else
+    minimum_coverage 98
+  end
 end
 
 PROJECT_ROOT ||= File.expand_path("..", __dir__)
@@ -57,5 +69,13 @@ RSpec.configure do |config|
 
   config.around do |example|
     Bundler.with_clean_env { example.run }
+  end
+
+  config.before(:each, :needs_linux) do
+    skip "Not on Linux." unless linux?
+  end
+
+  config.before(:each, :needs_macos) do
+    skip "Not on macOS." unless macos?
   end
 end
