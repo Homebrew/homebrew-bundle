@@ -1,16 +1,20 @@
 jobs:
 - job: macOS
   pool:
-    vmImage: xcode9-macos10.13
+    vmImage: macOS-10.14
   steps:
     - bash: |
         set -e
-        sudo xcode-select --switch /Applications/Xcode_10.app/Contents/Developer
+        sudo xcode-select --switch /Applications/Xcode_10.2.app/Contents/Developer
         brew update-reset
         ln -s "$PWD" "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-bundle"
-        brew style homebrew/bundle
         bundle install
-        bundle exec rake
+      displayName: Setup
+
+    - bash: brew style homebrew/bundle
+      displayName: Style
+
+    - bash: bundle exec rspec
       displayName: Tests
       env:
         COVERALLS_REPO_TOKEN: $(coveralls.homebrewBundleApiToken)
@@ -22,3 +26,20 @@ jobs:
         summaryFileLocation: $(Build.SourcesDirectory)/coverage/coverage.xml
         reportDirectory: $(Build.SourcesDirectory)/coverage
         failIfCoverageEmpty: true
+
+- job: Linux
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+    - task: UseRubyVersion@0
+      inputs:
+        versionSpec: '>= 2.3'
+
+    - bash: |
+        set -e
+        gem install bundler
+        bundle install --retry=3 --jobs=4
+      displayName: Setup
+
+    - bash: bundle exec rspec
+      displayName: Tests
