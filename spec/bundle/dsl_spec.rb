@@ -4,13 +4,13 @@ require "spec_helper"
 
 describe Bundle::Dsl do
   describe described_class::Entry do
-    subject { described_class.new(:brew, entry_name) }
+    subject(:entry) { described_class.new(:brew, entry_name) }
 
     let(:entry_name) { :foo }
 
     describe "#to_s" do
       it "overrides the default struct implementation" do
-        expect(subject.to_s).to eq entry_name
+        expect(entry.to_s).to eq entry_name
       end
     end
   end

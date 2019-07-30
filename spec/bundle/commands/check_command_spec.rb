@@ -6,10 +6,10 @@ describe Bundle::Commands::Check do
   RSpec::Matchers.define_negated_matcher :not_raise_error, :raise_error
 
   def do_check(expected_error = nil, expected_output = //)
-    args = expected_error ? [:raise_error, expected_error] : %i[not_raise_error]
-    expect {
+    args = expected_error ? [:raise_error, expected_error] : [:not_raise_error]
+    expect do
       Bundle::Commands::Check.run
-    }.to output(expected_output).to_stdout.and send(*args)
+    end.to output(expected_output).to_stdout.and send(*args)
   end
 
   before do
