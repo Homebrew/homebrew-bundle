@@ -85,13 +85,13 @@ describe Bundle::Commands::Check do
   end
 
   context "when service is not started" do
-    let(:expected_output) {
+    let(:expected_output) do
       <<~MSG
         brew bundle can't satisfy your Brewfile's dependencies.
         → Service def needs to be started.
         Satisfy missing dependencies with `brew bundle install`.
       MSG
-    }
+    end
 
     before do
       Bundle::Checker.reset!
