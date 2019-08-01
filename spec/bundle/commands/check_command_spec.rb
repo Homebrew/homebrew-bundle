@@ -85,6 +85,14 @@ describe Bundle::Commands::Check do
   end
 
   context "when service is not started" do
+    let(:expected_output) do
+      <<~MSG
+        brew bundle can't satisfy your Brewfile's dependencies.
+        → Service def needs to be started.
+        Satisfy missing dependencies with `brew bundle install`.
+      MSG
+    end
+
     before do
       Bundle::Checker.reset!
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
@@ -111,14 +119,14 @@ describe Bundle::Commands::Check do
     context "restart_service is true" do
       it "raises an error" do
         allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc', restart_service: true\nbrew 'def', restart_service: true")
-        expect { do_check }.to raise_error(SystemExit)
+        expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
       end
     end
 
     context "start_service is true" do
       it "raises an error" do
         allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc', start_service: true\nbrew 'def', start_service: true")
-        expect { do_check }.to raise_error(SystemExit)
+        expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
       end
     end
   end
