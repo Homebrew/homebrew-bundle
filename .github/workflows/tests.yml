@@ -1,0 +1,36 @@
+name: GitHub Actions CI
+on: [push]
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@master
+
+    - name: Reset system Homebrew installation
+      run: brew update-reset
+      if: matrix.os == 'macOS-latest'
+
+    - name: Check Ruby style
+      run: brew style homebrew/bundle
+      if: matrix.os == 'macOS-latest'
+
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        version: '>=2.3'
+      if: matrix.os == 'ubuntu-latest'
+
+    - name: Install RubyGems
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+
+    - name: Run RSpec tests
+      run: bundle exec rspec
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}

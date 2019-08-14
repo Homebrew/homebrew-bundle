@@ -36,21 +36,18 @@ end
 
 formatters = [SimpleCov::Formatter::HTMLFormatter]
 
-# Coveralls in Azure Pipelines
-if ENV["COVERALLS_REPO_TOKEN"] && ENV["TF_BUILD"]
+if macos? && ENV["COVERALLS_REPO_TOKEN"]
   require "coveralls"
 
   formatters << Coveralls::SimpleCov::Formatter
 
   ENV["CI"] = "1"
-  ENV["CI_NAME"] = "azure-pipelines"
-  ENV["CI_BUILD_NUMBER"] = ENV["BUILD_BUILDID"]
-  ENV["CI_BUILD_URL"] = "#{ENV["SYSTEM_TEAMFOUNDATIONSERVERURI"]}#{ENV["SYSTEM_TEAMPROJECT"]}/_build/results?buildId=#{ENV["BUILD_BUILDID"]}"
-  ENV["CI_BRANCH"] = ENV["BUILD_SOURCEBRANCH"]
-  ENV["CI_PULL_REQUEST"] = ENV["SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"]
-
-  require "simplecov-cobertura"
-  formatters << SimpleCov::Formatter::CoberturaFormatter
+  ENV["CI_NAME"] = "github-actions"
+  ENV["CI_BUILD_NUMBER"] = ENV["RUNNER_TRACKING_ID"]
+  ENV["CI_BRANCH"] = ENV["GITHUB_REF"]
+  # TODO: fill out values when more env vars available.
+  # ENV["CI_BUILD_URL"] =
+  # ENV["CI_PULL_REQUEST"] = ENV["SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"]
 end
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)
