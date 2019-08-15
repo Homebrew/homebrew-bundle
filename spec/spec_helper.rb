@@ -43,11 +43,11 @@ if macos? && ENV["COVERALLS_REPO_TOKEN"]
 
   ENV["CI"] = "1"
   ENV["CI_NAME"] = "github-actions"
-  ENV["CI_BUILD_NUMBER"] = ENV["RUNNER_TRACKING_ID"]
-  ENV["CI_BRANCH"] = ENV["GITHUB_REF"]
-  # TODO: fill out values when more env vars available.
-  # ENV["CI_BUILD_URL"] =
-  # ENV["CI_PULL_REQUEST"] = ENV["SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"]
+  ENV["CI_BUILD_NUMBER"] = ENV["GITHUB_REF"]
+  ENV["CI_BRANCH"] = ENV["HEAD_GITHUB_REF"]
+  %r{refs/pull/(?<pr>\d+)/merge} =~ ENV["GITHUB_REF"]
+  ENV["CI_PULL_REQUEST"] = pr
+  ENV["CI_BUILD_URL"] = "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/pull/#{pr}/checks"
 end
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)

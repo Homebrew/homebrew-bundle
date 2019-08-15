@@ -1,5 +1,8 @@
 name: GitHub Actions CI
-on: [push]
+on:
+  push:
+    branches: master
+  pull_request: []
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
