@@ -61,7 +61,7 @@ module Bundle
 
           cleanup = system_output_no_stderr("brew", "cleanup", "--dry-run")
           unless cleanup.empty?
-            puts "Would 'brew cleanup':"
+            puts "Would `brew cleanup`:"
             puts cleanup
           end
         end

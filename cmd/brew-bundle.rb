@@ -4,37 +4,37 @@
 #:
 #:  Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask and the Mac App Store.
 #:
-#:          --file=                      read the `Brewfile` from this file. Use `--file=-` to output to stdin/stdout.
-#:          --global                     read the `Brewfile` from `~/.Brewfile`.
+#:          --file=                      Read the `Brewfile` from this file. Use `--file=-` to pipe to stdin/stdout.
+#:          --global                     Read the `Brewfile` from `~/.Brewfile`.
 #:
 #:  `brew bundle` [`install`] [`-v`|`--verbose`] [`--no-upgrade`] [`--file=`<path>|`--global`]
 #:
 #:  Install or upgrade all dependencies in a Brewfile.
 #:
-#:      -v, --verbose                    print the output from commands as they are run.
-#:          --no-upgrade                 don't run `brew upgrade` on outdated dependencies. Note they may still be upgraded by `brew install` if needed.
+#:      -v, --verbose                    Print the output from commands as they are run.
+#:          --no-upgrade                 Don't run `brew upgrade` on outdated dependencies. Note they may still be upgraded by `brew install` if needed.
 #:
 #:  `brew bundle dump` [`--force`] [`--describe`] [`--no-restart`] [`--file=`<path>|`--global`]
 #:
 #:  Write all installed casks/formulae/taps into a Brewfile.
 #:
-#:          --force                      overwrite an existing `Brewfile`.
-#:          --describe                   output a description comment above each line. This comment will not be output if the dependency does not have a description.
-#:          --no-restart                 do not add `restart_service` to formula lines.
+#:          --force                      Overwrite an existing `Brewfile`.
+#:          --describe                   Include a description comment above each line, unless the dependency does not have a description.
+#:          --no-restart                 Do not add `restart_service` to formula lines.
 #:
 #:  `brew bundle cleanup` [`--force`] [`--zap`] [`--file=`<path>|`--global`]
 #:
 #:  Uninstall all dependencies not listed in a Brewfile.
 #:
-#:          --force                      actually perform the cleanup operations.
-#:          --zap                        casks will be removed using the `zap` command instead of `uninstall`.
+#:          --force                      Actually perform the cleanup operations.
+#:          --zap                        Remove casks using the `zap` command instead of `uninstall`.
 #:
-#:  `brew bundle check` [`--no-upgrade`] [`--file=`<path>|`--global`] [`--verbose`]
+#:  `brew bundle check` [`--verbose`] [`--no-upgrade`] [`--file=`<path>|`--global`]
 #:
 #:  Check if all dependencies are installed in a Brewfile.
 #:
-#:          --no-upgrade                 ignore outdated dependencies.
-#:      -v, --verbose                    output and check for all missing dependencies.
+#:      -v, --verbose                    Print and check for all missing dependencies.
+#:          --no-upgrade                 Ignore outdated dependencies.
 #:
 #:  `brew bundle exec` <command>
 #:
@@ -42,13 +42,13 @@
 #:
 #:  `brew bundle list` [`--all`|`--brews`|`--casks`|`--taps`|`--mas`] [`--file=`<path>|`--global`]
 #:
-#:  List all dependencies present in a Brewfile. By default, only brew dependencies are output.
+#:  List all dependencies present in a Brewfile. By default, only Homebrew dependencies are listed.
 #:
-#:          --all                        output all dependencies.
-#:          --brews                      output Homebrew dependencies.
-#:          --casks                      output Homebrew Cask dependencies.
-#:          --taps                       output tap dependencies.
-#:          --mas                        output Mac App Store dependencies.
+#:          --all                        List all dependencies.
+#:          --brews                      List Homebrew dependencies.
+#:          --casks                      List Homebrew Cask dependencies.
+#:          --taps                       List tap dependencies.
+#:          --mas                        List Mac App Store dependencies.
 
 if !defined?(HOMEBREW_VERSION) || !HOMEBREW_VERSION ||
    Version.new(HOMEBREW_VERSION) < Version.new("2.1.0")
