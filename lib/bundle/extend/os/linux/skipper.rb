@@ -6,7 +6,7 @@ module Bundle
       def skip?(entry)
         return generic_skip?(entry) unless [:cask, :mas].include?(entry.type)
 
-        puts Formatter.warning "Skipping #{entry.name} (on Linux)"
+        puts Formatter.warning "Skipping #{entry.type} #{entry.name} (on Linux)"
         true
       end
     end
