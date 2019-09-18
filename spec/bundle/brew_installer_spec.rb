@@ -151,6 +151,7 @@ describe Bundle::BrewInstaller do
       Bundle::BrewDumper.reset!
       described_class.reset!
       allow(described_class).to receive(:outdated_formulae).and_return(%w[bar])
+      allow_any_instance_of(Formula).to receive(:outdated?).and_return(true)
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         {
           name:         "foo",
@@ -207,6 +208,7 @@ describe Bundle::BrewInstaller do
       before do
         allow(described_class).to receive(:installed_formulae).and_return([formula])
         allow_any_instance_of(described_class).to receive(:conflicts_with).and_return([])
+        allow_any_instance_of(Formula).to receive(:outdated?).and_return(true)
       end
 
       context "when formula upgradable" do

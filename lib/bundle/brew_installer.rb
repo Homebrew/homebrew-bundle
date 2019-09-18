@@ -130,7 +130,8 @@ module Bundle
     end
 
     def self.formula_upgradable?(formula)
-      formula_in_array?(formula, upgradable_formulae)
+      # Check local cache first and then authoratitive Homebrew source.
+      formula_in_array?(formula, upgradable_formulae) && Formula[formula].outdated?
     end
 
     def self.installed_formulae
@@ -232,12 +233,8 @@ module Bundle
 
       puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
       unless Bundle.system("brew", "upgrade", @name)
-        # Formula may have been upgraded by a previous installation.
-        BrewInstaller.reset!
-        unless BrewInstaller.formula_installed_and_up_to_date?(@name)
-          @changed = nil
-          return :failed
-        end
+        @changed = nil
+        return :failed
       end
 
       @changed = true
