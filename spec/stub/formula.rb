@@ -31,4 +31,8 @@ class Formula
   def self.installed
     []
   end
+
+  def self.[](name)
+    new(name)
+  end
 end
