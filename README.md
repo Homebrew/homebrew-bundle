@@ -2,8 +2,6 @@
 
 Bundler for non-Ruby dependencies from Homebrew.
 
-[![Azure Pipelines](https://img.shields.io/vso/build/Homebrew/56a87eb4-3180-495a-9117-5ed6c79da737/5.svg)](https://dev.azure.com/Homebrew/Homebrew/_build/latest?definitionId=5)
-
 ## Requirements
 
 [Homebrew](https://github.com/Homebrew/brew) (on macOS or [Linux](https://docs.brew.sh/Homebrew-on-Linux)) for installing the dependencies.
