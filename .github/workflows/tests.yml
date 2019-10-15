@@ -25,7 +25,7 @@ jobs:
     - name: Set up Ruby
       uses: actions/setup-ruby@v1
       with:
-        version: '>=2.3'
+        ruby-version: '>=2.3'
       if: matrix.os == 'ubuntu-latest'
 
     - name: Install RubyGems
