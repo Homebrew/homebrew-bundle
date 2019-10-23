@@ -51,4 +51,32 @@ describe Bundle::CaskDumper do
       expect(dumper.dump(%w[baz])).to eql ["cask \"baz\"", "cask \"foo\"\ncask \"bar\""]
     end
   end
+
+  describe "#formula_dependencies" do
+    context "when the given casks don't have formula dependencies" do
+      before do
+        allow(described_class)
+          .to receive(:`)
+          .with("brew cask info foo --json=v1")
+          .and_return("[{\"depends_on\":{}}]")
+      end
+
+      it "returns an empty array" do
+        expect(dumper.formula_dependencies(["foo"])).to eql([])
+      end
+    end
+
+    context "when multiple casks have the same dependency" do
+      before do
+        allow(described_class)
+          .to receive(:`)
+          .with("brew cask info foo bar --json=v1")
+          .and_return("[{\"depends_on\":{\"formula\":[\"baz\",\"qux\"]}},{\"depends_on\":{\"formula\":[\"baz\"]}}]")
+      end
+
+      it "returns an array of unique formula dependencies" do
+        expect(dumper.formula_dependencies(["foo", "bar"])).to eql(["baz", "qux"])
+      end
+    end
+  end
 end

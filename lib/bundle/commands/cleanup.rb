@@ -10,6 +10,7 @@ module Bundle
 
       def reset!
         @dsl = nil
+        @kept_casks = nil
         Bundle::CaskDumper.reset!
         Bundle::BrewDumper.reset!
         Bundle::TapDumper.reset!
@@ -68,8 +69,6 @@ module Bundle
       end
 
       def casks_to_uninstall
-        @dsl ||= Bundle::Dsl.new(Brewfile.read)
-        kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
         current_casks = Bundle::CaskDumper.casks(full_names_only: true)
         current_casks - kept_casks
       end
@@ -77,6 +76,8 @@ module Bundle
       def formulae_to_uninstall
         @dsl ||= Bundle::Dsl.new(Brewfile.read)
         kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+        kept_cask_formula_dependencies = Bundle::CaskDumper.formula_dependencies(kept_casks)
+        kept_formulae += kept_cask_formula_dependencies
         kept_formulae.map! do |f|
           Bundle::BrewDumper.formula_aliases[f] ||
             Bundle::BrewDumper.formula_oldnames[f] ||
@@ -89,6 +90,13 @@ module Bundle
           Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
         end
         current_formulae.map { |f| f[:full_name] }
+      end
+
+      def kept_casks
+        return @kept_casks if @kept_casks
+
+        @dsl ||= Bundle::Dsl.new(Brewfile.read)
+        @kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
       end
 
       def recursive_dependencies(current_formulae, formulae_names, top_level = true)
