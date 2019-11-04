@@ -30,7 +30,7 @@ jobs:
 
     - name: Install RubyGems
       run: |
-        gem install bundler
+        gem install bundler -v "~>1"
         bundle install --jobs 4 --retry 3
 
     - name: Run RSpec tests
