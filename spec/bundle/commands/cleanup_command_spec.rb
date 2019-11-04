@@ -44,7 +44,9 @@ describe Bundle::Commands::Cleanup do
         { name: "hasbuilddependency2", full_name: "hasbuilddependency2", poured_from_bottle?: false, build_dependencies: ["builddependency2"] },
         { name: "builddependency1", full_name: "builddependency1" },
         { name: "builddependency2", full_name: "builddependency2" },
+        { name: "caskdependency", full_name: "homebrew/tap/caskdependency" },
       ].map { |f| { dependencies: [], build_dependencies: [] }.merge(f) }
+      allow(Bundle::CaskDumper).to receive(:formula_dependencies).and_return(%w[caskdependency])
       expect(described_class.formulae_to_uninstall).to eql %w[
         c
         homebrew/tap/e
