@@ -31,6 +31,8 @@ module Bundle
     end
 
     def formula_dependencies(cask_list)
+      return [] unless cask_list.present?
+
       cask_info_response = `brew cask info #{cask_list.join(" ")} --json=v1`
       cask_info = JSON.parse(cask_info_response)
 
