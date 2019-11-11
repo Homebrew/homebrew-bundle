@@ -77,8 +77,6 @@ GEM
       docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-    simplecov-cobertura (1.3.1)
-      simplecov (~> 0.8)
     simplecov-html (0.10.2)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
@@ -95,7 +93,6 @@ DEPENDENCIES
   guard-rubocop
   rspec
   simplecov
-  simplecov-cobertura
 
 BUNDLED WITH
    1.17.2

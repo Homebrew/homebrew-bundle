@@ -6,5 +6,4 @@ group :test do
   gem "guard-rubocop"
   gem "rspec"
   gem "simplecov"
-  gem "simplecov-cobertura"
 end
