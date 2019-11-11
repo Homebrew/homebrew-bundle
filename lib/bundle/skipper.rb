@@ -3,7 +3,7 @@
 module Bundle
   module Skipper
     class << self
-      def skip?(entry)
+      def skip?(entry, silent: false)
         entry_type_skips = Array(skipped_entries[entry.type])
         return false if entry_type_skips.empty?
 
@@ -12,6 +12,7 @@ module Bundle
         # occasion).
         entry_ids = [entry.name, entry.options[:id]&.to_s].compact
         return false if (entry_type_skips & entry_ids).empty?
+        return true if silent
 
         puts Formatter.warning "Skipping #{entry.name}"
         true
