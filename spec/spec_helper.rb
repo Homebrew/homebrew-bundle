@@ -10,7 +10,6 @@ end
 
 require "simplecov"
 SimpleCov.start do
-  add_filter "/test/"
   add_filter "/vendor/"
   if macos?
     minimum_coverage 100
