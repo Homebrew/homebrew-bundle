@@ -146,7 +146,7 @@ If your software needs specific versions then perhaps you'll want to look at usi
 
 ## Tests
 
-Tests can be run with `bundle && bundle exec rake spec`
+Tests can be run with `bundle install && bundle exec rspec`
 
 ## Copyright
 
