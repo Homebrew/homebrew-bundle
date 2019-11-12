@@ -5,6 +5,7 @@ require "spec_helper"
 describe Bundle::Commands::Install do
   before do
     allow_any_instance_of(IO).to receive(:puts)
+    allow(Bundle::Locker).to receive(:write_lockfile?).and_return(false)
   end
 
   context "when a Brewfile is not found" do
@@ -43,6 +44,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::CaskInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::TapInstaller).to receive(:install).and_return(:failed)
+      allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
 
       allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)

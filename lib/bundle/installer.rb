@@ -42,13 +42,18 @@ module Bundle
         end
       end
 
-      if failure.zero?
-        puts Formatter.success("Homebrew Bundle complete! #{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed.")
-      else
+      unless failure.zero?
         puts Formatter.error("Homebrew Bundle failed! #{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install.")
+        if (lock = Bundle::Locker.lockfile) && lock.exist?
+          puts Formatter.error("Check for differences in your #{lock.basename}!")
+        end
+        return false
       end
 
-      failure.zero?
+      Bundle::Locker.lock(entries)
+
+      puts Formatter.success("Homebrew Bundle complete! #{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed.")
+      true
     end
   end
 end

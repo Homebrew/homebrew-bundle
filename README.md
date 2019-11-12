@@ -63,6 +63,12 @@ You can skip the installation of dependencies by adding space-separated values t
 - `HOMEBREW_BUNDLE_MAS_SKIP`
 - `HOMEBREW_BUNDLE_TAP_SKIP`
 
+`brew bundle` will output a `Brewfile.lock.json` in the same directory as the `Brewfile` if all dependencies are installed successfully. This contains dependency and system status information which can be useful in debugging `brew bundle` failures and replicating a "last known good build" state.
+
+You can opt-out of this behaviour by setting the `HOMEBREW_BUNDLE_NO_LOCK` environment variable or passing the `--no-lock option`.
+
+You may wish to check this file into the same version control system as your `Brewfile` (or ensure your version control system ignores it if you'd prefer to rely on debugging information from a local machine).
+
 ### Dump
 
 You can create a `Brewfile` from all the existing Homebrew packages you have installed with:
@@ -140,7 +146,7 @@ If your software needs specific versions then perhaps you'll want to look at usi
 
 ## Tests
 
-Tests can be run with `bundle && bundle exec rake spec`
+Tests can be run with `bundle install && bundle exec rspec`
 
 ## Copyright
 
