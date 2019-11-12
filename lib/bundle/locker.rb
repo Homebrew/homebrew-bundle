@@ -46,6 +46,7 @@ module Bundle
         end
 
         if options.present?
+          lock["entries"][entry_type_key][entry.name] ||= {}
           lock["entries"][entry_type_key][entry.name]["options"] =
             options.deep_stringify_keys
         end
