@@ -67,9 +67,15 @@ describe Bundle::Locker do
           allow(locker).to receive(:`).with("mas list").and_return("497799835 Xcode (11.2)")
         end
 
-        it do
+        it "returns true" do
           expect(lockfile).to receive(:write)
           expect(locker.lock(entries)).to be true
+        end
+
+        it "returns false on a permission error" do
+          expect(lockfile).to receive(:write).and_raise(Errno::EPERM)
+          expect(locker).to receive(:opoo)
+          expect(locker.lock(entries)).to be false
         end
       end
 
@@ -79,7 +85,7 @@ describe Bundle::Locker do
           allow(OS).to receive(:linux?).and_return(true)
         end
 
-        it do
+        it "returns true" do
           expect(lockfile).to receive(:write)
           expect(locker.lock(entries)).to be true
         end
