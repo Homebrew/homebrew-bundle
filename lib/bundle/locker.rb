@@ -9,7 +9,8 @@ module Bundle
     module_function
 
     def lockfile
-      Brewfile.path.dirname/"Brewfile.lock.json"
+      brew_file_path = Brewfile.path
+      brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
     end
 
     def write_lockfile?

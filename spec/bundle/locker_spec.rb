@@ -10,6 +10,11 @@ describe Bundle::Locker do
       allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
       expect(locker.lockfile.class).to be Pathname
     end
+
+    it "correctly matches the Brewfile name in the lockfile name" do
+      allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Personal.brewfile"))
+      expect(locker.lockfile).to eq Pathname.new("Personal.brewfile.lock.json")
+    end
   end
 
   context ".write_lockfile?" do
