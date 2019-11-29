@@ -54,7 +54,7 @@ brew bundle
 
 If a dependency is already installed and there is an upgrade available it will be upgraded.
 
-`brew bundle` will look for `Brewfile` in the current directory. Use `--file` to specify a path to a different `Brewfile`.
+`brew bundle` will look for `Brewfile` in the current directory. Use `--file` to specify a path to a different `Brewfile`, or set the `HOMEBREW_BUNDLE_FILE` environment variable, with `--file` taking precedence if both are provided.
 
 You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables:
 
