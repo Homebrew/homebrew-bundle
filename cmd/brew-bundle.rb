@@ -50,9 +50,13 @@
 #:          --taps                       List tap dependencies.
 #:          --mas                        List Mac App Store dependencies.
 
+HOMEBREW_NEEDED_VERSION = "2.1.0"
 if !defined?(HOMEBREW_VERSION) || !HOMEBREW_VERSION ||
-   Version.new(HOMEBREW_VERSION) < Version.new("2.1.0")
-  odie "Your Homebrew is outdated. Please run `brew update`."
+   Version.new(HOMEBREW_VERSION) < Version.new(HOMEBREW_NEEDED_VERSION)
+  odie <<~EOS
+    Your Homebrew is outdated (need >=#{HOMEBREW_NEEDED_VERSION}, found #{HOMEBREW_VERSION} at #{HOMEBREW_PREFIX}).
+    Please run `brew update`.
+  EOS
 end
 
 BUNDLE_ROOT = File.expand_path "#{File.dirname(__FILE__)}/.."
