@@ -36,7 +36,6 @@ brew "mysql@5.6", restart_service: true, link: true, conflicts_with: ["mysql"]
 cask "firefox", args: { appdir: "~/my-apps/Applications" }
 cask "google-chrome"
 cask "java" unless system "/usr/libexec/java_home --failfast"
-cask "homebrew/cask-fonts/font-charter"
 
 mas "1Password", id: 443987910
 ```

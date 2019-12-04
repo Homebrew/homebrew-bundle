@@ -80,6 +80,12 @@ describe Bundle::Dsl do
     expect(described_class.send(:sanitize_tap_name, "homebrew/foo")).to eql("homebrew/foo")
   end
 
+  it ".sanitize_cask_name" do
+    allow_any_instance_of(Object).to receive(:opoo)
+    expect(described_class.send(:sanitize_cask_name, "homebrew/cask-versions/adoptopenjdk8")).to eql("adoptopenjdk8")
+    expect(described_class.send(:sanitize_cask_name, "adoptopenjdk8")).to eql("adoptopenjdk8")
+  end
+
   it ".pluralize_dependency" do
     expect(described_class.send(:pluralize_dependency, 0)).to eql("dependencies")
     expect(described_class.send(:pluralize_dependency, 1)).to eql("dependency")

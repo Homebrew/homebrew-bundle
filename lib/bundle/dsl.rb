@@ -103,6 +103,14 @@ module Bundle
     end
 
     def self.sanitize_cask_name(name)
+      if name.include?("/")
+        full_name = name
+        name = name.split("/").last
+        opoo <<~EOS
+          treating '#{full_name}' cask as '#{name}'!
+          Please change `cask "#{full_name}"` to `cask "#{name}"` in your `Brewfile`.
+        EOS
+      end
       name.downcase
     end
 
