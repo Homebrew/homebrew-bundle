@@ -69,8 +69,7 @@ module Bundle
       end
 
       def casks_to_uninstall
-        current_casks = Bundle::CaskDumper.casks(full_names_only: true)
-        current_casks - kept_casks
+        Bundle::CaskDumper.casks - kept_casks
       end
 
       def formulae_to_uninstall
