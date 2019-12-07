@@ -5,7 +5,7 @@ require "spec_helper"
 describe Bundle::Locker do
   subject(:locker) { described_class }
 
-  context ".lockfile" do
+  describe ".lockfile" do
     it "returns a Pathname" do
       allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
       expect(locker.lockfile.class).to be Pathname
@@ -17,7 +17,7 @@ describe Bundle::Locker do
     end
   end
 
-  context ".write_lockfile?" do
+  describe ".write_lockfile?" do
     it "returns false if --no-lock is passed" do
       allow(ARGV).to receive(:include?).with("--no-lock").and_return(true)
       expect(locker.write_lockfile?).to be false
@@ -40,7 +40,7 @@ describe Bundle::Locker do
     end
   end
 
-  context ".lock" do
+  describe ".lock" do
     context "writes Brewfile.lock.json" do
       let(:lockfile) { Pathname("Brewfile.json.lock") }
       let(:brew_options) { { restart_service: true } }
@@ -48,7 +48,7 @@ describe Bundle::Locker do
         [
           Bundle::Dsl::Entry.new(:brew, "mysql", brew_options),
           Bundle::Dsl::Entry.new(:cask, "adoptopenjdk8"),
-          Bundle::Dsl::Entry.new(:mas, "Xcode", id: 497799835),
+          Bundle::Dsl::Entry.new(:mas, "Xcode", id: 497_799_835),
           Bundle::Dsl::Entry.new(:tap, "homebrew/homebrew-cask-versions"),
         ]
       end
@@ -56,7 +56,7 @@ describe Bundle::Locker do
       before do
         allow(locker).to receive(:lockfile).and_return(lockfile)
         allow(brew_options).to receive(:deep_stringify_keys)
-          .and_return( { "restart_service" => true } )
+          .and_return("restart_service" => true)
         allow(locker).to receive(:`).with("brew info --json=v1 --installed").and_return <<~EOS
           [
             {

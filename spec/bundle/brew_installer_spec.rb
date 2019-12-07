@@ -118,7 +118,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context ".outdated_formulae" do
+  describe ".outdated_formulae" do
     it "calls Homebrew" do
       described_class.reset!
       expect(Bundle::BrewDumper).to receive(:formulae).and_return(
@@ -132,7 +132,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context ".pinned_formulae" do
+  describe ".pinned_formulae" do
     it "calls Homebrew" do
       described_class.reset!
       expect(Bundle::BrewDumper).to receive(:formulae).and_return(
@@ -146,7 +146,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context ".formula_installed_and_up_to_date?" do
+  describe ".formula_installed_and_up_to_date?" do
     before do
       Bundle::BrewDumper.reset!
       described_class.reset!
@@ -251,13 +251,13 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "#changed?" do
+  describe "#changed?" do
     it "is false by default" do
       expect(described_class.new(formula).changed?).to be(false)
     end
   end
 
-  context "#start_service?" do
+  describe "#start_service?" do
     it "is false by default" do
       expect(described_class.new(formula).start_service?).to be(false)
     end
@@ -269,7 +269,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "#restart_service?" do
+  describe "#restart_service?" do
     it "is false by default" do
       expect(described_class.new(formula).restart_service?).to be(false)
     end
@@ -287,7 +287,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "#restart_service_needed?" do
+  describe "#restart_service_needed?" do
     it "is false by default" do
       expect(described_class.new(formula).restart_service_needed?).to be(false)
     end
