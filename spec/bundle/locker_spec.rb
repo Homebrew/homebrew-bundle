@@ -28,8 +28,14 @@ describe Bundle::Locker do
       expect(locker.write_lockfile?).to be false
     end
 
-    it "returns true without --no-lock or HOMEBREW_BUNDLE_NO_LOCK" do
+    it "returns false if it would write to /dev" do
+      allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("/dev/stdin"))
+      expect(locker.write_lockfile?).to be false
+    end
+
+    it "returns true otherwise" do
       ENV["HOMEBREW_BUNDLE_NO_LOCK"] = nil
+      allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
       expect(locker.write_lockfile?).to be true
     end
   end
