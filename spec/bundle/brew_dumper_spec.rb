@@ -689,7 +689,7 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "#formula_oldnames" do
+  describe "#formula_oldnames" do
     before do
       described_class.reset!
       formula_info = [{
@@ -716,7 +716,7 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "#formula_info" do
+  describe "#formula_info" do
     it "handles formula syntax errors" do
       allow(Formula).to receive(:[]).and_raise(NoMethodError)
       expect(described_class).to receive(:opoo).once
@@ -725,7 +725,7 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "#formulae_info" do
+  describe "#formulae_info" do
     it "handles formula syntax errors" do
       allow(Formula).to receive(:installed).and_raise(NoMethodError)
       expect(described_class).to receive(:opoo).once
@@ -733,7 +733,7 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "#formula_hash" do
+  describe "#formula_hash" do
     let(:f) { OpenStruct.new }
 
     it "handles formula syntax errors" do

@@ -7,13 +7,13 @@ describe Bundle::MacAppStoreInstaller do
     Bundle::MacAppStoreInstaller.install("foo", 123)
   end
 
-  context ".installed_app_ids" do
+  describe ".installed_app_ids" do
     it "shells out" do
       described_class.installed_app_ids
     end
   end
 
-  context ".app_id_installed_and_up_to_date?" do
+  describe ".app_id_installed_and_up_to_date?" do
     it "returns result" do
       allow(described_class).to receive(:installed_app_ids).and_return([123, 456])
       allow(described_class).to receive(:outdated_app_ids).and_return([456])
@@ -33,7 +33,7 @@ describe Bundle::MacAppStoreInstaller do
       expect { do_install }.to raise_error(RuntimeError)
     end
 
-    context ".outdated_app_ids" do
+    describe ".outdated_app_ids" do
       it "does not shell out" do
         expect(described_class).not_to receive(:`)
         described_class.reset!
@@ -48,7 +48,7 @@ describe Bundle::MacAppStoreInstaller do
       allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
-    context ".outdated_app_ids" do
+    describe ".outdated_app_ids" do
       it "returns app ids" do
         expect(described_class).to receive(:`).and_return("foo 123")
         described_class.reset!

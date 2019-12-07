@@ -194,7 +194,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "#system_output_no_stderr" do
+  describe "#system_output_no_stderr" do
     it "shells out" do
       expect(IO).to receive(:popen).and_return(StringIO.new("true"))
       described_class.system_output_no_stderr("true")

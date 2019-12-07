@@ -11,13 +11,13 @@ describe Bundle::TapInstaller do
     Bundle::TapInstaller.check_pinning("homebrew/cask", options)
   end
 
-  context ".installed_taps" do
+  describe ".installed_taps" do
     it "calls Homebrew" do
       described_class.installed_taps
     end
   end
 
-  context ".pinned_installed_taps" do
+  describe ".pinned_installed_taps" do
     it "calls Homebrew" do
       described_class.pinned_installed_taps
     end

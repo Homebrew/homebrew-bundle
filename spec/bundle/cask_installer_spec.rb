@@ -7,13 +7,13 @@ describe Bundle::CaskInstaller do
     Bundle::CaskInstaller.install("google-chrome")
   end
 
-  context ".installed_casks" do
+  describe ".installed_casks" do
     it "shells out" do
       described_class.installed_casks
     end
   end
 
-  context ".cask_installed_and_up_to_date?" do
+  describe ".cask_installed_and_up_to_date?" do
     it "returns result" do
       described_class.reset!
       allow(described_class).to receive(:installed_casks).and_return(["foo", "baz"])
@@ -24,7 +24,7 @@ describe Bundle::CaskInstaller do
   end
 
   context "when brew-cask is not installed" do
-    context ".outdated_casks" do
+    describe ".outdated_casks" do
       it "does not shell out" do
         allow(Bundle).to receive(:cask_installed?).and_return(false)
         expect(described_class).not_to receive(:`)
@@ -40,7 +40,7 @@ describe Bundle::CaskInstaller do
       allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
-    context ".outdated_casks" do
+    describe ".outdated_casks" do
       it "shells out" do
         allow(Bundle).to receive(:cask_installed?).and_return(true)
         expect(described_class).to receive(:`).and_return("")

@@ -14,7 +14,13 @@ module Bundle
     end
 
     def write_lockfile?
-      !ARGV.include?("--no-lock") && ENV["HOMEBREW_BUNDLE_NO_LOCK"].nil?
+      return false if ARGV.include?("--no-lock")
+      return false if ENV["HOMEBREW_BUNDLE_NO_LOCK"]
+
+      # handle the /dev/stdin and /dev/stdout cases
+      return false if lockfile.parent.to_s == "/dev"
+
+      true
     end
 
     def lock(entries)

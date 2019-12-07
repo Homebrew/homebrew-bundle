@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Bundle::BrewServices do
-  context ".started_services" do
+  describe ".started_services" do
     before do
       described_class.reset!
     end

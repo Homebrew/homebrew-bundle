@@ -12,7 +12,7 @@ describe Bundle::Skipper do
     skipper.instance_variable_set(:@skipped_entries, nil)
   end
 
-  context ".skip?" do
+  describe ".skip?" do
     context "with a listed formula" do
       let(:entry) { Bundle::Dsl::Entry.new(:brew, "mysql") }
 
