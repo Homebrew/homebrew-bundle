@@ -49,7 +49,7 @@ GEM
       method_source (~> 0.9.0)
     rainbow (3.0.0)
     rb-fsevent (0.10.3)
-    rb-inotify (0.10.0)
+    rb-inotify (0.10.1)
       ffi (~> 1.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
