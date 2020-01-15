@@ -21,7 +21,7 @@ module Bundle
         casks = casks_to_uninstall
         formulae = formulae_to_uninstall
         taps = taps_to_untap
-        if ARGV.force?
+        if ARGV.include?("--force")
           if casks.any?
             action = if ARGV.include?("--zap")
               "zap"

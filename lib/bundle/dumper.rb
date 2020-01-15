@@ -8,7 +8,7 @@ module Bundle
     module_function
 
     def can_write_to_brewfile?(brewfile_path)
-      raise "#{brewfile_path} already exists" if should_not_write_file?(brewfile_path, ARGV.force?)
+      raise "#{brewfile_path} already exists" if should_not_write_file?(brewfile_path, ARGV.include?("--force"))
 
       true
     end
