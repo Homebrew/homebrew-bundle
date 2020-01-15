@@ -67,7 +67,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(ARGV).to receive(:force?).and_return(true)
+      allow(ARGV).to receive(:include?).with("--force").and_return(true)
     end
 
     it "does nothing" do
@@ -83,7 +83,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(ARGV).to receive(:force?).and_return(true)
+      expect(ARGV).to receive(:include?).with("--force").and_return(true)
+      expect(ARGV).to receive(:include?).with("--zap").and_return(false)
     end
 
     it "uninstalls casks" do
@@ -99,8 +100,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(ARGV).to receive(:force?).and_return(true)
-      allow(ARGV).to receive(:include?).with("--zap").and_return(true)
+      expect(ARGV).to receive(:include?).with("--force").and_return(true)
+      expect(ARGV).to receive(:include?).with("--zap").and_return(true)
     end
 
     it "uninstalls casks" do
@@ -116,7 +117,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(ARGV).to receive(:force?).and_return(true)
+      allow(ARGV).to receive(:include?).with("--force").and_return(true)
     end
 
     it "uninstalls formulae" do
@@ -132,7 +133,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(ARGV).to receive(:force?).and_return(true)
+      allow(ARGV).to receive(:include?).with("--force").and_return(true)
     end
 
     it "untaps taps" do
@@ -148,7 +149,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(ARGV).to receive(:force?).and_return(false)
+      allow(ARGV).to receive(:include?).with("--force").and_return(false)
     end
 
     it "lists casks, formulae and taps" do
@@ -173,7 +174,7 @@ describe Bundle::Commands::Cleanup do
 
     context "with --force" do
       before do
-        allow(ARGV).to receive(:force?).and_return(true)
+        allow(ARGV).to receive(:include?).with("--force").and_return(true)
       end
 
       it "prints output" do
@@ -184,7 +185,7 @@ describe Bundle::Commands::Cleanup do
 
     context "without --force" do
       before do
-        allow(ARGV).to receive(:force?).and_return(false)
+        allow(ARGV).to receive(:include?).with("--force").and_return(false)
       end
 
       it "prints output" do
