@@ -84,7 +84,7 @@ GEM
     thor (1.0.1)
     tins (1.24.0)
       sync
-    unicode-display_width (1.6.0)
+    unicode-display_width (1.6.1)
 
 PLATFORMS
   ruby
