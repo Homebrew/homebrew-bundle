@@ -54,6 +54,7 @@ module Bundle
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
 
+      options[:full_name] = name
       name = Bundle::Dsl.sanitize_cask_name(name)
       options[:args] = @cask_arguments.merge options.fetch(:args, {})
       @entries << Entry.new(:cask, name, options)
@@ -103,14 +104,7 @@ module Bundle
     end
 
     def self.sanitize_cask_name(name)
-      if name.include?("/")
-        full_name = name
-        name = name.split("/").last
-        opoo <<~EOS
-          treating '#{full_name}' cask as '#{name}'!
-          Please change `cask "#{full_name}"` to `cask "#{name}"` in your `Brewfile`.
-        EOS
-      end
+      name = name.split("/").last if name.include?("/")
       name.downcase
     end
 

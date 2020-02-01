@@ -25,7 +25,7 @@ describe Bundle::Dsl do
       allow(ARGV).to receive(:verbose?).and_return(true)
     end
 
-    it "processes input" do # rubocop:disable RSpec/ExampleLength # easier to keep sync'd
+    it "processes input" do
       # Keep in sync with the README
       expect(dsl.cask_arguments).to eql(appdir: "/Applications")
       expect(dsl.entries[0].name).to eql("homebrew/cask")
@@ -39,7 +39,7 @@ describe Bundle::Dsl do
       expect(dsl.entries[5].name).to eql("google-chrome")
       expect(dsl.entries[6].name).to eql("java")
       expect(dsl.entries[7].name).to eql("firefox")
-      expect(dsl.entries[7].options).to eql(args: { appdir: "~/my-apps/Applications" })
+      expect(dsl.entries[7].options).to eql(args: { appdir: "~/my-apps/Applications" }, full_name: "firefox")
       expect(dsl.entries[8].name).to eql("1Password")
       expect(dsl.entries[8].options).to eql(id: 443_987_910)
     end
