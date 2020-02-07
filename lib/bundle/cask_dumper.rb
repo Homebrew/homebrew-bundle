@@ -32,6 +32,9 @@ module Bundle
       cask_info.flat_map do |cask|
         cask.dig("depends_on", "formula")
       end.compact.uniq
+    rescue JSON::ParserError => e
+      opoo "Failed to parse `brew cask info --json`: #{e}"
+      []
     end
   end
 end
