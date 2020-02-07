@@ -66,6 +66,19 @@ describe Bundle::CaskDumper do
       end
     end
 
+    context "when cask info returns invalid JSON" do
+      before do
+        allow(described_class)
+          .to receive(:`)
+          .with("brew cask info foo --json=v1")
+          .and_return("Error: somethng from cask!")
+      end
+
+      it "returns an empty array" do
+        expect(dumper.formula_dependencies(["foo"])).to eql([])
+      end
+    end
+
     context "when multiple casks have the same dependency" do
       before do
         allow(described_class)
