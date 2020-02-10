@@ -82,7 +82,7 @@ GEM
     term-ansicolor (1.7.1)
       tins (~> 1.0)
     thor (1.0.1)
-    tins (1.24.0)
+    tins (1.24.1)
       sync
     unicode-display_width (1.6.1)
 
