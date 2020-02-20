@@ -27,7 +27,6 @@ describe Bundle::TapInstaller do
     before do
       allow(described_class).to receive(:installed_taps).and_return(["homebrew/cask"])
       allow(described_class).to receive(:pinned_installed_taps).and_return([])
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "skips" do
@@ -47,7 +46,6 @@ describe Bundle::TapInstaller do
     before do
       allow(described_class).to receive(:installed_taps).and_return([])
       allow(described_class).to receive(:pinned_installed_taps).and_return([])
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "taps" do
@@ -75,7 +73,6 @@ describe Bundle::TapInstaller do
     before do
       allow(described_class).to receive(:installed_taps).and_return(["homebrew/cask"])
       allow(described_class).to receive(:pinned_installed_taps).and_return(["homebrew/cask"])
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     context "with pin false" do
@@ -89,7 +86,6 @@ describe Bundle::TapInstaller do
   context "when tap needs pinning" do
     before do
       allow(described_class).to receive(:pinned_installed_taps).and_return([])
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "pins" do
@@ -101,7 +97,6 @@ describe Bundle::TapInstaller do
   context "when tap needs unpinning" do
     before do
       allow(described_class).to receive(:pinned_installed_taps).and_return(["homebrew/cask"])
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "pins" do

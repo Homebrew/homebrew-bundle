@@ -19,7 +19,7 @@ describe Bundle::Locker do
 
   describe ".write_lockfile?" do
     it "returns false if --no-lock is passed" do
-      allow(ARGV).to receive(:include?).with("--no-lock").and_return(true)
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(no_lock?: true))
       expect(locker.write_lockfile?).to be false
     end
 

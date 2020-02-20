@@ -9,11 +9,11 @@ module Bundle
       FAILURE_MESSAGE = "brew bundle can't satisfy your Brewfile's dependencies."
 
       def output_errors?
-        ARGV.include?("--verbose")
+        Homebrew.args.verbose?
       end
 
       def exit_on_first_error?
-        !ARGV.include?("--verbose")
+        !Homebrew.args.verbose?
       end
 
       def run

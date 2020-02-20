@@ -34,7 +34,7 @@ module Bundle
       return :failed unless resolve_conflicts!
 
       if installed?
-        return :skipped if ARGV.include?("--no-upgrade")
+        return :skipped if Homebrew.args.no_upgrade?
 
         upgrade!
       else
@@ -63,7 +63,7 @@ module Bundle
 
     def service_change_state!
       if restart_service_needed?
-        puts "Restarting #{@name} service." if ARGV.verbose?
+        puts "Restarting #{@name} service." if Homebrew.args.verbose?
         BrewServices.restart(@full_name)
       else
         true
@@ -74,20 +74,20 @@ module Bundle
       case @link
       when true
         unless linked_and_keg_only?
-          puts "Force linking #{@name} formula." if ARGV.verbose?
+          puts "Force linking #{@name} formula." if Homebrew.args.verbose?
           Bundle.system("brew", "link", "--force", @name)
         end
       when false
         unless unlinked_and_not_keg_only?
-          puts "Unlinking #{@name} formula." if ARGV.verbose?
+          puts "Unlinking #{@name} formula." if Homebrew.args.verbose?
           Bundle.system("brew", "unlink", @name)
         end
       when nil
         if unlinked_and_not_keg_only?
-          puts "Linking #{@name} formula." if ARGV.verbose?
+          puts "Linking #{@name} formula." if Homebrew.args.verbose?
           Bundle.system("brew", "link", @name)
         elsif linked_and_keg_only?
-          puts "Unlinking #{@name} formula." if ARGV.verbose?
+          puts "Unlinking #{@name} formula." if Homebrew.args.verbose?
           Bundle.system("brew", "unlink", @name)
         end
       end
@@ -95,7 +95,7 @@ module Bundle
 
     def self.formula_installed_and_up_to_date?(formula)
       return false unless formula_installed?(formula)
-      return true if ARGV.include?("--no-upgrade")
+      return true if Homebrew.args.no_upgrade?
 
       !formula_upgradable?(formula)
     end
@@ -195,7 +195,7 @@ module Bundle
       conflicts_with.each do |conflict|
         next unless BrewInstaller.formula_installed?(conflict)
 
-        if ARGV.verbose?
+        if Homebrew.args.verbose?
           puts <<~EOS
             Unlinking #{conflict} formula.
             It is currently installed and conflicts with #{@name}.
@@ -204,7 +204,7 @@ module Bundle
         return false unless Bundle.system("brew", "unlink", conflict)
 
         if @restart_service
-          puts "Stopping #{conflict} service (if it is running)." if ARGV.verbose?
+          puts "Stopping #{conflict} service (if it is running)." if Homebrew.args.verbose?
           BrewServices.stop(conflict)
         end
       end
@@ -213,7 +213,7 @@ module Bundle
     end
 
     def install!
-      puts "Installing #{@name} formula. It is not currently installed." if ARGV.verbose?
+      puts "Installing #{@name} formula. It is not currently installed." if Homebrew.args.verbose?
       unless Bundle.system("brew", "install", @full_name, *@args)
         @changed = nil
         return :failed
@@ -226,12 +226,12 @@ module Bundle
 
     def upgrade!
       unless upgradable?
-        puts "Skipping install of #{@name} formula. It is already up-to-date." if ARGV.verbose?
+        puts "Skipping install of #{@name} formula. It is already up-to-date." if Homebrew.args.verbose?
         @changed = nil
         return :skipped
       end
 
-      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if ARGV.verbose?
+      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if Homebrew.args.verbose?
       unless Bundle.system("brew", "upgrade", @name)
         @changed = nil
         return :failed

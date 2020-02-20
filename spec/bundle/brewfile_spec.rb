@@ -9,8 +9,7 @@ describe Bundle::Brewfile do
     let(:has_global) { false }
 
     before do
-      allow(ARGV).to receive(:value).with("file")
-      allow(ARGV).to receive(:include?).with("--global").and_return(has_global)
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(file: file_value, global?: has_global))
 
       original_method = ENV.method(:[])
       allow(ENV).to receive(:[]) do |env_string|
@@ -24,10 +23,6 @@ describe Bundle::Brewfile do
     end
 
     context "when `--file` is passed" do
-      before do
-        allow(ARGV).to receive(:value).with("file").and_return(file_value)
-      end
-
       context "with a relative path" do
         let(:file_value) { "path/to/Brewfile" }
         let(:expected_pathname) { Pathname.new(file_value).expand_path(Dir.pwd) }
@@ -83,7 +78,6 @@ describe Bundle::Brewfile do
         let(:expected_pathname) { Pathname.new("/dev/stdin") }
 
         it "returns stdin by default" do
-          allow(ARGV).to receive(:include?).with("dump").and_return(false)
           expect(described_class.path).to eq(expected_pathname)
         end
 

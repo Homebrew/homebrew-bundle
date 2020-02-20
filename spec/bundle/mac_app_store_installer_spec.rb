@@ -25,7 +25,6 @@ describe Bundle::MacAppStoreInstaller do
   context "when mas is not installed" do
     before do
       allow(Bundle).to receive(:mas_installed?).and_return(false)
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     it "tries to install mas" do
@@ -45,7 +44,6 @@ describe Bundle::MacAppStoreInstaller do
   context "when mas is installed" do
     before do
       allow(Bundle).to receive(:mas_installed?).and_return(true)
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     describe ".outdated_app_ids" do
@@ -58,7 +56,6 @@ describe Bundle::MacAppStoreInstaller do
 
     context "when mas is not signed in" do
       before do
-        allow(ARGV).to receive(:verbose?).and_return(false)
       end
 
       it "tries to sign in with mas" do
@@ -71,7 +68,6 @@ describe Bundle::MacAppStoreInstaller do
     context "when mas is signed in" do
       before do
         allow(Bundle).to receive(:mas_signedin?).and_return(true)
-        allow(ARGV).to receive(:verbose?).and_return(false)
         allow(described_class).to receive(:outdated_app_ids).and_return([])
       end
 

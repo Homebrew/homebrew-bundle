@@ -13,7 +13,7 @@ module Bundle
 
     def install(name, id)
       unless Bundle.mas_installed?
-        puts "Installing mas. It is not currently installed." if ARGV.verbose?
+        puts "Installing mas. It is not currently installed." if Homebrew.args.verbose?
         Bundle.system "brew", "install", "mas"
         unless Bundle.mas_installed?
           raise "Unable to install #{name} app. mas installation failed."
@@ -21,12 +21,12 @@ module Bundle
       end
 
       if app_id_installed?(id) &&
-         (ARGV.include?("--no-upgrade") || !app_id_upgradable?(id))
+         (Homebrew.args.no_upgrade? || !app_id_upgradable?(id))
         return :skipped
       end
 
       unless Bundle.mas_signedin?
-        puts "Not signed in to Mac App Store." if ARGV.verbose?
+        puts "Not signed in to Mac App Store." if Homebrew.args.verbose?
         Bundle.system "mas", "signin", "--dialog", "" if MacOS.version < :mojave
         unless Bundle.mas_signedin?
           raise "Unable to install #{name} app. mas not signed in to Mac App Store."
@@ -34,13 +34,13 @@ module Bundle
       end
 
       if app_id_installed?(id)
-        puts "Upgrading #{name} app. It is installed but not up-to-date." if ARGV.verbose?
+        puts "Upgrading #{name} app. It is installed but not up-to-date." if Homebrew.args.verbose?
         return :failed unless Bundle.system "mas", "upgrade", id.to_s
 
         return :success
       end
 
-      puts "Installing #{name} app. It is not currently installed." if ARGV.verbose?
+      puts "Installing #{name} app. It is not currently installed." if Homebrew.args.verbose?
 
       return :failed unless Bundle.system "mas", "install", id.to_s
 
@@ -50,7 +50,7 @@ module Bundle
 
     def self.app_id_installed_and_up_to_date?(id)
       return false unless app_id_installed?(id)
-      return true if ARGV.include?("--no-upgrade")
+      return true if Homebrew.args.no_upgrade?
 
       !app_id_upgradable?(id)
     end
