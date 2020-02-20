@@ -14,7 +14,6 @@ describe Bundle::BrewInstaller do
   context "restart_service option is true" do
     context "formula is installed successfully" do
       before do
-        allow(ARGV).to receive(:verbose?).and_return(false)
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
       end
 
@@ -38,7 +37,6 @@ describe Bundle::BrewInstaller do
 
   context "link option is true" do
     before do
-      allow(ARGV).to receive(:verbose?).and_return(false)
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
 
@@ -50,7 +48,6 @@ describe Bundle::BrewInstaller do
 
   context "link option is false" do
     before do
-      allow(ARGV).to receive(:verbose?).and_return(false)
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
 
@@ -62,7 +59,6 @@ describe Bundle::BrewInstaller do
 
   context "link option is nil and formula is unlinked and not keg-only" do
     before do
-      allow(ARGV).to receive(:verbose?).and_return(false)
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
 
@@ -75,7 +71,6 @@ describe Bundle::BrewInstaller do
 
   context "link option is nil and formula is linked and keg-only" do
     before do
-      allow(ARGV).to receive(:verbose?).and_return(false)
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
 
@@ -105,13 +100,12 @@ describe Bundle::BrewInstaller do
     end
 
     it "unlinks conflicts and stops their services" do
-      allow(ARGV).to receive(:verbose?).and_return(false)
       sane?
       described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"])
     end
 
     it "prints a message" do
-      allow(ARGV).to receive(:verbose?).and_return(true)
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
       allow_any_instance_of(described_class).to receive(:puts)
       sane?
       described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"])
@@ -183,10 +177,6 @@ describe Bundle::BrewInstaller do
   end
 
   context "when brew is installed" do
-    before do
-      allow(ARGV).to receive(:verbose?).and_return(false)
-    end
-
     context "when no formula is installed" do
       before do
         allow(described_class).to receive(:installed_formulae).and_return([])

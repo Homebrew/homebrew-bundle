@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "exceptions"
 require "extend/ENV"
 require "formula"
 require "formulary"
@@ -11,22 +12,13 @@ module Bundle
       module_function
 
       def run
-        args = []
-        ARGV.each_with_index do |arg, i|
-          if arg == "--"
-            args = ARGV.slice!(i+1..-1)
-            break
-          elsif !arg.start_with?("-")
-            args = ARGV.slice!(i..-1)
-            break
-          end
-        end
+        _subcommand, *args = Homebrew.args.named
 
         # Setup Homebrew's ENV extensions
         ENV.activate_extensions!
-        raise "No command to execute was specified!" if args.empty?
+        raise UsageError, "No command to execute was specified!" if args.blank?
 
-        command = args[0]
+        command = args.first
 
         # Save the command path, since this will be blown away by superenv
         command_path = which(command)

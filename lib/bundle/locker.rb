@@ -14,7 +14,7 @@ module Bundle
     end
 
     def write_lockfile?
-      return false if ARGV.include?("--no-lock")
+      return false if Homebrew.args.no_lock?
       return false if ENV["HOMEBREW_BUNDLE_NO_LOCK"]
 
       # handle the /dev/stdin and /dev/stdout cases
@@ -52,11 +52,11 @@ module Bundle
           { revision: Tap.fetch(entry.name).git_head }
         end
 
-        if options.present?
-          lock["entries"][entry_type_key][entry.name] ||= {}
-          lock["entries"][entry_type_key][entry.name]["options"] =
-            options.deep_stringify_keys
-        end
+        next unless options.present?
+
+        lock["entries"][entry_type_key][entry.name] ||= {}
+        lock["entries"][entry_type_key][entry.name]["options"] =
+          options.deep_stringify_keys
       end
 
       if OS.mac?
@@ -84,22 +84,20 @@ module Bundle
     def brew_list_info
       @brew_list_info ||= begin
         name_bottles = JSON.parse(`brew info --json=v1 --installed`)
-                            .inject({}) do |name_bottles, f|
+                           .each_with_object({}) do |f, name_bottles|
           bottle = f["bottle"]["stable"]
           bottle&.delete("rebuild")
           bottle&.delete("root_url")
           bottle ||= false
           name_bottles[f["name"]] = bottle
-          name_bottles
         end
         `brew list --versions`.lines
-                              .inject({}) do |name_versions_bottles, line|
+                              .each_with_object({}) do |line, name_versions_bottles|
           name, version, = line.split
           name_versions_bottles[name] = {
             version: version,
-            bottle: name_bottles[name],
+            bottle:  name_bottles[name],
           }
-          name_versions_bottles
         end
       end
     end
@@ -107,10 +105,9 @@ module Bundle
     def cask_list
       @cask_list ||= begin
         `brew cask list --versions`.lines
-                                    .inject({}) do |name_versions, line|
+                                   .each_with_object({}) do |line, name_versions|
           name, version, = line.split
           name_versions[name] = version
-          name_versions
         end
       end
     end
@@ -118,7 +115,7 @@ module Bundle
     def mas_list
       @mas_list ||= begin
         `mas list`.lines
-                  .inject({}) do |name_id_versions, line|
+                  .each_with_object({}) do |line, name_id_versions|
           line = line.split
           id = line.shift
           version = line.pop.delete("()")
@@ -127,7 +124,6 @@ module Bundle
             id:      id,
             version: version,
           }
-          name_id_versions
         end
       end
     end

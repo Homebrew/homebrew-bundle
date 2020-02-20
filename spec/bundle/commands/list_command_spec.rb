@@ -9,7 +9,6 @@ describe Bundle::Commands::List do
 
   context "outputs dependencies to stdout" do
     before do
-      allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
     end
@@ -21,12 +20,6 @@ describe Bundle::Commands::List do
       "--mas"   => "1Password",
     }
 
-    after do
-      types_and_deps.each_key do |option|
-        ARGV.delete option if ARGV.include? option
-      end
-    end
-
     it "only shows brew deps when no options are passed" do
       expect { described_class.run }.to output("mysql\n").to_stdout
     end
@@ -37,11 +30,13 @@ describe Bundle::Commands::List do
       end.sort
 
       combinations.each do |options_list|
-        words = options_list.map { |type| type[2..-1] }.join(" and ")
+        switches = options_list.map { |type| type[2..-1] }
+        args_hash = switches.each_with_object({}) { |arg, hash| hash["#{arg}?"] = true; }
+        words = switches.join(" and ")
         opts = options_list.join(" and ")
         verb = options_list.length == 1 && "is" || "are"
         it "shows only #{words} when #{opts} #{verb} passed" do
-          options_list.each { |opt| ARGV << opt }
+          allow(Homebrew).to receive(:args).and_return(OpenStruct.new(args_hash))
           expected = options_list.map { |opt| types_and_deps[opt] }.join("\n")
           expect { described_class.run }.to output("#{expected}\n").to_stdout
         end

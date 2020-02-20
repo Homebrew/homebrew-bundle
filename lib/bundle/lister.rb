@@ -11,12 +11,12 @@ module Bundle
     end
 
     def self.show?(type)
-      return true if ARGV.include?("--all")
-      return true if ARGV.include?("--casks") && type == :cask
-      return true if ARGV.include?("--taps") && type == :tap
-      return true if ARGV.include?("--mas") && type == :mas
-      return true if ARGV.include?("--brews") && type == :brew
-      return true if type == :brew && ["--casks", "--taps", "--mas"].none? { |e| ARGV.include?(e) }
+      return true if Homebrew.args.all?
+      return true if Homebrew.args.casks? && type == :cask
+      return true if Homebrew.args.taps? && type == :tap
+      return true if Homebrew.args.mas? && type == :mas
+      return true if Homebrew.args.brews? && type == :brew
+      return true if type == :brew && !Homebrew.args.casks? && !Homebrew.args.taps? && !Homebrew.args.mas?
     end
   end
 end

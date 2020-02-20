@@ -14,7 +14,6 @@ describe Bundle::Commands::Check do
 
   context "when dependencies are satisfied" do
     it "does not raise an error" do
-      allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       nothing = []
       allow(Bundle::Checker).to receive(:casks_to_install).and_return(nothing)
@@ -27,7 +26,6 @@ describe Bundle::Commands::Check do
 
   context "no dependencies are specified" do
     it "does not raise an error" do
-      allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow_any_instance_of(Bundle::Dsl).to receive(:entries).and_return([])
       expect { do_check }.not_to raise_error
@@ -39,7 +37,6 @@ describe Bundle::Commands::Check do
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'")
       expect { do_check }.to raise_error(SystemExit)
     end
@@ -49,7 +46,6 @@ describe Bundle::Commands::Check do
     it "raises an error" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       expect { do_check }.to raise_error(SystemExit)
     end
@@ -57,7 +53,6 @@ describe Bundle::Commands::Check do
     it "does not raise error on skippable formula" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
       allow(Bundle::Skipper).to receive(:skip?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       expect { do_check }.not_to raise_error
@@ -68,7 +63,6 @@ describe Bundle::Commands::Check do
     it "raises an error" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'abc/def'")
       expect { do_check }.to raise_error(SystemExit)
     end
@@ -78,7 +72,6 @@ describe Bundle::Commands::Check do
     it "raises an error" do
       allow_any_instance_of(Bundle::MacAppStoreDumper).to receive(:app_ids).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123")
       expect { do_check }.to raise_error(SystemExit)
     end
@@ -98,16 +91,15 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
       allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(true)
       allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
     end
 
     it "does not raise error when no service needs to be started" do
       Bundle::Checker.reset!
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
-      allow(ARGV).to receive(:include?).and_return(true)
 
       expect(Bundle::BrewInstaller.installed_formulae).to include("abc")
       expect(Bundle::CaskInstaller.installed_casks).not_to include("abc")
@@ -133,7 +125,6 @@ describe Bundle::Commands::Check do
 
   context "when there are taps to install" do
     before do
-      allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow(Bundle::Checker).to receive(:taps_to_tap).and_return(["asdf"])
     end
@@ -156,7 +147,6 @@ describe Bundle::Commands::Check do
 
   context "when there are formulae to install" do
     before do
-      allow(ARGV).to receive(:value).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow(Bundle::Checker).to receive(:taps_to_tap).and_return([])
       allow(Bundle::Checker).to receive(:casks_to_install).and_return([])
@@ -175,7 +165,6 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(described_class).to receive(:exit_on_first_error?).and_return(true)
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
 
       expect_any_instance_of(Bundle::Checker::BrewChecker).to receive(:exit_early_check).once.and_call_original
@@ -184,7 +173,6 @@ describe Bundle::Commands::Check do
 
     it "stops checking after the first missing cask", :needs_macos do
       allow(described_class).to receive(:exit_on_first_error?).and_return(true)
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
 
       expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:exit_early_check).once.and_call_original
@@ -193,7 +181,6 @@ describe Bundle::Commands::Check do
 
     it "stops checking after the first missing mac app", :needs_macos do
       allow(described_class).to receive(:exit_on_first_error?).and_return(true)
-      allow(ARGV).to receive(:include?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 
       expect_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:exit_early_check).once.and_call_original

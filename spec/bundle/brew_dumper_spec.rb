@@ -491,7 +491,6 @@ describe Bundle::BrewDumper do
 
   context "when --describe is not set" do
     before do
-      stub_const("ARGV", [])
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
         {
@@ -535,7 +534,7 @@ describe Bundle::BrewDumper do
 
   context "when --describe is set" do
     before do
-      stub_const("ARGV", ["--describe"])
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(describe?: true))
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
         {
@@ -632,7 +631,9 @@ describe Bundle::BrewDumper do
     end
 
     context "when --no-restart is set" do
-      before { stub_const("ARGV", ["--no-restart"]) }
+      before do
+        allow(Homebrew).to receive(:args).and_return(OpenStruct.new(no_restart?: true))
+      end
 
       it "does not add a restart_service bit if the service is running" do
         expect(described_class.dump).not_to include("restart_service")

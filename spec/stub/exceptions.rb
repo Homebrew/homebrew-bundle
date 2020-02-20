@@ -1,0 +1,2 @@
+class UsageError < RuntimeError
+end

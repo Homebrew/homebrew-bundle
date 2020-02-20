@@ -5,7 +5,7 @@ require "tsort"
 
 module Bundle
   # TODO: refactor into multiple modules
-  module BrewDumper # rubocop:disable Metrics/ModuleLength
+  module BrewDumper
     module_function
 
     def reset!
@@ -28,11 +28,11 @@ module Bundle
       end
       requested_formula.map do |f|
         brewline = ""
-        brewline += "# #{f[:desc]}\n" if ARGV.include?("--describe") && f[:desc]
+        brewline += "# #{f[:desc]}\n" if Homebrew.args.describe? && f[:desc]
         brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
-        if !ARGV.include?("--no-restart") && BrewServices.started?(f[:full_name])
+        if !Homebrew.args.no_restart? && BrewServices.started?(f[:full_name])
           brewline += ", restart_service: true"
         end
         brewline += ", link: #{f[:link?]}" unless f[:link?].nil?

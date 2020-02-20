@@ -6,13 +6,13 @@ module Bundle
 
     def install(name, options = {})
       if installed_taps.include? name
-        puts "Skipping install of #{name} tap. It is already installed." if ARGV.verbose?
+        puts "Skipping install of #{name} tap. It is already installed." if Homebrew.args.verbose?
         return :failed unless check_pinning(name, options)
 
         return :skipped
       end
 
-      puts "Installing #{name} tap. It is not currently installed." if ARGV.verbose?
+      puts "Installing #{name} tap. It is not currently installed." if Homebrew.args.verbose?
       success = if options[:clone_target]
         Bundle.system "brew", "tap", name, options[:clone_target]
       else
@@ -39,12 +39,12 @@ module Bundle
       pin = options[:pin]
       currently_pinned = pinned_installed_taps.include? name
       if pin && !currently_pinned
-        puts "Pinning #{name} tap." if ARGV.verbose?
+        puts "Pinning #{name} tap." if Homebrew.args.verbose?
         return :failed unless Bundle.system "brew", "tap-pin", name
 
         pinned_installed_taps << name
       elsif currently_pinned && !pin
-        puts "Unpinning #{name} tap." if ARGV.verbose?
+        puts "Unpinning #{name} tap." if Homebrew.args.verbose?
         return :failed unless Bundle.system "brew", "tap-unpin", name
 
         pinned_installed_taps.delete(name)

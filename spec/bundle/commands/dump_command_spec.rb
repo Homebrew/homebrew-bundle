@@ -6,9 +6,6 @@ describe Bundle::Commands::Dump do
   context "when files existed" do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
-      # expect(ARGV).to receive(:include?).with("--force").and_return(true)
-      # expect(ARGV).to receive(:include?).with("--global").and_return(false)
-      expect(ARGV).to receive(:value).and_return(nil)
       allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
 
@@ -31,8 +28,7 @@ describe Bundle::Commands::Dump do
   context "when files existed and `--force` is passed" do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
-      expect(ARGV).to receive(:include?).with("--force").and_return(true)
-      expect(ARGV).to receive(:include?).with("--global").and_return(true).twice
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(force?: true, global?: true))
       allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
 

@@ -5,7 +5,7 @@ require "English"
 module Bundle
   class << self
     def system(cmd, *args)
-      return super cmd, *args if ARGV.verbose?
+      return super cmd, *args if Homebrew.args.verbose?
 
       logs = []
       success = nil
@@ -40,7 +40,7 @@ module Bundle
 
     def services_installed?
       @services_installed ||= begin
-        !which("brew-services.rb").nil?
+        !which("services.rb").nil?
       end
     end
   end

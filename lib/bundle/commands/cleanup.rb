@@ -5,7 +5,7 @@ require "utils/formatter"
 module Bundle
   module Commands
     # TODO: refactor into multiple modules
-    module Cleanup # rubocop:disable Metrics/ModuleLength
+    module Cleanup
       module_function
 
       def reset!
@@ -21,9 +21,9 @@ module Bundle
         casks = casks_to_uninstall
         formulae = formulae_to_uninstall
         taps = taps_to_untap
-        if ARGV.include?("--force")
+        if Homebrew.args.force?
           if casks.any?
-            action = if ARGV.include?("--zap")
+            action = if Homebrew.args.zap?
               "zap"
             else
               "uninstall"
@@ -41,9 +41,7 @@ module Bundle
           Kernel.system "brew", "untap", *taps if taps.any?
 
           cleanup = system_output_no_stderr("brew", "cleanup")
-          unless cleanup.empty?
-            puts cleanup
-          end
+          puts cleanup unless cleanup.empty?
         else
           if casks.any?
             puts "Would uninstall casks:"

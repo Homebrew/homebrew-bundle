@@ -37,7 +37,6 @@ describe Bundle::CaskInstaller do
   context "when brew-cask is installed" do
     before do
       allow(Bundle).to receive(:cask_installed?).and_return(true)
-      allow(ARGV).to receive(:verbose?).and_return(false)
     end
 
     describe ".outdated_casks" do

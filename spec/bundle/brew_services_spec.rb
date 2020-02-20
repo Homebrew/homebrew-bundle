@@ -25,10 +25,6 @@ describe Bundle::BrewServices do
   end
 
   context "when brew-services is installed" do
-    before do
-      allow(ARGV).to receive(:verbose?).and_return(false)
-    end
-
     context "stops the service" do
       it "when the service is started" do
         allow(described_class).to receive(:started_services).and_return(%w[nginx])
