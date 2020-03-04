@@ -15,18 +15,18 @@ jobs:
       uses: actions/checkout@master
 
     - name: Reset system Homebrew installation
-      run: brew update-reset
       if: matrix.os == 'macOS-latest'
+      run: brew update-reset
 
     - name: Check Ruby style
-      run: brew style homebrew/bundle
       if: matrix.os == 'macOS-latest'
+      run: brew style homebrew/bundle
 
     - name: Set up Ruby
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: '>=2.3'
-      if: matrix.os == 'ubuntu-latest'
+        ruby-version: '2.6'
 
     - name: Install RubyGems
       run: |
