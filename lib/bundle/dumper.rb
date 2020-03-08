@@ -22,6 +22,7 @@ module Bundle
       content << BrewDumper.dump
       content << cask_after_formula
       content << MacAppStoreDumper.dump
+      content << WhalebrewDumper.dump
       content = content.reject(&:empty?).join("\n") + "\n"
       content
     end
