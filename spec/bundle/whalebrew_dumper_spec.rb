@@ -32,7 +32,7 @@ describe Bundle::WhalebrewDumper do
       end
 
       it "dumps usable output for Brewfile" do
-        expect(dumper.dump).to eql([%Q{whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig"}])
+        expect(dumper.dump).to eql(%Q{whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig"})
       end
     end
   end

@@ -18,11 +18,7 @@ module Bundle
     end
 
     def dump
-      return "" unless Bundle.whalebrew_installed?
-
-      [
-        images.map { |image| "whalebrew \"#{image}\"" }.join("\n"),
-      ]
+      images.map { |image| "whalebrew \"#{image}\"" }.join("\n")
     end
   end
 end
