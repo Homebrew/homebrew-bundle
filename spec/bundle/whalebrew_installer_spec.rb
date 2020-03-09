@@ -23,7 +23,7 @@ describe Bundle::WhalebrewInstaller do
 
     context "when an image isn't installed" do
       it "returns false" do
-        allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["test/doesnotexist"])
+        allow(Bundle::WhalebrewDumper).to receive(:images).and_return([])
         expect(described_class.image_installed?("test/doesnotexist")).to eq(false)
       end
     end
