@@ -43,6 +43,7 @@ describe Bundle::WhalebrewInstaller do
   context "when whalebrew is installed" do
     before do
       allow(Bundle).to receive(:whalebrew_installed?).and_return(true)
+      allow(Bundle).to receive(:system).with("whalebrew", "install", "whalebrew/wget").and_return(true)
     end
 
     it "successfully installs an image" do
