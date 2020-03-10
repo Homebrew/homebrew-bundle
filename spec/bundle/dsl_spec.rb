@@ -17,6 +17,7 @@ describe Bundle::Dsl do
         cask 'java' unless system '/usr/libexec/java_home --failfast'
         cask 'firefox', args: { appdir: '~/my-apps/Applications' }
         mas '1Password', id: 443987910
+        whalebrew 'whalebrew/wget'
       EOS
     end
 
@@ -42,6 +43,7 @@ describe Bundle::Dsl do
       expect(dsl.entries[7].options).to eql(args: { appdir: "~/my-apps/Applications" }, full_name: "firefox")
       expect(dsl.entries[8].name).to eql("1Password")
       expect(dsl.entries[8].options).to eql(id: 443_987_910)
+      expect(dsl.entries[9].name).to eql("whalebrew/wget")
     end
   end
 
