@@ -57,6 +57,8 @@ module Homebrew
              description: "`list` tap dependencies."
       switch "--mas",
              description: "`list` Mac App Store dependencies."
+      switch "--whalebrew",
+             description: "`list` Whalebrew dependencies."
       switch "--describe",
              description: "`dump` a description comment above each line, unless the dependency does not have a description."
       switch "--no-restart",
