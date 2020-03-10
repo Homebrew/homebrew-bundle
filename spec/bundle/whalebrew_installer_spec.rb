@@ -15,6 +15,10 @@ describe Bundle::WhalebrewInstaller do
 
   describe ".image_installed?" do
     context "when an image is already installed" do
+      before do
+        Bundle::WhalebrewInstaller.reset!
+      end
+
       it "returns true" do
         allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
         expect(described_class.image_installed?("whalebrew/wget")).to eq(true)
@@ -22,6 +26,10 @@ describe Bundle::WhalebrewInstaller do
     end
 
     context "when an image isn't installed" do
+      before do
+        Bundle::WhalebrewInstaller.reset!
+      end
+
       it "returns false" do
         allow(Bundle::WhalebrewDumper).to receive(:images).and_return([])
         expect(described_class.image_installed?("test/doesnotexist")).to eq(false)
