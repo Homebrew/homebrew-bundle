@@ -50,6 +50,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::CaskInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::TapInstaller).to receive(:install).and_return(:failed)
+      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
 
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
