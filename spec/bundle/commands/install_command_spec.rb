@@ -16,14 +16,23 @@ describe Bundle::Commands::Install do
   end
 
   context "when a Brewfile is found" do
+    let(:brewfile_contents) do
+      <<~HEREDOC
+        tap 'phinze/cask'
+        brew 'mysql', conflicts_with: ['mysql56']
+        cask 'google-chrome'
+        mas '1Password', id: 443987910
+        whalebrew 'whalebrew/wget'
+      HEREDOC
+    end
+
     it "does not raise an error" do
       allow(Bundle::BrewInstaller).to receive(:install).and_return(:success)
       allow(Bundle::CaskInstaller).to receive(:install).and_return(:skipped)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
       allow(Bundle::TapInstaller).to receive(:install).and_return(:skipped)
-
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
+      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(:skipped)
+      allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
       expect { described_class.run }.not_to raise_error
     end
 
@@ -43,8 +52,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
 
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\n\nmas '1Password', id: 443987910")
+      allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
       expect { described_class.run }.to raise_error(SystemExit)
     end
   end
