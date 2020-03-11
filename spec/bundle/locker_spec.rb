@@ -105,4 +105,12 @@ describe Bundle::Locker do
       end
     end
   end
+
+  describe ".whalebrew_list" do
+    it 'returns a hash of the name and layer checksum' do
+      allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
+      allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
+      expect(locker.whalebrew_list).to eq({"whalebrew/wget" => "abcd1234"})
+    end
+  end
 end
