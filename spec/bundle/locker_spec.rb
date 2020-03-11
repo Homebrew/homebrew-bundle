@@ -50,6 +50,7 @@ describe Bundle::Locker do
           Bundle::Dsl::Entry.new(:cask, "adoptopenjdk8"),
           Bundle::Dsl::Entry.new(:mas, "Xcode", id: 497_799_835),
           Bundle::Dsl::Entry.new(:tap, "homebrew/homebrew-cask-versions"),
+          Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/wget"),
         ]
       end
 
@@ -76,6 +77,7 @@ describe Bundle::Locker do
 
           allow(locker).to receive(:`).with("brew cask list --versions").and_return("adoptopenjdk8 8,232:b09")
           allow(locker).to receive(:`).with("mas list").and_return("497799835 Xcode (11.2)")
+          allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
         end
 
         it "returns true" do
