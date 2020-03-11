@@ -9,7 +9,7 @@ module Homebrew
       usage_banner <<~EOS
         `bundle` <subcommand>
 
-        Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask and the Mac App Store.
+        Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store and Whalebrew.
 
           `brew bundle` [`install`]
 
@@ -17,7 +17,7 @@ module Homebrew
 
           `brew bundle dump`
 
-          Write all installed casks/formulae/taps into a `Brewfile`.
+          Write all installed casks/formulae/images/taps into a `Brewfile`.
 
           `brew bundle cleanup`
 
