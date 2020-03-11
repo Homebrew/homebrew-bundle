@@ -11,29 +11,29 @@ module Homebrew
 
         Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store and Whalebrew.
 
-          `brew bundle` [`install`]
+        `brew bundle` [`install`]
 
-          Install or upgrade all dependencies in a `Brewfile`.
+        Install or upgrade all dependencies in a `Brewfile`.
 
-          `brew bundle dump`
+        `brew bundle dump`
 
-          Write all installed casks/formulae/images/taps into a `Brewfile`.
+        Write all installed casks/formulae/images/taps into a `Brewfile`.
 
-          `brew bundle cleanup`
+        `brew bundle cleanup`
 
-          Uninstall all dependencies not listed in a `Brewfile`.
+        Uninstall all dependencies not listed in a `Brewfile`.
 
-          `brew bundle check`
+        `brew bundle check`
 
-          Check if all dependencies are installed in a `Brewfile`.
+        Check if all dependencies are installed in a `Brewfile`.
 
-          `brew bundle exec` <command>
+        `brew bundle exec` <command>
 
-          Run an external command in an isolated build environment.
+        Run an external command in an isolated build environment.
 
-          `brew bundle list`
+        `brew bundle list`
 
-          List all dependencies present in a Brewfile. By default, only Homebrew dependencies are listed.
+        List all dependencies present in a Brewfile. By default, only Homebrew dependencies are listed.
       EOS
       flag "--file=",
            description: "Read the `Brewfile` from this file. Use `--file=-` to pipe to stdin/stdout."
