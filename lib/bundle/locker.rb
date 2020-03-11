@@ -133,8 +133,8 @@ module Bundle
     def whalebrew_list
       @whalebrew_list ||= begin
         Bundle::WhalebrewDumper.images.each_with_object({}) do |image, name_versions|
-          version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}' | awk -F':' '{print $2}'`.chomp
-          name_versions[image] = version
+          _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(':')
+          name_versions[image] = version.chomp
         end
       end
     end
