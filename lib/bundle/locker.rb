@@ -103,6 +103,8 @@ module Bundle
     end
 
     def cask_list
+      return {} unless OS.mac?
+
       @cask_list ||= begin
         `brew cask list --versions`.lines
                                    .each_with_object({}) do |line, name_versions|
@@ -113,6 +115,8 @@ module Bundle
     end
 
     def mas_list
+      return {} unless OS.mac?
+
       @mas_list ||= begin
         `mas list`.lines
                   .each_with_object({}) do |line, name_id_versions|
