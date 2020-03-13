@@ -232,7 +232,8 @@ describe Bundle::BrewDumper do
     end
 
     it "dumps as foo and bar with args and link" do
-      expect(dumper.dump).to eql("brew \"bar\", args: [\"with-a\", \"with-b\"], link: false\nbrew \"homebrew/tap/foo\"")
+      expect(dumper.dump).to \
+        eql("brew \"bar\", args: [\"with-a\", \"with-b\"], link: false\nbrew \"homebrew/tap/foo\"")
     end
 
     it "formula_info returns the formula" do

@@ -9,8 +9,9 @@ describe Bundle::Commands::List do
 
   context "outputs dependencies to stdout" do
     before do
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("tap 'phinze/cask'\nbrew 'mysql', conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910")
+      allow_any_instance_of(Pathname).to receive(:read).and_return \
+        "tap 'phinze/cask'\nbrew 'mysql', " \
+        "conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910"
     end
 
     types_and_deps = {
