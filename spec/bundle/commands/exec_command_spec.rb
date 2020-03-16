@@ -29,7 +29,8 @@ describe Bundle::Commands::Exec do
     end
 
     it "is able to accept arguments passed prior to the command" do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(named: ["bundle", "bundle", "install"], verbose?: true))
+      allow(Homebrew).to \
+        receive(:args).and_return(OpenStruct.new(named: ["bundle", "bundle", "install"], verbose?: true))
       allow(described_class).to receive(:exec).with("bundle", "install").and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("brew 'openssl'")

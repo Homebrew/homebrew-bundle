@@ -3,12 +3,23 @@
 module Bundle
   module Skipper
     class << self
-      def skip?(entry, silent: false)
-        return generic_skip?(entry) unless [:cask, :mas].include?(entry.type)
-        return true if silent
+      def macos_only_entry?(entry)
+        [:cask, :mas].include?(entry.type)
+      end
 
-        puts Formatter.warning "Skipping #{entry.type} #{entry.name} (on Linux)"
-        true
+      def macos_only_tap?(entry)
+        entry.type == :tap && entry.name == "homebrew/cask"
+      end
+
+      def skip?(entry, silent: false)
+        if macos_only_entry?(entry) || macos_only_tap?(entry)
+          return true if silent
+
+          puts Formatter.warning "Skipping #{entry.type} #{entry.name} (on Linux)"
+          true
+        else
+          generic_skip?(entry)
+        end
       end
     end
   end

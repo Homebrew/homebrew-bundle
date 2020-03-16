@@ -32,7 +32,9 @@ describe Bundle do
   context "check for brew cask", :needs_macos do
     it "finds it when present" do
       allow(File).to receive(:directory?).with("#{HOMEBREW_PREFIX}/Caskroom").and_return(true)
-      allow(File).to receive(:directory?).with("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask").and_return(true)
+      allow(File).to receive(:directory?)
+        .with("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask")
+        .and_return(true)
       expect(described_class.cask_installed?).to be(true)
     end
   end

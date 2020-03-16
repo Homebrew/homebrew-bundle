@@ -82,7 +82,8 @@ describe Bundle::CaskInstaller do
       end
 
       it "installs cask with arguments" do
-        expect(Bundle).to receive(:system).with("brew", "cask", "install", "firefox", "--appdir=/Applications").and_return(true)
+        expect(Bundle).to \
+          receive(:system).with("brew", "cask", "install", "firefox", "--appdir=/Applications").and_return(true)
         expect(described_class.install("firefox", args: { appdir: "/Applications" })).to eq(:success)
       end
 
