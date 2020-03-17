@@ -76,6 +76,7 @@ describe Bundle::Locker do
           ]
         EOS
         allow(locker).to receive(:`).with("brew list --versions").and_return("mysql 8.0.18")
+        allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
       end
 
       context "on macOS" do
@@ -84,7 +85,6 @@ describe Bundle::Locker do
 
           allow(locker).to receive(:`).with("brew cask list --versions").and_return("adoptopenjdk8 8,232:b09")
           allow(locker).to receive(:`).with("mas list").and_return("497799835 Xcode (11.2)")
-          allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
         end
 
         it "returns true" do
