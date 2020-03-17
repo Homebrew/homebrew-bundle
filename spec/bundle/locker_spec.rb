@@ -40,6 +40,14 @@ describe Bundle::Locker do
     end
   end
 
+  describe ".whalebrew_list" do
+    it 'returns a hash of the name and layer checksum' do
+      allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
+      allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
+      expect(locker.whalebrew_list).to eq({"whalebrew/wget" => "abcd1234"})
+    end
+  end
+
   describe ".lock" do
     context "writes Brewfile.lock.json" do
       let(:lockfile) { Pathname("Brewfile.json.lock") }
@@ -50,7 +58,6 @@ describe Bundle::Locker do
           Bundle::Dsl::Entry.new(:cask, "adoptopenjdk8"),
           Bundle::Dsl::Entry.new(:mas, "Xcode", id: 497_799_835),
           Bundle::Dsl::Entry.new(:tap, "homebrew/homebrew-cask-versions"),
-          Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/wget"),
         ]
       end
 
@@ -103,14 +110,6 @@ describe Bundle::Locker do
           expect(locker.lock(entries)).to be true
         end
       end
-    end
-  end
-
-  describe ".whalebrew_list" do
-    it 'returns a hash of the name and layer checksum' do
-      allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
-      allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
-      expect(locker.whalebrew_list).to eq({"whalebrew/wget" => "abcd1234"})
     end
   end
 end
