@@ -41,9 +41,12 @@ describe Bundle::Locker do
   end
 
   describe ".whalebrew_list" do
-    it 'returns a hash of the name and layer checksum' do
+    before do
       allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
       allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
+    end
+
+    it 'returns a hash of the name and layer checksum' do
       expect(locker.whalebrew_list).to eq({"whalebrew/wget" => "abcd1234"})
     end
   end
@@ -58,6 +61,7 @@ describe Bundle::Locker do
           Bundle::Dsl::Entry.new(:cask, "adoptopenjdk8"),
           Bundle::Dsl::Entry.new(:mas, "Xcode", id: 497_799_835),
           Bundle::Dsl::Entry.new(:tap, "homebrew/homebrew-cask-versions"),
+          Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/wget"),
         ]
       end
 
@@ -77,6 +81,8 @@ describe Bundle::Locker do
         EOS
         allow(locker).to receive(:`).with("brew list --versions").and_return("mysql 8.0.18")
         allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
+        allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
+        allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
       end
 
       context "on macOS" do
