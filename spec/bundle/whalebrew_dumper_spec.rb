@@ -11,14 +11,24 @@ describe Bundle::WhalebrewDumper do
       allow(Bundle).to receive(:whalebrew_installed?).and_return(true)
     end
 
+    let(:whalebrew_list_single_output) do
+      "COMMAND   IMAGE\nwget      whalebrew/wget"
+    end
+
+    let(:whalebrew_list_duplicate_output) do
+      "COMMAND   IMAGE\nwget      whalebrew/wget\nwget      whalebrew/wget"
+    end
+
     it 'removes the header' do
-      allow(dumper).to receive(:`).with("whalebrew list 2>/dev/null").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
+      allow(dumper).to receive(:`).with("whalebrew list 2>/dev/null")
+        .and_return(whalebrew_list_single_output)
       expect(dumper.images).to_not include("COMMAND")
       expect(dumper.images).to_not include("IMAGE")
     end
 
     it 'dedupes items' do
-      allow(dumper).to receive(:`).with("whalebrew list 2>/dev/null").and_return("COMMAND   IMAGE\nwget      whalebrew/wget\nwget      whalebrew/wget")
+      allow(dumper).to receive(:`).with("whalebrew list 2>/dev/null")
+        .and_return(whalebrew_list_duplicate_output)
       expect(dumper.images).to eq(["whalebrew/wget"])
     end
   end
@@ -45,12 +55,16 @@ describe Bundle::WhalebrewDumper do
     end
 
     context "images are installed" do
+      let(:expected_whalebrew_dump) do
+        %Q{whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig"}
+      end
+
       it "returns correct listing" do
         expect(dumper.images).to eq(["whalebrew/wget", "whalebrew/dig"])
       end
 
       it "dumps usable output for Brewfile" do
-        expect(dumper.dump).to eql(%Q{whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig"})
+        expect(dumper.dump).to eql(expected_whalebrew_dump)
       end
     end
   end

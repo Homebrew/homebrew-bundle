@@ -43,7 +43,9 @@ describe Bundle::Locker do
   describe ".whalebrew_list" do
     before do
       allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
-      allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
+      allow(locker).to receive(:`)
+        .with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'")
+        .and_return("whalebrew/wget@sha256:abcd1234")
     end
 
     it 'returns a hash of the name and layer checksum' do
@@ -81,7 +83,9 @@ describe Bundle::Locker do
         EOS
         allow(locker).to receive(:`).with("brew list --versions").and_return("mysql 8.0.18")
         allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
-        allow(locker).to receive(:`).with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'").and_return("whalebrew/wget@sha256:abcd1234")
+        allow(locker).to receive(:`)
+          .with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'")
+          .and_return("whalebrew/wget@sha256:abcd1234")
         allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
       end
 

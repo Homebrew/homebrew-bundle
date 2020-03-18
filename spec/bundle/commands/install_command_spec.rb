@@ -17,13 +17,13 @@ describe Bundle::Commands::Install do
 
   context "when a Brewfile is found" do
     let(:brewfile_contents) do
-      <<~HEREDOC
+      <<~EOS
         tap 'phinze/cask'
         brew 'mysql', conflicts_with: ['mysql56']
         cask 'google-chrome'
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
-      HEREDOC
+      EOS
     end
 
     it "does not raise an error" do
@@ -53,7 +53,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(:failed)
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
-      
+
       expect { described_class.run }.to raise_error(SystemExit)
     end
   end
