@@ -21,6 +21,8 @@ module Bundle
         when :mas
           arg << entry.options[:id]
           Bundle::MacAppStoreInstaller
+        when :whalebrew
+          Bundle::WhalebrewInstaller
         when :tap
           verb = "Tapping"
           arg << entry.options

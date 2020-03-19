@@ -15,6 +15,7 @@ module Bundle
       return true if Homebrew.args.casks? && type == :cask
       return true if Homebrew.args.taps? && type == :tap
       return true if Homebrew.args.mas? && type == :mas
+      return true if Homebrew.args.whalebrew? && type == :whalebrew
       return true if Homebrew.args.brews? && type == :brew
       return true if type == :brew && !Homebrew.args.casks? && !Homebrew.args.taps? && !Homebrew.args.mas?
     end

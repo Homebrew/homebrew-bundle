@@ -27,6 +27,12 @@ module Bundle
       end
     end
 
+    def whalebrew_installed?
+      @whalebrew_installed ||= begin
+        !which("whalebrew").nil?
+      end
+    end
+
     def mas_signedin?
       Kernel.system "mas account &>/dev/null"
     end

@@ -46,6 +46,8 @@ module Bundle
         when :mas
           options.delete(:id)
           mas_list[entry.name]
+        when :whalebrew
+          whalebrew_list[entry.name]
         when :tap
           options.delete(:clone_target) if options[:clone_target].blank?
           options.delete(:pin) if options[:pin] == false
@@ -128,6 +130,15 @@ module Bundle
             id:      id,
             version: version,
           }
+        end
+      end
+    end
+
+    def whalebrew_list
+      @whalebrew_list ||= begin
+        Bundle::WhalebrewDumper.images.each_with_object({}) do |image, name_versions|
+          _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(':')
+          name_versions[image] = version.chomp
         end
       end
     end

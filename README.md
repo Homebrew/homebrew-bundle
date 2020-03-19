@@ -10,6 +10,8 @@ Bundler for non-Ruby dependencies from Homebrew.
 
 [mas-cli](https://github.com/argon/mas) is optional and used for installing Mac App Store applications.
 
+[whalebrew](https://github.com/whalebrew/whalebrew) is optional and used for installing Whalebrew images.
+
 ## Installation
 
 `brew bundle` is automatically installed when run.
@@ -38,6 +40,8 @@ cask "google-chrome"
 cask "java" unless system "/usr/libexec/java_home --failfast"
 
 mas "1Password", id: 443987910
+
+whalebrew "whalebrew/wget"
 ```
 
 `cask` and `mas` entries are automatically skipped on Linux.
@@ -60,6 +64,7 @@ You can skip the installation of dependencies by adding space-separated values t
 - `HOMEBREW_BUNDLE_BREW_SKIP`
 - `HOMEBREW_BUNDLE_CASK_SKIP`
 - `HOMEBREW_BUNDLE_MAS_SKIP`
+- `HOMEBREW_BUNDLE_WHALEBREW_SKIP`
 - `HOMEBREW_BUNDLE_TAP_SKIP`
 
 `brew bundle` will output a `Brewfile.lock.json` in the same directory as the `Brewfile` if all dependencies are installed successfully. This contains dependency and system status information which can be useful in debugging `brew bundle` failures and replicating a "last known good build" state.
@@ -110,7 +115,7 @@ Outputs a list of all of the entries in the Brewfile.
 brew bundle list
 ```
 
-Pass one of `--casks`, `--taps`, `--mas`, or `--brews` to limit output to that type. Defaults to `--brews`. Pass `--all` to see everything.
+Pass one of `--casks`, `--taps`, `--mas`, `--whalebrew` or `--brews` to limit output to that type. Defaults to `--brews`. Pass `--all` to see everything.
 
 Note that the _type_ of the package is **not** included in this output.
 

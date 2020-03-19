@@ -19,6 +19,7 @@ describe Bundle::Commands::Dump do
       expect(Bundle::TapDumper).not_to receive(:dump)
       expect(Bundle::BrewDumper).not_to receive(:dump)
       expect(Bundle::CaskDumper).not_to receive(:dump)
+      expect(Bundle::WhalebrewDumper).not_to receive(:dump)
       expect do
         described_class.run
       end.to raise_error(RuntimeError)

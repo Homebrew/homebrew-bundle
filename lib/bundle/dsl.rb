@@ -68,6 +68,12 @@ module Bundle
       @entries << Entry.new(:mas, name, id: id)
     end
 
+    def whalebrew(name)
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+
+      @entries << Entry.new(:whalebrew, name)
+    end
+
     def tap(name, clone_target = nil, pin: false)
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "clone_target(#{clone_target.inspect}) should be nil or a String object" if clone_target && !clone_target.is_a?(String)

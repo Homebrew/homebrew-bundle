@@ -8,10 +8,12 @@ describe Bundle::Dumper do
   before do
     allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(Bundle).to receive(:mas_installed?).and_return(false)
+    allow(Bundle).to receive(:whalebrew_installed?).and_return(false)
     Bundle::BrewDumper.reset!
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!
     Bundle::MacAppStoreDumper.reset!
+    Bundle::WhalebrewDumper.reset!
     Bundle::BrewServices.reset!
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
