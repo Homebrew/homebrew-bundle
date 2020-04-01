@@ -25,8 +25,7 @@ module Bundle
 
       unless Bundle.mas_signedin?
         puts "Not signed in to Mac App Store." if Homebrew.args.verbose?
-        Bundle.system "mas", "signin", "--dialog", "" if MacOS.version < :mojave
-        raise "Unable to install #{name} app. mas not signed in to Mac App Store." unless Bundle.mas_signedin?
+        raise "Unable to install #{name} app. mas not signed in to Mac App Store."
       end
 
       if app_id_installed?(id)

@@ -55,12 +55,10 @@ describe Bundle::MacAppStoreInstaller do
     end
 
     context "when mas is not signed in" do
-      before do
-      end
-
-      it "tries to sign in with mas" do
-        expect(Kernel).to receive(:system).with("mas account &>/dev/null").and_return(false).twice
-        expect(Bundle).to receive(:system).with("mas", "signin", "--dialog", "").and_return(true)
+      it "outputs an error" do
+        allow(described_class).to receive(:installed_app_ids).and_return([123])
+        allow(described_class).to receive(:outdated_app_ids).and_return([123])
+        expect(Kernel).to receive(:system).with("mas account &>/dev/null").and_return(false)
         expect { do_install }.to raise_error(RuntimeError)
       end
     end
