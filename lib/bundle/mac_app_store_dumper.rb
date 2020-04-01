@@ -16,9 +16,7 @@ module Bundle
           app_details = app.match(/\A(?<id>\d+)\s+(?<name>.*)\s+\((?<version>[\d\.]*)\)\Z/)
 
           # Only add the application details should we have a valid match.
-          if app_details
-            [app_details[:id], app_details[:name]]
-          end
+          [app_details[:id], app_details[:name]] if app_details
         end
       else
         []

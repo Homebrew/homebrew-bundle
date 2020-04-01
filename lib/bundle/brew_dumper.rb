@@ -32,9 +32,7 @@ module Bundle
         brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
-        if !Homebrew.args.no_restart? && BrewServices.started?(f[:full_name])
-          brewline += ", restart_service: true"
-        end
+        brewline += ", restart_service: true" if !Homebrew.args.no_restart? && BrewServices.started?(f[:full_name])
         brewline += ", link: #{f[:link?]}" unless f[:link?].nil?
         brewline
       end.join("\n")
@@ -136,7 +134,7 @@ module Bundle
         installed_as_dependency = keg["installed_as_dependency"] || false
         installed_on_request = keg["installed_on_request"] || false
         poured_from_bottle = keg["poured_from_bottle"] || false
-        runtime_dependencies = if deps = keg["runtime_dependencies"]
+        runtime_dependencies = if (deps = keg["runtime_dependencies"])
           deps.map do |dep|
             full_name = dep["full_name"]
             next unless full_name

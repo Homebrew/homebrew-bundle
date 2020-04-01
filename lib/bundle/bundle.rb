@@ -10,7 +10,7 @@ module Bundle
       logs = []
       success = nil
       IO.popen([cmd, *args], err: [:child, :out]) do |pipe|
-        while buf = pipe.gets
+        while (buf = pipe.gets)
           logs << buf
         end
         Process.wait(pipe.pid)

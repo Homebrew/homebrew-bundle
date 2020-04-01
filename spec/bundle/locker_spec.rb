@@ -48,8 +48,8 @@ describe Bundle::Locker do
         .and_return("whalebrew/wget@sha256:abcd1234")
     end
 
-    it 'returns a hash of the name and layer checksum' do
-      expect(locker.whalebrew_list).to eq({"whalebrew/wget" => "abcd1234"})
+    it "returns a hash of the name and layer checksum" do
+      expect(locker.whalebrew_list).to eq({ "whalebrew/wget" => "abcd1234" })
     end
   end
 

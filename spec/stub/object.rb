@@ -10,4 +10,3 @@ class Object
     !blank?
   end
 end
-

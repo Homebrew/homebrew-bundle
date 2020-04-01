@@ -16,7 +16,7 @@ describe Bundle::WhalebrewInstaller do
   describe ".image_installed?" do
     context "when an image is already installed" do
       before do
-        Bundle::WhalebrewInstaller.reset!
+        described_class.reset!
       end
 
       it "returns true" do
@@ -27,7 +27,7 @@ describe Bundle::WhalebrewInstaller do
 
     context "when an image isn't installed" do
       before do
-        Bundle::WhalebrewInstaller.reset!
+        described_class.reset!
       end
 
       it "returns false" do
@@ -55,7 +55,7 @@ describe Bundle::WhalebrewInstaller do
     end
 
     it "successfully installs an image" do
-      expect { do_install }.to_not raise_error
+      expect { do_install }.not_to raise_error
     end
 
     context "requested image is already installed" do
