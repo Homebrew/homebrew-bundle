@@ -75,7 +75,7 @@ module Bundle
       begin
         lockfile.unlink if lockfile.exist?
         lockfile.write(json.to_s + "\n")
-      rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY => e
+      rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
         opoo "Could not write to #{lockfile}!"
         return false
       end
@@ -86,12 +86,12 @@ module Bundle
     def brew_list_info
       @brew_list_info ||= begin
         name_bottles = JSON.parse(`brew info --json=v1 --installed`)
-                           .each_with_object({}) do |f, name_bottles|
+                           .each_with_object({}) do |f, hash|
           bottle = f["bottle"]["stable"]
           bottle&.delete("rebuild")
           bottle&.delete("root_url")
           bottle ||= false
-          name_bottles[f["name"]] = bottle
+          hash[f["name"]] = bottle
         end
         `brew list --versions`.lines
                               .each_with_object({}) do |line, name_versions_bottles|
@@ -137,7 +137,7 @@ module Bundle
     def whalebrew_list
       @whalebrew_list ||= begin
         Bundle::WhalebrewDumper.images.each_with_object({}) do |image, name_versions|
-          _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(':')
+          _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(":")
           name_versions[image] = version.chomp
         end
       end

@@ -27,7 +27,7 @@ require "os"
 require "global"
 require "bundle"
 
-Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each do |file|
+Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").sort.each do |file|
   next if file.include?("/extend/os/")
 
   require file

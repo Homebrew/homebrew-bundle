@@ -155,7 +155,9 @@ module Bundle
     end
 
     def self.unlinked_and_not_keg_only_formulae
-      @unlinked_and_not_keg_only_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == false }.compact
+      @unlinked_and_not_keg_only_formulae ||= Bundle::BrewDumper.formulae.map do |f|
+        f[:name] if f[:link?] == false
+      end .compact
     end
 
     private

@@ -11,7 +11,8 @@ module Bundle
       end
 
       def format_checkable(entries)
-        checkable_entries(entries).map { |e| [e.options[:id], e.name] }.to_h
+        checkable_entries(entries).map { |e| [e.options[:id], e.name] }
+                                  .to_h
       end
 
       def exit_early_check(app_ids_with_names)
@@ -23,7 +24,8 @@ module Bundle
       end
 
       def full_check(app_ids_with_names)
-        app_ids_with_names.reject { |id, _name| installed_and_up_to_date? id }.map { |_id, name| "App #{name} needs to be installed or updated." }
+        app_ids_with_names.reject { |id, _name| installed_and_up_to_date? id }
+                          .map { |_id, name| "App #{name} needs to be installed or updated." }
       end
     end
   end

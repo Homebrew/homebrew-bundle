@@ -46,7 +46,7 @@ module Bundle
         # Ensure the Ruby path we saved goes before anything else
         ENV.prepend_path "PATH", command_path
 
-        exec *args
+        exec(*args)
       end
     end
   end

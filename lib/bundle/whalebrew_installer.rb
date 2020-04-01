@@ -12,9 +12,7 @@ module Bundle
       unless Bundle.whalebrew_installed?
         puts "Installing whalebrew. It is not currently installed." if Homebrew.args.verbose?
         Bundle.system "brew", "install", "whalebrew"
-        unless Bundle.whalebrew_installed?
-          raise "Unable to install #{name} app. Whalebrew installation failed."
-        end
+        raise "Unable to install #{name} app. Whalebrew installation failed." unless Bundle.whalebrew_installed?
       end
 
       return :skipped if image_installed?(name)

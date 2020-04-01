@@ -76,7 +76,9 @@ module Bundle
 
     def tap(name, clone_target = nil, pin: false)
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
-      raise "clone_target(#{clone_target.inspect}) should be nil or a String object" if clone_target && !clone_target.is_a?(String)
+      if clone_target && !clone_target.is_a?(String)
+        raise "clone_target(#{clone_target.inspect}) should be nil or a String object"
+      end
 
       name = Bundle::Dsl.sanitize_tap_name(name)
       @entries << Entry.new(:tap, name, clone_target: clone_target, pin: pin)

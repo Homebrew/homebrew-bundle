@@ -77,10 +77,11 @@ describe Bundle::Commands::Check do
     end
   end
 
-  context "when service is not started" do
+  context "when service is not started and app not installed" do
     let(:expected_output) do
       <<~MSG
         brew bundle can't satisfy your Brewfile's dependencies.
+        → App foo needs to be installed or updated.
         → Service def needs to be started.
         Satisfy missing dependencies with `brew bundle install`.
       MSG
@@ -88,7 +89,7 @@ describe Bundle::Commands::Check do
 
     before do
       Bundle::Checker.reset!
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::Checker::MacAppStoreChecker).to receive(:installed_and_up_to_date?).and_return(false)
       allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(true)
@@ -99,7 +100,6 @@ describe Bundle::Commands::Check do
     it "does not raise error when no service needs to be started" do
       Bundle::Checker.reset!
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
 
       expect(Bundle::BrewInstaller.installed_formulae).to include("abc")
       expect(Bundle::CaskInstaller.installed_casks).not_to include("abc")
@@ -112,6 +112,8 @@ describe Bundle::Commands::Check do
       it "raises an error" do
         allow_any_instance_of(Pathname).to \
           receive(:read).and_return("brew 'abc', restart_service: true\nbrew 'def', restart_service: true")
+        allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to \
+          receive(:format_checkable).and_return(1 => "foo")
         expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
       end
     end
@@ -120,6 +122,8 @@ describe Bundle::Commands::Check do
       it "raises an error" do
         allow_any_instance_of(Pathname).to \
           receive(:read).and_return("brew 'abc', start_service: true\nbrew 'def', start_service: true")
+        allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to \
+          receive(:format_checkable).and_return(1 => "foo")
         expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
       end
     end

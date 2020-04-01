@@ -40,11 +40,14 @@ module Homebrew
       switch "--global",
              description: "Read the `Brewfile` from `~/.Brewfile`."
       switch :verbose,
-             description: "`install` output is printed from commands as they are run. `check` prints all missing dependencies."
+             description: "`install` output is printed from commands as they are run. " \
+                          "`check` prints all missing dependencies."
       switch "--no-upgrade",
-             description: "`install` won't run `brew upgrade` on outdated dependencies. Note they may still be upgraded by `brew install` if needed."
+             description: "`install` won't run `brew upgrade` on outdated dependencies. " \
+                          "Note they may still be upgraded by `brew install` if needed."
       switch :force,
-             description: "`dump` overwrites an existing `Brewfile`. `cleanup` actually perform the cleanup operations."
+             description: "`dump` overwrites an existing `Brewfile`. " \
+                          "`cleanup` actually perform the cleanup operations."
       switch "--no-lock",
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
@@ -60,7 +63,8 @@ module Homebrew
       switch "--whalebrew",
              description: "`list` Whalebrew dependencies."
       switch "--describe",
-             description: "`dump` a description comment above each line, unless the dependency does not have a description."
+             description: "`dump` a description comment above each line, unless the " \
+                          "dependency does not have a description."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
       switch "--zap",

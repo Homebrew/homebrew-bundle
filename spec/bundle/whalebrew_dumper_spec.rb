@@ -5,7 +5,7 @@ require "spec_helper"
 describe Bundle::WhalebrewDumper do
   subject(:dumper) { described_class }
 
-  describe '.images' do
+  describe ".images" do
     before do
       dumper.reset!
       allow(Bundle).to receive(:whalebrew_installed?).and_return(true)
@@ -19,16 +19,16 @@ describe Bundle::WhalebrewDumper do
       "COMMAND   IMAGE\nwget      whalebrew/wget\nwget      whalebrew/wget"
     end
 
-    it 'removes the header' do
+    it "removes the header" do
       allow(dumper).to receive(:`).with("whalebrew list 2>/dev/null")
-        .and_return(whalebrew_list_single_output)
-      expect(dumper.images).to_not include("COMMAND")
-      expect(dumper.images).to_not include("IMAGE")
+                                  .and_return(whalebrew_list_single_output)
+      expect(dumper.images).not_to include("COMMAND")
+      expect(dumper.images).not_to include("IMAGE")
     end
 
-    it 'dedupes items' do
+    it "dedupes items" do
       allow(dumper).to receive(:`).with("whalebrew list 2>/dev/null")
-        .and_return(whalebrew_list_duplicate_output)
+                                  .and_return(whalebrew_list_duplicate_output)
       expect(dumper.images).to eq(["whalebrew/wget"])
     end
   end
@@ -56,7 +56,7 @@ describe Bundle::WhalebrewDumper do
 
     context "images are installed" do
       let(:expected_whalebrew_dump) do
-        %Q{whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig"}
+        %Q(whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig")
       end
 
       it "returns correct listing" do
