@@ -89,7 +89,8 @@ module Bundle
     HOMEBREW_TAP_FORMULA_REGEX = %r{^([\w-]+)/([\w-]+)/([\w+-.@]+)$}.freeze
 
     def self.sanitize_brew_name(name)
-      name = name.downcase
+      name = name.downcase unless name.match(/\A#{URI.regexp(['http', 'https'])}\z/)
+
       if name =~ HOMEBREW_CORE_FORMULA_REGEX
         Regexp.last_match(1)
       elsif name =~ HOMEBREW_TAP_FORMULA_REGEX

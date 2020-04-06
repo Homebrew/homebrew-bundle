@@ -18,6 +18,7 @@ describe Bundle::Dsl do
         cask 'firefox', args: { appdir: '~/my-apps/Applications' }
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
+        brew 'https://raw.githubusercontent.com/Homebrew/homebrew-core/50c928c870001577ce6b7e28edf43e05df699852/Formula/etcd.rb'
       EOS
     end
 
@@ -47,6 +48,7 @@ describe Bundle::Dsl do
       expect(dsl.entries[8].name).to eql("1Password")
       expect(dsl.entries[8].options).to eql(id: 443_987_910)
       expect(dsl.entries[9].name).to eql("whalebrew/wget")
+      expect(dsl.entries[10].name).to eql("https://raw.githubusercontent.com/Homebrew/homebrew-core/50c928c870001577ce6b7e28edf43e05df699852/Formula/etcd.rb")
     end
   end
 
@@ -78,6 +80,7 @@ describe Bundle::Dsl do
     expect(described_class.send(:sanitize_brew_name, "homebrew/homebrew-bar/foo")).to eql("homebrew/bar/foo")
     expect(described_class.send(:sanitize_brew_name, "homebrew/bar/foo")).to eql("homebrew/bar/foo")
     expect(described_class.send(:sanitize_brew_name, "foo")).to eql("foo")
+    expect(described_class.send(:sanitize_brew_name, "https://raw.githubusercontent.com/Homebrew/homebrew-core/50c928c870001577ce6b7e28edf43e05df699852/Formula/etcd.rb")).to eql("https://raw.githubusercontent.com/Homebrew/homebrew-core/50c928c870001577ce6b7e28edf43e05df699852/Formula/etcd.rb")
   end
 
   it ".sanitize_tap_name" do
