@@ -16,7 +16,7 @@
 
 ## Security
 
-Please report security issues to security@brew.sh.
+Please report security issues to our [HackerOne](https://hackerone.com/homebrew/).
 
 ## Code of Conduct
 

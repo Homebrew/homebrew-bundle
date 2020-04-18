@@ -7,7 +7,7 @@ module Homebrew
   def bundle_args
     Homebrew::CLI::Parser.new do
       usage_banner <<~EOS
-        `bundle` <subcommand>
+        `bundle` [<subcommand>]
 
         Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store and Whalebrew.
 
@@ -35,19 +35,19 @@ module Homebrew
 
         List all dependencies present in a Brewfile. By default, only Homebrew dependencies are listed.
       EOS
-      flag "--file=",
-           description: "Read the `Brewfile` from this file. Use `--file=-` to pipe to stdin/stdout."
+      flag   "--file=",
+             description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
       switch "--global",
              description: "Read the `Brewfile` from `~/.Brewfile`."
       switch :verbose,
-             description: "`install` output is printed from commands as they are run. " \
-                          "`check` prints all missing dependencies."
+             description: "`install` prints output from commands as they are run. " \
+                          "`check` lists all missing dependencies."
       switch "--no-upgrade",
              description: "`install` won't run `brew upgrade` on outdated dependencies. " \
                           "Note they may still be upgraded by `brew install` if needed."
       switch :force,
              description: "`dump` overwrites an existing `Brewfile`. " \
-                          "`cleanup` actually perform the cleanup operations."
+                          "`cleanup` actually performs its cleanup operations."
       switch "--no-lock",
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
@@ -63,7 +63,7 @@ module Homebrew
       switch "--whalebrew",
              description: "`list` Whalebrew dependencies."
       switch "--describe",
-             description: "`dump` a description comment above each line, unless the " \
+             description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
@@ -93,7 +93,7 @@ module Homebrew
       when "list"
         Bundle::Commands::List.run
       else
-        raise UsageError, "Unknown subcommand `#{subcommand}`!"
+        raise UsageError, "unknown subcommand: #{subcommand}"
       end
     rescue SystemExit => e
       Homebrew.failed = true unless e.success?

@@ -74,7 +74,7 @@ module Bundle
       case @link
       when true
         unless linked_and_keg_only?
-          puts "Force linking #{@name} formula." if Homebrew.args.verbose?
+          puts "Force-linking #{@name} formula." if Homebrew.args.verbose?
           Bundle.system("brew", "link", "--force", @name)
         end
       when false
