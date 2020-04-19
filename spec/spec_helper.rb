@@ -22,10 +22,10 @@ PROJECT_ROOT ||= File.expand_path("..", __dir__)
 STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub"))
 $LOAD_PATH.unshift(STUB_PATH)
 
-require "object"
 require "os"
 require "global"
 require "bundle"
+require "active_support/core_ext/object/blank"
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").sort.each do |file|
   next if file.include?("/extend/os/")
