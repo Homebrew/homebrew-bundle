@@ -4,7 +4,7 @@ Bundler for non-Ruby dependencies from Homebrew.
 
 ## Requirements
 
-[Homebrew](https://github.com/Homebrew/brew) (on macOS or [Linux](https://docs.brew.sh/Homebrew-on-Linux)) for installing the dependencies.
+[Homebrew](https://github.com/Homebrew/brew) (on macOS or [Linux](https://docs.brew.sh/Homebrew-on-Linux)) for installing dependencies.
 
 [Homebrew Cask](https://github.com/Homebrew/homebrew-cask) is optional and used for installing Mac applications.
 
@@ -14,7 +14,7 @@ Bundler for non-Ruby dependencies from Homebrew.
 
 ## Installation
 
-`brew bundle` is automatically installed when run.
+`brew bundle` is automatically installed when first run.
 
 ## Usage
 
@@ -49,15 +49,15 @@ Other entries can be run only on (or not on) Linux with `if OS.mac?` or `if OS.l
 
 ### Install
 
-You can then easily install all of the dependencies with:
+You can then easily install all dependencies with:
 
 ```bash
 brew bundle
 ```
 
-If a dependency is already installed and there is an upgrade available it will be upgraded.
+Any previously-installed dependencies which have upgrades available will be upgraded.
 
-`brew bundle` will look for `Brewfile` in the current directory. Use `--file` to specify a path to a different `Brewfile`, or set the `HOMEBREW_BUNDLE_FILE` environment variable, with `--file` taking precedence if both are provided.
+`brew bundle` will look for a `Brewfile` in the current directory. Use `--file` to specify a path to a different `Brewfile`, or set the `HOMEBREW_BUNDLE_FILE` environment variable; `--file` takes precedence if both are provided.
 
 You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables:
 
@@ -83,11 +83,11 @@ brew bundle dump
 
 The `--force` option will allow an existing `Brewfile` to be overwritten as well.
 The `--describe` option will output a description comment above each line.
-The `--no-restart` option will prevent `restart_service` from being added to ``brew`` lines with running services.
+The `--no-restart` option will prevent `restart_service` from being added to `brew` lines with running services.
 
 ### Cleanup
 
-You can also use `Brewfile` to list the only packages that should be installed, removing any package not present or dependent. This workflow is useful for maintainers or testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in `Brewfile`:
+You can also use a `Brewfile` to list the only packages that should be installed, removing any package not present or dependent. This workflow is useful for maintainers or testers who regularly install lots of formulae. To uninstall all Homebrew formulae not listed in the `Brewfile`:
 
 ```bash
 brew bundle cleanup
@@ -103,7 +103,7 @@ You can check there's anything to install/upgrade in the `Brewfile` by running:
 brew bundle check
 ```
 
-This provides a successful exit code if everything is up-to-date so is useful for scripting.
+This provides a successful exit code if everything is up-to-date, making it useful for scripting.
 
 For a list of dependencies that are missing, pass `--verbose`. This will also check _all_ dependencies by not exiting on the first missing dependency category.
 
@@ -121,7 +121,7 @@ Note that the _type_ of the package is **not** included in this output.
 
 ### Exec
 
-Runs an external command within Homebrew's superenv build environment:
+Runs an external command within Homebrew's superenv build environment.
 
 ```bash
 brew bundle exec -- bundle install
@@ -150,7 +150,7 @@ If your software needs specific versions then perhaps you'll want to look at usi
 
 ## Tests
 
-Tests can be run with `bundle install && bundle exec rspec`
+Tests can be run with `bundle install && bundle exec rspec`.
 
 ## Copyright
 

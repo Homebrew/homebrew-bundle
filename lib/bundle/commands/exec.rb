@@ -22,7 +22,7 @@ module Bundle
 
         # Save the command path, since this will be blown away by superenv
         command_path = which(command)
-        raise "Error: #{command} was not found on your PATH!" if command_path.nil?
+        raise "command was not found in your PATH: #{command}" if command_path.nil?
 
         command_path = command_path.dirname.to_s
 

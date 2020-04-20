@@ -9,7 +9,7 @@ module Bundle
 
       filename =
         if Homebrew.args.global?
-          raise "'HOMEBREW_BUNDLE_FILE' can not be specified with '--global'" if env_bundle_file.present?
+          raise "'HOMEBREW_BUNDLE_FILE' cannot be specified with '--global'" if env_bundle_file.present?
 
           "#{ENV["HOME"]}/.Brewfile"
         elsif Homebrew.args.file.present?
