@@ -25,7 +25,7 @@ module Bundle
 
       def full_check(app_ids_with_names)
         app_ids_with_names.reject { |id, _name| installed_and_up_to_date? id }
-                          .map { |_id, name| "App #{name} needs to be installed or updated." }
+                          .map { |_id, name| failure_reason(name) }
       end
     end
   end

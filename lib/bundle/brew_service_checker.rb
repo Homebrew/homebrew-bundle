@@ -7,6 +7,10 @@ module Bundle
       PACKAGE_TYPE_NAME = "Service"
       PACKAGE_ACTION_PREDICATE = "needs to be started."
 
+      def failure_reason(name)
+        "#{PACKAGE_TYPE_NAME} #{name} needs to be started."
+      end
+
       def installed_and_up_to_date?(formula)
         return true unless formula_needs_to_start?(entry_to_formula(formula))
         return true if service_is_started?(formula.name)
