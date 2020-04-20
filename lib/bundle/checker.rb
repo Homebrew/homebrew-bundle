@@ -6,7 +6,6 @@ module Bundle
       # Implement these in any subclass
       # PACKAGE_TYPE = :pkg
       # PACKAGE_TYPE_NAME = "Package"
-      PACKAGE_ACTION_PREDICATE = "needs to be installed or updated."
 
       def exit_early_check(packages)
         work_to_be_done = packages.find do |pkg|
@@ -16,9 +15,18 @@ module Bundle
         Array(work_to_be_done)
       end
 
+      def failure_reason(name)
+        reason = if Homebrew.args.no_upgrade?
+          "needs to be installed."
+        else
+          "needs to be installed or updated."
+        end
+        "#{self.class::PACKAGE_TYPE_NAME} #{name} #{reason}"
+      end
+
       def full_check(packages)
         packages.reject { |pkg| installed_and_up_to_date? pkg }
-                .map { |entry| "#{self.class::PACKAGE_TYPE_NAME} #{entry} #{self.class::PACKAGE_ACTION_PREDICATE}" }
+                .map(&method(:failure_reason))
       end
 
       def checkable_entries(all_entries)

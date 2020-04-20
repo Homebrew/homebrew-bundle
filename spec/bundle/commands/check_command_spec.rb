@@ -129,6 +129,31 @@ describe Bundle::Commands::Check do
     end
   end
 
+  context "when app not installed and --no-upgrade passed" do
+    let(:expected_output) do
+      <<~MSG
+        brew bundle can't satisfy your Brewfile's dependencies.
+        → App foo needs to be installed.
+        Satisfy missing dependencies with `brew bundle install`.
+      MSG
+    end
+
+    before do
+      Bundle::Checker.reset!
+      allow(Bundle::Checker::MacAppStoreChecker).to receive(:installed_and_up_to_date?).and_return(false)
+      allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true, no_upgrade?: true))
+    end
+
+    it "raises an error that doesn't mention upgrade" do
+      allow_any_instance_of(Pathname).to \
+        receive(:read).and_return("brew 'abc'")
+      allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to \
+        receive(:format_checkable).and_return(1 => "foo")
+      expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
+    end
+  end
+
   context "when there are taps to install" do
     before do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
