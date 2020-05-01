@@ -190,9 +190,6 @@ describe Bundle::Commands::Cleanup do
     end
 
     context "without --force" do
-      before do
-      end
-
       it "prints output" do
         sane?
         expect { described_class.run }.to output(/cleaned/).to_stdout
