@@ -8,7 +8,7 @@ Bundler for non-Ruby dependencies from Homebrew.
 
 [Homebrew Cask](https://github.com/Homebrew/homebrew-cask) is optional and used for installing Mac applications.
 
-[mas-cli](https://github.com/argon/mas) is optional and used for installing Mac App Store applications.
+[mas-cli](https://github.com/mas-cli/mas) is optional and used for installing Mac App Store applications.
 
 [whalebrew](https://github.com/whalebrew/whalebrew) is optional and used for installing Whalebrew images.
 
