@@ -31,7 +31,7 @@ describe Bundle::Commands::List do
       end.sort
 
       combinations.each do |options_list|
-        switches = options_list.map { |type| type[2..-1] }
+        switches = options_list.map { |type| type[2..] }
         args_hash = switches.each_with_object({}) { |arg, hash| hash["#{arg}?"] = true; }
         words = switches.join(" and ")
         opts = options_list.join(" and ")
