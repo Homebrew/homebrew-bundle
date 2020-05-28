@@ -43,7 +43,7 @@ GEM
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    lumberjack (1.2.4)
+    lumberjack (1.2.5)
     method_source (1.0.0)
     minitest (5.14.1)
     nenv (0.3.0)
