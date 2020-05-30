@@ -12,22 +12,34 @@ module Homebrew
         Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store and Whalebrew.
 
         `brew bundle` [`install`]:
-        Install or upgrade all dependencies in a `Brewfile`.
+        Install and upgrade (by default) all dependencies from the `Brewfile`.
+
+        You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`
+
+        `brew bundle` will output a `Brewfile.lock.json` in the same directory as the `Brewfile` if all dependencies are installed successfully. This contains dependency and system status information which can be useful in debugging `brew bundle` failures and replicating a "last known good build" state. You can opt-out of this behaviour by setting the `HOMEBREW_BUNDLE_NO_LOCK` environment variable or passing the `--no-lock` option. You may wish to check this file into the same version control system as your `Brewfile` (or ensure your version control system ignores it if you'd prefer to rely on debugging information from a local machine).
 
         `brew bundle dump`:
         Write all installed casks/formulae/images/taps into a `Brewfile`.
 
         `brew bundle cleanup`:
-        Uninstall all dependencies not listed in a `Brewfile`.
+        Uninstall all dependencies not listed from the `Brewfile`.
+
+        This workflow is useful for maintainers or testers who regularly install lots of formulae.
 
         `brew bundle check`:
-        Check if all dependencies are installed in a `Brewfile`.
+        Check if all dependencies are installed from the `Brewfile` .
 
-        `brew bundle exec` <command>:
-        Run an external command in an isolated build environment.
+        This provides a successful exit code if everything is up-to-date, making it useful for scripting.
 
         `brew bundle list`:
-        List all dependencies present in a `Brewfile`. By default, only Homebrew dependencies are listed.
+        List all dependencies present in a `Brewfile`.
+
+        By default, only Homebrew dependencies are listed.
+
+        `brew bundle exec` <command>:
+        Run an external command in an isolated build environment based on the `Brewfile` dependencies.
+
+        This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
       EOS
       flag   "--file=",
              description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
