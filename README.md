@@ -18,7 +18,7 @@ Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store an
 
 ## Usage
 
-See `brew bundle --help` or [the `brew man` output](https://docs.brew.sh/Manpage).
+See [the `brew bundle` section of the `brew man` output](https://docs.brew.sh/Manpage#bundle-subcommand) or `brew bundle --help`.
 
 An example `Brewfile`:
 
