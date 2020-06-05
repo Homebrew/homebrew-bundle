@@ -41,7 +41,7 @@ module Bundle
 
         # Setup pkg-config, if present, to help locate packages
         pkgconfig = Formulary.factory("pkg-config")
-        ENV.prepend_path "PATH", pkgconfig.opt_bin.to_s if pkgconfig.installed?
+        ENV.prepend_path "PATH", pkgconfig.opt_bin.to_s if pkgconfig.any_version_installed?
 
         # Ensure the Ruby path we saved goes before anything else
         ENV.prepend_path "PATH", command_path
