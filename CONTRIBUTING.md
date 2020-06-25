@@ -20,4 +20,4 @@ Please report security issues to our [HackerOne](https://hackerone.com/homebrew/
 
 ## Code of Conduct
 
-Please note that this project is released with a [Code of Conduct](https://github.com/Homebrew/.github/blob/master/CODE_OF_CONDUCT.md#code-of-conduct). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Code of Conduct](https://github.com/Homebrew/.github/blob/HEAD/CODE_OF_CONDUCT.md#code-of-conduct). By participating in this project you agree to abide by its terms.
