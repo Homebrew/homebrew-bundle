@@ -35,18 +35,10 @@ end
 
 formatters = [SimpleCov::Formatter::HTMLFormatter]
 
-if macos? && ENV["COVERALLS_REPO_TOKEN"]
-  require "coveralls"
+if macos? && ENV["CODECOV_TOKEN"]
+  require "codecov"
 
-  formatters << Coveralls::SimpleCov::Formatter
-
-  ENV["CI"] = "1"
-  ENV["CI_NAME"] = "github-actions"
-  ENV["CI_BUILD_NUMBER"] = ENV["GITHUB_REF"]
-  ENV["CI_BRANCH"] = ENV["HEAD_GITHUB_REF"]
-  %r{refs/pull/(?<pr>\d+)/merge} =~ ENV["GITHUB_REF"]
-  ENV["CI_PULL_REQUEST"] = pr
-  ENV["CI_BUILD_URL"] = "https://github.com/#{ENV["GITHUB_REPOSITORY"]}/pull/#{pr}/checks"
+  formatters << SimpleCov::Formatter::Codecov
 end
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)
