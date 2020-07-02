@@ -36,4 +36,4 @@ jobs:
     - name: Run RSpec tests
       run: bundle exec rspec
       env:
-        COVERALLS_REPO_TOKEN: glKUxWlZ56q0WwJhNh5znGTB8ZlFwfvZW
+        CODECOV_TOKEN: d8abdd06-9193-47d3-9da9-b4b25064e49b

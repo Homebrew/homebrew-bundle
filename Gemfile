@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 group :test do
   gem "activesupport"
-  gem "coveralls"
+  gem "codecov", require: false
   gem "guard-rspec"
   gem "guard-rubocop"
   gem "rspec"
