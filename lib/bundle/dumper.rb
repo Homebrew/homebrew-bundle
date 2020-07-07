@@ -23,8 +23,7 @@ module Bundle
       content << cask_after_formula
       content << MacAppStoreDumper.dump
       content << WhalebrewDumper.dump
-      content = content.reject(&:empty?).join("\n") + "\n"
-      content
+      content.reject(&:empty?).join("\n") + "\n"
     end
 
     def dump_brewfile
