@@ -23,9 +23,10 @@ module Bundle
       end
 
       args = options.fetch(:args, []).map do |k, v|
-        if v.is_a?(TrueClass)
+        case v
+        when TrueClass
           "--#{k}"
-        elsif v.is_a?(FalseClass)
+        when FalseClass
           nil
         else
           "--#{k}=#{v}"
