@@ -223,7 +223,7 @@ describe Bundle::Commands::Check do
     it "raises an exception" do
       TestChecker = Class.new(Bundle::Checker::Base) do
         class_eval("PACKAGE_TYPE = :test", __FILE__, __LINE__)
-      end
+      end.freeze
 
       test_entry = Bundle::Dsl::Entry.new(:test, "test")
       expect { TestChecker.new.find_actionable([test_entry]) }.to raise_error(NotImplementedError)
