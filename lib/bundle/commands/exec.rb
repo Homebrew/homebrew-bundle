@@ -11,9 +11,7 @@ module Bundle
     module Exec
       module_function
 
-      def run
-        _subcommand, *args = Homebrew.args.named
-
+      def run(*args, global: false, file: nil)
         # Setup Homebrew's ENV extensions
         ENV.activate_extensions!
         raise UsageError, "No command to execute was specified!" if args.blank?
@@ -26,7 +24,7 @@ module Bundle
 
         command_path = command_path.dirname.to_s
 
-        brewfile = Bundle::Dsl.new(Brewfile.read)
+        brewfile = Bundle::Dsl.new(Brewfile.read(global: global, file: file))
         ENV.deps = brewfile.entries.map do |entry|
           next unless entry.type == :brew
 

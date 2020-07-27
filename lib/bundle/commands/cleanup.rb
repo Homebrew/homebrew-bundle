@@ -17,13 +17,13 @@ module Bundle
         Bundle::BrewServices.reset!
       end
 
-      def run
-        casks = casks_to_uninstall
-        formulae = formulae_to_uninstall
-        taps = taps_to_untap
-        if Homebrew.args.force?
+      def run(global: false, file: nil, force: false, zap: false)
+        casks = casks_to_uninstall(global: global, file: file)
+        formulae = formulae_to_uninstall(global: global, file: file)
+        taps = taps_to_untap(global: global, file: file)
+        if force
           if casks.any?
-            action = if Homebrew.args.zap?
+            action = if zap
               "zap"
             else
               "uninstall"
@@ -66,12 +66,12 @@ module Bundle
         end
       end
 
-      def casks_to_uninstall
-        Bundle::CaskDumper.casks - kept_casks
+      def casks_to_uninstall(global: false, file: nil)
+        Bundle::CaskDumper.casks - kept_casks(global: global, file: file)
       end
 
-      def formulae_to_uninstall
-        @dsl ||= Bundle::Dsl.new(Brewfile.read)
+      def formulae_to_uninstall(global: false, file: nil)
+        @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
         kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
         kept_cask_formula_dependencies = Bundle::CaskDumper.formula_dependencies(kept_casks)
         kept_formulae += kept_cask_formula_dependencies
@@ -89,10 +89,10 @@ module Bundle
         current_formulae.map { |f| f[:full_name] }
       end
 
-      def kept_casks
+      def kept_casks(global: false, file: nil)
         return @kept_casks if @kept_casks
 
-        @dsl ||= Bundle::Dsl.new(Brewfile.read)
+        @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
         @kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
       end
 
@@ -124,8 +124,8 @@ module Bundle
 
       IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
 
-      def taps_to_untap
-        @dsl ||= Bundle::Dsl.new(Brewfile.read)
+      def taps_to_untap(global: false, file: nil)
+        @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS

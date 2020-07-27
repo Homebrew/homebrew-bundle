@@ -18,9 +18,8 @@ describe Bundle::Locker do
   end
 
   describe ".write_lockfile?" do
-    it "returns false if --no-lock is passed" do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(no_lock?: true))
-      expect(locker.write_lockfile?).to be false
+    it "returns false if `no_lock` is true" do
+      expect(locker.write_lockfile?(no_lock: true)).to be false
     end
 
     it "returns false if HOMEBREW_BUNDLE_NO_LOCK is set" do

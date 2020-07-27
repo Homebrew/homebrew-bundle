@@ -79,25 +79,36 @@ module Homebrew
   end
 
   def bundle
-    bundle_args.parse
+    args = bundle_args.parse
 
     # Keep this after the .parse to keep --help fast.
     require_relative "../lib/bundle"
 
     begin
-      case subcommand = Homebrew.args.named.first.presence
+      case subcommand = args.named.first.presence
       when nil, "install"
-        Bundle::Commands::Install.run
+        Bundle::Commands::Install.run(global: args.global?, file: args.file, no_lock: args.no_lock?, no_upgrade: args.no_upgrade?)
       when "dump"
-        Bundle::Commands::Dump.run
+        Bundle::Commands::Dump.run(global: args.global?, file: args.file, describe: args.describe?, force: args.force?, no_restart: args.no_restart?)
       when "cleanup"
-        Bundle::Commands::Cleanup.run
+        Bundle::Commands::Cleanup.run(global: args.global?, file: args.file, force: args.force?, zap: args.zap?)
       when "check"
-        Bundle::Commands::Check.run
+        Bundle::Commands::Check.run(global: args.global?, file: args.file, no_upgrade: args.no_upgrade?)
       when "exec"
-        Bundle::Commands::Exec.run
+        _subcommand, *named_args = args.named
+        Bundle::Commands::Exec.run(*named_args, global: args.global?, file: args.file)
       when "list"
-        Bundle::Commands::List.run
+
+        Bundle::Commands::List.run(
+          global:    args.global?,
+          file:      args.file,
+          all:       args.all?,
+          casks:     args.casks?,
+          taps:      args.taps?,
+          mas:       args.mas?,
+          whalebrew: args.whalebrew?,
+          brews:     args.brews?,
+        )
       else
         raise UsageError, "unknown subcommand: #{subcommand}"
       end

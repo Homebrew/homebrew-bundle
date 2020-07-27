@@ -8,7 +8,7 @@ module Bundle
       @installed_images = nil
     end
 
-    def install(name)
+    def install(name, **_options)
       unless Bundle.whalebrew_installed?
         puts "Installing whalebrew. It is not currently installed." if Homebrew.args.verbose?
         Bundle.system "brew", "install", "whalebrew"

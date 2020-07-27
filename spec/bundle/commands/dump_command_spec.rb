@@ -29,7 +29,6 @@ describe Bundle::Commands::Dump do
   context "when files existed and `--force` is passed" do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(force?: true, global?: true))
       allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
 
@@ -38,7 +37,7 @@ describe Bundle::Commands::Dump do
       expect_any_instance_of(Pathname).to receive(:open).with("w").and_yield(io)
       expect(io).to receive(:write)
       expect do
-        described_class.run
+        described_class.run(force: true, global: true)
       end.not_to raise_error
     end
   end

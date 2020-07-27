@@ -490,7 +490,9 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "when --describe is not set" do
+  context "when `describe` is false" do
+    subject(:dump) { described_class.dump(describe: false) }
+
     before do
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
@@ -529,13 +531,14 @@ describe Bundle::BrewDumper do
     end
 
     it "does not output a comment with dependency description" do
-      expect(described_class.dump).not_to include("#")
+      expect(dump).not_to include("#")
     end
   end
 
-  context "when --describe is set" do
+  context "when `describe` is true" do
+    subject(:dump) { described_class.dump(describe: true) }
+
     before do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(describe?: true))
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
         {
@@ -573,11 +576,11 @@ describe Bundle::BrewDumper do
     end
 
     it "outputs a comment on the line before a dependency with a description" do
-      expect(described_class.dump).to include("# z")
+      expect(dump).to include("# z")
     end
 
     it "does not output a comment if a formula lacks a description" do
-      lines_with_comments = described_class.dump.split.select { |line| line.include?("#") }
+      lines_with_comments = dump.split.select { |line| line.include?("#") }
       expect(lines_with_comments.size).to eq(1)
     end
   end
@@ -631,13 +634,11 @@ describe Bundle::BrewDumper do
       expect(described_class.dump).not_to include('brew "b", restart_service: true')
     end
 
-    context "when --no-restart is set" do
-      before do
-        allow(Homebrew).to receive(:args).and_return(OpenStruct.new(no_restart?: true))
-      end
+    context "when `no_restart` is true" do
+      subject(:dump) { described_class.dump(no_restart: true) }
 
       it "does not add a restart_service bit if the service is running" do
-        expect(described_class.dump).not_to include("restart_service")
+        expect(dump).not_to include("restart_service")
       end
     end
   end

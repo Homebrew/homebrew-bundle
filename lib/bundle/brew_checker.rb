@@ -6,8 +6,8 @@ module Bundle
       PACKAGE_TYPE = :brew
       PACKAGE_TYPE_NAME = "Formula"
 
-      def installed_and_up_to_date?(formula)
-        Bundle::BrewInstaller.formula_installed_and_up_to_date? formula
+      def installed_and_up_to_date?(formula, no_upgrade: false)
+        Bundle::BrewInstaller.formula_installed_and_up_to_date?(formula, no_upgrade: no_upgrade)
       end
     end
   end

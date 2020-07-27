@@ -4,7 +4,7 @@ module Bundle
   module TapInstaller
     module_function
 
-    def install(name, options = {})
+    def install(name, **options)
       if installed_taps.include? name
         puts "Skipping install of #{name} tap. It is already installed." if Homebrew.args.verbose?
         return :failed unless check_pinning(name, options)

@@ -8,8 +8,8 @@ module Bundle
       @pinned_formulae = nil
     end
 
-    def self.install(name, options = {})
-      new(name, options).run
+    def self.install(name, no_upgrade: false, **options)
+      new(name, options).run(no_upgrade: no_upgrade)
     end
 
     def initialize(name, options = {})
@@ -23,18 +23,18 @@ module Bundle
       @changed = nil
     end
 
-    def run
-      install_result = install_change_state!
+    def run(no_upgrade: false)
+      install_result = install_change_state!(no_upgrade: no_upgrade)
       service_change_state! if install_result != :failed
       link_change_state!
       install_result
     end
 
-    def install_change_state!
+    def install_change_state!(no_upgrade:)
       return :failed unless resolve_conflicts!
 
       if installed?
-        return :skipped if Homebrew.args.no_upgrade?
+        return :skipped if no_upgrade
 
         upgrade!
       else
@@ -93,9 +93,9 @@ module Bundle
       end
     end
 
-    def self.formula_installed_and_up_to_date?(formula)
+    def self.formula_installed_and_up_to_date?(formula, no_upgrade: false)
       return false unless formula_installed?(formula)
-      return true if Homebrew.args.no_upgrade?
+      return true if no_upgrade
 
       !formula_upgradable?(formula)
     end
