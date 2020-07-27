@@ -51,7 +51,7 @@ module Homebrew
       switch "--no-upgrade",
              description: "`install` won't run `brew upgrade` on outdated dependencies. " \
                           "Note they may still be upgraded by `brew install` if needed."
-      switch :force,
+      switch "-f", "--force",
              description: "`dump` overwrites an existing `Brewfile`. " \
                           "`cleanup` actually performs its cleanup operations."
       switch "--no-lock",
