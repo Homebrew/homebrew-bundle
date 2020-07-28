@@ -7,16 +7,16 @@ module Bundle
       # PACKAGE_TYPE = :pkg
       # PACKAGE_TYPE_NAME = "Package"
 
-      def exit_early_check(packages)
+      def exit_early_check(packages, no_upgrade:)
         work_to_be_done = packages.find do |pkg|
-          !installed_and_up_to_date?(pkg)
+          !installed_and_up_to_date?(pkg, no_upgrade: no_upgrade)
         end
 
         Array(work_to_be_done)
       end
 
-      def failure_reason(name)
-        reason = if Homebrew.args.no_upgrade?
+      def failure_reason(name, no_upgrade:)
+        reason = if no_upgrade
           "needs to be installed."
         else
           "needs to be installed or updated."
@@ -24,9 +24,9 @@ module Bundle
         "#{self.class::PACKAGE_TYPE_NAME} #{name} #{reason}"
       end
 
-      def full_check(packages)
-        packages.reject { |pkg| installed_and_up_to_date? pkg }
-                .map(&method(:failure_reason))
+      def full_check(packages, no_upgrade:)
+        packages.reject { |pkg| installed_and_up_to_date?(pkg, no_upgrade: no_upgrade) }
+                .map { |pkg| failure_reason(pkg, no_upgrade: no_upgrade) }
       end
 
       def checkable_entries(all_entries)
@@ -38,17 +38,17 @@ module Bundle
         checkable_entries(entries).map(&:name)
       end
 
-      def installed_and_up_to_date?(_pkg)
+      def installed_and_up_to_date?(_pkg, no_upgrade: false)
         raise NotImplementedError
       end
 
-      def find_actionable(entries)
+      def find_actionable(entries, no_upgrade: false)
         requested = format_checkable entries
 
         if Bundle::Commands::Check.exit_on_first_error?
-          exit_early_check requested
+          exit_early_check(requested, no_upgrade: no_upgrade)
         else
-          full_check requested
+          full_check(requested, no_upgrade: no_upgrade)
         end
       end
     end
@@ -65,16 +65,16 @@ module Bundle
       formulae_to_start:   "Services",
     }.freeze
 
-    def check(exit_on_first_error)
-      @dsl ||= Bundle::Dsl.new(Brewfile.read)
+    def check(exit_on_first_error, global: false, file: nil, no_upgrade: false)
+      @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
 
       check_method_names = CHECKS.keys
 
       errors = []
       enumerator = exit_on_first_error ? :find : :map
 
-      work_to_be_done = check_method_names.send(enumerator) do |check_method|
-        check_errors = send(check_method)
+      work_to_be_done = check_method_names.public_send(enumerator) do |check_method|
+        check_errors = send(check_method, no_upgrade: no_upgrade)
         any_errors = check_errors.any?
         errors.concat(check_errors) if any_errors
         any_errors
@@ -85,24 +85,24 @@ module Bundle
       CheckResult.new work_to_be_done, errors
     end
 
-    def casks_to_install
-      Bundle::Checker::CaskChecker.new.find_actionable @dsl.entries
+    def casks_to_install(no_upgrade: false)
+      Bundle::Checker::CaskChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
     end
 
-    def formulae_to_install
-      Bundle::Checker::BrewChecker.new.find_actionable @dsl.entries
+    def formulae_to_install(no_upgrade: false)
+      Bundle::Checker::BrewChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
     end
 
-    def taps_to_tap
-      Bundle::Checker::TapChecker.new.find_actionable @dsl.entries
+    def taps_to_tap(no_upgrade: false)
+      Bundle::Checker::TapChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
     end
 
-    def apps_to_install
-      Bundle::Checker::MacAppStoreChecker.new.find_actionable @dsl.entries
+    def apps_to_install(no_upgrade: false)
+      Bundle::Checker::MacAppStoreChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
     end
 
-    def formulae_to_start
-      Bundle::Checker::BrewServiceChecker.new.find_actionable @dsl.entries
+    def formulae_to_start(no_upgrade: false)
+      Bundle::Checker::BrewServiceChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
     end
 
     def reset!

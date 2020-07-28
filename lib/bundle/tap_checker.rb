@@ -6,7 +6,7 @@ module Bundle
       PACKAGE_TYPE = :tap
       PACKAGE_TYPE_NAME = "Tap"
 
-      def find_actionable(entries)
+      def find_actionable(entries, no_upgrade: false)
         requested_taps = format_checkable(entries)
         return [] if requested_taps.empty?
 

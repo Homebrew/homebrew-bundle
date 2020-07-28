@@ -3,9 +3,10 @@
 require "spec_helper"
 
 describe Bundle::Commands::Check do
-  def do_check
-    Bundle::Commands::Check.run
+  let(:do_check) do
+    Bundle::Commands::Check.run(no_upgrade: no_upgrade)
   end
+  let(:no_upgrade) { false }
 
   before do
     Bundle::Checker.reset!
@@ -137,12 +138,13 @@ describe Bundle::Commands::Check do
         Satisfy missing dependencies with `brew bundle install`.
       MSG
     end
+    let(:no_upgrade) { true }
 
     before do
       Bundle::Checker.reset!
       allow(Bundle::Checker::MacAppStoreChecker).to receive(:installed_and_up_to_date?).and_return(false)
       allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true, no_upgrade?: true))
+      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
     end
 
     it "raises an error that doesn't mention upgrade" do

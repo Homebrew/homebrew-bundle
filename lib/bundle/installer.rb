@@ -4,7 +4,7 @@ module Bundle
   module Installer
     module_function
 
-    def install(entries)
+    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false)
       success = 0
       failure = 0
 
@@ -31,7 +31,7 @@ module Bundle
 
         next if Bundle::Skipper.skip? entry
 
-        case cls.install(*arg)
+        case cls.install(*arg, no_upgrade: no_upgrade)
         when :success
           puts Formatter.success("#{verb} #{entry.name}")
           success += 1
@@ -47,13 +47,13 @@ module Bundle
       unless failure.zero?
         puts Formatter.error "Homebrew Bundle failed! "\
           "#{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install."
-        if (lock = Bundle::Locker.lockfile) && lock.exist?
+        if (lock = Bundle::Locker.lockfile(global: global, file: file)) && lock.exist?
           puts Formatter.error("Check for differences in your #{lock.basename}!")
         end
         return false
       end
 
-      Bundle::Locker.lock(entries)
+      Bundle::Locker.lock(entries, global: global, file: file, no_lock: no_lock)
 
       puts Formatter.success "Homebrew Bundle complete! "\
         "#{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed."

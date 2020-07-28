@@ -22,17 +22,17 @@ module Bundle
       end
     end
 
-    def dump
+    def dump(describe: false, no_restart: false)
       requested_formula = formulae.select do |f|
         f[:installed_on_request?] || !f[:installed_as_dependency?]
       end
       requested_formula.map do |f|
         brewline = ""
-        brewline += "# #{f[:desc]}\n" if Homebrew.args.describe? && f[:desc]
+        brewline += "# #{f[:desc]}\n" if describe && f[:desc]
         brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
-        brewline += ", restart_service: true" if !Homebrew.args.no_restart? && BrewServices.started?(f[:full_name])
+        brewline += ", restart_service: true" if !no_restart && BrewServices.started?(f[:full_name])
         brewline += ", link: #{f[:link?]}" unless f[:link?].nil?
         brewline
       end.join("\n")

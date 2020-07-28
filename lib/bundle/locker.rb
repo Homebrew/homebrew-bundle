@@ -8,23 +8,25 @@ module Bundle
   module Locker
     module_function
 
-    def lockfile
-      brew_file_path = Brewfile.path
+    def lockfile(global: false, file: nil)
+      brew_file_path = Brewfile.path(global: global, file: file)
       brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
     end
 
-    def write_lockfile?
-      return false if Homebrew.args.no_lock?
+    def write_lockfile?(global: false, file: nil, no_lock: false)
+      return false if no_lock
       return false if ENV["HOMEBREW_BUNDLE_NO_LOCK"]
 
       # handle the /dev/stdin and /dev/stdout cases
-      return false if lockfile.parent.to_s == "/dev"
+      return false if lockfile(global: global, file: file).parent.to_s == "/dev"
 
       true
     end
 
-    def lock(entries)
-      return false unless write_lockfile?
+    def lock(entries, global: false, file: nil, no_lock: false)
+      return false unless write_lockfile?(global: global, file: file, no_lock: no_lock)
+
+      lockfile = lockfile(global: global, file: file)
 
       lock = JSON.parse(lockfile.read) if lockfile.exist?
       lock ||= {}

@@ -16,8 +16,8 @@ module Bundle
         !Homebrew.args.verbose?
       end
 
-      def run
-        check_result = Bundle::Checker.check(exit_on_first_error?)
+      def run(global: false, file: nil, no_upgrade: false)
+        check_result = Bundle::Checker.check(exit_on_first_error?, global: global, file: file, no_upgrade: no_upgrade)
 
         if check_result.work_to_be_done
           puts FAILURE_MESSAGE

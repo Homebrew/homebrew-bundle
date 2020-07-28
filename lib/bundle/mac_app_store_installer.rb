@@ -11,7 +11,7 @@ module Bundle
       @outdated_app_ids = nil
     end
 
-    def install(name, id)
+    def install(name, id, no_upgrade: false)
       unless Bundle.mas_installed?
         puts "Installing mas. It is not currently installed." if Homebrew.args.verbose?
         Bundle.system "brew", "install", "mas"
@@ -19,7 +19,7 @@ module Bundle
       end
 
       if app_id_installed?(id) &&
-         (Homebrew.args.no_upgrade? || !app_id_upgradable?(id))
+         (no_upgrade || !app_id_upgradable?(id))
         return :skipped
       end
 
@@ -43,9 +43,9 @@ module Bundle
       :success
     end
 
-    def self.app_id_installed_and_up_to_date?(id)
+    def self.app_id_installed_and_up_to_date?(id, no_upgrade: false)
       return false unless app_id_installed?(id)
-      return true if Homebrew.args.no_upgrade?
+      return true if no_upgrade
 
       !app_id_upgradable?(id)
     end
