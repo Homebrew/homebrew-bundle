@@ -87,18 +87,41 @@ module Homebrew
     begin
       case subcommand = args.named.first.presence
       when nil, "install"
-        Bundle::Commands::Install.run(global: args.global?, file: args.file, no_lock: args.no_lock?, no_upgrade: args.no_upgrade?)
+        Bundle::Commands::Install.run(
+          global:     args.global?,
+          file:       args.file,
+          no_lock:    args.no_lock?,
+          no_upgrade: args.no_upgrade?,
+        )
       when "dump"
-        Bundle::Commands::Dump.run(global: args.global?, file: args.file, describe: args.describe?, force: args.force?, no_restart: args.no_restart?)
+        Bundle::Commands::Dump.run(
+          global:     args.global?,
+          file:       args.file,
+          describe:   args.describe?,
+          force:      args.force?,
+          no_restart: args.no_restart?,
+        )
       when "cleanup"
-        Bundle::Commands::Cleanup.run(global: args.global?, file: args.file, force: args.force?, zap: args.zap?)
+        Bundle::Commands::Cleanup.run(
+          global: args.global?,
+          file:   args.file,
+          force:  args.force?,
+          zap:    args.zap?,
+        )
       when "check"
-        Bundle::Commands::Check.run(global: args.global?, file: args.file, no_upgrade: args.no_upgrade?)
+        Bundle::Commands::Check.run(
+          global:     args.global?,
+          file:       args.file,
+          no_upgrade: args.no_upgrade?,
+        )
       when "exec"
         _subcommand, *named_args = args.named
-        Bundle::Commands::Exec.run(*named_args, global: args.global?, file: args.file)
+        Bundle::Commands::Exec.run(
+          *named_args,
+          global: args.global?,
+          file:   args.file,
+        )
       when "list"
-
         Bundle::Commands::List.run(
           global:    args.global?,
           file:      args.file,
