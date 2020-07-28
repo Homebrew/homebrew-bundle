@@ -24,10 +24,10 @@ describe Bundle::Commands::List do
 
     context "limiting when certain options are passed" do
       types_and_deps = {
-        :taps  => "phinze/cask",
-        :brews => "mysql",
-        :casks => "google-chrome",
-        :mas   => "1Password",
+        taps:  "phinze/cask",
+        brews: "mysql",
+        casks: "google-chrome",
+        mas:   "1Password",
       }
 
       combinations = 1.upto(types_and_deps.length).flat_map do |i|
