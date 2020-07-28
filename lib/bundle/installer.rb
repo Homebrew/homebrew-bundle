@@ -9,29 +9,30 @@ module Bundle
       failure = 0
 
       entries.each do |entry|
-        arg = [entry.name]
+        args = [entry.name]
+        options = {}
         verb = "Installing"
         cls = case entry.type
         when :brew
-          arg << entry.options
+          options = entry.options
           Bundle::BrewInstaller
         when :cask
-          arg << entry.options
+          options = entry.options
           Bundle::CaskInstaller
         when :mas
-          arg << entry.options[:id]
+          args << entry.options[:id]
           Bundle::MacAppStoreInstaller
         when :whalebrew
           Bundle::WhalebrewInstaller
         when :tap
           verb = "Tapping"
-          arg << entry.options
+          options = entry.options
           Bundle::TapInstaller
         end
 
         next if Bundle::Skipper.skip? entry
 
-        case cls.install(*arg, no_upgrade: no_upgrade)
+        case cls.install(*args, **options, no_upgrade: no_upgrade)
         when :success
           puts Formatter.success("#{verb} #{entry.name}")
           success += 1
