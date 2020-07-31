@@ -45,7 +45,7 @@ module Homebrew
              description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
       switch "--global",
              description: "Read the `Brewfile` from `~/.Brewfile`."
-      switch :verbose,
+      switch "-v", "--verbose",
              description: "`install` prints output from commands as they are run. " \
                           "`check` lists all missing dependencies."
       switch "--no-upgrade",
