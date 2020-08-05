@@ -14,24 +14,36 @@ jobs:
     - name: Set up Git repository
       uses: actions/checkout@master
 
-    - name: Reset system Homebrew installation
-      if: matrix.os == 'macOS-latest'
-      run: brew update-reset
-
-    - name: Check Ruby style
-      if: matrix.os == 'macOS-latest'
-      run: brew style homebrew/bundle
-
     - name: Set up Ruby
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/setup-ruby@v1
+      uses: actions/setup-ruby@master
       with:
         ruby-version: '2.6'
 
-    - name: Install RubyGems
-      run: |
-        gem install bundler -v "~>1"
-        bundle install --jobs 4 --retry 3
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
+    - name: Cache Homebrew Bundler RubyGems
+      id: cache
+      uses: actions/cache@master
+      with:
+        path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+        key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+        restore-keys: ${{ runner.os }}-rubygems-
+
+    - name: Install Homebrew Bundler RubyGems
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: brew install-bundler-gems
+
+    - name: Run brew test-bot --only-tap-syntax
+      run: brew test-bot --only-tap-syntax
+
+    - name: Install Bundler
+      run: gem install bundler -v "~>1"
+
+    - name: Install Homebrew/homebrew-bundle RubyGems
+      run: bundle install --jobs 4 --retry 3
 
     - name: Run RSpec tests
       run: bundle exec rspec
