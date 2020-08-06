@@ -28,7 +28,7 @@ module Bundle
       end
       requested_formula.map do |f|
         brewline = ""
-        brewline += "# #{f[:desc]}\n" if describe && f[:desc]
+        brewline += desc_comment(f[:desc]) if describe && f[:desc]
         brewline += "brew \"#{f[:full_name]}\""
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
@@ -36,6 +36,10 @@ module Bundle
         brewline += ", link: #{f[:link?]}" unless f[:link?].nil?
         brewline
       end.join("\n")
+    end
+
+    def desc_comment(desc)
+      desc.split("\n").map { |s| "# #{s}\n" }.join
     end
 
     def cask_requirements

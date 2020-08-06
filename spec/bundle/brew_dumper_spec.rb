@@ -558,6 +558,22 @@ describe Bundle::BrewDumper do
           outdated?:                false,
         },
         {
+          name:                     "q",
+          full_name:                "q",
+          desc:                     "q\nq",
+          aliases:                  [],
+          args:                     [],
+          version:                  "1.0",
+          dependencies:             ["a", "b"],
+          recommended_dependencies: [],
+          optional_dependencies:    [],
+          build_dependencies:       [],
+          requirements:             [],
+          conflicts_with:           [],
+          pinned?:                  false,
+          outdated?:                false,
+        },
+        {
           name:                     "b",
           full_name:                "b",
           aliases:                  [],
@@ -579,9 +595,13 @@ describe Bundle::BrewDumper do
       expect(dump).to include("# z")
     end
 
+    it "outputs a comment for each line in the formula's desc before a dependency with a description" do
+      expect(dump).to include("# q\n# q")
+    end
+
     it "does not output a comment if a formula lacks a description" do
       lines_with_comments = dump.split.select { |line| line.include?("#") }
-      expect(lines_with_comments.size).to eq(1)
+      expect(lines_with_comments.size).to eq(3)
     end
   end
 
