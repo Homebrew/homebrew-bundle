@@ -25,7 +25,6 @@ describe Bundle::Dsl do
       allow_any_instance_of(described_class).to receive(:system)
         .with("/usr/libexec/java_home --failfast")
         .and_return(false)
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
     end
 
     it "processes input" do
@@ -51,10 +50,6 @@ describe Bundle::Dsl do
   end
 
   context "with invalid input" do
-    before do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
-    end
-
     it "handles completely invalid code" do
       expect { described_class.new "abcdef" }.to raise_error(RuntimeError)
     end

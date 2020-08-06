@@ -4,7 +4,7 @@ module Bundle
   module Installer
     module_function
 
-    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false)
+    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false)
       success = 0
       failure = 0
 
@@ -32,7 +32,7 @@ module Bundle
 
         next if Bundle::Skipper.skip? entry
 
-        case cls.install(*args, **options, no_upgrade: no_upgrade)
+        case cls.install(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
         when :success
           puts Formatter.success("#{verb} #{entry.name}")
           success += 1

@@ -28,7 +28,7 @@ describe Bundle::MacAppStoreInstaller do
     end
 
     it "tries to install mas" do
-      expect(Bundle).to receive(:system).with("brew", "install", "mas").and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "install", "mas", verbose: false).and_return(true)
       expect { do_install }.to raise_error(RuntimeError)
     end
 
@@ -87,7 +87,7 @@ describe Bundle::MacAppStoreInstaller do
         end
 
         it "upgrades" do
-          expect(Bundle).to receive(:system).with("mas", "upgrade", "123").and_return(true)
+          expect(Bundle).to receive(:system).with("mas", "upgrade", "123", verbose: false).and_return(true)
           expect(do_install).to be(:success)
         end
       end
@@ -98,7 +98,7 @@ describe Bundle::MacAppStoreInstaller do
         end
 
         it "installs app" do
-          expect(Bundle).to receive(:system).with("mas", "install", "123").and_return(true)
+          expect(Bundle).to receive(:system).with("mas", "install", "123", verbose: false).and_return(true)
           expect(do_install).to be(:success)
         end
       end

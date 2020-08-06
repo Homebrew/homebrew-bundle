@@ -4,8 +4,8 @@ require "English"
 
 module Bundle
   class << self
-    def system(cmd, *args)
-      return super cmd, *args if Homebrew.args.verbose?
+    def system(cmd, *args, verbose: false)
+      return super cmd, *args if verbose
 
       logs = []
       success = nil

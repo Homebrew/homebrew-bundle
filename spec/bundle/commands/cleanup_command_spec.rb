@@ -121,7 +121,6 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(force?: true))
     end
 
     it "uninstalls formulae" do
@@ -175,13 +174,9 @@ describe Bundle::Commands::Cleanup do
     end
 
     context "with --force" do
-      before do
-        allow(Homebrew).to receive(:args).and_return(OpenStruct.new(force: true))
-      end
-
       it "prints output" do
         sane?
-        expect { described_class.run }.to output(/cleaned/).to_stdout
+        expect { described_class.run(force: true) }.to output(/cleaned/).to_stdout
       end
     end
 

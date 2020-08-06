@@ -9,13 +9,13 @@ module Bundle
       @outdated_casks = nil
     end
 
-    def install(name, no_upgrade: false, **options)
+    def install(name, no_upgrade: false, verbose: false, **options)
       full_name = options.fetch(:full_name, name)
 
       if installed_casks.include? name
         if !no_upgrade && outdated_casks.include?(name)
-          puts "Upgrading #{name} cask. It is installed but not up-to-date." if Homebrew.args.verbose?
-          return :failed unless Bundle.system "brew", "cask", "upgrade", full_name
+          puts "Upgrading #{name} cask. It is installed but not up-to-date." if verbose
+          return :failed unless Bundle.system "brew", "cask", "upgrade", full_name, verbose: verbose
 
           return :success
         end
@@ -33,9 +33,9 @@ module Bundle
         end
       end.compact
 
-      puts "Installing #{name} cask. It is not currently installed." if Homebrew.args.verbose?
+      puts "Installing #{name} cask. It is not currently installed." if verbose
 
-      return :failed unless Bundle.system "brew", "cask", "install", full_name, *args
+      return :failed unless Bundle.system "brew", "cask", "install", full_name, *args, verbose: verbose
 
       installed_casks << name
       :success

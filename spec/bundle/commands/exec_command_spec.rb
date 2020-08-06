@@ -26,15 +26,6 @@ describe Bundle::Commands::Exec do
       expect { described_class.run("bundle", "install") }.not_to raise_error
     end
 
-    it "is able to accept arguments passed prior to the command" do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
-      allow(described_class).to receive(:exec).with("bundle", "install").and_return(nil)
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("brew 'openssl'")
-
-      expect { described_class.run("bundle", "install") }.not_to raise_error
-    end
-
     it "raises an exception if called without a command" do
       allow(described_class).to receive(:exec).and_return(nil)
       allow_any_instance_of(Pathname).to receive(:read)

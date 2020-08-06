@@ -3,12 +3,12 @@
 require "spec_helper"
 
 describe Bundle::TapInstaller do
-  def do_install(options = {})
-    Bundle::TapInstaller.install("homebrew/cask", options)
+  def do_install(**options)
+    Bundle::TapInstaller.install("homebrew/cask", **options)
   end
 
-  def do_pinning(options = {})
-    Bundle::TapInstaller.check_pinning("homebrew/cask", options)
+  def do_pinning(**options)
+    Bundle::TapInstaller.check_pinning("homebrew/cask", **options)
   end
 
   describe ".installed_taps" do
@@ -36,7 +36,7 @@ describe Bundle::TapInstaller do
 
     context "with pin true" do
       it "pins" do
-        expect(Bundle).to receive(:system).with("brew", "tap-pin", "homebrew/cask").and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "tap-pin", "homebrew/cask", verbose: false).and_return(true)
         expect(do_install(pin: true)).to be(:skipped)
       end
     end
@@ -49,21 +49,22 @@ describe Bundle::TapInstaller do
     end
 
     it "taps" do
-      expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask").and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask", verbose: false).and_return(true)
       expect(do_install).to be(:success)
     end
 
     context "with clone target" do
       it "taps" do
-        expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask", "clone_target_path").and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask", "clone_target_path", verbose: false)
+                                          .and_return(true)
         expect(do_install(clone_target: "clone_target_path")).to be(:success)
       end
     end
 
     context "with pin true" do
       it "pins" do
-        expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask").and_return(true)
-        expect(Bundle).to receive(:system).with("brew", "tap-pin", "homebrew/cask").and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask", verbose: false).and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "tap-pin", "homebrew/cask", verbose: false).and_return(true)
         expect(do_install(pin: true)).to be(:success)
       end
     end
@@ -77,7 +78,7 @@ describe Bundle::TapInstaller do
 
     context "with pin false" do
       it "unpins" do
-        expect(Bundle).to receive(:system).with("brew", "tap-unpin", "homebrew/cask").and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "tap-unpin", "homebrew/cask", verbose: false).and_return(true)
         expect(do_install).to be(:skipped)
       end
     end
@@ -89,7 +90,7 @@ describe Bundle::TapInstaller do
     end
 
     it "pins" do
-      expect(Bundle).to receive(:system).with("brew", "tap-pin", "homebrew/cask").and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "tap-pin", "homebrew/cask", verbose: false).and_return(true)
       expect(do_pinning(pin: true)).to be(:success)
     end
   end
@@ -100,7 +101,7 @@ describe Bundle::TapInstaller do
     end
 
     it "pins" do
-      expect(Bundle).to receive(:system).with("brew", "tap-unpin", "homebrew/cask").and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "tap-unpin", "homebrew/cask", verbose: false).and_return(true)
       expect(do_pinning).to be(:success)
     end
   end

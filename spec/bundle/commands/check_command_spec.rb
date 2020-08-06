@@ -4,9 +4,10 @@ require "spec_helper"
 
 describe Bundle::Commands::Check do
   let(:do_check) do
-    described_class.run(no_upgrade: no_upgrade)
+    described_class.run(no_upgrade: no_upgrade, verbose: verbose)
   end
   let(:no_upgrade) { false }
+  let(:verbose) { false }
 
   before do
     Bundle::Checker.reset!
@@ -79,6 +80,7 @@ describe Bundle::Commands::Check do
   end
 
   context "when service is not started and app not installed" do
+    let(:verbose) { true }
     let(:expected_output) do
       <<~MSG
         brew bundle can't satisfy your Brewfile's dependencies.
@@ -95,7 +97,6 @@ describe Bundle::Commands::Check do
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(true)
       allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
     end
 
     it "does not raise error when no service needs to be started" do
@@ -130,7 +131,7 @@ describe Bundle::Commands::Check do
     end
   end
 
-  context "when app not installed and --no-upgrade passed" do
+  context "when app not installed and `no_upgrade` is true" do
     let(:expected_output) do
       <<~MSG
         brew bundle can't satisfy your Brewfile's dependencies.
@@ -139,12 +140,12 @@ describe Bundle::Commands::Check do
       MSG
     end
     let(:no_upgrade) { true }
+    let(:verbose) { true }
 
     before do
       Bundle::Checker.reset!
       allow(Bundle::Checker::MacAppStoreChecker).to receive(:installed_and_up_to_date?).and_return(false)
       allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
     end
 
     it "raises an error that doesn't mention upgrade" do
@@ -197,7 +198,6 @@ describe Bundle::Commands::Check do
     it "stops checking after the first missing formula" do
       allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
-      allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
 
       expect_any_instance_of(Bundle::Checker::BrewChecker).to receive(:exit_early_check).once.and_call_original
@@ -205,7 +205,6 @@ describe Bundle::Commands::Check do
     end
 
     it "stops checking after the first missing cask", :needs_macos do
-      allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'\ncask 'def'")
 
       expect_any_instance_of(Bundle::Checker::CaskChecker).to receive(:exit_early_check).once.and_call_original
@@ -213,7 +212,6 @@ describe Bundle::Commands::Check do
     end
 
     it "stops checking after the first missing mac app", :needs_macos do
-      allow(described_class).to receive(:exit_on_first_error?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 
       expect_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:exit_early_check).once.and_call_original

@@ -43,7 +43,8 @@ describe Bundle::WhalebrewInstaller do
     end
 
     it "successfully installs whalebrew" do
-      expect(Bundle).to receive(:system).with("brew", "install", "whalebrew").and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "install", "whalebrew", verbose: false)
+                                        .and_return(true)
       expect { do_install }.to raise_error(RuntimeError)
     end
   end
@@ -51,7 +52,8 @@ describe Bundle::WhalebrewInstaller do
   context "when whalebrew is installed" do
     before do
       allow(Bundle).to receive(:whalebrew_installed?).and_return(true)
-      allow(Bundle).to receive(:system).with("whalebrew", "install", "whalebrew/wget").and_return(true)
+      allow(Bundle).to receive(:system).with("whalebrew", "install", "whalebrew/wget", verbose: false)
+                                       .and_return(true)
     end
 
     it "successfully installs an image" do

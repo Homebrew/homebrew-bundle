@@ -28,14 +28,14 @@ describe Bundle::BrewServices do
     context "stops the service" do
       it "when the service is started" do
         allow(described_class).to receive(:started_services).and_return(%w[nginx])
-        expect(Bundle).to receive(:system).with("brew", "services", "stop", "nginx").and_return(true)
+        expect(Bundle).to receive(:system).with("brew", "services", "stop", "nginx", verbose: false).and_return(true)
         expect(described_class.stop("nginx")).to be(true)
         expect(described_class.started_services).not_to include("nginx")
       end
 
       it "when the service is already stopped" do
         allow(described_class).to receive(:started_services).and_return(%w[])
-        expect(Bundle).not_to receive(:system).with("brew", "services", "stop", "nginx")
+        expect(Bundle).not_to receive(:system).with("brew", "services", "stop", "nginx", verbose: false)
         expect(described_class.stop("nginx")).to be(true)
         expect(described_class.started_services).not_to include("nginx")
       end
@@ -43,7 +43,7 @@ describe Bundle::BrewServices do
 
     it "restarts the service" do
       allow(described_class).to receive(:started_services).and_return([])
-      expect(Bundle).to receive(:system).with("brew", "services", "restart", "nginx").and_return(true)
+      expect(Bundle).to receive(:system).with("brew", "services", "restart", "nginx", verbose: false).and_return(true)
       expect(described_class.restart("nginx")).to be(true)
       expect(described_class.started_services).to include("nginx")
     end
