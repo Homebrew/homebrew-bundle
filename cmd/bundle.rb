@@ -58,7 +58,7 @@ module Homebrew
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
              description: "`list` all dependencies."
-      switch "--brews",
+      switch "--formulae", "--brews",
              description: "`list` Homebrew dependencies."
       switch "--casks",
              description: "`list` Homebrew Cask dependencies."
