@@ -11,22 +11,13 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
 
     steps:
-    - name: Set up Git repository
-      uses: actions/checkout@master
-
-    - name: Set up Ruby
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/setup-ruby@master
-      with:
-        ruby-version: '2.6'
-
     - name: Set up Homebrew
       id: set-up-homebrew
       uses: Homebrew/actions/setup-homebrew@master
 
     - name: Cache Homebrew Bundler RubyGems
       id: cache
-      uses: actions/cache@master
+      uses: actions/cache@main
       with:
         path: ${{ steps.set-up-homebrew.outputs.gems-path }}
         key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
@@ -38,6 +29,12 @@ jobs:
 
     - name: Run brew test-bot --only-tap-syntax
       run: brew test-bot --only-tap-syntax
+
+    - name: Set up Ruby
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/setup-ruby@master
+      with:
+        ruby-version: '2.6'
 
     - name: Install Bundler
       run: gem install bundler -v "~>1"
