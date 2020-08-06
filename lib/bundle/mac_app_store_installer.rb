@@ -11,10 +11,10 @@ module Bundle
       @outdated_app_ids = nil
     end
 
-    def install(name, id, no_upgrade: false)
+    def install(name, id, no_upgrade: false, verbose: false)
       unless Bundle.mas_installed?
-        puts "Installing mas. It is not currently installed." if Homebrew.args.verbose?
-        Bundle.system "brew", "install", "mas"
+        puts "Installing mas. It is not currently installed." if verbose
+        Bundle.system "brew", "install", "mas", verbose: verbose
         raise "Unable to install #{name} app. mas installation failed." unless Bundle.mas_installed?
       end
 
@@ -24,20 +24,20 @@ module Bundle
       end
 
       unless Bundle.mas_signedin?
-        puts "Not signed in to Mac App Store." if Homebrew.args.verbose?
+        puts "Not signed in to Mac App Store." if verbose
         raise "Unable to install #{name} app. mas not signed in to Mac App Store."
       end
 
       if app_id_installed?(id)
-        puts "Upgrading #{name} app. It is installed but not up-to-date." if Homebrew.args.verbose?
-        return :failed unless Bundle.system "mas", "upgrade", id.to_s
+        puts "Upgrading #{name} app. It is installed but not up-to-date." if verbose
+        return :failed unless Bundle.system "mas", "upgrade", id.to_s, verbose: verbose
 
         return :success
       end
 
-      puts "Installing #{name} app. It is not currently installed." if Homebrew.args.verbose?
+      puts "Installing #{name} app. It is not currently installed." if verbose
 
-      return :failed unless Bundle.system "mas", "install", id.to_s
+      return :failed unless Bundle.system "mas", "install", id.to_s, verbose: verbose
 
       installed_app_ids << id
       :success

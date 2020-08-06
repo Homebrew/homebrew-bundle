@@ -92,6 +92,7 @@ module Homebrew
           file:       args.file,
           no_lock:    args.no_lock?,
           no_upgrade: args.no_upgrade?,
+          verbose:    args.verbose?,
         )
       when "dump"
         Bundle::Commands::Dump.run(
@@ -113,6 +114,7 @@ module Homebrew
           global:     args.global?,
           file:       args.file,
           no_upgrade: args.no_upgrade?,
+          verbose:    args.verbose?,
         )
       when "exec"
         _subcommand, *named_args = args.named
@@ -137,7 +139,7 @@ module Homebrew
       end
     rescue SystemExit => e
       Homebrew.failed = true unless e.success?
-      puts "Kernel.exit" if Homebrew.args.debug?
+      puts "Kernel.exit" if args.debug?
     rescue Interrupt
       puts # seemingly a newline is typical
       Homebrew.failed = true
@@ -145,7 +147,7 @@ module Homebrew
       raise if e.message.empty?
 
       onoe e
-      puts e.backtrace if Homebrew.args.debug?
+      puts e.backtrace if args.debug?
       Homebrew.failed = true
     rescue => e
       onoe e

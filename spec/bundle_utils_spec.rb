@@ -4,13 +4,12 @@ require "spec_helper"
 
 describe Bundle do
   context "system call succeed" do
-    it "omits all stdout output if Homebrew.args.verbose? is false" do
-      expect { described_class.system "echo", "foo" }.not_to output.to_stdout_from_any_process
+    it "omits all stdout output if verbose is false" do
+      expect { described_class.system "echo", "foo", verbose: false }.not_to output.to_stdout_from_any_process
     end
 
-    it "emits all stdout output if Homebrew.args.verbose? is true" do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
-      expect { described_class.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
+    it "emits all stdout output if verbose is true" do
+      expect { described_class.system "echo", "foo", verbose: true }.to output("foo\n").to_stdout_from_any_process
     end
   end
 
@@ -19,13 +18,12 @@ describe Bundle do
       allow_any_instance_of(Process::Status).to receive(:success?).and_return(false)
     end
 
-    it "emits all stdout output even if Homebrew.args.verbose? is false" do
-      expect { described_class.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
+    it "emits all stdout output even if verbose is false" do
+      expect { described_class.system "echo", "foo", verbose: false }.to output("foo\n").to_stdout_from_any_process
     end
 
-    it "emits all stdout output only once if Homebrew.args.verbose? is true" do
-      allow(Homebrew).to receive(:args).and_return(OpenStruct.new(verbose?: true))
-      expect { described_class.system "echo", "foo" }.to output("foo\n").to_stdout_from_any_process
+    it "emits all stdout output only once if verbose is true" do
+      expect { described_class.system "echo", "foo", verbose: true }.to output("foo\n").to_stdout_from_any_process
     end
   end
 

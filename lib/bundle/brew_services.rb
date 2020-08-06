@@ -8,17 +8,17 @@ module Bundle
       @started_services = nil
     end
 
-    def stop(name)
+    def stop(name, verbose: false)
       return true unless started?(name)
 
-      if Bundle.system "brew", "services", "stop", name
+      if Bundle.system "brew", "services", "stop", name, verbose: verbose
         started_services.delete(name)
         true
       end
     end
 
-    def restart(name)
-      if Bundle.system "brew", "services", "restart", name
+    def restart(name, verbose: false)
+      if Bundle.system "brew", "services", "restart", name, verbose: verbose
         started_services << name
         true
       end

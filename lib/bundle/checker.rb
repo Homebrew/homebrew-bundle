@@ -42,10 +42,10 @@ module Bundle
         raise NotImplementedError
       end
 
-      def find_actionable(entries, no_upgrade: false)
+      def find_actionable(entries, exit_on_first_error: false, no_upgrade: false, verbose: false)
         requested = format_checkable entries
 
-        if Bundle::Commands::Check.exit_on_first_error?
+        if exit_on_first_error
           exit_early_check(requested, no_upgrade: no_upgrade)
         else
           full_check(requested, no_upgrade: no_upgrade)
@@ -65,7 +65,7 @@ module Bundle
       formulae_to_start:   "Services",
     }.freeze
 
-    def check(exit_on_first_error, global: false, file: nil, no_upgrade: false)
+    def check(global: false, file: nil, exit_on_first_error: false, no_upgrade: false, verbose: false)
       @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
 
       check_method_names = CHECKS.keys
@@ -74,7 +74,8 @@ module Bundle
       enumerator = exit_on_first_error ? :find : :map
 
       work_to_be_done = check_method_names.public_send(enumerator) do |check_method|
-        check_errors = send(check_method, no_upgrade: no_upgrade)
+        check_errors =
+          send(check_method, exit_on_first_error: exit_on_first_error, no_upgrade: no_upgrade, verbose: verbose)
         any_errors = check_errors.any?
         errors.concat(check_errors) if any_errors
         any_errors
@@ -85,24 +86,29 @@ module Bundle
       CheckResult.new work_to_be_done, errors
     end
 
-    def casks_to_install(no_upgrade: false)
-      Bundle::Checker::CaskChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
+    def casks_to_install(exit_on_first_error: false, no_upgrade: false, verbose: false)
+      Bundle::Checker::CaskChecker.new.find_actionable(@dsl.entries,
+        exit_on_first_error: exit_on_first_error, no_upgrade: no_upgrade, verbose: verbose)
     end
 
-    def formulae_to_install(no_upgrade: false)
-      Bundle::Checker::BrewChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
+    def formulae_to_install(exit_on_first_error: false, no_upgrade: false, verbose: false)
+      Bundle::Checker::BrewChecker.new.find_actionable(@dsl.entries,
+        exit_on_first_error: exit_on_first_error, no_upgrade: no_upgrade, verbose: verbose)
     end
 
-    def taps_to_tap(no_upgrade: false)
-      Bundle::Checker::TapChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
+    def taps_to_tap(exit_on_first_error: false, no_upgrade: false, verbose: false)
+      Bundle::Checker::TapChecker.new.find_actionable(@dsl.entries,
+        exit_on_first_error: exit_on_first_error, no_upgrade: no_upgrade, verbose: verbose)
     end
 
-    def apps_to_install(no_upgrade: false)
-      Bundle::Checker::MacAppStoreChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
+    def apps_to_install(exit_on_first_error: false, no_upgrade: false, verbose: false)
+      Bundle::Checker::MacAppStoreChecker.new.find_actionable(@dsl.entries,
+        exit_on_first_error: exit_on_first_error, no_upgrade: no_upgrade, verbose: verbose)
     end
 
-    def formulae_to_start(no_upgrade: false)
-      Bundle::Checker::BrewServiceChecker.new.find_actionable(@dsl.entries, no_upgrade: no_upgrade)
+    def formulae_to_start(exit_on_first_error: false, no_upgrade: false, verbose: false)
+      Bundle::Checker::BrewServiceChecker.new.find_actionable(@dsl.entries,
+        exit_on_first_error: exit_on_first_error, no_upgrade: no_upgrade, verbose: verbose)
     end
 
     def reset!

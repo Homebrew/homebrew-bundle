@@ -8,18 +8,18 @@ module Bundle
       @installed_images = nil
     end
 
-    def install(name, **_options)
+    def install(name, verbose: false, **_options)
       unless Bundle.whalebrew_installed?
-        puts "Installing whalebrew. It is not currently installed." if Homebrew.args.verbose?
-        Bundle.system "brew", "install", "whalebrew"
+        puts "Installing whalebrew. It is not currently installed." if verbose
+        Bundle.system "brew", "install", "whalebrew", verbose: verbose
         raise "Unable to install #{name} app. Whalebrew installation failed." unless Bundle.whalebrew_installed?
       end
 
       return :skipped if image_installed?(name)
 
-      puts "Installing #{name} image. It is not currently installed." if Homebrew.args.verbose?
+      puts "Installing #{name} image. It is not currently installed." if verbose
 
-      return :failed unless Bundle.system "whalebrew", "install", name
+      return :failed unless Bundle.system "whalebrew", "install", name, verbose: verbose
 
       installed_images << name
       :success

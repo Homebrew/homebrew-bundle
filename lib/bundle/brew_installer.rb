@@ -8,8 +8,8 @@ module Bundle
       @pinned_formulae = nil
     end
 
-    def self.install(name, no_upgrade: false, **options)
-      new(name, options).run(no_upgrade: no_upgrade)
+    def self.install(name, no_upgrade: false, verbose: false, **options)
+      new(name, options).run(no_upgrade: no_upgrade, verbose: verbose)
     end
 
     def initialize(name, options = {})
@@ -23,22 +23,22 @@ module Bundle
       @changed = nil
     end
 
-    def run(no_upgrade: false)
-      install_result = install_change_state!(no_upgrade: no_upgrade)
-      service_change_state! if install_result != :failed
-      link_change_state!
+    def run(no_upgrade: false, verbose: false)
+      install_result = install_change_state!(no_upgrade: no_upgrade, verbose: verbose)
+      service_change_state!(verbose: verbose) if install_result != :failed
+      link_change_state!(verbose: verbose)
       install_result
     end
 
-    def install_change_state!(no_upgrade:)
-      return :failed unless resolve_conflicts!
+    def install_change_state!(no_upgrade:, verbose:)
+      return :failed unless resolve_conflicts!(verbose: verbose)
 
       if installed?
         return :skipped if no_upgrade
 
-        upgrade!
+        upgrade!(verbose: verbose)
       else
-        install!
+        install!(verbose: verbose)
       end
     end
 
@@ -61,34 +61,34 @@ module Bundle
       !@changed.nil?
     end
 
-    def service_change_state!
+    def service_change_state!(verbose:)
       if restart_service_needed?
-        puts "Restarting #{@name} service." if Homebrew.args.verbose?
-        BrewServices.restart(@full_name)
+        puts "Restarting #{@name} service." if verbose
+        BrewServices.restart(@full_name, verbose: verbose)
       else
         true
       end
     end
 
-    def link_change_state!
+    def link_change_state!(verbose: false)
       case @link
       when true
         unless linked_and_keg_only?
-          puts "Force-linking #{@name} formula." if Homebrew.args.verbose?
-          Bundle.system("brew", "link", "--force", @name)
+          puts "Force-linking #{@name} formula." if verbose
+          Bundle.system("brew", "link", "--force", @name, verbose: verbose)
         end
       when false
         unless unlinked_and_not_keg_only?
-          puts "Unlinking #{@name} formula." if Homebrew.args.verbose?
-          Bundle.system("brew", "unlink", @name)
+          puts "Unlinking #{@name} formula." if verbose
+          Bundle.system("brew", "unlink", @name, verbose: verbose)
         end
       when nil
         if unlinked_and_not_keg_only?
-          puts "Linking #{@name} formula." if Homebrew.args.verbose?
-          Bundle.system("brew", "link", @name)
+          puts "Linking #{@name} formula." if verbose
+          Bundle.system("brew", "link", @name, verbose: verbose)
         elsif linked_and_keg_only?
-          puts "Unlinking #{@name} formula." if Homebrew.args.verbose?
-          Bundle.system("brew", "unlink", @name)
+          puts "Unlinking #{@name} formula." if verbose
+          Bundle.system("brew", "unlink", @name, verbose: verbose)
         end
       end
     end
@@ -193,30 +193,30 @@ module Bundle
       end
     end
 
-    def resolve_conflicts!
+    def resolve_conflicts!(verbose:)
       conflicts_with.each do |conflict|
         next unless BrewInstaller.formula_installed?(conflict)
 
-        if Homebrew.args.verbose?
+        if verbose
           puts <<~EOS
             Unlinking #{conflict} formula.
             It is currently installed and conflicts with #{@name}.
           EOS
         end
-        return false unless Bundle.system("brew", "unlink", conflict)
+        return false unless Bundle.system("brew", "unlink", conflict, verbose: verbose)
 
         if @restart_service
-          puts "Stopping #{conflict} service (if it is running)." if Homebrew.args.verbose?
-          BrewServices.stop(conflict)
+          puts "Stopping #{conflict} service (if it is running)." if verbose
+          BrewServices.stop(conflict, verbose: verbose)
         end
       end
 
       true
     end
 
-    def install!
-      puts "Installing #{@name} formula. It is not currently installed." if Homebrew.args.verbose?
-      unless Bundle.system("brew", "install", @full_name, *@args)
+    def install!(verbose:)
+      puts "Installing #{@name} formula. It is not currently installed." if verbose
+      unless Bundle.system("brew", "install", @full_name, *@args, verbose: verbose)
         @changed = nil
         return :failed
       end
@@ -226,15 +226,15 @@ module Bundle
       :success
     end
 
-    def upgrade!
+    def upgrade!(verbose:)
       unless upgradable?
-        puts "Skipping install of #{@name} formula. It is already up-to-date." if Homebrew.args.verbose?
+        puts "Skipping install of #{@name} formula. It is already up-to-date." if verbose
         @changed = nil
         return :skipped
       end
 
-      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if Homebrew.args.verbose?
-      unless Bundle.system("brew", "upgrade", @name)
+      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
+      unless Bundle.system("brew", "upgrade", @name, verbose: verbose)
         @changed = nil
         return :failed
       end
