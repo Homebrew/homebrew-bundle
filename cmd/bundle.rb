@@ -58,11 +58,11 @@ module Homebrew
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
              description: "`list` all dependencies."
-      switch "--formulae", "--brews",
+      switch "--formula", "--brews",
              description: "`list` Homebrew dependencies."
-      switch "--casks",
+      switch "--cask", "--casks",
              description: "`list` Homebrew Cask dependencies."
-      switch "--taps",
+      switch "--tap", "--taps",
              description: "`list` tap dependencies."
       switch "--mas",
              description: "`list` Mac App Store dependencies."
