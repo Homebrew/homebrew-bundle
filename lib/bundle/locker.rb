@@ -87,7 +87,7 @@ module Bundle
 
     def brew_list_info
       @brew_list_info ||= begin
-        name_bottles = JSON.parse(`brew info --json=v1 --installed`)
+        name_bottles = JSON.parse(`brew info --json=v1 --installed --quiet`)
                            .each_with_object({}) do |f, hash|
           bottle = f["bottle"]["stable"]
           bottle&.delete("rebuild")
