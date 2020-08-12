@@ -70,7 +70,7 @@ describe Bundle::Locker do
         allow(locker).to receive(:lockfile).and_return(lockfile)
         allow(brew_options).to receive(:deep_stringify_keys)
           .and_return("restart_service" => true)
-        allow(locker).to receive(:`).with("brew info --json=v1 --installed").and_return <<~EOS
+        allow(locker).to receive(:`).with("brew info --json=v1 --installed --quiet").and_return <<~EOS
           [
             {
               "name":"mysql",
