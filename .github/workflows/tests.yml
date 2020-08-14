@@ -2,7 +2,7 @@ name: GitHub Actions CI
 on:
   push:
     branches: master
-  pull_request: []
+  pull_request:
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
@@ -17,7 +17,7 @@ jobs:
 
     - name: Cache Homebrew Bundler RubyGems
       id: cache
-      uses: actions/cache@main
+      uses: actions/cache@v1
       with:
         path: ${{ steps.set-up-homebrew.outputs.gems-path }}
         key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
@@ -27,8 +27,7 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: brew install-bundler-gems
 
-    - name: Run brew test-bot --only-tap-syntax
-      run: brew test-bot --only-tap-syntax
+    - run: brew test-bot --only-tap-syntax
 
     - name: Set up Ruby
       if: matrix.os == 'ubuntu-latest'
