@@ -96,7 +96,7 @@ module Bundle
         @kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
       end
 
-      def recursive_dependencies(current_formulae, formulae_names, top_level = true)
+      def recursive_dependencies(current_formulae, formulae_names, top_level: true)
         @checked_formulae_names = [] if top_level
         dependencies = []
 
@@ -115,7 +115,7 @@ module Bundle
           next if f_deps.empty?
 
           @checked_formulae_names << name
-          f_deps += recursive_dependencies(current_formulae, f_deps, false)
+          f_deps += recursive_dependencies(current_formulae, f_deps, top_level: false)
           dependencies += f_deps
         end
 

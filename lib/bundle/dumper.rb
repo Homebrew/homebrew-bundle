@@ -8,7 +8,7 @@ module Bundle
     module_function
 
     def can_write_to_brewfile?(brewfile_path, force: false)
-      raise "#{brewfile_path} already exists" if should_not_write_file?(brewfile_path, force)
+      raise "#{brewfile_path} already exists" if should_not_write_file?(brewfile_path, overwrite: force)
 
       true
     end
@@ -23,7 +23,7 @@ module Bundle
       content << cask_after_formula
       content << MacAppStoreDumper.dump
       content << WhalebrewDumper.dump
-      content.reject(&:empty?).join("\n") + "\n"
+      "#{content.reject(&:empty?).join("\n")}\n"
     end
 
     def dump_brewfile(global: false, file: nil, describe: false, force: false, no_restart: false)
@@ -37,7 +37,7 @@ module Bundle
       Brewfile.path(dash_writes_to_stdout: true, global: global, file: file)
     end
 
-    def should_not_write_file?(file, overwrite = false)
+    def should_not_write_file?(file, overwrite: false)
       file.exist? && !overwrite && file.to_s != "/dev/stdout"
     end
 
