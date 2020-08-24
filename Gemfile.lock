@@ -7,11 +7,9 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
-    codecov (0.2.7)
-      colorize
+    codecov (0.2.8)
       json
       simplecov
-    colorize (0.8.1)
     concurrent-ruby (1.1.7)
     diff-lcs (1.4.4)
     docile (1.3.2)
