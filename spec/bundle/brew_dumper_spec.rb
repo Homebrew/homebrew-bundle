@@ -241,27 +241,12 @@ describe Bundle::BrewDumper do
     end
   end
 
-  context "HEAD and devel formulae are installed" do
+  context "HEAD formulae are installed" do
     subject(:formulae_list) { described_class.formulae }
 
     before do
       described_class.reset!
       allow(described_class).to receive(:formulae_info).and_return [
-        {
-          name:                     "foo",
-          full_name:                "foo",
-          aliases:                  [],
-          args:                     ["devel"],
-          version:                  "1.1beta",
-          dependencies:             [],
-          recommended_dependencies: [],
-          optional_dependencies:    [],
-          build_dependencies:       [],
-          requirements:             [],
-          conflicts_with:           [],
-          pinned?:                  false,
-          outdated?:                false,
-        },
         {
           name:                     "bar",
           full_name:                "homebrew/tap/bar",
@@ -280,9 +265,8 @@ describe Bundle::BrewDumper do
       ]
     end
 
-    it "returns with args `devel` and `HEAD`" do
-      expect(formulae_list[0][:args]).to include("devel")
-      expect(formulae_list[1][:args]).to include("HEAD")
+    it "returns with args `HEAD`" do
+      expect(formulae_list.first[:args]).to include("HEAD")
     end
   end
 
