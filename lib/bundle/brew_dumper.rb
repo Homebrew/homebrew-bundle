@@ -132,7 +132,6 @@ module Bundle
       if keg
         args = keg["used_options"].to_a.map { |option| option.delete_prefix("--") }
         args << "HEAD" if keg["version"].to_s.start_with?("HEAD")
-        args << "devel" if keg["version"].to_s.gsub(/_\d+$/, "") == formula["versions"]["devel"]
         args.uniq!
         version = keg["version"]
         installed_as_dependency = keg["installed_as_dependency"] || false
