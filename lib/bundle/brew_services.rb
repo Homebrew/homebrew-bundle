@@ -11,17 +11,17 @@ module Bundle
     def stop(name, verbose: false)
       return true unless started?(name)
 
-      if Bundle.system "brew", "services", "stop", name, verbose: verbose
-        started_services.delete(name)
-        true
-      end
+      return unless Bundle.system "brew", "services", "stop", name, verbose: verbose
+
+      started_services.delete(name)
+      true
     end
 
     def restart(name, verbose: false)
-      if Bundle.system "brew", "services", "restart", name, verbose: verbose
-        started_services << name
-        true
-      end
+      return unless Bundle.system "brew", "services", "restart", name, verbose: verbose
+
+      started_services << name
+      true
     end
 
     def started?(name)

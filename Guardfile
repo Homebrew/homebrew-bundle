@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 group :red_green_refactor, halt_on_fail: false do
   guard :rubocop, all_on_start: true, cli: %w([--format simple]) do
     watch(/.+\.rb$/)
-    watch(%r{(?:.+\/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
+    watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
   end
   guard :rspec, cmd: "rspec" do
     require "guard/rspec/dsl"
