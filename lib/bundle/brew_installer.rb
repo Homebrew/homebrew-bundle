@@ -183,10 +183,9 @@ module Bundle
         conflicts_with = Set.new
         conflicts_with += @conflicts_with_arg
 
-        if (formula_info = Bundle::BrewDumper.formula_info(@full_name))
-          if (formula_conflicts_with = formula_info[:conflicts_with])
-            conflicts_with += formula_conflicts_with
-          end
+        if (formula_info = Bundle::BrewDumper.formula_info(@full_name)) &&
+           (formula_conflicts_with = formula_info[:conflicts_with])
+          conflicts_with += formula_conflicts_with
         end
 
         conflicts_with.to_a
