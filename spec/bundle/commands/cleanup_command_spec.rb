@@ -29,6 +29,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "computes which formulae to uninstall" do
+      dependencies_arrays_hash = { dependencies: [], build_dependencies: [] }
       allow(Bundle::BrewDumper).to receive(:formulae).and_return [
         { name: "a2", full_name: "a2", aliases: ["a"], dependencies: ["d"] },
         { name: "c", full_name: "c" },
@@ -54,7 +55,7 @@ describe Bundle::Commands::Cleanup do
         { name: "builddependency1", full_name: "builddependency1" },
         { name: "builddependency2", full_name: "builddependency2" },
         { name: "caskdependency", full_name: "homebrew/tap/caskdependency" },
-      ].map { |f| { dependencies: [], build_dependencies: [] }.merge(f) }
+      ].map { |f| dependencies_arrays_hash.merge(f) }
       allow(Bundle::CaskDumper).to receive(:formula_dependencies).and_return(%w[caskdependency])
       expect(described_class.formulae_to_uninstall).to eql %w[
         c
