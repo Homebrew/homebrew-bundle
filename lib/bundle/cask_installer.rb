@@ -62,7 +62,7 @@ module Bundle
 
     def outdated_casks
       @outdated_casks ||= if Bundle.cask_installed?
-        `brew cask outdated 2>/dev/null`.split("\n")
+        `brew outdated --cask 2>/dev/null`.split("\n")
       else
         []
       end
