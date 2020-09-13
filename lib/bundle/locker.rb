@@ -110,8 +110,8 @@ module Bundle
       return {} unless OS.mac?
 
       @cask_list ||= begin
-        `brew cask list --versions`.lines
-                                   .each_with_object({}) do |line, name_versions|
+        `brew list --cask --versions`.lines
+                                     .each_with_object({}) do |line, name_versions|
           name, version, = line.split
           name_versions[name] = version
         end

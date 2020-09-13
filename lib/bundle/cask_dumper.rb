@@ -11,7 +11,7 @@ module Bundle
     def casks
       return [] unless Bundle.cask_installed?
 
-      @casks ||= `brew cask list 2>/dev/null`.split("\n")
+      @casks ||= `brew list --cask 2>/dev/null`.split("\n")
       @casks.map { |cask| cask.chomp " (!)" }
             .uniq
     end
