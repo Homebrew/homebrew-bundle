@@ -92,7 +92,7 @@ describe Bundle::Locker do
         before do
           allow(OS).to receive(:mac?).and_return(true)
 
-          allow(locker).to receive(:`).with("brew cask list --versions").and_return("adoptopenjdk8 8,232:b09")
+          allow(locker).to receive(:`).with("brew list --cask --versions").and_return("adoptopenjdk8 8,232:b09")
           allow(locker).to receive(:`).with("mas list").and_return("497799835 Xcode (11.2)")
         end
 

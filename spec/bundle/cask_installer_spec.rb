@@ -66,7 +66,7 @@ describe Bundle::CaskInstaller do
       end
 
       it "upgrades" do
-        expect(Bundle).to receive(:system).with("brew", "cask", "upgrade", "google-chrome", verbose: false)
+        expect(Bundle).to receive(:system).with("brew", "upgrade", "google-chrome", verbose: false)
                                           .and_return(true)
         expect(do_install).to be(:success)
       end
