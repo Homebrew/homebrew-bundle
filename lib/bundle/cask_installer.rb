@@ -15,7 +15,7 @@ module Bundle
       if installed_casks.include? name
         if !no_upgrade && outdated_casks.include?(name)
           puts "Upgrading #{name} cask. It is installed but not up-to-date." if verbose
-          return :failed unless Bundle.system "brew", "cask", "upgrade", full_name, verbose: verbose
+          return :failed unless Bundle.system "brew", "upgrade", full_name, verbose: verbose
 
           return :success
         end
