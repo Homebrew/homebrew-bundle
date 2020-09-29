@@ -54,6 +54,8 @@ module Homebrew
       switch "-f", "--force",
              description: "`dump` overwrites an existing `Brewfile`. " \
                           "`cleanup` actually performs its cleanup operations."
+      switch "--cleanup",
+             description: "`install` performs cleanup operation, same as running `cleanup --force```"
       switch "--no-lock",
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
@@ -94,6 +96,15 @@ module Homebrew
           no_upgrade: args.no_upgrade?,
           verbose:    args.verbose?,
         )
+
+        if args.cleanup?
+          Bundle::Commands::Cleanup.run(
+            global: args.global?,
+            file:   args.file,
+            force:  true,
+            zap:    args.zap?,
+          )
+        end
       when "dump"
         Bundle::Commands::Dump.run(
           global:     args.global?,
