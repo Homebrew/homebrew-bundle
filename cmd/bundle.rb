@@ -55,7 +55,7 @@ module Homebrew
              description: "`dump` overwrites an existing `Brewfile`. " \
                           "`cleanup` actually performs its cleanup operations."
       switch "--cleanup",
-             description: "`install` performs cleanup operation, same as running `cleanup --force`"
+             description: "`install` performs cleanup operation, same as running `cleanup --force`."
       switch "--no-lock",
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
