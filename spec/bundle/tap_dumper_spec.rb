@@ -49,7 +49,7 @@ describe Bundle::TapDumper do
     it "dumps output" do
       expect(dumper.dump).to eql \
         "tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\n" \
-        "tap \"homebrew/baz\"\ntap \"homebrew/foo\", pin: true"
+        "tap \"homebrew/baz\"\ntap \"homebrew/foo\""
     end
   end
 end
