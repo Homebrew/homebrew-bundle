@@ -7,7 +7,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
-    codecov (0.2.11)
+    codecov (0.2.12)
       json
       simplecov
     concurrent-ruby (1.1.7)
