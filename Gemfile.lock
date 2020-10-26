@@ -29,7 +29,7 @@ GEM
     rspec-mocks (3.9.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
-    rspec-support (3.9.3)
+    rspec-support (3.9.4)
     simplecov (0.19.1)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
