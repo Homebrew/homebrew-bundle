@@ -17,7 +17,7 @@ module Bundle
       content = []
       content << TapDumper.dump
       casks_required_by_formulae = BrewDumper.cask_requirements
-      cask_before_formula, cask_after_formula = CaskDumper.dump(casks_required_by_formulae)
+      cask_before_formula, cask_after_formula = CaskDumper.dump(casks_required_by_formulae, describe: describe)
       content << cask_before_formula
       content << BrewDumper.dump(describe: describe, no_restart: no_restart)
       content << cask_after_formula

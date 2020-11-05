@@ -81,6 +81,7 @@ describe Bundle::CaskDumper do
 
     context "when multiple casks have the same dependency" do
       before do
+        described_class.reset!
         allow(described_class)
           .to receive(:`)
           .with("brew cask info foo bar --json=v1")

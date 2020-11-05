@@ -6,6 +6,7 @@ module Bundle
 
     def reset!
       @casks = nil
+      @cask_info = nil
     end
 
     def casks
@@ -16,25 +17,33 @@ module Bundle
             .uniq
     end
 
-    def dump(casks_required_by_formulae)
+    def dump(casks_required_by_formulae, describe: false)
       [
-        (casks & casks_required_by_formulae).map { |cask| "cask \"#{cask}\"" }.join("\n"),
-        (casks - casks_required_by_formulae).map { |cask| "cask \"#{cask}\"" }.join("\n"),
+        (casks & casks_required_by_formulae).map { |cask| cask_line(cask, describe) }.join("\n"),
+        (casks - casks_required_by_formulae).map { |cask| cask_line(cask, describe) }.join("\n"),
       ]
     end
 
-    def formula_dependencies(cask_list)
-      return [] unless cask_list.present?
+    def cask_line(cask, describe)
+      desc = cask_info&.flat_map.find { |info| info["token"] == cask }&["desc"]
+      comment = "# #{desc}\n" if describe && !desc.blank?
+      "#{comment}cask \"#{cask}\""
+    end
 
-      cask_info_response = `brew cask info #{cask_list.join(" ")} --json=v1`
-      cask_info = JSON.parse(cask_info_response)
+    def cask_info
+      @cask_info ||= begin
+        output = `brew cask info #{casks.join(" ")} --json=v1`
+        JSON.parse(output)
+      rescue JSON::ParserError => e
+        opoo "Failed to parse `brew cask info --json`: #{e}"
+        []
+      end
+    end
 
+    def formula_dependencies
       cask_info.flat_map do |cask|
         cask.dig("depends_on", "formula")
       end.compact.uniq
-    rescue JSON::ParserError => e
-      opoo "Failed to parse `brew cask info --json`: #{e}"
-      []
     end
   end
 end
