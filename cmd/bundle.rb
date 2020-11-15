@@ -14,7 +14,7 @@ module Homebrew
         `brew bundle` [`install`]:
         Install and upgrade (by default) all dependencies from the `Brewfile`.
 
-        You can specify the `Brewfile` location using `--file` or setting the `HOMEBREW_BUNDLE_FILE` environment variable.
+        You can specify the `Brewfile` location using `--file` or by setting the `HOMEBREW_BUNDLE_FILE` environment variable.
 
         You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`
 
