@@ -16,12 +16,12 @@ module Homebrew
 
         You can specify the `Brewfile` location using `--file` or by setting the `HOMEBREW_BUNDLE_FILE` environment variable.
 
-        You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`
+        You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`.
 
         `brew bundle` will output a `Brewfile.lock.json` in the same directory as the `Brewfile` if all dependencies are installed successfully. This contains dependency and system status information which can be useful in debugging `brew bundle` failures and replicating a "last known good build" state. You can opt-out of this behaviour by setting the `HOMEBREW_BUNDLE_NO_LOCK` environment variable or passing the `--no-lock` option. You may wish to check this file into the same version control system as your `Brewfile` (or ensure your version control system ignores it if you'd prefer to rely on debugging information from a local machine).
 
         `brew bundle dump`:
-        Write all installed casks/formulae/images/taps into a `Brewfile`.
+        Write all installed casks/formulae/images/taps into a `Brewfile` in the current directory.
 
         `brew bundle cleanup`:
         Uninstall all dependencies not listed from the `Brewfile`.
@@ -29,12 +29,12 @@ module Homebrew
         This workflow is useful for maintainers or testers who regularly install lots of formulae.
 
         `brew bundle check`:
-        Check if all dependencies are installed from the `Brewfile` .
+        Check if all dependencies are installed from the `Brewfile`.
 
         This provides a successful exit code if everything is up-to-date, making it useful for scripting.
 
         `brew bundle list`:
-        List all dependencies present in a `Brewfile`.
+        List all dependencies present in the `Brewfile`.
 
         By default, only Homebrew dependencies are listed.
 

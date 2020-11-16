@@ -10,7 +10,7 @@ Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store an
 
 [mas-cli](https://github.com/mas-cli/mas) is optional and used for installing Mac App Store applications.
 
-[whalebrew](https://github.com/whalebrew/whalebrew) is optional and used for installing Whalebrew images.
+[Whalebrew](https://github.com/whalebrew/whalebrew) is optional and used for installing Whalebrew images.
 
 ## Installation
 
@@ -28,7 +28,7 @@ tap "homebrew/cask"
 # 'brew tap' with custom Git URL
 tap "user/tap-repo", "https://user@bitbucket.org/user/homebrew-tap-repo.git"
 # set arguments for all 'brew cask install' commands
-cask_args appdir: "~/Applications"
+cask_args appdir: "~/Applications", require_sha: true
 
 # 'brew install'
 brew "imagemagick"
