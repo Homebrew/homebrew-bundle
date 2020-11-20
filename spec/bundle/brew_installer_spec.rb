@@ -183,13 +183,15 @@ describe Bundle::BrewInstaller do
       end
 
       it "install formula" do
-        expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option", verbose: false)
+        expect(Bundle).to receive(:system).with("brew", "install", "--formula", formula,
+                                                "--with-option", verbose: false)
                                           .and_return(true)
         expect(do_install).to be(:success)
       end
 
       it "reports a failure" do
-        expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option", verbose: false)
+        expect(Bundle).to receive(:system).with("brew", "install", "--formula", formula,
+                                                "--with-option", verbose: false)
                                           .and_return(false)
         expect(do_install).to be(:failed)
       end
