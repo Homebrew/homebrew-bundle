@@ -95,7 +95,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls casks" do
-      expect(Kernel).to receive(:system).with("brew", "cask", "uninstall", "--force", "a", "b")
+      expect(Kernel).to receive(:system).with("brew", "uninstall", "--cask", "--force", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run(force: true) }.to output(/Uninstalled 2 casks/).to_stdout
     end
@@ -110,7 +110,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls casks" do
-      expect(Kernel).to receive(:system).with("brew", "cask", "zap", "--force", "a", "b")
+      expect(Kernel).to receive(:system).with("brew", "uninstall", "--cask", "--zap", "--force", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run(force: true, zap: true) }.to output(/Uninstalled 2 casks/).to_stdout
     end
