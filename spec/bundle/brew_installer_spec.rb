@@ -183,14 +183,16 @@ describe Bundle::BrewInstaller do
       end
 
       it "install formula" do
-        expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option", verbose: false)
-                                          .and_return(true)
+        expect(Bundle).to receive(:system)
+          .with("brew", "install", "--formula", formula, "--with-option", verbose: false)
+          .and_return(true)
         expect(do_install).to be(:success)
       end
 
       it "reports a failure" do
-        expect(Bundle).to receive(:system).with("brew", "install", formula, "--with-option", verbose: false)
-                                          .and_return(false)
+        expect(Bundle).to receive(:system)
+          .with("brew", "install", "--formula", formula, "--with-option", verbose: false)
+          .and_return(false)
         expect(do_install).to be(:failed)
       end
     end
@@ -208,12 +210,14 @@ describe Bundle::BrewInstaller do
         end
 
         it "upgrade formula" do
-          expect(Bundle).to receive(:system).with("brew", "upgrade", formula, verbose: false).and_return(true)
+          expect(Bundle).to receive(:system).with("brew", "upgrade", "--formula", formula, verbose: false)
+                                            .and_return(true)
           expect(do_install).to be(:success)
         end
 
         it "reports a failure" do
-          expect(Bundle).to receive(:system).with("brew", "upgrade", formula, verbose: false).and_return(false)
+          expect(Bundle).to receive(:system).with("brew", "upgrade", "--formula", formula, verbose: false)
+                                            .and_return(false)
           expect(do_install).to be(:failed)
         end
 
@@ -223,7 +227,7 @@ describe Bundle::BrewInstaller do
           end
 
           it "does not upgrade formula" do
-            expect(Bundle).not_to receive(:system).with("brew", "upgrade", formula, verbose: false)
+            expect(Bundle).not_to receive(:system).with("brew", "upgrade", "--formula", formula, verbose: false)
             expect(do_install).to be(:skipped)
           end
         end

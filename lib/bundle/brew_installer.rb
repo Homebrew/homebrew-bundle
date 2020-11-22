@@ -215,7 +215,7 @@ module Bundle
 
     def install!(verbose:)
       puts "Installing #{@name} formula. It is not currently installed." if verbose
-      unless Bundle.system("brew", "install", @full_name, *@args, verbose: verbose)
+      unless Bundle.system("brew", "install", "--formula", @full_name, *@args, verbose: verbose)
         @changed = nil
         return :failed
       end
@@ -233,7 +233,7 @@ module Bundle
       end
 
       puts "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
-      unless Bundle.system("brew", "upgrade", @name, verbose: verbose)
+      unless Bundle.system("brew", "upgrade", "--formula", @name, verbose: verbose)
         @changed = nil
         return :failed
       end

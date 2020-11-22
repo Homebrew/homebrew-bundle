@@ -23,13 +23,8 @@ module Bundle
         taps = taps_to_untap(global: global, file: file)
         if force
           if casks.any?
-            action = if zap
-              "zap"
-            else
-              "uninstall"
-            end
-
-            Kernel.system "brew", "cask", action, "--force", *casks
+            args = zap ? ["--zap"] : []
+            Kernel.system "brew", "uninstall", "--cask", *args, "--force", *casks
             puts "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
           end
 
