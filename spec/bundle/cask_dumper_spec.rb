@@ -57,7 +57,7 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew cask info foo --json=v1")
+          .with("brew info --cask foo --json=v1")
           .and_return("[{\"depends_on\":{}}]")
       end
 
@@ -70,7 +70,7 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew cask info foo --json=v1")
+          .with("brew info --cask foo --json=v1")
           .and_return("Error: somethng from cask!")
       end
 
@@ -83,7 +83,7 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew cask info foo bar --json=v1")
+          .with("brew info --cask foo bar --json=v1")
           .and_return("[{\"depends_on\":{\"formula\":[\"baz\",\"qux\"]}},{\"depends_on\":{\"formula\":[\"baz\"]}}]")
       end
 
