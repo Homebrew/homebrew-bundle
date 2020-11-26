@@ -71,15 +71,14 @@ describe Bundle::Locker do
         allow(brew_options).to receive(:deep_stringify_keys)
           .and_return("restart_service" => true)
         allow(locker).to receive(:`).with("brew info --json=v2 --installed --quiet").and_return <<~EOS
-          {
-            "formulae": [{
-                "name":"mysql",
-                "bottle":{
-                  "stable":{}
-                }
+          [
+            {
+              "name":"mysql",
+              "bottle":{
+                "stable":{}
               }
-            ]
-          }
+            }
+          ]
         EOS
         allow(locker).to receive(:`).with("brew list --versions").and_return("mysql 8.0.18")
         allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
