@@ -26,10 +26,10 @@ module Bundle
     def formula_dependencies(cask_list)
       return [] unless cask_list.present?
 
-      cask_info_response = `brew info --cask #{cask_list.join(" ")} --json=v1`
+      cask_info_response = `brew info --cask #{cask_list.join(" ")} --json=v2`
       cask_info = JSON.parse(cask_info_response)
 
-      cask_info.flat_map do |cask|
+      cask_info["casks"].flat_map do |cask|
         cask.dig("depends_on", "formula")
       end.compact.uniq
     rescue JSON::ParserError => e

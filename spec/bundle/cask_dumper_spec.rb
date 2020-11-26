@@ -57,8 +57,8 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew info --cask foo --json=v1")
-          .and_return("[{\"depends_on\":{}}]")
+          .with("brew info --cask foo --json=v2")
+          .and_return("{\"formulae\":[],\"casks\":[]")
       end
 
       it "returns an empty array" do
@@ -70,8 +70,8 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew info --cask foo --json=v1")
-          .and_return("Error: somethng from cask!")
+          .with("brew info --cask foo --json=v2")
+          .and_return("Error: something from cask!")
       end
 
       it "returns an empty array" do
@@ -80,11 +80,18 @@ describe Bundle::CaskDumper do
     end
 
     context "when multiple casks have the same dependency" do
+      let(:json_output) do
+        "{" \
+        "\"formulae\":[]," \
+        "\"casks\":[{\"depends_on\":{\"formula\":[\"baz\",\"qux\"]}},{\"depends_on\":{\"formula\":[\"baz\"]}}]" \
+        "}"
+      end
+
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew info --cask foo bar --json=v1")
-          .and_return("[{\"depends_on\":{\"formula\":[\"baz\",\"qux\"]}},{\"depends_on\":{\"formula\":[\"baz\"]}}]")
+          .with("brew info --cask foo bar --json=v2")
+          .and_return(json_output)
       end
 
       it "returns an array of unique formula dependencies" do
