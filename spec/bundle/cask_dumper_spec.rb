@@ -57,8 +57,21 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew info --cask foo --json=v2")
           .and_return("{\"formulae\":[],\"casks\":[]")
+      end
+
+      it "returns an empty array" do
+        expect(dumper.formula_dependencies(["foo"])).to eql([])
+      end
+    end
+
+    # TODO: can be removed when Homebrew 2.6.0 ships
+    context "when the given casks don't have formula dependencies on newer HOMEBREW_VERSION" do
+      before do
+        allow(described_class)
+          .to receive(:`)
+          .and_return("{\"formulae\":[],\"casks\":[]")
+        stub_const("HOMEBREW_VERSION", "2.6.0")
       end
 
       it "returns an empty array" do
@@ -70,7 +83,6 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew info --cask foo --json=v2")
           .and_return("Error: something from cask!")
       end
 
@@ -90,7 +102,6 @@ describe Bundle::CaskDumper do
       before do
         allow(described_class)
           .to receive(:`)
-          .with("brew info --cask foo bar --json=v2")
           .and_return(json_output)
       end
 

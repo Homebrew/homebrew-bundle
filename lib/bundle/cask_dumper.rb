@@ -24,16 +24,23 @@ module Bundle
     end
 
     def formula_dependencies(cask_list)
-      return [] unless cask_list.present?
+      return [] if cask_list.blank?
 
-      cask_info_response = `brew info --cask #{cask_list.join(" ")} --json=v2`
+      # TODO: can be removed when Homebrew 2.6.0 ships
+      cask_info_command = if HOMEBREW_VERSION > "2.5.11"
+        "brew info --cask --json=v2 #{cask_list.join(" ")}"
+      else
+        "brew info --json=v2 #{cask_list.join(" ")}"
+      end
+
+      cask_info_response = `#{cask_info_command}`
       cask_info = JSON.parse(cask_info_response)
 
       cask_info["casks"].flat_map do |cask|
         cask.dig("depends_on", "formula")
       end.compact.uniq
     rescue JSON::ParserError => e
-      opoo "Failed to parse `brew info --cask --json`: #{e}"
+      opoo "Failed to parse `#{cask_info_command}`:\n#{e}"
       []
     end
   end
