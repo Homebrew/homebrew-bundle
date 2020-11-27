@@ -27,7 +27,7 @@ module Bundle
       return [] if cask_list.blank?
 
       # TODO: can be removed when Homebrew 2.6.0 ships
-      cask_info_command = if HOMEBREW_VERSION > "2.5.11"
+      cask_info_command = if HOMEBREW_VERSION > "2.5.12"
         "brew info --cask --json=v2 #{cask_list.join(" ")}"
       else
         "brew info --json=v2 #{cask_list.join(" ")}"
