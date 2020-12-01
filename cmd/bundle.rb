@@ -107,6 +107,11 @@ module Homebrew
             zap:    args.zap?,
           )
         end
+      when "add"
+        Bundle::Commands::Add.run(
+          global: args.global?,
+          file:   args.file
+        )
       when "dump"
         Bundle::Commands::Dump.run(
           global:     args.global?,
