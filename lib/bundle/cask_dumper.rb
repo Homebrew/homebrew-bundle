@@ -26,13 +26,7 @@ module Bundle
     def formula_dependencies(cask_list)
       return [] if cask_list.blank?
 
-      # TODO: can be removed when Homebrew 2.6.0 ships
-      cask_info_command = if HOMEBREW_VERSION > "2.5.12"
-        "brew info --cask --json=v2 #{cask_list.join(" ")}"
-      else
-        "brew info --json=v2 #{cask_list.join(" ")}"
-      end
-
+      cask_info_command = "brew info --cask --json=v2"
       cask_info_response = `#{cask_info_command}`
       cask_info = JSON.parse(cask_info_response)
 
