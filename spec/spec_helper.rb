@@ -25,7 +25,10 @@ $LOAD_PATH.unshift(STUB_PATH)
 require "os"
 require "global"
 require "bundle"
+
 require "active_support/core_ext/object/blank"
+require "active_support/core_ext/string/exclude"
+require "active_support/core_ext/enumerable"
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").sort.each do |file|
   next if file.include?("/extend/os/")

@@ -56,7 +56,7 @@ module Bundle
           { revision: Tap.fetch(entry.name).git_head }
         end
 
-        next unless options.present?
+        next if options.blank?
 
         lock["entries"][entry_type_key][entry.name] ||= {}
         lock["entries"][entry_type_key][entry.name]["options"] =

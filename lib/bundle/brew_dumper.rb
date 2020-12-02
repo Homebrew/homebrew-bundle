@@ -75,7 +75,7 @@ module Bundle
       @formula_aliases = {}
       formulae.each do |f|
         aliases = f[:aliases]
-        next if !aliases || aliases.empty?
+        next if aliases.blank?
 
         aliases.each do |a|
           @formula_aliases[a] = f[:full_name]
@@ -189,9 +189,9 @@ module Bundle
       # Step 1: Sort by formula full name while putting tap formulae behind core formulae.
       #         So we can have a nicer output.
       @formulae.sort! do |a, b|
-        if !a[:full_name].include?("/") && b[:full_name].include?("/")
+        if a[:full_name].exclude?("/") && b[:full_name].include?("/")
           -1
-        elsif a[:full_name].include?("/") && !b[:full_name].include?("/")
+        elsif a[:full_name].include?("/") && b[:full_name].exclude?("/")
           1
         else
           a[:full_name] <=> b[:full_name]
