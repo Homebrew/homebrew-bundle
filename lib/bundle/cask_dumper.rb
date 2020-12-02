@@ -26,7 +26,7 @@ module Bundle
     def formula_dependencies(cask_list)
       return [] if cask_list.blank?
 
-      cask_info_command = "brew info --cask --json=v2"
+      cask_info_command = "brew info --cask --json=v2 #{cask_list.join(" ")}"
       cask_info_response = `#{cask_info_command}`
       cask_info = JSON.parse(cask_info_response)
 
