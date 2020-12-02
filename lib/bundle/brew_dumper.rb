@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "active_support/core_ext/string/exclude"
-
 require "json"
 require "tsort"
 
