@@ -63,15 +63,15 @@ module Homebrew
       switch "--all",
              description: "`list` all dependencies."
       switch "--formula", "--brews",
-             description: "`list` Homebrew dependencies."
+             description: "`list` or `install` Homebrew dependencies."
       switch "--cask", "--casks",
-             description: "`list` Homebrew Cask dependencies."
+             description: "`list` or `install` Homebrew Cask dependencies."
       switch "--tap", "--taps",
-             description: "`list` tap dependencies."
+             description: "`list` or `install` tap dependencies."
       switch "--mas",
-             description: "`list` Mac App Store dependencies."
+             description: "`list` or `install` Mac App Store dependencies."
       switch "--whalebrew",
-             description: "`list` Whalebrew dependencies."
+             description: "`list` or `install` Whalebrew dependencies."
       switch "--describe",
              description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description."
