@@ -65,7 +65,13 @@ describe Bundle::Commands::Install do
         expect(Bundle::TapInstaller).not_to receive(:install)
         expect(Bundle::WhalebrewInstaller).not_to receive(:install)
         allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
-        expect { described_class.run(global: false, file: nil, brews: true, casks: false, mas: false, whalebrew: false, taps: false, no_lock: false, no_upgrade: false, verbose: false) }.not_to raise_error
+        expect do
+          described_class.run(
+            global: false, file: nil,
+            brews: true, casks: false, mas: false, whalebrew: false, taps: false,
+            no_lock: false, no_upgrade: false, verbose: false
+          )
+        end.not_to raise_error
       end
 
       it "installs both brews and mas but nothing else" do
@@ -75,7 +81,13 @@ describe Bundle::Commands::Install do
         expect(Bundle::TapInstaller).not_to receive(:install)
         expect(Bundle::WhalebrewInstaller).not_to receive(:install)
         allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
-        expect { described_class.run(global: false, file: nil, brews: true, casks: false, mas: true, whalebrew: false, taps: false, no_lock: false, no_upgrade: false, verbose: false) }.not_to raise_error
+        expect do
+          described_class.run(
+            global: false, file: nil,
+            brews: true, casks: false, mas: true, whalebrew: false, taps: false,
+            no_lock: false, no_upgrade: false, verbose: false
+          )
+        end.not_to raise_error
       end
     end
   end
