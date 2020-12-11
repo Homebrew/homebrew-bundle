@@ -56,5 +56,27 @@ describe Bundle::Commands::Install do
 
       expect { described_class.run }.to raise_error(SystemExit)
     end
+
+    context "when installing only a certain type of entry" do
+      it "installs only brews" do
+        expect(Bundle::BrewInstaller).to receive(:install).and_return(:success)
+        expect(Bundle::CaskInstaller).not_to receive(:install)
+        expect(Bundle::MacAppStoreInstaller).not_to receive(:install)
+        expect(Bundle::TapInstaller).not_to receive(:install)
+        expect(Bundle::WhalebrewInstaller).not_to receive(:install)
+        allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
+        expect { described_class.run(global: false, file: nil, brews: true, casks: false, mas: false, whalebrew: false, taps: false, no_lock: false, no_upgrade: false, verbose: false) }.not_to raise_error
+      end
+
+      it "installs both brews and mas but nothing else" do
+        expect(Bundle::BrewInstaller).to receive(:install).and_return(:success)
+        expect(Bundle::CaskInstaller).not_to receive(:install)
+        expect(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
+        expect(Bundle::TapInstaller).not_to receive(:install)
+        expect(Bundle::WhalebrewInstaller).not_to receive(:install)
+        allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
+        expect { described_class.run(global: false, file: nil, brews: true, casks: false, mas: true, whalebrew: false, taps: false, no_lock: false, no_upgrade: false, verbose: false) }.not_to raise_error
+      end
+    end
   end
 end
