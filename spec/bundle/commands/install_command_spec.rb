@@ -27,11 +27,11 @@ describe Bundle::Commands::Install do
     end
 
     it "does not raise an error" do
-      allow(Bundle::BrewInstaller).to receive(:install).and_return(:success)
-      allow(Bundle::CaskInstaller).to receive(:install).and_return(:skipped)
-      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
-      allow(Bundle::TapInstaller).to receive(:install).and_return(:skipped)
-      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(:skipped)
+      expect(Bundle::BrewInstaller).to receive(:install).and_return(:success)
+      expect(Bundle::CaskInstaller).to receive(:install).and_return(:skipped)
+      expect(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
+      expect(Bundle::TapInstaller).to receive(:install).and_return(:skipped)
+      expect(Bundle::WhalebrewInstaller).to receive(:install).and_return(:skipped)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
       expect { described_class.run }.not_to raise_error
     end
