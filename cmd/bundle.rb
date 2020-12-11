@@ -94,6 +94,11 @@ module Homebrew
         Bundle::Commands::Install.run(
           global:     args.global?,
           file:       args.file,
+          brews:     args.brews?,
+          casks:     args.casks?,
+          mas:       args.mas?,
+          whalebrew: args.whalebrew?,
+          taps:      args.taps?,
           no_lock:    args.no_lock?,
           no_upgrade: args.no_upgrade?,
           verbose:    args.verbose?,

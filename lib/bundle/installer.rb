@@ -4,9 +4,13 @@ module Bundle
   module Installer
     module_function
 
-    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false)
+    def install(
+      entries, global: false, file: nil, brews: false, casks: false, mas: false, whalebrew: false, taps: false, no_lock: false, no_upgrade: false, verbose: false
+    )
       success = 0
       failure = 0
+
+      all = !(brews || casks || taps || mas || whalebrew)
 
       entries.each do |entry|
         args = [entry.name]
@@ -14,17 +18,22 @@ module Bundle
         verb = "Installing"
         cls = case entry.type
         when :brew
+          next unless all || brews
           options = entry.options
           Bundle::BrewInstaller
         when :cask
+          next unless all || casks
           options = entry.options
           Bundle::CaskInstaller
         when :mas
+          next unless all || mas
           args << entry.options[:id]
           Bundle::MacAppStoreInstaller
         when :whalebrew
+          next unless all || whalebrew
           Bundle::WhalebrewInstaller
         when :tap
+          next unless all || taps
           verb = "Tapping"
           options = entry.options
           Bundle::TapInstaller
