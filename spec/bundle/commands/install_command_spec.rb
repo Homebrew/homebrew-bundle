@@ -28,8 +28,8 @@ describe Bundle::Commands::Install do
 
     it "does not raise an error" do
       expect(Bundle::BrewInstaller).to receive(:install).and_return(:success)
-      expect(Bundle::CaskInstaller).to receive(:install).and_return(:skipped)
-      expect(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
+      allow(Bundle::CaskInstaller).to receive(:install).and_return(:skipped)
+      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
       expect(Bundle::TapInstaller).to receive(:install).and_return(:skipped)
       expect(Bundle::WhalebrewInstaller).to receive(:install).and_return(:skipped)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
@@ -77,14 +77,14 @@ describe Bundle::Commands::Install do
       it "installs both brews and mas but nothing else" do
         expect(Bundle::BrewInstaller).to receive(:install).and_return(:success)
         expect(Bundle::CaskInstaller).not_to receive(:install)
-        expect(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
+        expect(Bundle::MacAppStoreInstaller).not_to receive(:install)
         expect(Bundle::TapInstaller).not_to receive(:install)
-        expect(Bundle::WhalebrewInstaller).not_to receive(:install)
+        expect(Bundle::WhalebrewInstaller).to receive(:install).and_return(:success)
         allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
         expect do
           described_class.run(
             global: false, file: nil,
-            brews: true, casks: false, mas: true, whalebrew: false, taps: false,
+            brews: true, casks: false, mas: false, whalebrew: true, taps: false,
             no_lock: false, no_upgrade: false, verbose: false
           )
         end.not_to raise_error
