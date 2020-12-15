@@ -23,11 +23,11 @@ describe Bundle::Commands::Add do
 
     context "the formula is not in the Brewfile" do
       it "does not raise an error" do
-        expect { described_class.run("wget") }.to_not raise_error
+        expect { described_class.run("wget") }.not_to raise_error
       end
 
       it "adds the formula to the Brewfile" do
-        #TODO
+        # TODO
       end
     end
 

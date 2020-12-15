@@ -110,7 +110,7 @@ module Homebrew
       when "add"
         Bundle::Commands::Add.run(
           global: args.global?,
-          file:   args.file
+          file:   args.file,
         )
       when "dump"
         Bundle::Commands::Dump.run(
