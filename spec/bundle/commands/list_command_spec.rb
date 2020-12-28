@@ -31,7 +31,7 @@ describe Bundle::Commands::List do
       }
 
       combinations = 1.upto(types_and_deps.length).flat_map do |i|
-        types_and_deps.keys.combination(i).take((1..types_and_deps.length).inject(:*) || 1)
+        types_and_deps.keys.combination(i).take((1..types_and_deps.length).reduce(:*) || 1)
       end.sort
 
       combinations.each do |options_list|
