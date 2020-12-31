@@ -25,7 +25,7 @@ module Bundle
         return @skipped_entries if @skipped_entries
 
         @skipped_entries = {}
-        [:brew, :cask, :mas, :tap].each do |type|
+        [:brew, :cask, :mas, :tap, :whalebrew].each do |type|
           @skipped_entries[type] =
             ENV["HOMEBREW_BUNDLE_#{type.to_s.upcase}_SKIP"]&.split
         end
