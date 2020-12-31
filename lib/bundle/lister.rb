@@ -19,7 +19,7 @@ module Bundle
       return true if mas && type == :mas
       return true if whalebrew && type == :whalebrew
       return true if brews && type == :brew
-      return true if type == :brew && !casks && !taps && !mas
+      return true if type == :brew && !casks && !taps && !mas && !whalebrew
     end
   end
 end
