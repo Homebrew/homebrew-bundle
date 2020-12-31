@@ -15,7 +15,8 @@ describe Bundle::Commands::List do
     before do
       allow_any_instance_of(Pathname).to receive(:read).and_return \
         "tap 'phinze/cask'\nbrew 'mysql', " \
-        "conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910"
+        "conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910" \
+        "\n whalebrew 'whalebrew/imagemagick'"
     end
 
     it "only shows brew deps when no options are passed" do
@@ -24,10 +25,11 @@ describe Bundle::Commands::List do
 
     context "limiting when certain options are passed" do
       types_and_deps = {
-        taps:  "phinze/cask",
-        brews: "mysql",
-        casks: "google-chrome",
-        mas:   "1Password",
+        taps:      "phinze/cask",
+        brews:     "mysql",
+        casks:     "google-chrome",
+        mas:       "1Password",
+        whalebrew: "whalebrew/imagemagick",
       }
 
       combinations = 1.upto(types_and_deps.length).flat_map do |i|
