@@ -11,6 +11,8 @@ module Bundle
     def casks
       return [] unless Bundle.cask_installed?
 
+      require "cask/caskroom"
+
       @casks ||= Cask::Caskroom.casks.map(&:full_name).sort(&tap_and_name_comparison)
       @casks.map { |cask| cask.chomp " (!)" }
             .uniq
