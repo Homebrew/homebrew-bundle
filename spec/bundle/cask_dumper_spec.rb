@@ -40,21 +40,9 @@ describe Bundle::CaskDumper do
     before do
       described_class.reset!
 
-      foo = Object.new
-      bar = Object.new
-      baz = Object.new
-
-      def foo.full_name
-        "foo"
-      end
-
-      def bar.full_name
-        "bar"
-      end
-
-      def baz.full_name
-        "baz"
-      end
+      foo = instance_double("Cask::Cask", :full_name => "foo")
+      bar = instance_double("Cask::Cask", :full_name => "bar")
+      baz = instance_double("Cask::Cask", :full_name => "baz")
 
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar, baz])
