@@ -15,6 +15,17 @@ describe Bundle::Dumper do
     Bundle::MacAppStoreDumper.reset!
     Bundle::WhalebrewDumper.reset!
     Bundle::BrewServices.reset!
+    chrome = Object.new
+    java = Object.new
+
+    def chrome.full_name
+      "google-chrome"
+    end
+
+    def java.full_name
+      "java"
+    end
+    allow(Cask::Caskroom).to receive(:casks).and_return([chrome, java])
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
   end
 
