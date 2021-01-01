@@ -16,8 +16,8 @@ describe Bundle::Dumper do
     Bundle::WhalebrewDumper.reset!
     Bundle::BrewServices.reset!
 
-    chrome = instance_double("Cask::Cask", :full_name => "google-chrome")
-    java = instance_double("Cask::Cask", :full_name => "java")
+    chrome = instance_double("Cask::Cask", full_name: "google-chrome")
+    java = instance_double("Cask::Cask", full_name: "java")
 
     allow(Cask::Caskroom).to receive(:casks).and_return([chrome, java])
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava")
