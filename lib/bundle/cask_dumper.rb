@@ -13,7 +13,7 @@ module Bundle
 
       require "cask/caskroom"
 
-      @casks ||= Cask::Caskroom.casks.map(&:full_name)
+      @casks ||= Cask::Caskroom.casks.map(&:to_s)
       @casks.map { |cask| cask.chomp " (!)" }
             .uniq
     end

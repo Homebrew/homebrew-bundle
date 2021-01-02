@@ -2,7 +2,7 @@
 
 module Cask
   class Cask
-    def full_name
+    def to_s
       ""
     end
   end
