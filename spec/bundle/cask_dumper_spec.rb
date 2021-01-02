@@ -39,7 +39,13 @@ describe Bundle::CaskDumper do
   context "cask `foo`, `bar` and `baz` are installed, while `baz` is required by formula" do
     before do
       described_class.reset!
+
+      foo = instance_double("Cask::Cask", full_name: "foo")
+      bar = instance_double("Cask::Cask", full_name: "bar")
+      baz = instance_double("Cask::Cask", full_name: "baz")
+
       allow(Bundle).to receive(:cask_installed?).and_return(true)
+      allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar, baz])
       allow(described_class).to receive(:`).and_return("foo\nbar\nbaz")
     end
 
