@@ -5,5 +5,9 @@ module Cask
     def full_name
       ""
     end
+
+    def to_s
+      ""
+    end
   end
 end
