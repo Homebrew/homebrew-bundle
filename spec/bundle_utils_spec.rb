@@ -27,7 +27,7 @@ describe Bundle do
     end
   end
 
-  context "check for brew cask", :needs_macos do
+  context "check for homebrew/cask", :needs_macos do
     it "finds it when present" do
       allow(File).to receive(:directory?).with("#{HOMEBREW_PREFIX}/Caskroom").and_return(true)
       allow(File).to receive(:directory?)
