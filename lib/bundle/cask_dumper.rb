@@ -6,23 +6,52 @@ module Bundle
 
     def reset!
       @casks = nil
+      @cask_list = nil
+      @cask_hash = nil
     end
 
     def casks
       return [] unless Bundle.cask_installed?
 
       require "cask/caskroom"
-
-      @casks ||= Cask::Caskroom.casks.map(&:to_s)
-      @casks.map { |cask| cask.chomp " (!)" }
-            .uniq
+      @casks ||= Cask::Caskroom.casks
     end
 
-    def dump(casks_required_by_formulae)
+    def cask_list
+      @cask_list ||= casks.map(&:to_s)
+    end
+
+    def cask_hash
+      return {} unless Bundle.cask_installed?
+
+      @cask_hash ||= casks.index_by(&:to_s)
+    end
+
+    def dump(casks_required_by_formulae, describe: false)
       [
-        (casks & casks_required_by_formulae).map { |cask| "cask \"#{cask}\"" }.join("\n"),
-        (casks - casks_required_by_formulae).map { |cask| "cask \"#{cask}\"" }.join("\n"),
+        (cask_list & casks_required_by_formulae).map do |cask_token|
+          dump_cask(cask_hash[cask_token], describe)
+        end.join("\n"),
+        (cask_list - casks_required_by_formulae).map do |cask_token|
+          dump_cask(cask_hash[cask_token], describe)
+        end.join("\n"),
       ]
+    end
+
+    def dump_cask(cask, describe)
+      description = if describe && cask.desc.present?
+        "# #{cask.desc}\n"
+      else
+        ""
+      end
+      config = if cask.config.present? && cask.config.explicit.present?
+        cask.config.explicit.map do |k, v|
+          "#{k}: \"#{v.sub(/^#{ENV['HOME']}/, "~")}\""
+        end.join(",").prepend(", args: { ").concat(" }")
+      else
+        ""
+      end
+      "#{description}cask \"#{cask}\"#{config}"
     end
 
     def formula_dependencies(cask_list)

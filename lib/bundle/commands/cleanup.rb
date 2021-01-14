@@ -62,7 +62,7 @@ module Bundle
       end
 
       def casks_to_uninstall(global: false, file: nil)
-        Bundle::CaskDumper.casks - kept_casks(global: global, file: file)
+        Bundle::CaskDumper.cask_list - kept_casks(global: global, file: file)
       end
 
       def formulae_to_uninstall(global: false, file: nil)

@@ -57,7 +57,7 @@ module Bundle
     end
 
     def installed_casks
-      @installed_casks ||= Bundle::CaskDumper.casks
+      @installed_casks ||= Bundle::CaskDumper.cask_list
     end
 
     def outdated_casks

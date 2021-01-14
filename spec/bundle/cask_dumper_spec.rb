@@ -12,7 +12,7 @@ describe Bundle::CaskDumper do
     end
 
     it "returns empty list" do
-      expect(dumper.casks).to be_empty
+      expect(dumper.cask_list).to be_empty
     end
 
     it "dumps as empty string" do
@@ -28,7 +28,7 @@ describe Bundle::CaskDumper do
     end
 
     it "returns empty list" do
-      expect(dumper.casks).to be_empty
+      expect(dumper.cask_list).to be_empty
     end
 
     it "dumps as empty string" do
@@ -36,13 +36,16 @@ describe Bundle::CaskDumper do
     end
   end
 
-  context "cask `foo`, `bar` and `baz` are installed, while `baz` is required by formula" do
+  context "when casks `foo`, `bar` and `baz` are installed, with `baz` being a formula requirement" do
     before do
       described_class.reset!
 
-      foo = instance_double("Cask::Cask", to_s: "foo")
-      bar = instance_double("Cask::Cask", to_s: "bar")
-      baz = instance_double("Cask::Cask", to_s: "baz")
+      foo = instance_double("Cask::Cask", to_s: "foo", desc: nil, config: nil)
+      baz = instance_double("Cask::Cask", to_s: "baz", desc: "Software", config: nil)
+      bar = instance_double("Cask::Cask", to_s:   "bar",
+                                          desc:   nil,
+                                          config: instance_double("Cask::Cask.config",
+                                                                  explicit: { fontdir: "/Library/Fonts" }))
 
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar, baz])
@@ -50,11 +53,12 @@ describe Bundle::CaskDumper do
     end
 
     it "returns list %w[foo bar baz]" do
-      expect(dumper.casks).to eql(%w[foo bar baz])
+      expect(dumper.cask_list).to eql(%w[foo bar baz])
     end
 
-    it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'`" do
-      expect(dumper.dump(%w[baz])).to eql ["cask \"baz\"", "cask \"foo\"\ncask \"bar\""]
+    it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'` plus descriptions and config values" do
+      expect(dumper.dump(%w[baz], describe: true))
+        .to eql ["# Software\ncask \"baz\"", "cask \"foo\"\ncask \"bar\", args: { fontdir: \"/Library/Fonts\" }"]
     end
   end
 
