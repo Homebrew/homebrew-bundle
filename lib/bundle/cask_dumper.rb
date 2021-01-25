@@ -30,26 +30,20 @@ module Bundle
     def dump(casks_required_by_formulae, describe: false)
       [
         (cask_list & casks_required_by_formulae).map do |cask_token|
-          dump_cask(cask_hash[cask_token], describe)
+          dump_cask(cask_hash[cask_token], describe: describe)
         end.join("\n"),
         (cask_list - casks_required_by_formulae).map do |cask_token|
-          dump_cask(cask_hash[cask_token], describe)
+          dump_cask(cask_hash[cask_token], describe: describe)
         end.join("\n"),
       ]
     end
 
-    def dump_cask(cask, describe)
-      description = if describe && cask.desc.present?
-        "# #{cask.desc}\n"
-      else
-        ""
-      end
+    def dump_cask(cask, describe:)
+      description = "# #{cask.desc}\n" if describe && cask.desc.present?
       config = if cask.config.present? && cask.config.explicit.present?
         cask.config.explicit.map do |k, v|
           "#{k}: \"#{v.sub(/^#{ENV['HOME']}/, "~")}\""
         end.join(",").prepend(", args: { ").concat(" }")
-      else
-        ""
       end
       "#{description}cask \"#{cask}\"#{config}"
     end
