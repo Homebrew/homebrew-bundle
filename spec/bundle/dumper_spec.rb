@@ -16,9 +16,18 @@ describe Bundle::Dumper do
     Bundle::WhalebrewDumper.reset!
     Bundle::BrewServices.reset!
 
-    chrome = instance_double("Cask::Cask", full_name: "google-chrome", to_s: "google-chrome")
-    java = instance_double("Cask::Cask", full_name: "java", to_s: "java")
-    iterm2beta = instance_double("Cask::Cask", full_name: "homebrew/cask-versions/iterm2-beta", to_s: "iterm2-beta")
+    chrome     = instance_double("Cask::Cask",
+                                 full_name: "google-chrome",
+                                 to_s:      "google-chrome",
+                                 config:    nil)
+    java       = instance_double("Cask::Cask",
+                                 full_name: "java",
+                                 to_s:      "java",
+                                 config:    nil)
+    iterm2beta = instance_double("Cask::Cask",
+                                 full_name: "homebrew/cask-versions/iterm2-beta",
+                                 to_s:      "iterm2-beta",
+                                 config:    nil)
 
     allow(Cask::Caskroom).to receive(:casks).and_return([chrome, java, iterm2beta])
     allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava\niterm2-beta")
