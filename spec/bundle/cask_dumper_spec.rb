@@ -45,7 +45,10 @@ describe Bundle::CaskDumper do
       bar = instance_double("Cask::Cask", to_s:   "bar",
                                           desc:   nil,
                                           config: instance_double("Cask::Cask.config",
-                                                                  explicit: { fontdir: "/Library/Fonts" }))
+                                                                  explicit: {
+                                                                    fontdir:   "/Library/Fonts",
+                                                                    languages: ["zh-TW"],
+                                                                  }))
 
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar, baz])
@@ -57,8 +60,10 @@ describe Bundle::CaskDumper do
     end
 
     it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'` plus descriptions and config values" do
-      expect(dumper.dump(%w[baz], describe: true))
-        .to eql ["# Software\ncask \"baz\"", "cask \"foo\"\ncask \"bar\", args: { fontdir: \"/Library/Fonts\" }"]
+      expect(dumper.dump(%w[baz], describe: true)).to eql [
+        "# Software\ncask \"baz\"",
+        "cask \"foo\"\ncask \"bar\", args: { fontdir: \"/Library/Fonts\", language: \"zh-TW\" }",
+      ]
     end
   end
 
