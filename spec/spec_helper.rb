@@ -18,8 +18,8 @@ SimpleCov.start do
   end
 end
 
-PROJECT_ROOT ||= File.expand_path("..", __dir__).freeze
-STUB_PATH ||= File.expand_path(File.join(__FILE__, "..", "stub")).freeze
+PROJECT_ROOT = File.expand_path("..", __dir__).freeze
+STUB_PATH = File.expand_path(File.join(__FILE__, "..", "stub")).freeze
 $LOAD_PATH.unshift(STUB_PATH)
 
 require "os"
