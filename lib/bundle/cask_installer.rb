@@ -57,15 +57,11 @@ module Bundle
     end
 
     def installed_casks
-      @installed_casks ||= Bundle::CaskDumper.cask_list
+      @installed_casks ||= Bundle::CaskDumper.cask_names
     end
 
     def outdated_casks
-      @outdated_casks ||= if Bundle.cask_installed?
-        `brew outdated --cask 2>/dev/null`.split("\n")
-      else
-        []
-      end
+      @outdated_casks ||= Bundle::CaskDumper.outdated_cask_names
     end
   end
 end

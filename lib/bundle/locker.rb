@@ -109,13 +109,7 @@ module Bundle
     def cask_list
       return {} unless OS.mac?
 
-      @cask_list ||= begin
-        `brew list --cask --versions`.lines
-                                     .each_with_object({}) do |line, name_versions|
-          name, version, = line.split
-          name_versions[name] = version
-        end
-      end
+      @cask_list ||= Bundle::CaskDumper.cask_versions
     end
 
     def mas_list

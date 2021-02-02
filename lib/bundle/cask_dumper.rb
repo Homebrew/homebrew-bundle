@@ -6,8 +6,49 @@ module Bundle
 
     def reset!
       @casks = nil
-      @cask_list = nil
+      @cask_names = nil
       @cask_hash = nil
+    end
+
+    def cask_names
+      @cask_names ||= casks.map(&:to_s)
+    end
+
+    def outdated_cask_names
+      return [] unless Bundle.cask_installed?
+
+      casks.select(&:outdated?)
+           .map(&:to_s)
+    end
+
+    def cask_versions
+      return {} unless Bundle.cask_installed?
+
+      casks.each_with_object({}) do |cask, name_versions|
+        name_versions[cask.to_s] = cask.version
+      end
+    end
+
+    def dump(casks_required_by_formulae, describe: false)
+      [
+        (cask_names & casks_required_by_formulae).map do |cask_token|
+          dump_cask(cask_hash[cask_token], describe: describe)
+        end.join("\n"),
+        (cask_names - casks_required_by_formulae).map do |cask_token|
+          dump_cask(cask_hash[cask_token], describe: describe)
+        end.join("\n"),
+      ]
+    end
+
+    def formula_dependencies(cask_list)
+      return [] unless Bundle.cask_installed?
+      return [] if cask_list.blank?
+
+      casks.flat_map do |cask|
+        next unless cask_list.include?(cask.to_s)
+
+        cask.depends_on[:formula]
+      end.compact
     end
 
     def casks
@@ -16,27 +57,14 @@ module Bundle
       require "cask/caskroom"
       @casks ||= Cask::Caskroom.casks
     end
-
-    def cask_list
-      @cask_list ||= casks.map(&:to_s)
-    end
+    private_class_method :casks
 
     def cask_hash
       return {} unless Bundle.cask_installed?
 
       @cask_hash ||= casks.index_by(&:to_s)
     end
-
-    def dump(casks_required_by_formulae, describe: false)
-      [
-        (cask_list & casks_required_by_formulae).map do |cask_token|
-          dump_cask(cask_hash[cask_token], describe: describe)
-        end.join("\n"),
-        (cask_list - casks_required_by_formulae).map do |cask_token|
-          dump_cask(cask_hash[cask_token], describe: describe)
-        end.join("\n"),
-      ]
-    end
+    private_class_method :cask_hash
 
     def dump_cask(cask, describe:)
       description = "# #{cask.desc}\n" if describe && cask.desc.present?
@@ -53,20 +81,6 @@ module Bundle
       end
       "#{description}cask \"#{cask}\"#{config}"
     end
-
-    def formula_dependencies(cask_list)
-      return [] if cask_list.blank?
-
-      cask_info_command = "brew info --cask --json=v2 #{cask_list.join(" ")}"
-      cask_info_response = `#{cask_info_command}`
-      cask_info = JSON.parse(cask_info_response)
-
-      cask_info["casks"].flat_map do |cask|
-        cask.dig("depends_on", "formula")
-      end.compact.uniq
-    rescue JSON::ParserError => e
-      opoo "Failed to parse `#{cask_info_command}`:\n#{e}"
-      []
-    end
+    private_class_method :dump_cask
   end
 end

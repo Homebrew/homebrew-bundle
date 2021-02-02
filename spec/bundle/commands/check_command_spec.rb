@@ -37,7 +37,7 @@ describe Bundle::Commands::Check do
   context "when casks are not installed", :needs_macos do
     it "raises an error" do
       allow(Bundle).to receive(:cask_installed?).and_return(true)
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow_any_instance_of(Pathname).to receive(:read).and_return("cask 'abc'")
       expect { do_check }.to raise_error(SystemExit)
@@ -46,14 +46,14 @@ describe Bundle::Commands::Check do
 
   context "when formulae are not installed" do
     it "raises an error" do
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
       expect { do_check }.to raise_error(SystemExit)
     end
 
     it "does not raise error on skippable formula" do
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow(Bundle::Skipper).to receive(:skip?).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
@@ -63,7 +63,7 @@ describe Bundle::Commands::Check do
 
   context "when taps are not tapped" do
     it "raises an error" do
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow_any_instance_of(Pathname).to receive(:read).and_return("tap 'abc/def'")
       expect { do_check }.to raise_error(SystemExit)
@@ -196,7 +196,7 @@ describe Bundle::Commands::Check do
 
   context "when verbose mode is not enabled" do
     it "stops checking after the first missing formula" do
-      allow_any_instance_of(Bundle::CaskDumper).to receive(:casks).and_return([])
+      allow(Bundle::CaskDumper).to receive(:casks).and_return([])
       allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
       allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'\nbrew 'def'")
 

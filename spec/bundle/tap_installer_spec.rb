@@ -8,6 +8,10 @@ describe Bundle::TapInstaller do
   end
 
   describe ".installed_taps" do
+    before do
+      Bundle::TapDumper.reset!
+    end
+
     it "calls Homebrew" do
       described_class.installed_taps
     end

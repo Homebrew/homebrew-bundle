@@ -12,7 +12,7 @@ describe Bundle::CaskDumper do
     end
 
     it "returns empty list" do
-      expect(dumper.cask_list).to be_empty
+      expect(dumper.cask_names).to be_empty
     end
 
     it "dumps as empty string" do
@@ -28,7 +28,7 @@ describe Bundle::CaskDumper do
     end
 
     it "returns empty list" do
-      expect(dumper.cask_list).to be_empty
+      expect(dumper.cask_names).to be_empty
     end
 
     it "dumps as empty string" do
@@ -56,7 +56,7 @@ describe Bundle::CaskDumper do
     end
 
     it "returns list %w[foo bar baz]" do
-      expect(dumper.cask_list).to eql(%w[foo bar baz])
+      expect(dumper.cask_names).to eql(%w[foo bar baz])
     end
 
     it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'` plus descriptions and config values" do
@@ -70,21 +70,7 @@ describe Bundle::CaskDumper do
   describe "#formula_dependencies" do
     context "when the given casks don't have formula dependencies" do
       before do
-        allow(described_class)
-          .to receive(:`)
-          .and_return("{\"formulae\":[],\"casks\":[]")
-      end
-
-      it "returns an empty array" do
-        expect(dumper.formula_dependencies(["foo"])).to eql([])
-      end
-    end
-
-    context "when cask info returns invalid JSON" do
-      before do
-        allow(described_class)
-          .to receive(:`)
-          .and_return("Error: something from cask!")
+        described_class.reset!
       end
 
       it "returns an empty array" do
@@ -93,17 +79,12 @@ describe Bundle::CaskDumper do
     end
 
     context "when multiple casks have the same dependency" do
-      let(:json_output) do
-        "{" \
-        "\"formulae\":[]," \
-        "\"casks\":[{\"depends_on\":{\"formula\":[\"baz\",\"qux\"]}},{\"depends_on\":{\"formula\":[\"baz\"]}}]" \
-        "}"
-      end
-
       before do
-        allow(described_class)
-          .to receive(:`)
-          .and_return(json_output)
+        described_class.reset!
+        foo = instance_double("Cask::Cask", to_s: "foo", depends_on: { formula: ["baz", "qux"] })
+        bar = instance_double("Cask::Cask", to_s: "bar", depends_on: {})
+        allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar])
+        allow(Bundle).to receive(:cask_installed?).and_return(true)
       end
 
       it "returns an array of unique formula dependencies" do
