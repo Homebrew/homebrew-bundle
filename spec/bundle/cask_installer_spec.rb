@@ -7,6 +7,10 @@ describe Bundle::CaskInstaller do
     Bundle::CaskInstaller.install("google-chrome")
   end
 
+  def do_greedy_install
+    Bundle::CaskInstaller.install("opera", greedy: true)
+  end
+
   describe ".installed_casks" do
     before do
       Bundle::CaskDumper.reset!
@@ -71,6 +75,20 @@ describe Bundle::CaskInstaller do
         expect(Bundle).to receive(:system).with("brew", "upgrade", "--cask", "google-chrome", verbose: false)
                                           .and_return(true)
         expect(do_install).to be(:success)
+      end
+    end
+
+    context "when cask is outdated and uses auto-update" do
+      before do
+        allow(described_class).to receive(:installed_casks).and_return(["opera"])
+        allow(described_class).to receive(:outdated_casks).and_return([])
+        allow(described_class).to receive(:all_outdated_casks).and_return(["opera"])
+      end
+
+      it "upgrades" do
+        expect(Bundle).to receive(:system).with("brew", "upgrade", "--cask", "opera", verbose: false)
+                                          .and_return(true)
+        expect(do_greedy_install).to be(:success)
       end
     end
 

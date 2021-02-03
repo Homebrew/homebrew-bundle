@@ -41,6 +41,8 @@ brew "mysql@5.6", restart_service: true, link: true, conflicts_with: ["mysql"]
 cask "google-chrome"
 # 'brew install --cask --appdir=~/my-apps/Applications'
 cask "firefox", args: { appdir: "~/my-apps/Applications" }
+# always upgrade auto-updated or unversioned cask to latest version even if already installed
+cask "opera", greedy: true
 # 'brew install --cask' only if '/usr/libexec/java_home --failfast' fails
 cask "java" unless system "/usr/libexec/java_home --failfast"
 
