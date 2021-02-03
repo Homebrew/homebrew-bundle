@@ -20,7 +20,7 @@ describe Bundle::Commands::Install do
       <<~EOS
         tap 'phinze/cask'
         brew 'mysql', conflicts_with: ['mysql56']
-        cask 'google-chrome'
+        cask 'google-chrome', greedy: true
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
       EOS

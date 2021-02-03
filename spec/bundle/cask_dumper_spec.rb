@@ -42,13 +42,16 @@ describe Bundle::CaskDumper do
 
       foo = instance_double("Cask::Cask", to_s: "foo", desc: nil, config: nil)
       baz = instance_double("Cask::Cask", to_s: "baz", desc: "Software", config: nil)
-      bar = instance_double("Cask::Cask", to_s:   "bar",
-                                          desc:   nil,
-                                          config: instance_double("Cask::Cask.config",
-                                                                  explicit: {
-                                                                    fontdir:   "/Library/Fonts",
-                                                                    languages: ["zh-TW"],
-                                                                  }))
+      bar = instance_double(
+        "Cask::Cask", to_s:   "bar",
+                      desc:   nil,
+                      config: instance_double("Cask::Cask.config",
+                                              explicit:   {
+                                                fontdir:   "/Library/Fonts",
+                                                languages: ["zh-TW"],
+                                              },
+                                              explicit_s: 'fontdir: "/Library/Fonts", language: "zh-TW"')
+      )
 
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar, baz])

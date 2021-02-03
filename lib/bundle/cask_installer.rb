@@ -7,14 +7,17 @@ module Bundle
     def reset!
       @installed_casks = nil
       @outdated_casks = nil
+      @all_outdated_casks = nil
     end
 
     def install(name, no_upgrade: false, verbose: false, **options)
       full_name = options.fetch(:full_name, name)
+      greedy = options[:greedy]
 
       if installed_casks.include? name
-        if !no_upgrade && outdated_casks.include?(name)
-          puts "Upgrading #{name} cask. It is installed but not up-to-date." if verbose
+        if !no_upgrade && (outdated_casks.include?(name) || all_outdated_casks.include?(name) && greedy)
+          status = "#{greedy ? "may not be" : "not"} up-to-date"
+          puts "Upgrading #{name} cask. It is installed but #{status}." if verbose
           return :failed unless Bundle.system "brew", "upgrade", "--cask", full_name, verbose: verbose
 
           return :success
@@ -62,6 +65,10 @@ module Bundle
 
     def outdated_casks
       @outdated_casks ||= Bundle::CaskDumper.outdated_cask_names
+    end
+
+    def all_outdated_casks
+      @all_outdated_casks ||= Bundle::CaskDumper.outdated_cask_names(greedy: true)
     end
   end
 end
