@@ -68,17 +68,7 @@ module Bundle
 
     def dump_cask(cask, describe:)
       description = "# #{cask.desc}\n" if describe && cask.desc.present?
-      config = if cask.config.present? && cask.config.explicit.present?
-        # TODO: replace this logic with an actual call in Library/Homebrew/cask/
-        cask.config.explicit.map do |key, value|
-          if key.to_s == "languages"
-            key = "language"
-            value = value.join(",")
-          end
-
-          "#{key}: \"#{value.sub(/^#{ENV['HOME']}/, "~")}\""
-        end.join(", ").prepend(", args: { ").concat(" }")
-      end
+      config = ", args: { #{cask.config.explicit_s} }" if cask.config.present? && cask.config.explicit.present?
       "#{description}cask \"#{cask}\"#{config}"
     end
     private_class_method :dump_cask
