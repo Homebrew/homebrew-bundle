@@ -9,5 +9,21 @@ module Cask
     def to_s
       ""
     end
+
+    def version
+      ""
+    end
+
+    def desc
+      ""
+    end
+
+    def depends_on
+      {}
+    end
+
+    def config
+      nil
+    end
   end
 end

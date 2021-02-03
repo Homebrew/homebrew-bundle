@@ -11,7 +11,7 @@ describe Bundle::TapDumper do
     end
 
     it "returns empty list" do
-      expect(dumper.taps).to be_empty
+      expect(dumper.tap_names).to be_empty
     end
 
     it "dumps as empty string" do
@@ -22,28 +22,15 @@ describe Bundle::TapDumper do
   context "there are tap `bitbucket/bar`, `homebrew/baz` and `homebrew/foo`" do
     before do
       described_class.reset!
-      allow(Tap).to receive(:map).and_return [
-        {
-          "name"          => "bitbucket/bar",
-          "remote"        => "https://bitbucket.org/bitbucket/bar.git",
-          "custom_remote" => true,
-        },
-        {
-          "name"          => "homebrew/baz",
-          "remote"        => "https://github.com/Homebrew/homebrew-baz",
-          "custom_remote" => false,
-        },
-        {
-          "name"          => "homebrew/foo",
-          "remote"        => "https://github.com/Homebrew/homebrew-foo",
-          "custom_remote" => false,
-          "pinned"        => true,
-        },
-      ]
+      bar = instance_double("Tap", name: "bitbucket/bar", custom_remote?: true,
+                            remote: "https://bitbucket.org/bitbucket/bar.git")
+      baz = instance_double("Tap", name: "homebrew/baz", custom_remote?: false)
+      foo = instance_double("Tap", name: "homebrew/foo", custom_remote?: false)
+      allow(Tap).to receive(:each).and_return [bar, baz, foo]
     end
 
     it "returns list of information" do
-      expect(dumper.taps).not_to be_empty
+      expect(dumper.tap_names).not_to be_empty
     end
 
     it "dumps output" do

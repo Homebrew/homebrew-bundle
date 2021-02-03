@@ -8,6 +8,10 @@ describe Bundle::CaskInstaller do
   end
 
   describe ".installed_casks" do
+    before do
+      Bundle::CaskDumper.reset!
+    end
+
     it "shells out" do
       described_class.installed_casks
     end
@@ -25,31 +29,29 @@ describe Bundle::CaskInstaller do
 
   context "when brew-cask is not installed" do
     describe ".outdated_casks" do
-      it "does not shell out" do
-        allow(Bundle).to receive(:cask_installed?).and_return(false)
-        expect(described_class).not_to receive(:`)
+      it "returns empty array" do
         described_class.reset!
-        described_class.outdated_casks
+        expect(described_class.outdated_casks).to eql([])
       end
     end
   end
 
   context "when brew-cask is installed" do
     before do
+      Bundle::CaskDumper.reset!
       allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
 
     describe ".outdated_casks" do
-      it "shells out" do
-        allow(Bundle).to receive(:cask_installed?).and_return(true)
-        expect(described_class).to receive(:`).and_return("")
+      it "returns empty array" do
         described_class.reset!
-        described_class.outdated_casks
+        expect(described_class.outdated_casks).to eql([])
       end
     end
 
     context "when cask is installed" do
       before do
+        Bundle::CaskDumper.reset!
         allow(described_class).to receive(:installed_casks).and_return(["google-chrome"])
       end
 
