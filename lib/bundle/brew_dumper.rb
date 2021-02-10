@@ -35,16 +35,13 @@ module Bundle
       @formulae_by_full_name ||= {}
 
       if name.nil?
-        Formula.installed.compact.each(&method(:add_formula))
-        sort!
+        formulae = Formula.installed.map(&method(:add_formula))
+        sort!(formulae)
         return @formulae_by_full_name
       end
 
       formula = Formula[name]
-      return unless formula
-
       add_formula(formula)
-      @formulae_by_full_name[name]
     rescue FormulaUnavailableError => e
       opoo "'#{name}' formula is unreadable: #{e}"
       {}
@@ -115,6 +112,8 @@ module Bundle
 
       @formulae_by_name[hash[:name]] = hash
       @formulae_by_full_name[hash[:full_name]] = hash
+
+      hash
     end
     private_class_method :add_formula
 
@@ -157,7 +156,6 @@ module Bundle
           cellar: (cellar = bottle_spec.cellar).is_a?(Symbol) ? cellar.inspect : cellar,
           files:  {},
         }
-        bottle_hash[:files] = {}
         bottle_spec.collector.each_key do |os|
           bottle_url = "#{bottle_spec.root_url}/#{Bottle::Filename.create(formula, os, bottle_spec.rebuild).bintray}"
           checksum = bottle_spec.collector[os][:checksum]
@@ -166,7 +164,6 @@ module Bundle
             sha256: checksum.hexdigest,
           }
         end
-        bottle_hash
       end
 
       {
@@ -199,10 +196,10 @@ module Bundle
       end
     end
 
-    def sort!
+    def sort!(formulae)
       # Step 1: Sort by formula full name while putting tap formulae behind core formulae.
       #         So we can have a nicer output.
-      formulae = @formulae_by_full_name.values.sort do |a, b|
+      formulae = formulae.sort do |a, b|
         if a[:full_name].exclude?("/") && b[:full_name].include?("/")
           -1
         elsif a[:full_name].include?("/") && b[:full_name].exclude?("/")
