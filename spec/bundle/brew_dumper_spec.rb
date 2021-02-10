@@ -10,20 +10,20 @@ describe Bundle::BrewDumper do
 
   let(:foo) do
     instance_double("Formula",
-                    name:                          "foo",
-                    desc:                          "foobar",
-                    oldname:                       "oldfoo",
-                    full_name:                     "qux/quuz/foo",
-                    aliases:                       ["foobar"],
-                    declared_runtime_dependencies: [],
-                    deps:                          [],
-                    conflicts:                     [],
-                    any_installed_prefix:          nil,
-                    linked?:                       false,
-                    keg_only?:                     true,
-                    pinned?:                       false,
-                    outdated?:                     false,
-                    bottle_defined?:               false)
+                    name:                 "foo",
+                    desc:                 "foobar",
+                    oldname:              "oldfoo",
+                    full_name:            "qux/quuz/foo",
+                    aliases:              ["foobar"],
+                    runtime_dependencies: [],
+                    deps:                 [],
+                    conflicts:            [],
+                    any_installed_prefix: nil,
+                    linked?:              false,
+                    keg_only?:            true,
+                    pinned?:              false,
+                    outdated?:            false,
+                    bottle_defined?:      false)
   end
   let(:foo_hash) do
     {
@@ -58,22 +58,22 @@ describe Bundle::BrewDumper do
                                   rebuild:   0,
                                   root_url:  "https://brew.sh/")
     instance_double("Formula",
-                    name:                          "bar",
-                    desc:                          "barfoo",
-                    oldname:                       nil,
-                    full_name:                     "bar",
-                    aliases:                       [],
-                    declared_runtime_dependencies: [],
-                    deps:                          [],
-                    conflicts:                     [],
-                    any_installed_prefix:          nil,
-                    linked?:                       true,
-                    keg_only?:                     false,
-                    pinned?:                       true,
-                    outdated?:                     true,
-                    bottle_defined?:               true,
-                    linked_keg:                    linked_keg,
-                    stable:                        OpenStruct.new(bottle_specification: bottle_spec))
+                    name:                 "bar",
+                    desc:                 "barfoo",
+                    oldname:              nil,
+                    full_name:            "bar",
+                    aliases:              [],
+                    runtime_dependencies: [],
+                    deps:                 [],
+                    conflicts:            [],
+                    any_installed_prefix: nil,
+                    linked?:              true,
+                    keg_only?:            false,
+                    pinned?:              true,
+                    outdated?:            true,
+                    bottle_defined?:      true,
+                    linked_keg:           linked_keg,
+                    stable:               OpenStruct.new(bottle_specification: bottle_spec))
   end
   let(:bar_hash) do
     {
@@ -106,20 +106,20 @@ describe Bundle::BrewDumper do
   end
   let(:baz) do
     instance_double("Formula",
-                    name:                          "baz",
-                    desc:                          "",
-                    oldname:                       nil,
-                    full_name:                     "bazzles/bizzles/baz",
-                    aliases:                       [],
-                    declared_runtime_dependencies: [OpenStruct.new(name: "bar")],
-                    deps:                          [OpenStruct.new(name: "bar", build?: true)],
-                    conflicts:                     [],
-                    any_installed_prefix:          nil,
-                    linked?:                       false,
-                    keg_only?:                     false,
-                    pinned?:                       false,
-                    outdated?:                     false,
-                    bottle_defined?:               false)
+                    name:                 "baz",
+                    desc:                 "",
+                    oldname:              nil,
+                    full_name:            "bazzles/bizzles/baz",
+                    aliases:              [],
+                    runtime_dependencies: [OpenStruct.new(name: "bar")],
+                    deps:                 [OpenStruct.new(name: "bar", build?: true)],
+                    conflicts:            [],
+                    any_installed_prefix: nil,
+                    linked?:              false,
+                    keg_only?:            false,
+                    pinned?:              false,
+                    outdated?:            false,
+                    bottle_defined?:      false)
   end
   let(:baz_hash) do
     {

@@ -144,7 +144,7 @@ module Bundle
         runtime_dependencies = tab.runtime_dependencies.map { |d| d["full_name"] }.compact
         poured_from_bottle = tab.poured_from_bottle
       else
-        runtime_dependencies = formula.declared_runtime_dependencies.map(&:name)
+        runtime_dependencies = formula.runtime_dependencies.map(&:name)
       end
 
       # TODO: use Formula#bottle_hash when in a stable release
