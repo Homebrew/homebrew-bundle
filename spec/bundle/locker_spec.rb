@@ -71,18 +71,13 @@ describe Bundle::Locker do
         allow(locker).to receive(:lockfile).and_return(lockfile)
         allow(brew_options).to receive(:deep_stringify_keys)
           .and_return("restart_service" => true)
-        allow(locker).to receive(:`).with("brew info --json=v2 --installed --quiet").and_return <<~EOS
-          {
-            "formulae": [{
-                "name":"mysql",
-                "bottle":{
-                  "stable":{}
-                }
-              }
-            ]
-          }
-        EOS
-        allow(locker).to receive(:`).with("brew list --versions").and_return("mysql 8.0.18")
+        allow(Bundle::BrewDumper).to receive(:formulae_by_full_name).with("mysql").and_return({
+                                                                                                name:    "mysql",
+                                                                                                version: "8.0.18",
+                                                                                                bottle:  {
+                                                                                                  stable: {},
+                                                                                                },
+                                                                                              })
         allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
         allow(locker).to receive(:`)
           .with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'")

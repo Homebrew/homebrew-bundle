@@ -41,7 +41,7 @@ module Bundle
         lock["entries"][entry_type_key] ||= {}
         lock["entries"][entry_type_key][entry.name] = case entry.type
         when :brew
-          brew_list_info[entry.name]
+          brew_list(entry.name)
         when :cask
           options.delete(:args) if options[:args].blank?
           { version: cask_list[entry.name] }
@@ -85,31 +85,27 @@ module Bundle
       true
     end
 
-    def brew_list_info
-      @brew_list_info ||= begin
-        name_bottles = JSON.parse(`brew info --json=v2 --installed --quiet`)["formulae"]
-                           .each_with_object({}) do |f, hash|
-          bottle = f["bottle"]["stable"]
-          bottle&.delete("rebuild")
-          bottle&.delete("root_url")
-          bottle ||= false
-          hash[f["name"]] = bottle
-        end
-        `brew list --versions`.lines
-                              .each_with_object({}) do |line, name_versions_bottles|
-          name, version, = line.split
-          name_versions_bottles[name] = {
-            version: version,
-            bottle:  name_bottles[name],
-          }
-        end
+    def brew_list(name)
+      @brew_list ||= begin
+        # reset and reget all versions from scratch
+        Bundle::BrewDumper.reset!
+        {}
       end
+
+      return @brew_list[name] if @brew_list.key?(name)
+
+      @brew_list[name] ||= Bundle::BrewDumper.formulae_by_name(name)
+                                             .slice(:version, :bottle)
     end
 
     def cask_list
       return {} unless OS.mac?
 
-      @cask_list ||= Bundle::CaskDumper.cask_versions
+      @cask_list ||= begin
+        # reset and reget all versions from scratch
+        Bundle::CaskDumper.reset!
+        Bundle::CaskDumper.cask_versions
+      end
     end
 
     def mas_list

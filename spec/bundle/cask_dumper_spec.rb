@@ -16,7 +16,7 @@ describe Bundle::CaskDumper do
     end
 
     it "dumps as empty string" do
-      expect(dumper.dump([])).to eql(["", ""])
+      expect(dumper.dump).to eql("")
     end
   end
 
@@ -32,7 +32,7 @@ describe Bundle::CaskDumper do
     end
 
     it "dumps as empty string" do
-      expect(dumper.dump([])).to eql(["", ""])
+      expect(dumper.dump).to eql("")
     end
   end
 
@@ -55,7 +55,6 @@ describe Bundle::CaskDumper do
 
       allow(Bundle).to receive(:cask_installed?).and_return(true)
       allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar, baz])
-      allow(described_class).to receive(:`).and_return("foo\nbar\nbaz")
     end
 
     it "returns list %w[foo bar baz]" do
@@ -63,10 +62,13 @@ describe Bundle::CaskDumper do
     end
 
     it "dumps as `cask 'baz'` and `cask 'foo' cask 'bar'` plus descriptions and config values" do
-      expect(dumper.dump(%w[baz], describe: true)).to eql [
-        "# Software\ncask \"baz\"",
-        "cask \"foo\"\ncask \"bar\", args: { fontdir: \"/Library/Fonts\", language: \"zh-TW\" }",
-      ]
+      expected = <<~EOS
+        cask "foo"
+        cask "bar", args: { fontdir: "/Library/Fonts", language: "zh-TW" }
+        # Software
+        cask "baz"
+      EOS
+      expect(dumper.dump(describe: true)).to eql(expected.chomp)
     end
   end
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "cask"
 
 describe Bundle::Dumper do
   subject(:dumper) { described_class }
@@ -30,7 +31,6 @@ describe Bundle::Dumper do
                                  config:    nil)
 
     allow(Cask::Caskroom).to receive(:casks).and_return([chrome, java, iterm2beta])
-    allow(Bundle::CaskDumper).to receive(:`).and_return("google-chrome\njava\niterm2-beta")
   end
 
   it "generates output" do
