@@ -149,22 +149,7 @@ module Bundle
 
       runtime_dependencies ||= formula.runtime_dependencies.map(&:name)
 
-      # TODO: use Formula#bottle_hash when in a stable release
-      if formula.bottle_defined?
-        bottle_spec = formula.stable.bottle_specification
-        bottle_hash = {
-          cellar: (cellar = bottle_spec.cellar).is_a?(Symbol) ? cellar.inspect : cellar,
-          files:  {},
-        }
-        bottle_spec.collector.each_key do |os|
-          bottle_url = "#{bottle_spec.root_url}/#{Bottle::Filename.create(formula, os, bottle_spec.rebuild).bintray}"
-          checksum = bottle_spec.collector[os][:checksum]
-          bottle_hash[:files][os] = {
-            url:    bottle_url,
-            sha256: checksum.hexdigest,
-          }
-        end
-      end
+      bottle_hash = formula.bottle_hash if formula.bottle_defined?
 
       {
         name:                     formula.name,
