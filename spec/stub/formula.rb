@@ -75,10 +75,6 @@ class Formula
     []
   end
 
-  def declared_runtime_dependencies
-    []
-  end
-
   def deps
     []
   end
