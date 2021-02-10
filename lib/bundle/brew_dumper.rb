@@ -141,11 +141,14 @@ module Bundle
         args << "HEAD" if version.start_with?("HEAD")
         installed_as_dependency = tab.installed_as_dependency
         installed_on_request = tab.installed_on_request
-        runtime_dependencies = tab.runtime_dependencies.map { |d| d["full_name"] }.compact
+        runtime_dependencies = if (runtime_deps = tab.runtime_dependencies)
+          runtime_deps.map { |d| d["full_name"] }
+                      .compact
+        end
         poured_from_bottle = tab.poured_from_bottle
-      else
-        runtime_dependencies = formula.runtime_dependencies.map(&:name)
       end
+
+      runtime_dependencies ||= formula.runtime_dependencies.map(&:name)
 
       # TODO: use Formula#bottle_hash when in a stable release
       if formula.bottle_defined?
