@@ -3,7 +3,11 @@
 require "pathname"
 
 def which(command)
-  Pathname.new("/usr/local/bin/#{command}")
+  Pathname("/usr/local/bin/#{command}")
 end
 
 def opoo(*); end
+
+def odie(*)
+  exit 1
+end

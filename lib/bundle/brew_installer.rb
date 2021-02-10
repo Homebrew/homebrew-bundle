@@ -135,7 +135,7 @@ module Bundle
     end
 
     def self.installed_formulae
-      @installed_formulae ||= Bundle::BrewDumper.formula_names
+      @installed_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] }
     end
 
     def self.upgradable_formulae
@@ -143,21 +143,23 @@ module Bundle
     end
 
     def self.outdated_formulae
-      @outdated_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:outdated?] }.compact
+      @outdated_formulae ||= formulae.map { |f| f[:name] if f[:outdated?] }.compact
     end
 
     def self.pinned_formulae
-      @pinned_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:pinned?] }.compact
+      @pinned_formulae ||= formulae.map { |f| f[:name] if f[:pinned?] }.compact
     end
 
     def self.linked_and_keg_only_formulae
-      @linked_and_keg_only_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] if f[:link?] == true }.compact
+      @linked_and_keg_only_formulae ||= formulae.map { |f| f[:name] if f[:link?] == true }.compact
     end
 
     def self.unlinked_and_not_keg_only_formulae
-      @unlinked_and_not_keg_only_formulae ||= Bundle::BrewDumper.formulae.map do |f|
-        f[:name] if f[:link?] == false
-      end.compact
+      @unlinked_and_not_keg_only_formulae ||= formulae.map { |f| f[:name] if f[:link?] == false }.compact
+    end
+
+    def self.formulae
+      Bundle::BrewDumper.formulae
     end
 
     private
@@ -183,8 +185,8 @@ module Bundle
         conflicts_with = Set.new
         conflicts_with += @conflicts_with_arg
 
-        if (formula_info = Bundle::BrewDumper.formula_info(@full_name)) &&
-           (formula_conflicts_with = formula_info[:conflicts_with])
+        if (formula = Bundle::BrewDumper.formulae_by_full_name(@full_name)) &&
+           (formula_conflicts_with = formula[:conflicts_with])
           conflicts_with += formula_conflicts_with
         end
 

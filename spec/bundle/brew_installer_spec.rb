@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "formula"
 
 describe Bundle::BrewInstaller do
   let(:formula) { "mysql" }
@@ -83,7 +84,7 @@ describe Bundle::BrewInstaller do
 
   context "conflicts_with option is provided" do
     before do
-      allow(Bundle::BrewDumper).to receive(:formula_info).and_return(
+      allow(Bundle::BrewDumper).to receive(:formulae_by_full_name).and_return(
         name:           "mysql",
         conflicts_with: ["mysql55"],
       )

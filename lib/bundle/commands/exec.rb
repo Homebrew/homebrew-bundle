@@ -2,8 +2,6 @@
 
 require "exceptions"
 require "extend/ENV"
-require "formula"
-require "formulary"
 require "utils"
 
 module Bundle
@@ -25,6 +23,10 @@ module Bundle
         command_path = command_path.dirname.to_s
 
         brewfile = Bundle::Dsl.new(Brewfile.read(global: global, file: file))
+
+        require "formula"
+        require "formulary"
+
         ENV.deps = brewfile.entries.map do |entry|
           next unless entry.type == :brew
 

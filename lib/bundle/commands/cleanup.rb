@@ -29,7 +29,7 @@ module Bundle
           end
 
           if formulae.any?
-            Kernel.system "brew", "uninstall", "--force", *formulae
+            Kernel.system "brew", "uninstall", "--formula", "--force", *formulae
             puts "Uninstalled #{formulae.size} formula#{(formulae.size == 1) ? "" : "e"}"
           end
 

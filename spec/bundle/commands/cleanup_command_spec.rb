@@ -125,7 +125,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls formulae" do
-      expect(Kernel).to receive(:system).with("brew", "uninstall", "--force", "a", "b")
+      expect(Kernel).to receive(:system).with("brew", "uninstall", "--formula", "--force", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run(force: true) }.to output(/Uninstalled 2 formulae/).to_stdout
     end
