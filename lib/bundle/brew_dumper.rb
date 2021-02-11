@@ -157,6 +157,7 @@ module Bundle
         oldname:                  formula.oldname,
         full_name:                formula.full_name,
         aliases:                  formula.aliases,
+        any_version_installed?:   formula.any_version_installed?,
         args:                     Array(args).uniq,
         version:                  version,
         installed_as_dependency?: (installed_as_dependency || false),
@@ -197,10 +198,10 @@ module Bundle
       # Step 2: Sort by formula dependency topology.
       topo = Topo.new
       formulae.each do |f|
-        deps = f[:dependencies]
-        topo[f[:full_name]] = deps.map do |dep|
+        topo[f[:full_name]] = f[:dependencies].map do |dep|
           ff = formulae_by_name(dep)
           next if ff.blank?
+          next unless ff[:any_version_installed?]
 
           ff[:full_name]
         end.compact
