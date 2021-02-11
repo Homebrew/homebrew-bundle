@@ -188,10 +188,10 @@ describe Bundle::BrewDumper do
                         runtime_dependencies:    [],
                         used_options:            [])
       expect(dumper.formulae_by_full_name).to eql({
-                                                    "bar"                 => bar_hash,
-                                                    "qux/quuz/foo"        => foo_hash,
-                                                    "bazzles/bizzles/baz" => baz_hash,
-                                                  })
+        "bar"                 => bar_hash,
+        "qux/quuz/foo"        => foo_hash,
+        "bazzles/bizzles/baz" => baz_hash,
+      })
     end
   end
 
@@ -224,9 +224,9 @@ describe Bundle::BrewDumper do
     it "returns a hash with installed formulae aliases" do
       expect(Formula).to receive(:installed).and_return([foo, bar, baz])
       expect(dumper.formula_aliases).to eql({
-                                              "qux/quuz/foobar" => "qux/quuz/foo",
-                                              "foobar"          => "qux/quuz/foo",
-                                            })
+        "qux/quuz/foobar" => "qux/quuz/foo",
+        "foobar"          => "qux/quuz/foo",
+      })
     end
   end
 
@@ -238,9 +238,9 @@ describe Bundle::BrewDumper do
     it "returns a hash with installed formulae old names" do
       expect(Formula).to receive(:installed).and_return([foo, bar, baz])
       expect(dumper.formula_oldnames).to eql({
-                                               "qux/quuz/oldfoo" => "qux/quuz/foo",
-                                               "oldfoo"          => "qux/quuz/foo",
-                                             })
+        "qux/quuz/oldfoo" => "qux/quuz/foo",
+        "oldfoo"          => "qux/quuz/foo",
+      })
     end
   end
 end
