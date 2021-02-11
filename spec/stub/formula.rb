@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "pathname"
-require "software_spec"
 
 class Formula
   def initialize(name)
@@ -49,8 +48,8 @@ class Formula
     true
   end
 
-  def stable
-    OpenStruct.new(bottle_specification: BottleSpecification.new)
+  def bottle_hash
+    {}
   end
 
   attr_reader :name

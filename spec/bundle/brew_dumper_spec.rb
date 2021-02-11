@@ -48,15 +48,6 @@ describe Bundle::BrewDumper do
   end
   let(:bar) do
     linked_keg = Pathname("/usr/local").join("var").join("homebrew").join("linked").join("bar")
-    bottle_spec = instance_double("BottleSpecification",
-                                  cellar:    :any,
-                                  collector: {
-                                    big_sur: {
-                                      checksum: OpenStruct.new(hexdigest: "abcdef"),
-                                    },
-                                  },
-                                  rebuild:   0,
-                                  root_url:  "https://brew.sh/")
     instance_double("Formula",
                     name:                 "bar",
                     desc:                 "barfoo",
@@ -73,7 +64,15 @@ describe Bundle::BrewDumper do
                     outdated?:            true,
                     bottle_defined?:      true,
                     linked_keg:           linked_keg,
-                    stable:               OpenStruct.new(bottle_specification: bottle_spec))
+                    bottle_hash:          {
+                      cellar: ":any",
+                      files:  {
+                        big_sur: {
+                          sha256: "abcdef",
+                          url:    "https://brew.sh//foo-1.0.big_sur.bottle.tar.gz",
+                        },
+                      },
+                    })
   end
   let(:bar_hash) do
     {
