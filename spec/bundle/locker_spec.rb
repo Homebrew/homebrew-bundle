@@ -72,12 +72,12 @@ describe Bundle::Locker do
         allow(brew_options).to receive(:deep_stringify_keys)
           .and_return("restart_service" => true)
         allow(Bundle::BrewDumper).to receive(:formulae_by_full_name).with("mysql").and_return({
-                                                                                                name:    "mysql",
-                                                                                                version: "8.0.18",
-                                                                                                bottle:  {
-                                                                                                  stable: {},
-                                                                                                },
-                                                                                              })
+          name:    "mysql",
+          version: "8.0.18",
+          bottle:  {
+            stable: {},
+          },
+        })
         allow(locker).to receive(:`).with("whalebrew list").and_return("COMMAND   IMAGE\nwget      whalebrew/wget")
         allow(locker).to receive(:`)
           .with("docker image inspect whalebrew/wget --format '{{ index .RepoDigests 0 }}'")
