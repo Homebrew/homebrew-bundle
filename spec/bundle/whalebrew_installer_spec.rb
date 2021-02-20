@@ -60,7 +60,7 @@ describe Bundle::WhalebrewInstaller do
       expect { do_install }.not_to raise_error
     end
 
-    context "requested image is already installed" do
+    context "when the requested image is already installed" do
       before do
         allow(described_class).to receive(:image_installed?).with("whalebrew/wget").and_return(true)
       end

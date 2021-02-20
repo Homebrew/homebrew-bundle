@@ -54,7 +54,7 @@ describe Bundle::WhalebrewDumper do
       allow(dumper).to receive(:images).and_return(["whalebrew/wget", "whalebrew/dig"])
     end
 
-    context "images are installed" do
+    context "when images are installed" do
       let(:expected_whalebrew_dump) do
         %Q(whalebrew "whalebrew/wget"\nwhalebrew "whalebrew/dig")
       end

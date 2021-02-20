@@ -25,7 +25,7 @@ describe Bundle::BrewServices do
   end
 
   context "when brew-services is installed" do
-    context "stops the service" do
+    context "when the service is stopped" do
       it "when the service is started" do
         allow(described_class).to receive(:started_services).and_return(%w[nginx])
         expect(Bundle).to receive(:system).with("brew", "services", "stop", "nginx", verbose: false).and_return(true)

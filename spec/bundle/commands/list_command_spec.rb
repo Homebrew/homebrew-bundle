@@ -11,7 +11,7 @@ describe Bundle::Commands::List do
     allow_any_instance_of(IO).to receive(:puts)
   end
 
-  context "outputs dependencies to stdout" do
+  describe "outputs dependencies to stdout" do
     before do
       allow_any_instance_of(Pathname).to receive(:read).and_return \
         "tap 'phinze/cask'\nbrew 'mysql', " \
@@ -23,7 +23,7 @@ describe Bundle::Commands::List do
       expect { list }.to output("mysql\n").to_stdout
     end
 
-    context "limiting when certain options are passed" do
+    describe "limiting when certain options are passed" do
       types_and_deps = {
         taps:      "phinze/cask",
         brews:     "mysql",

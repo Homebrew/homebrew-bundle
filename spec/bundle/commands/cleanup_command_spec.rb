@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Bundle::Commands::Cleanup do
-  context "read Brewfile and currently installation" do
+  describe "read Brewfile and current installation" do
     before do
       described_class.reset!
       allow_any_instance_of(Pathname).to receive(:read).and_return <<~EOS
@@ -71,7 +71,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "no formulae to uninstall and no taps to untap" do
+  context "when there are no formulae to uninstall and no taps to untap" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
@@ -86,7 +86,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there are casks to uninstall" do
+  context "when there are casks to uninstall" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
@@ -101,7 +101,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there are casks to zap" do
+  context "when there are casks to zap" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
@@ -116,7 +116,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there are formulae to uninstall" do
+  context "when there are formulae to uninstall" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
@@ -131,7 +131,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there are taps to untap" do
+  context "when there are taps to untap" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
@@ -146,7 +146,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there are casks and formulae to uninstall and taps to untap but without passing `--force`" do
+  context "when there are casks and formulae to uninstall and taps to untap but without passing `--force`" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
@@ -162,7 +162,7 @@ describe Bundle::Commands::Cleanup do
     end
   end
 
-  context "there is brew cleanup output" do
+  context "when there is brew cleanup output" do
     before do
       described_class.reset!
       allow(described_class).to receive(:casks_to_uninstall).and_return([])

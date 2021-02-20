@@ -19,7 +19,7 @@ describe Bundle::TapDumper do
     end
   end
 
-  context "there are tap `bitbucket/bar`, `homebrew/baz` and `homebrew/foo`" do
+  context "with `bitbucket/bar`, `homebrew/baz` and `homebrew/foo` taps" do
     before do
       described_class.reset!
       bar = instance_double("Tap", name: "bitbucket/bar", custom_remote?: true,

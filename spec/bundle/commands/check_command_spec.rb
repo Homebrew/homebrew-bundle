@@ -26,7 +26,7 @@ describe Bundle::Commands::Check do
     end
   end
 
-  context "no dependencies are specified" do
+  context "when no dependencies are specified" do
     it "does not raise an error" do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow_any_instance_of(Bundle::Dsl).to receive(:entries).and_return([])
@@ -110,7 +110,7 @@ describe Bundle::Commands::Check do
       expect { do_check }.not_to raise_error
     end
 
-    context "restart_service is true" do
+    context "when restart_service is true" do
       it "raises an error" do
         allow_any_instance_of(Pathname).to \
           receive(:read).and_return("brew 'abc', restart_service: true\nbrew 'def', restart_service: true")
@@ -120,7 +120,7 @@ describe Bundle::Commands::Check do
       end
     end
 
-    context "start_service is true" do
+    context "when start_service is true" do
       it "raises an error" do
         allow_any_instance_of(Pathname).to \
           receive(:read).and_return("brew 'abc', start_service: true\nbrew 'def', start_service: true")
