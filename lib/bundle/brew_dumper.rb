@@ -198,7 +198,7 @@ module Bundle
       # Step 2: Sort by formula dependency topology.
       topo = Topo.new
       formulae.each do |f|
-        topo[f[:full_name]] = f[:dependencies].map do |dep|
+        topo[f[:name]] = topo[f[:full_name]] = f[:dependencies].map do |dep|
           ff = formulae_by_name(dep)
           next if ff.blank?
           next unless ff[:any_version_installed?]
@@ -206,7 +206,9 @@ module Bundle
           ff[:full_name]
         end.compact
       end
-      @formulae = topo.tsort.map { |name| @formulae_by_full_name[name] }
+      @formulae = topo.tsort
+                      .map { |name| @formulae_by_full_name[name] || @formulae_by_name[name] }
+                      .uniq { |f| f[:full_name] }
     rescue TSort::Cyclic => e
       e.message =~ /\["(.*)", "(.*)"\]/
       cycle_first = Regexp.last_match(1)
