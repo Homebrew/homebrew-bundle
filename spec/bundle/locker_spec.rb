@@ -54,7 +54,7 @@ describe Bundle::Locker do
   end
 
   describe ".lock" do
-    context "writes Brewfile.lock.json" do
+    describe "writes Brewfile.lock.json" do
       let(:lockfile) { Pathname("Brewfile.json.lock") }
       let(:brew_options) { { restart_service: true } }
       let(:entries) do
@@ -85,7 +85,7 @@ describe Bundle::Locker do
         allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
       end
 
-      context "on macOS" do
+      context "when on macOS" do
         before do
           allow(OS).to receive(:mac?).and_return(true)
 
@@ -106,7 +106,7 @@ describe Bundle::Locker do
         end
       end
 
-      context "on Linux" do
+      context "when on Linux" do
         before do
           allow(OS).to receive(:mac?).and_return(false)
           allow(OS).to receive(:linux?).and_return(true)

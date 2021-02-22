@@ -12,8 +12,8 @@ describe Bundle::BrewInstaller do
     installer.run
   end
 
-  context "restart_service option is true" do
-    context "formula is installed successfully" do
+  context "when the restart_service option is true" do
+    context "when the formula is installed successfully" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
       end
@@ -24,7 +24,7 @@ describe Bundle::BrewInstaller do
       end
     end
 
-    context "formula isn't installed" do
+    context "when a formula isn't installed" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:failed)
       end
@@ -36,7 +36,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "link option is true" do
+  context "when the link option is true" do
     before do
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
@@ -47,7 +47,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "link option is false" do
+  context "when the link option is false" do
     before do
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
@@ -58,7 +58,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "link option is nil and formula is unlinked and not keg-only" do
+  context "when the link option is nil and formula is unlinked and not keg-only" do
     before do
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
@@ -70,7 +70,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "link option is nil and formula is linked and keg-only" do
+  context "when the link option is nil and formula is linked and keg-only" do
     before do
       allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(:success)
     end
@@ -82,7 +82,7 @@ describe Bundle::BrewInstaller do
     end
   end
 
-  context "conflicts_with option is provided" do
+  context "when the conflicts_with option is provided" do
     before do
       allow(Bundle::BrewDumper).to receive(:formulae_by_full_name).and_return(
         name:           "mysql",
@@ -258,7 +258,7 @@ describe Bundle::BrewInstaller do
       expect(described_class.new(formula).start_service?).to be(false)
     end
 
-    context "start_service option is true" do
+    context "when the start_service option is true" do
       it "is true" do
         expect(described_class.new(formula, start_service: true).start_service?).to be(true)
       end
@@ -270,13 +270,13 @@ describe Bundle::BrewInstaller do
       expect(described_class.new(formula).restart_service?).to be(false)
     end
 
-    context "restart_service option is true" do
+    context "when the restart_service option is true" do
       it "is true" do
         expect(described_class.new(formula, restart_service: true).restart_service?).to be(true)
       end
     end
 
-    context "restart_service option is changed" do
+    context "when the restart_service option is changed" do
       it "is true" do
         expect(described_class.new(formula, restart_service: :changed).restart_service?).to be(true)
       end
@@ -288,7 +288,7 @@ describe Bundle::BrewInstaller do
       expect(described_class.new(formula).restart_service_needed?).to be(false)
     end
 
-    context "if a service is unchanged" do
+    context "when a service is unchanged" do
       before do
         allow_any_instance_of(described_class).to receive(:changed?).and_return(false)
       end
@@ -302,7 +302,7 @@ describe Bundle::BrewInstaller do
       end
     end
 
-    context "if a service is changed" do
+    context "when a service is changed" do
       before do
         allow_any_instance_of(described_class).to receive(:changed?).and_return(true)
       end

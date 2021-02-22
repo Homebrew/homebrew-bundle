@@ -33,7 +33,7 @@ describe Bundle::Brewfile do
         expect(path).to eq(expected_pathname)
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is set" do
+      context "with a configured HOMEBREW_BUNDLE_FILE" do
         let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
         it "returns the value specified by `file` path" do
@@ -41,7 +41,7 @@ describe Bundle::Brewfile do
         end
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+      context "with an empty HOMEBREW_BUNDLE_FILE" do
         let(:env_bundle_file_value) { "" }
 
         it "returns the value specified by `file` path" do
@@ -58,7 +58,7 @@ describe Bundle::Brewfile do
         expect(path).to eq(expected_pathname)
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is set" do
+      context "with a configured HOMEBREW_BUNDLE_FILE" do
         let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
         it "returns the value specified by `file` path" do
@@ -66,7 +66,7 @@ describe Bundle::Brewfile do
         end
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+      context "with an empty HOMEBREW_BUNDLE_FILE" do
         let(:env_bundle_file_value) { "" }
 
         it "returns the value specified by `file` path" do
@@ -83,7 +83,7 @@ describe Bundle::Brewfile do
         expect(path).to eq(expected_pathname)
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is set" do
+      context "with a configured HOMEBREW_BUNDLE_FILE" do
         let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
         it "returns the value specified by `file` path" do
@@ -91,7 +91,7 @@ describe Bundle::Brewfile do
         end
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+      context "with an empty HOMEBREW_BUNDLE_FILE" do
         let(:env_bundle_file_value) { "" }
 
         it "returns the value specified by `file` path" do
@@ -107,7 +107,7 @@ describe Bundle::Brewfile do
           expect(path).to eq(expected_pathname)
         end
 
-        context "and HOMEBREW_BUNDLE_FILE is set" do
+        context "with a configured HOMEBREW_BUNDLE_FILE" do
           let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
           it "returns the value specified by `file` path" do
@@ -115,7 +115,7 @@ describe Bundle::Brewfile do
           end
         end
 
-        context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+        context "with an empty HOMEBREW_BUNDLE_FILE" do
           let(:env_bundle_file_value) { "" }
 
           it "returns the value specified by `file` path" do
@@ -133,7 +133,7 @@ describe Bundle::Brewfile do
         expect(path).to eq(expected_pathname)
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is set" do
+      context "when HOMEBREW_BUNDLE_FILE is set" do
         let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
         it "returns the value specified by `file` path" do
@@ -141,7 +141,7 @@ describe Bundle::Brewfile do
         end
       end
 
-      context "and HOMEBREW_BUNDLE_FILE is `` (empty)" do
+      context "when HOMEBREW_BUNDLE_FILE is `` (empty)" do
         let(:env_bundle_file_value) { "" }
 
         it "returns the value specified by `file` path" do
@@ -150,14 +150,14 @@ describe Bundle::Brewfile do
       end
     end
 
-    context "and HOMEBREW_BUNDLE_FILE has a value" do
+    context "when HOMEBREW_BUNDLE_FILE has a value" do
       let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
       it "returns the expected path" do
         expect(path).to eq(Pathname.new(env_bundle_file_value))
       end
 
-      context "that is `` (empty)" do
+      describe "that is `` (empty)" do
         let(:env_bundle_file_value) { "" }
 
         it "defaults to `${PWD}/Brewfile`" do
@@ -165,7 +165,7 @@ describe Bundle::Brewfile do
         end
       end
 
-      context "that is `nil`" do
+      describe "that is `nil`" do
         let(:env_bundle_file_value) { nil }
 
         it "defaults to `${PWD}/Brewfile`" do

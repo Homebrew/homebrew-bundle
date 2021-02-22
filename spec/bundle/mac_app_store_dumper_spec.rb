@@ -36,7 +36,7 @@ describe Bundle::MacAppStoreDumper do
     end
   end
 
-  context "apps `foo`, `bar` and `baz` are installed" do
+  context "when apps `foo`, `bar` and `baz` are installed" do
     before do
       described_class.reset!
       allow(Bundle).to receive(:mas_installed?).and_return(true)
