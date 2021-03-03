@@ -17,10 +17,10 @@ module Bundle
         command = args.first
 
         # For commands which aren't either absolute or relative
-        unless command.include? "/"
+        if command.exclude? "/"
           # Save the command path, since this will be blown away by superenv
           command_path = which(command)
-          raise "command was not found in your PATH: #{command}" if command_path.nil?
+          raise "command was not found in your PATH: #{command}" if command_path.blank?
 
           command_path = command_path.dirname.to_s
         end
@@ -47,7 +47,7 @@ module Bundle
         ENV.prepend_path "PATH", pkgconfig.opt_bin.to_s if pkgconfig.any_version_installed?
 
         # Ensure the Ruby path we saved goes before anything else, if the command was in the PATH
-        ENV.prepend_path "PATH", command_path unless command_path.nil?
+        ENV.prepend_path "PATH", command_path if command_path.present?
 
         exec(*args)
       end
