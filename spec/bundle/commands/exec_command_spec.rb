@@ -52,5 +52,34 @@ describe Bundle::Commands::Exec do
         .and_return("brew 'openssl'")
       described_class.run("bundle", "install")
     end
+
+    describe "when running a command which exists but is not on the PATH" do
+      it "does not raise if the command is a relative path with current directory indicator" do
+        allow(described_class).to receive(:exec).with("./configure").and_return(nil)
+        expect(described_class).not_to receive(:which)
+        allow_any_instance_of(Pathname).to receive(:read)
+          .and_return("brew 'zlib'")
+
+        expect { described_class.run("./configure") }.not_to raise_error
+      end
+
+      it "does not raise if the command is a relative path without current directory indicator" do
+        allow(described_class).to receive(:exec).with("bin/install").and_return(nil)
+        expect(described_class).not_to receive(:which)
+        allow_any_instance_of(Pathname).to receive(:read)
+          .and_return("brew 'zlib'")
+
+        expect { described_class.run("bin/install") }.not_to raise_error
+      end
+
+      it "does not raise if the command is an absolute path" do
+        allow(described_class).to receive(:exec).with("/Users/admin/Downloads/command").and_return(nil)
+        expect(described_class).not_to receive(:which)
+        allow_any_instance_of(Pathname).to receive(:read)
+          .and_return("brew 'zlib'")
+
+        expect { described_class.run("/Users/admin/Downloads/command") }.not_to raise_error
+      end
+    end
   end
 end

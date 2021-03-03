@@ -16,11 +16,14 @@ module Bundle
 
         command = args.first
 
-        # Save the command path, since this will be blown away by superenv
-        command_path = which(command)
-        raise "command was not found in your PATH: #{command}" if command_path.nil?
+        # For commands which aren't either absolute or relative
+        if command.exclude? "/"
+          # Save the command path, since this will be blown away by superenv
+          command_path = which(command)
+          raise "command was not found in your PATH: #{command}" if command_path.blank?
 
-        command_path = command_path.dirname.to_s
+          command_path = command_path.dirname.to_s
+        end
 
         brewfile = Bundle::Dsl.new(Brewfile.read(global: global, file: file))
 
@@ -43,8 +46,8 @@ module Bundle
         pkgconfig = Formulary.factory("pkg-config")
         ENV.prepend_path "PATH", pkgconfig.opt_bin.to_s if pkgconfig.any_version_installed?
 
-        # Ensure the Ruby path we saved goes before anything else
-        ENV.prepend_path "PATH", command_path
+        # Ensure the Ruby path we saved goes before anything else, if the command was in the PATH
+        ENV.prepend_path "PATH", command_path if command_path.present?
 
         exec(*args)
       end
