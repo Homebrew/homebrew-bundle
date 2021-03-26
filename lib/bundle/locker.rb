@@ -111,27 +111,23 @@ module Bundle
     def mas_list
       return {} unless OS.mac?
 
-      @mas_list ||= begin
-        `mas list`.lines
-                  .each_with_object({}) do |line, name_id_versions|
-          line = line.split
-          id = line.shift
-          version = line.pop.delete("()")
-          name = line.join(" ")
-          name_id_versions[name] = {
-            id:      id,
-            version: version,
-          }
-        end
+      @mas_list ||= `mas list`.lines
+                              .each_with_object({}) do |line, name_id_versions|
+        line = line.split
+        id = line.shift
+        version = line.pop.delete("()")
+        name = line.join(" ")
+        name_id_versions[name] = {
+          id:      id,
+          version: version,
+        }
       end
     end
 
     def whalebrew_list
-      @whalebrew_list ||= begin
-        Bundle::WhalebrewDumper.images.each_with_object({}) do |image, name_versions|
-          _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(":")
-          name_versions[image] = version.chomp
-        end
+      @whalebrew_list ||= Bundle::WhalebrewDumper.images.each_with_object({}) do |image, name_versions|
+        _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(":")
+        name_versions[image] = version.chomp
       end
     end
 

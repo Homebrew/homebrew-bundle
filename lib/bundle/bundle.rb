@@ -22,15 +22,11 @@ module Bundle
     end
 
     def mas_installed?
-      @mas_installed ||= begin
-        !which("mas").nil?
-      end
+      @mas_installed ||= !which("mas").nil?
     end
 
     def whalebrew_installed?
-      @whalebrew_installed ||= begin
-        !which("whalebrew").nil?
-      end
+      @whalebrew_installed ||= !which("whalebrew").nil?
     end
 
     def mas_signedin?
@@ -38,16 +34,12 @@ module Bundle
     end
 
     def cask_installed?
-      @cask_installed ||= begin
-        File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
-          File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask")
-      end
+      @cask_installed ||= File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
+                          File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask")
     end
 
     def services_installed?
-      @services_installed ||= begin
-        !which("services.rb").nil?
-      end
+      @services_installed ||= !which("services.rb").nil?
     end
   end
 end
