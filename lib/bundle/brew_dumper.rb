@@ -210,7 +210,7 @@ module Bundle
                       .map { |name| @formulae_by_full_name[name] || @formulae_by_name[name] }
                       .uniq { |f| f[:full_name] }
     rescue TSort::Cyclic => e
-      e.message =~ /\["(.*)", "(.*)"\]/
+      e.message =~ /\["([^"]*)".*"([^"]*)"\]/
       cycle_first = Regexp.last_match(1)
       cycle_last = Regexp.last_match(2)
       odie e.message if !cycle_first || !cycle_last
