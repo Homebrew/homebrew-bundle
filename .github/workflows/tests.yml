@@ -43,5 +43,5 @@ jobs:
 
     - name: Run RSpec tests
       run: bundle exec rspec
-      env:
-        CODECOV_TOKEN: d8abdd06-9193-47d3-9da9-b4b25064e49b
+      
+    - uses: codecov/codecov-action@967e2b38a85a62bd61be5529ada27ebc109948c2
