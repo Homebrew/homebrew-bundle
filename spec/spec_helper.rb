@@ -9,13 +9,34 @@ def linux?
 end
 
 require "simplecov"
+require "simplecov-cobertura"
+
 SimpleCov.start do
   add_filter "/spec/stub/"
   add_filter "/vendor/"
+  
+  formatters = [
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::CoberturaFormatter,
+  ]
+  formatter SimpleCov::Formatter::MultiFormatter.new(formatters)
+  
   if macos?
     minimum_coverage 100
   else
     minimum_coverage 97
+  end
+
+  command_name "Job #{ENV["TEST_ENV_NUMBER"]}" if ENV["TEST_ENV_NUMBER"]
+end
+
+
+
+# may be unnecessary for homebrew-bundle, is present in brew spec_helper
+if macos? && ENV["TEST_ENV_NUMBER"]
+  SimpleCov.at_exit do
+    result = SimpleCov.result
+    result.format! if ParallelTests.number_of_running_processes <= 1
   end
 end
 
@@ -36,16 +57,6 @@ Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").sort.each do |file|
 
   require file
 end
-
-formatters = [SimpleCov::Formatter::HTMLFormatter]
-
-if macos? && ENV["CODECOV_TOKEN"]
-  require "codecov"
-
-  formatters << SimpleCov::Formatter::Codecov
-end
-
-SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)
 
 require "bundler"
 require "rspec/support/object_formatter"
