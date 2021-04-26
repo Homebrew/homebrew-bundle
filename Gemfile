@@ -6,4 +6,5 @@ group :test do
   gem "activesupport"
   gem "rspec"
   gem "simplecov", require: false
+  gem "simplecov-cobertura", require: false
 end
