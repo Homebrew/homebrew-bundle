@@ -30,6 +30,8 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
+    simplecov-cobertura (1.4.2)
+      simplecov (~> 0.8)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.2)
     tzinfo (2.0.4)
@@ -43,6 +45,7 @@ DEPENDENCIES
   activesupport
   rspec
   simplecov
+  simplecov-cobertura
 
 BUNDLED WITH
    1.17.3
