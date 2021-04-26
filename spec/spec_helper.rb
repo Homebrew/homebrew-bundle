@@ -14,13 +14,13 @@ require "simplecov-cobertura"
 SimpleCov.start do
   add_filter "/spec/stub/"
   add_filter "/vendor/"
-  
+
   formatters = [
     SimpleCov::Formatter::HTMLFormatter,
     SimpleCov::Formatter::CoberturaFormatter,
   ]
   formatter SimpleCov::Formatter::MultiFormatter.new(formatters)
-  
+
   if macos?
     minimum_coverage 100
   else
@@ -29,8 +29,6 @@ SimpleCov.start do
 
   command_name "Job #{ENV["TEST_ENV_NUMBER"]}" if ENV["TEST_ENV_NUMBER"]
 end
-
-
 
 # may be unnecessary for homebrew-bundle, is present in brew spec_helper
 if macos? && ENV["TEST_ENV_NUMBER"]
