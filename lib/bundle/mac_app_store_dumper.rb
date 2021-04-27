@@ -13,7 +13,7 @@ module Bundle
     def apps
       @apps ||= if Bundle.mas_installed?
         `mas list 2>/dev/null`.split("\n").map do |app|
-          app_details = app.match(/\A(?<id>\d+)\s+(?<name>.*)\s+\((?<version>[\d.]*)\)\Z/)
+          app_details = app.match(/\A(?<id>\d+)\s+(?<name>.*?)\s+\((?<version>[\d.]*)\)\Z/)
 
           # Only add the application details should we have a valid match.
           [app_details[:id], app_details[:name]] if app_details

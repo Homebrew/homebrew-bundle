@@ -133,4 +133,32 @@ describe Bundle::MacAppStoreDumper do
       expect(dumper.dump).to eq(expected_mas_dumped_output.strip)
     end
   end
+
+  context "with the new format after mas-cli/mas#339" do
+    let(:new_mas_output) do
+      <<~HEREDOC
+        1440147259  AdGuard for Safari  (1.9.13)
+        497799835   Xcode               (12.5)
+        425424353   The Unarchiver      (4.3.1)
+      HEREDOC
+    end
+
+    let(:expected_app_details_array) do
+      [
+        ["1440147259", "AdGuard for Safari"],
+        ["497799835", "Xcode"],
+        ["425424353", "The Unarchiver"],
+      ]
+    end
+
+    before do
+      described_class.reset!
+      allow(Bundle).to receive(:mas_installed?).and_return(true)
+      allow(described_class).to receive(:`).and_return(new_mas_output)
+    end
+
+    it "parses the app names without trailing whitespace" do
+      expect(dumper.apps).to eql(expected_app_details_array)
+    end
+  end
 end
