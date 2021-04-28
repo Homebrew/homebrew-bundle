@@ -9,9 +9,6 @@ updates:
   - dependency-type: direct
   - dependency-type: indirect
   ignore:
-  - dependency-name: codecov
-    versions:
-    - 0.5.2
   - dependency-name: rspec-support
     versions:
     - 3.10.2
