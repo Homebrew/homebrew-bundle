@@ -72,7 +72,8 @@ describe Bundle::CaskInstaller do
       end
 
       it "upgrades" do
-        expect(Bundle).to receive(:system).with("brew", "upgrade", "--cask", "google-chrome", verbose: false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--cask", "google-chrome",
+                                                verbose: false)
                                           .and_return(true)
         expect(do_install).to be(:success)
       end
@@ -86,7 +87,7 @@ describe Bundle::CaskInstaller do
       end
 
       it "upgrades" do
-        expect(Bundle).to receive(:system).with("brew", "upgrade", "--cask", "opera", verbose: false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--cask", "opera", verbose: false)
                                           .and_return(true)
         expect(do_greedy_install).to be(:success)
       end
@@ -98,33 +99,37 @@ describe Bundle::CaskInstaller do
       end
 
       it "installs cask" do
-        expect(Bundle).to receive(:system).with("brew", "install", "--cask", "google-chrome", verbose: false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "google-chrome",
+                                                verbose: false)
                                           .and_return(true)
         expect(do_install).to be(:success)
       end
 
       it "installs cask with arguments" do
         expect(Bundle).to \
-          receive(:system).with("brew", "install", "--cask", "firefox", "--appdir=/Applications", verbose: false)
+          receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "firefox", "--appdir=/Applications",
+                                verbose: false)
                           .and_return(true)
         expect(described_class.install("firefox", args: { appdir: "/Applications" })).to eq(:success)
       end
 
       it "reports a failure" do
-        expect(Bundle).to receive(:system).with("brew", "install", "--cask", "google-chrome", verbose: false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "google-chrome",
+                                                verbose: false)
                                           .and_return(false)
         expect(do_install).to be(:failed)
       end
 
       context "with boolean arguments" do
         it "includes a flag if true" do
-          expect(Bundle).to receive(:system).with("brew", "install", "--cask", "iterm", "--force", verbose: false)
+          expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "iterm", "--force",
+                                                  verbose: false)
                                             .and_return(true)
           expect(described_class.install("iterm", args: { force: true })).to eq(:success)
         end
 
         it "does not include a flag if false" do
-          expect(Bundle).to receive(:system).with("brew", "install", "--cask", "iterm", verbose: false)
+          expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "iterm", verbose: false)
                                             .and_return(true)
           expect(described_class.install("iterm", args: { force: false })).to eq(:success)
         end

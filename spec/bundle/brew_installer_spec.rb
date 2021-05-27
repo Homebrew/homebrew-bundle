@@ -42,7 +42,8 @@ describe Bundle::BrewInstaller do
     end
 
     it "links formula" do
-      expect(Bundle).to receive(:system).with("brew", "link", "--force", "mysql", verbose: false).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "--force", "mysql",
+                                              verbose: false).and_return(true)
       described_class.install(formula, link: true)
     end
   end
@@ -53,7 +54,7 @@ describe Bundle::BrewInstaller do
     end
 
     it "unlinks formula" do
-      expect(Bundle).to receive(:system).with("brew", "unlink", "mysql", verbose: false).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql", verbose: false).and_return(true)
       described_class.install(formula, link: false)
     end
   end
@@ -65,7 +66,7 @@ describe Bundle::BrewInstaller do
 
     it "links formula" do
       allow_any_instance_of(described_class).to receive(:unlinked_and_not_keg_only?).and_return(true)
-      expect(Bundle).to receive(:system).with("brew", "link", "mysql", verbose: false).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "mysql", verbose: false).and_return(true)
       described_class.install(formula, link: nil)
     end
   end
@@ -77,7 +78,7 @@ describe Bundle::BrewInstaller do
 
     it "unlinks formula" do
       allow_any_instance_of(described_class).to receive(:linked_and_keg_only?).and_return(true)
-      expect(Bundle).to receive(:system).with("brew", "unlink", "mysql", verbose: false).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql", verbose: false).and_return(true)
       described_class.install(formula, link: nil)
     end
   end
@@ -93,8 +94,10 @@ describe Bundle::BrewInstaller do
     end
 
     def sane?(verbose:)
-      expect(Bundle).to receive(:system).with("brew", "unlink", "mysql55", verbose: verbose).and_return(true)
-      expect(Bundle).to receive(:system).with("brew", "unlink", "mysql56", verbose: verbose).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql55",
+                                              verbose: verbose).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql56",
+                                              verbose: verbose).and_return(true)
       expect(Bundle::BrewServices).to receive(:stop).with("mysql55", verbose: verbose).and_return(true)
       expect(Bundle::BrewServices).to receive(:stop).with("mysql56", verbose: verbose).and_return(true)
       expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose: verbose).and_return(true)
@@ -185,14 +188,14 @@ describe Bundle::BrewInstaller do
 
       it "install formula" do
         expect(Bundle).to receive(:system)
-          .with("brew", "install", "--formula", formula, "--with-option", verbose: false)
+          .with(HOMEBREW_BREW_FILE, "install", "--formula", formula, "--with-option", verbose: false)
           .and_return(true)
         expect(do_install).to be(:success)
       end
 
       it "reports a failure" do
         expect(Bundle).to receive(:system)
-          .with("brew", "install", "--formula", formula, "--with-option", verbose: false)
+          .with(HOMEBREW_BREW_FILE, "install", "--formula", formula, "--with-option", verbose: false)
           .and_return(false)
         expect(do_install).to be(:failed)
       end
@@ -211,13 +214,13 @@ describe Bundle::BrewInstaller do
         end
 
         it "upgrade formula" do
-          expect(Bundle).to receive(:system).with("brew", "upgrade", "--formula", formula, verbose: false)
+          expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--formula", formula, verbose: false)
                                             .and_return(true)
           expect(do_install).to be(:success)
         end
 
         it "reports a failure" do
-          expect(Bundle).to receive(:system).with("brew", "upgrade", "--formula", formula, verbose: false)
+          expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--formula", formula, verbose: false)
                                             .and_return(false)
           expect(do_install).to be(:failed)
         end
@@ -228,7 +231,8 @@ describe Bundle::BrewInstaller do
           end
 
           it "does not upgrade formula" do
-            expect(Bundle).not_to receive(:system).with("brew", "upgrade", "--formula", formula, verbose: false)
+            expect(Bundle).not_to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--formula", formula,
+                                                        verbose: false)
             expect(do_install).to be(:skipped)
           end
         end
