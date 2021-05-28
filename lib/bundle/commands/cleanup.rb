@@ -24,18 +24,18 @@ module Bundle
         if force
           if casks.any?
             args = zap ? ["--zap"] : []
-            Kernel.system "brew", "uninstall", "--cask", *args, "--force", *casks
+            Kernel.system HOMEBREW_BREW_FILE, "uninstall", "--cask", *args, "--force", *casks
             puts "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
           end
 
           if formulae.any?
-            Kernel.system "brew", "uninstall", "--formula", "--force", *formulae
+            Kernel.system HOMEBREW_BREW_FILE, "uninstall", "--formula", "--force", *formulae
             puts "Uninstalled #{formulae.size} formula#{(formulae.size == 1) ? "" : "e"}"
           end
 
-          Kernel.system "brew", "untap", *taps if taps.any?
+          Kernel.system HOMEBREW_BREW_FILE, "untap", *taps if taps.any?
 
-          cleanup = system_output_no_stderr("brew", "cleanup")
+          cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup")
           puts cleanup unless cleanup.empty?
         else
           if casks.any?
@@ -53,7 +53,7 @@ module Bundle
             puts Formatter.columns taps
           end
 
-          cleanup = system_output_no_stderr("brew", "cleanup", "--dry-run")
+          cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup", "--dry-run")
           unless cleanup.empty?
             puts "Would `brew cleanup`:"
             puts cleanup

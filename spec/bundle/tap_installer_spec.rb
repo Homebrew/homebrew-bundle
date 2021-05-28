@@ -34,13 +34,15 @@ describe Bundle::TapInstaller do
     end
 
     it "taps" do
-      expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask", verbose: false).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "tap", "homebrew/cask",
+                                              verbose: false).and_return(true)
       expect(do_install).to be(:success)
     end
 
     context "with clone target" do
       it "taps" do
-        expect(Bundle).to receive(:system).with("brew", "tap", "homebrew/cask", "clone_target_path", verbose: false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "tap", "homebrew/cask", "clone_target_path",
+                                                verbose: false)
                                           .and_return(true)
         expect(do_install(clone_target: "clone_target_path")).to be(:success)
       end

@@ -28,7 +28,7 @@ describe Bundle::MacAppStoreInstaller do
     end
 
     it "tries to install mas" do
-      expect(Bundle).to receive(:system).with("brew", "install", "mas", verbose: false).and_return(true)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "mas", verbose: false).and_return(true)
       expect { do_install }.to raise_error(RuntimeError)
     end
 

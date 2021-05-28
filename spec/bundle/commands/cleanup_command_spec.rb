@@ -95,7 +95,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls casks" do
-      expect(Kernel).to receive(:system).with("brew", "uninstall", "--cask", "--force", "a", "b")
+      expect(Kernel).to receive(:system).with(HOMEBREW_BREW_FILE, "uninstall", "--cask", "--force", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run(force: true) }.to output(/Uninstalled 2 casks/).to_stdout
     end
@@ -110,7 +110,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls casks" do
-      expect(Kernel).to receive(:system).with("brew", "uninstall", "--cask", "--zap", "--force", "a", "b")
+      expect(Kernel).to receive(:system).with(HOMEBREW_BREW_FILE, "uninstall", "--cask", "--zap", "--force", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run(force: true, zap: true) }.to output(/Uninstalled 2 casks/).to_stdout
     end
@@ -125,7 +125,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "uninstalls formulae" do
-      expect(Kernel).to receive(:system).with("brew", "uninstall", "--formula", "--force", "a", "b")
+      expect(Kernel).to receive(:system).with(HOMEBREW_BREW_FILE, "uninstall", "--formula", "--force", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect { described_class.run(force: true) }.to output(/Uninstalled 2 formulae/).to_stdout
     end
@@ -140,7 +140,7 @@ describe Bundle::Commands::Cleanup do
     end
 
     it "untaps taps" do
-      expect(Kernel).to receive(:system).with("brew", "untap", "a", "b")
+      expect(Kernel).to receive(:system).with(HOMEBREW_BREW_FILE, "untap", "a", "b")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       described_class.run(force: true)
     end

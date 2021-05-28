@@ -12,9 +12,9 @@ module Bundle
 
       puts "Installing #{name} tap. It is not currently installed." if verbose
       success = if options[:clone_target]
-        Bundle.system "brew", "tap", name, options[:clone_target], verbose: verbose
+        Bundle.system HOMEBREW_BREW_FILE, "tap", name, options[:clone_target], verbose: verbose
       else
-        Bundle.system "brew", "tap", name, verbose: verbose
+        Bundle.system HOMEBREW_BREW_FILE, "tap", name, verbose: verbose
       end
 
       return :failed unless success

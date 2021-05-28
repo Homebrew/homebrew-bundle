@@ -75,20 +75,20 @@ module Bundle
       when true
         unless linked_and_keg_only?
           puts "Force-linking #{@name} formula." if verbose
-          Bundle.system("brew", "link", "--force", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "link", "--force", @name, verbose: verbose)
         end
       when false
         unless unlinked_and_not_keg_only?
           puts "Unlinking #{@name} formula." if verbose
-          Bundle.system("brew", "unlink", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
         end
       when nil
         if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if verbose
-          Bundle.system("brew", "link", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "link", @name, verbose: verbose)
         elsif linked_and_keg_only?
           puts "Unlinking #{@name} formula." if verbose
-          Bundle.system("brew", "unlink", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
         end
       end
     end
@@ -204,7 +204,7 @@ module Bundle
             It is currently installed and conflicts with #{@name}.
           EOS
         end
-        return false unless Bundle.system("brew", "unlink", conflict, verbose: verbose)
+        return false unless Bundle.system(HOMEBREW_BREW_FILE, "unlink", conflict, verbose: verbose)
 
         if @restart_service
           puts "Stopping #{conflict} service (if it is running)." if verbose
@@ -217,7 +217,7 @@ module Bundle
 
     def install!(verbose:)
       puts "Installing #{@name} formula. It is not currently installed." if verbose
-      unless Bundle.system("brew", "install", "--formula", @full_name, *@args, verbose: verbose)
+      unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *@args, verbose: verbose)
         @changed = nil
         return :failed
       end
@@ -235,7 +235,7 @@ module Bundle
       end
 
       puts "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
-      unless Bundle.system("brew", "upgrade", "--formula", @name, verbose: verbose)
+      unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, verbose: verbose)
         @changed = nil
         return :failed
       end

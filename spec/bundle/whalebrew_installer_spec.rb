@@ -43,7 +43,7 @@ describe Bundle::WhalebrewInstaller do
     end
 
     it "successfully installs whalebrew" do
-      expect(Bundle).to receive(:system).with("brew", "install", "whalebrew", verbose: false)
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "whalebrew", verbose: false)
                                         .and_return(true)
       expect { do_install }.to raise_error(RuntimeError)
     end
