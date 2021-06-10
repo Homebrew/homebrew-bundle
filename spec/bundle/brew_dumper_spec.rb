@@ -4,6 +4,7 @@ require "spec_helper"
 require "tsort"
 require "formula"
 require "tab"
+require "utils/bottles"
 
 describe Bundle::BrewDumper do
   subject(:dumper) { described_class }
@@ -32,6 +33,7 @@ describe Bundle::BrewDumper do
       any_version_installed?:   true,
       args:                     [],
       bottle:                   false,
+      bottled:                  false,
       build_dependencies:       [],
       conflicts_with:           [],
       dependencies:             [],
@@ -91,6 +93,7 @@ describe Bundle::BrewDumper do
           },
         },
       },
+      bottled:                  true,
       build_dependencies:       [],
       conflicts_with:           [],
       dependencies:             [],
@@ -131,6 +134,7 @@ describe Bundle::BrewDumper do
       any_version_installed?:   true,
       args:                     [],
       bottle:                   false,
+      bottled:                  false,
       build_dependencies:       ["bar"],
       conflicts_with:           [],
       dependencies:             ["bar"],

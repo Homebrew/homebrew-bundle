@@ -49,6 +49,7 @@ require "bundle"
 require "active_support/core_ext/object/blank"
 require "active_support/core_ext/string/exclude"
 require "active_support/core_ext/enumerable"
+require "active_support/core_ext/hash/keys"
 
 Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").sort.each do |file|
   next if file.include?("/extend/os/")

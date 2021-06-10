@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
+require "hardware"
+
 module Bundle
   module Skipper
     class << self
       def skip?(entry, silent: false)
+        if Hardware::CPU.arm? && entry.type == :brew && entry.name.exclude?("/") &&
+           !BrewDumper.formulae_by_full_name(entry.name)[:bottled]
+          puts Formatter.warning "Skipping #{entry.name} (no bottle for Apple Silicon)" unless silent
+          return true
+        end
+
         entry_type_skips = Array(skipped_entries[entry.type])
         return false if entry_type_skips.empty?
 
@@ -12,9 +20,8 @@ module Bundle
         # occasion).
         entry_ids = [entry.name, entry.options[:id]&.to_s].compact
         return false if (entry_type_skips & entry_ids).empty?
-        return true if silent
 
-        puts Formatter.warning "Skipping #{entry.name}"
+        puts Formatter.warning "Skipping #{entry.name}" unless silent
         true
       end
       alias generic_skip? skip?
