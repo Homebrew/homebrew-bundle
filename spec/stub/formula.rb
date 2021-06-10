@@ -44,6 +44,10 @@ class Formula
     new(name)
   end
 
+  def bottle_disabled?
+    false
+  end
+
   def bottle_defined?
     true
   end

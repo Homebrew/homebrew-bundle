@@ -7,7 +7,7 @@ module Bundle
     class << self
       def skip?(entry, silent: false)
         if Hardware::CPU.arm? && entry.type == :brew && entry.name.exclude?("/") &&
-           !BrewDumper.formulae_by_full_name(entry.name)[:bottled]
+           !BrewDumper.formulae_by_full_name(entry.name)[:bottled_or_disabled]
           puts Formatter.warning "Skipping #{entry.name} (no bottle for Apple Silicon)" unless silent
           return true
         end
