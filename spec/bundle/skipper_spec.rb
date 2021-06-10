@@ -22,6 +22,16 @@ describe Bundle::Skipper do
       end
     end
 
+    context "with an unbottled formula on ARM", :needs_macos do
+      let(:entry) { Bundle::Dsl::Entry.new(:brew, "mysql") }
+
+      it "returns true" do
+        allow(Hardware::CPU).to receive(:arm?).and_return(true)
+
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+
     context "with an unlisted cask", :needs_macos do
       let(:entry) { Bundle::Dsl::Entry.new(:cask, "java") }
 

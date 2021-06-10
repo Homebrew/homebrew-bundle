@@ -149,7 +149,13 @@ module Bundle
 
       runtime_dependencies ||= formula.runtime_dependencies.map(&:name)
 
-      bottle_hash = formula.bottle_hash if formula.bottle_defined?
+      if formula.bottle_defined?
+        bottle_hash = formula.bottle_hash.deep_symbolize_keys
+        if (bottle_files = bottle_hash[:files].presence)
+          bottled = bottle_files[:all].present?
+          bottled ||= bottle_files[Utils::Bottles.tag.to_sym].present?
+        end
+      end
 
       {
         name:                     formula.name,
@@ -170,6 +176,7 @@ module Bundle
         link?:                    link,
         poured_from_bottle?:      (poured_from_bottle || false),
         bottle:                   (bottle_hash || false),
+        bottled:                  (bottled || false),
       }
     end
     private_class_method :formula_to_hash
