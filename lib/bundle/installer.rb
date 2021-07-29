@@ -40,9 +40,9 @@ module Bundle
           puts "Using #{entry.name}"
           success += 1
         when :aborted
-          puts Formatter.error("#{verb} #{entry.name} has failed! Aborting!")
+          Bundle::Skipper.skip entry
+          puts Formatter.error("#{verb} #{entry.name} has failed! Skipping dependents...")
           failure += 1
-          break
         else
           puts Formatter.error("#{verb} #{entry.name} has failed!")
           failure += 1

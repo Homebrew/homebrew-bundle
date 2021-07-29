@@ -12,6 +12,11 @@ module Bundle
           return true
         end
 
+        return true if skipped_entries[:tap]&.any? do |tap|
+          prefix = "#{tap}/"
+          entry.name.start_with?(prefix) || entry.options[:full_name]&.start_with?(prefix)
+        end
+
         entry_type_skips = Array(skipped_entries[entry.type])
         return false if entry_type_skips.empty?
 
@@ -25,6 +30,11 @@ module Bundle
         true
       end
       alias generic_skip? skip?
+
+      def skip(entry)
+        skipped_entries[entry.type] &.<< entry.name or
+          skipped_entries[entry.type] = [entry.name]
+      end
 
       private
 

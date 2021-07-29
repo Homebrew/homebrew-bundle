@@ -9,6 +9,7 @@ describe Bundle::Skipper do
     allow(ENV).to receive(:[]).and_return(nil)
     allow(ENV).to receive(:[]).with("HOMEBREW_BUNDLE_BREW_SKIP").and_return("mysql")
     allow(ENV).to receive(:[]).with("HOMEBREW_BUNDLE_WHALEBREW_SKIP").and_return("whalebrew/imagemagick")
+    allow(ENV).to receive(:[]).with("HOMEBREW_BUNDLE_TAP_SKIP").and_return("org/repo")
     allow(Formatter).to receive(:warning)
     skipper.instance_variable_set(:@skipped_entries, nil)
   end
@@ -45,6 +46,48 @@ describe Bundle::Skipper do
 
       it "returns true" do
         expect(skipper.skip?(entry)).to be true
+      end
+    end
+
+    context "with a listed tap" do
+      let(:entry) { Bundle::Dsl::Entry.new(:brew, "org/repo/formula") }
+
+      it "returns true" do
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+  end
+
+  describe ".skip" do
+    context "with a tap" do
+      let(:tap) { Bundle::Dsl::Entry.new(:tap, "org/repo-b") }
+      let(:entry) { Bundle::Dsl::Entry.new(:brew, "org/repo-b/formula") }
+
+      it "returns false" do
+        expect(skipper.skip?(entry)).to be false
+
+        skipper.skip tap
+
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+
+    [
+      Bundle::Dsl::Entry.new(:brew, "postgresql"),
+      Bundle::Dsl::Entry.new(:cask, "docker"),
+      Bundle::Dsl::Entry.new(:mas, "garageband"),
+      Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/whalesay"),
+    ].each do |entry|
+      context "with a #{entry.type.to_s}" do
+        let(:entry) { entry }
+
+        it "returns true" do
+          expect(skipper.skip?(entry)).to be false
+
+          skipper.skip entry
+
+          expect(skipper.skip?(entry)).to be true
+        end
       end
     end
   end
