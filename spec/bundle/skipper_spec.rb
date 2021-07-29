@@ -78,7 +78,7 @@ describe Bundle::Skipper do
       Bundle::Dsl::Entry.new(:mas, "garageband"),
       Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/whalesay"),
     ].each do |entry|
-      context "with a #{entry.type.to_s}" do
+      context "with a #{entry.type}" do
         let(:entry) { entry }
 
         it "returns true" do
