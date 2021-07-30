@@ -32,8 +32,7 @@ module Bundle
       alias generic_skip? skip?
 
       def skip(entry)
-        skipped_entries[entry.type]&.<< entry.name ||
-          (skipped_entries[entry.type] = [entry.name])
+        (skipped_entries[entry.type] ||= []) << entry.name
       end
 
       private
