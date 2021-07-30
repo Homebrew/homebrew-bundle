@@ -32,12 +32,14 @@ module Bundle
 
         next if Bundle::Skipper.skip? entry
 
-        case cls.install(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
-        when :success
-          puts Formatter.success("#{verb} #{entry.name}")
-          success += 1
-        when :skipped
+        unless cls.preinstall(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
           puts "Using #{entry.name}"
+          success += 1
+          next
+        end
+
+        puts Formatter.success("#{verb} #{entry.name}")
+        if cls.install(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
           success += 1
         else
           puts Formatter.error("#{verb} #{entry.name} has failed!")

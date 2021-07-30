@@ -8,10 +8,6 @@ describe Bundle::BrewInstaller do
   let(:options) { { args: ["with-option"] } }
   let(:installer) { described_class.new(formula, options) }
 
-  def do_install
-    installer.run
-  end
-
   context "when the restart_service option is true" do
     context "when the formula is installed successfully" do
       before do
@@ -20,6 +16,7 @@ describe Bundle::BrewInstaller do
 
       it "restart service" do
         expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose: false).and_return(true)
+        described_class.preinstall(formula, restart_service: true)
         described_class.install(formula, restart_service: true)
       end
     end
@@ -31,7 +28,7 @@ describe Bundle::BrewInstaller do
 
       it "did not call restart service" do
         expect(Bundle::BrewServices).not_to receive(:restart)
-        described_class.install(formula, restart_service: true)
+        described_class.preinstall(formula, restart_service: true)
       end
     end
   end
@@ -44,6 +41,7 @@ describe Bundle::BrewInstaller do
     it "links formula" do
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "--force", "mysql",
                                               verbose: false).and_return(true)
+      described_class.preinstall(formula, link: true)
       described_class.install(formula, link: true)
     end
   end
@@ -55,6 +53,7 @@ describe Bundle::BrewInstaller do
 
     it "unlinks formula" do
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql", verbose: false).and_return(true)
+      described_class.preinstall(formula, link: false)
       described_class.install(formula, link: false)
     end
   end
@@ -67,6 +66,7 @@ describe Bundle::BrewInstaller do
     it "links formula" do
       allow_any_instance_of(described_class).to receive(:unlinked_and_not_keg_only?).and_return(true)
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "mysql", verbose: false).and_return(true)
+      described_class.preinstall(formula, link: nil)
       described_class.install(formula, link: nil)
     end
   end
@@ -79,6 +79,8 @@ describe Bundle::BrewInstaller do
     it "unlinks formula" do
       allow_any_instance_of(described_class).to receive(:linked_and_keg_only?).and_return(true)
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql", verbose: false).and_return(true)
+      described_class.preinstall(formula, link: nil)
+
       described_class.install(formula, link: nil)
     end
   end
@@ -90,10 +92,11 @@ describe Bundle::BrewInstaller do
         conflicts_with: ["mysql55"],
       )
       allow(described_class).to receive(:formula_installed?).and_return(true)
-      allow_any_instance_of(described_class).to receive(:install).and_return(true)
+      allow_any_instance_of(described_class).to receive(:install!).and_return(true)
+      allow_any_instance_of(described_class).to receive(:upgrade!).and_return(true)
     end
 
-    def sane?(verbose:)
+    def expectations(verbose:)
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql55",
                                               verbose: verbose).and_return(true)
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql56",
@@ -104,13 +107,15 @@ describe Bundle::BrewInstaller do
     end
 
     it "unlinks conflicts and stops their services" do
-      sane?(verbose: false)
+      expectations(verbose: false)
+      described_class.preinstall(formula, restart_service: true, conflicts_with: ["mysql56"])
       described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"])
     end
 
     it "prints a message" do
       allow_any_instance_of(described_class).to receive(:puts)
-      sane?(verbose: true)
+      expectations(verbose: true)
+      described_class.preinstall(formula, restart_service: true, conflicts_with: ["mysql56"], verbose: true)
       described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"], verbose: true)
     end
   end
@@ -190,14 +195,16 @@ describe Bundle::BrewInstaller do
         expect(Bundle).to receive(:system)
           .with(HOMEBREW_BREW_FILE, "install", "--formula", formula, "--with-option", verbose: false)
           .and_return(true)
-        expect(do_install).to be(:success)
+        expect(installer.preinstall).to be(true)
+        expect(installer.install).to be(true)
       end
 
       it "reports a failure" do
         expect(Bundle).to receive(:system)
           .with(HOMEBREW_BREW_FILE, "install", "--formula", formula, "--with-option", verbose: false)
           .and_return(false)
-        expect(do_install).to be(:failed)
+        expect(installer.preinstall).to be(true)
+        expect(installer.install).to be(false)
       end
     end
 
@@ -216,13 +223,15 @@ describe Bundle::BrewInstaller do
         it "upgrade formula" do
           expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--formula", formula, verbose: false)
                                             .and_return(true)
-          expect(do_install).to be(:success)
+          expect(installer.preinstall).to be(true)
+          expect(installer.install).to be(true)
         end
 
         it "reports a failure" do
           expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--formula", formula, verbose: false)
                                             .and_return(false)
-          expect(do_install).to be(:failed)
+          expect(installer.preinstall).to be(true)
+          expect(installer.install).to be(false)
         end
 
         context "when formula pinned" do
@@ -233,7 +242,7 @@ describe Bundle::BrewInstaller do
           it "does not upgrade formula" do
             expect(Bundle).not_to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--formula", formula,
                                                         verbose: false)
-            expect(do_install).to be(:skipped)
+            expect(installer.preinstall).to be(false)
           end
         end
 
@@ -244,7 +253,7 @@ describe Bundle::BrewInstaller do
 
           it "does not upgrade formula" do
             expect(Bundle).not_to receive(:system)
-            expect(do_install).to be(:skipped)
+            expect(installer.preinstall).to be(false)
           end
         end
       end

@@ -3,10 +3,6 @@
 require "spec_helper"
 
 describe Bundle::MacAppStoreInstaller do
-  def do_install
-    Bundle::MacAppStoreInstaller.install("foo", 123)
-  end
-
   describe ".installed_app_ids" do
     it "shells out" do
       described_class.installed_app_ids
@@ -29,7 +25,7 @@ describe Bundle::MacAppStoreInstaller do
 
     it "tries to install mas" do
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "mas", verbose: false).and_return(true)
-      expect { do_install }.to raise_error(RuntimeError)
+      expect { described_class.preinstall("foo", 123) }.to raise_error(RuntimeError)
     end
 
     describe ".outdated_app_ids" do
@@ -59,7 +55,7 @@ describe Bundle::MacAppStoreInstaller do
         allow(described_class).to receive(:installed_app_ids).and_return([123])
         allow(described_class).to receive(:outdated_app_ids).and_return([123])
         expect(Kernel).to receive(:system).with("mas account &>/dev/null").and_return(false)
-        expect { do_install }.to raise_error(RuntimeError)
+        expect { described_class.preinstall("foo", 123) }.to raise_error(RuntimeError)
       end
     end
 
@@ -76,7 +72,7 @@ describe Bundle::MacAppStoreInstaller do
 
         it "skips" do
           expect(Bundle).not_to receive(:system)
-          expect(do_install).to be(:skipped)
+          expect(described_class.preinstall("foo", 123)).to be(false)
         end
       end
 
@@ -88,7 +84,8 @@ describe Bundle::MacAppStoreInstaller do
 
         it "upgrades" do
           expect(Bundle).to receive(:system).with("mas", "upgrade", "123", verbose: false).and_return(true)
-          expect(do_install).to be(:success)
+          expect(described_class.preinstall("foo", 123)).to be(true)
+          expect(described_class.install("foo", 123)).to be(true)
         end
       end
 
@@ -99,7 +96,8 @@ describe Bundle::MacAppStoreInstaller do
 
         it "installs app" do
           expect(Bundle).to receive(:system).with("mas", "install", "123", verbose: false).and_return(true)
-          expect(do_install).to be(:success)
+          expect(described_class.preinstall("foo", 123)).to be(true)
+          expect(described_class.install("foo", 123)).to be(true)
         end
       end
     end

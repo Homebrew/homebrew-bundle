@@ -3,10 +3,6 @@
 require "spec_helper"
 
 describe Bundle::WhalebrewInstaller do
-  def do_install
-    Bundle::WhalebrewInstaller.install("whalebrew/wget")
-  end
-
   describe ".installed_images" do
     it "shells out" do
       described_class.installed_images
@@ -45,7 +41,7 @@ describe Bundle::WhalebrewInstaller do
     it "successfully installs whalebrew" do
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "whalebrew", verbose: false)
                                         .and_return(true)
-      expect { do_install }.to raise_error(RuntimeError)
+      expect { described_class.preinstall("whalebrew/wget") }.to raise_error(RuntimeError)
     end
   end
 
@@ -56,18 +52,19 @@ describe Bundle::WhalebrewInstaller do
                                        .and_return(true)
     end
 
-    it "successfully installs an image" do
-      expect { do_install }.not_to raise_error
-    end
-
     context "when the requested image is already installed" do
       before do
         allow(described_class).to receive(:image_installed?).with("whalebrew/wget").and_return(true)
       end
 
       it "skips" do
-        expect(do_install).to be(:skipped)
+        expect(described_class.preinstall("whalebrew/wget")).to be(false)
       end
+    end
+
+    it "successfully installs an image" do
+      expect(described_class.preinstall("whalebrew/wget")).to be(true)
+      expect { described_class.install("whalebrew/wget") }.not_to raise_error
     end
   end
 end
