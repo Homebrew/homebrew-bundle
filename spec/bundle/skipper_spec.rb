@@ -73,12 +73,12 @@ describe Bundle::Skipper do
     end
 
     [
-      Bundle::Dsl::Entry.new(:brew, "postgresql"),
-      Bundle::Dsl::Entry.new(:cask, "docker"),
-      Bundle::Dsl::Entry.new(:mas, "garageband"),
-      Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/whalesay"),
-    ].each do |entry|
-      context "with a #{entry.type}" do
+      Bundle::Dsl::Entry.new(:brew, "postgresql"), nil,
+      Bundle::Dsl::Entry.new(:cask, "docker"), nil,
+      Bundle::Dsl::Entry.new(:mas, "garageband"), :needs_macos,
+      Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/whalesay"), nil,
+    ].each_slice(2) do |entry, option|
+      context "with a #{entry.type}", option do
         let(:entry) { entry }
 
         it "returns true" do

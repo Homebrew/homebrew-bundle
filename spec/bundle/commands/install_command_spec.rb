@@ -59,12 +59,12 @@ describe Bundle::Commands::Install do
 
     it "skips installs from failed taps" do
       allow(Bundle::TapInstaller).to receive(:install).and_return(:aborted)
+      allow(Bundle::BrewInstaller).to receive(:install).and_return(:success)
+      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
+      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(:success)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
-      expect(Bundle::BrewInstaller).to receive(:install).and_return(:success)
       expect(Bundle::CaskInstaller).not_to receive(:install)
-      expect(Bundle::MacAppStoreInstaller).to receive(:install).and_return(:success)
-      expect(Bundle::WhalebrewInstaller).to receive(:install).and_return(:success)
       expect { described_class.run }.to raise_error(SystemExit)
     end
   end
