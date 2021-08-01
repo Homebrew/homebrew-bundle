@@ -72,22 +72,51 @@ describe Bundle::Skipper do
       end
     end
 
-    [
-      Bundle::Dsl::Entry.new(:brew, "postgresql"), nil,
-      Bundle::Dsl::Entry.new(:cask, "docker"), nil,
-      Bundle::Dsl::Entry.new(:mas, "garageband"), :needs_macos,
-      Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/whalesay"), nil,
-    ].each_slice(2) do |entry, option|
-      context "with a #{entry.type}", option do
-        let(:entry) { entry }
+    context "with a formula" do
+      let(:entry) { Bundle::Dsl::Entry.new(:brew, "postgresql") }
 
-        it "returns true" do
-          expect(skipper.skip?(entry)).to be false
+      it "returns true" do
+        expect(skipper.skip?(entry)).to be false
 
-          skipper.skip entry
+        skipper.skip entry
 
-          expect(skipper.skip?(entry)).to be true
-        end
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+
+    context "with a cask", :needs_macos do
+      let(:entry) { Bundle::Dsl::Entry.new(:cask, "docker") }
+
+      it "returns true" do
+        expect(skipper.skip?(entry)).to be false
+
+        skipper.skip entry
+
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+
+    context "with a mac app store", :needs_macos do
+      let(:entry) { Bundle::Dsl::Entry.new(:mas, "garageband") }
+
+      it "returns true" do
+        expect(skipper.skip?(entry)).to be false
+
+        skipper.skip entry
+
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+
+    context "with a whalebrew image" do
+      let(:entry) { Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/whalesay") }
+
+      it "returns true" do
+        expect(skipper.skip?(entry)).to be false
+
+        skipper.skip entry
+
+        expect(skipper.skip?(entry)).to be true
       end
     end
   end
