@@ -27,7 +27,9 @@ module Bundle
       true
     end
 
-    def install(name, no_upgrade: false, verbose: false, **options)
+    def install(name, preinstall: true, no_upgrade: false, verbose: false, **options)
+      return true unless preinstall
+
       full_name = options.fetch(:full_name, name)
 
       if installed_casks.include?(name) && upgrading?(no_upgrade, name, options)

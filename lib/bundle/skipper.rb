@@ -6,7 +6,8 @@ module Bundle
   module Skipper
     class << self
       def skip?(entry, silent: false)
-        if Hardware::CPU.arm? && entry.type == :brew && entry.name.exclude?("/") &&
+        if Hardware::CPU.arm? && !MacOS.version.prerelease? &&
+           entry.type == :brew && entry.name.exclude?("/") &&
            !BrewDumper.formulae_by_full_name(entry.name)[:bottled_or_disabled]
           puts Formatter.warning "Skipping #{entry.name} (no bottle for Apple Silicon)" unless silent
           return true

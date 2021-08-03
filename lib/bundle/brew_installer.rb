@@ -12,8 +12,8 @@ module Bundle
       new(name, options).preinstall(no_upgrade: no_upgrade, verbose: verbose)
     end
 
-    def self.install(name, no_upgrade: false, verbose: false, **options)
-      new(name, options).install(no_upgrade: no_upgrade, verbose: verbose)
+    def self.install(name, preinstall: true, no_upgrade: false, verbose: false, **options)
+      new(name, options).install(preinstall: preinstall, no_upgrade: no_upgrade, verbose: verbose)
     end
 
     def initialize(name, options = {})
@@ -37,15 +37,23 @@ module Bundle
       true
     end
 
-    def install(no_upgrade: false, verbose: false)
-      install_result = install_change_state!(no_upgrade: no_upgrade, verbose: verbose)
-      service_change_state!(verbose: verbose) if install_result
-      link_change_state!(verbose: verbose)
+    def install(preinstall: true, no_upgrade: false, verbose: false)
+      install_result = if preinstall
+        install_change_state!(no_upgrade: no_upgrade, verbose: verbose)
+      else
+        true
+      end
+
+      if installed?
+        service_change_state!(verbose: verbose) if install_result
+        link_change_state!(verbose: verbose)
+      end
+
       install_result
     end
 
     def install_change_state!(no_upgrade:, verbose:)
-      return :failed unless resolve_conflicts!(verbose: verbose)
+      return false unless resolve_conflicts!(verbose: verbose)
 
       if installed?
         upgrade!(verbose: verbose)

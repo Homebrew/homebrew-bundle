@@ -34,22 +34,16 @@ module Bundle
 
         next if Bundle::Skipper.skip? entry
 
-        unless cls.preinstall(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
+        preinstall = if cls.preinstall(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
+          puts Formatter.success("#{verb} #{name}")
+        else
           puts "Using #{name}"
-          success += 1
-          next
         end
 
-        puts Formatter.success("#{verb} #{name}")
-        if cls.install(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
+        if cls.install(*args, **options, preinstall: preinstall, no_upgrade: no_upgrade, verbose: verbose)
           success += 1
         else
-          if entry.type == :tap
-            Bundle::Skipper.tap_failed!(name)
-            puts Formatter.error("#{verb} #{name} has failed! Skipping dependents...")
-          else
-            puts Formatter.error("#{verb} #{name} has failed!")
-          end
+          puts Formatter.error("#{verb} #{name} has failed!")
           failure += 1
         end
       end

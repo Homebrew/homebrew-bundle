@@ -77,7 +77,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
-      expect(Bundle::CaskInstaller).not_to receive(:install)
+      expect(Bundle).not_to receive(:system)
       expect { described_class.run }.to raise_error(SystemExit)
     end
   end
