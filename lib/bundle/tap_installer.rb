@@ -13,7 +13,9 @@ module Bundle
       true
     end
 
-    def install(name, verbose: false, **options)
+    def install(name, preinstall: true, verbose: false, **options)
+      return true unless preinstall
+
       puts "Installing #{name} tap. It is not currently installed." if verbose
       success = if options[:clone_target]
         Bundle.system HOMEBREW_BREW_FILE, "tap", name, options[:clone_target], verbose: verbose
@@ -21,7 +23,10 @@ module Bundle
         Bundle.system HOMEBREW_BREW_FILE, "tap", name, verbose: verbose
       end
 
-      return false unless success
+      unless success
+        Bundle::Skipper.tap_failed!(name)
+        return false
+      end
 
       installed_taps << name
       true

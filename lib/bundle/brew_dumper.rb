@@ -150,11 +150,10 @@ module Bundle
       runtime_dependencies ||= formula.runtime_dependencies.map(&:name)
 
       bottled_or_disabled = formula.bottle_disabled?
-      if !bottled_or_disabled && formula.bottle_defined?
+      bottled_or_disabled ||= if formula.bottle_defined?
         bottle_hash = formula.bottle_hash.deep_symbolize_keys
         if (bottle_files = bottle_hash[:files].presence)
-          bottled_or_disabled = bottle_files[:all].present?
-          bottled_or_disabled ||= bottle_files[Utils::Bottles.tag.to_sym].present?
+          bottle_files[:all].present? || bottle_files[Utils::Bottles.tag.to_sym].present?
         end
       end
 

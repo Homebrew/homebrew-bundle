@@ -32,7 +32,9 @@ module Bundle
       true
     end
 
-    def install(name, id, no_upgrade: false, verbose: false)
+    def install(name, id, preinstall: true, no_upgrade: false, verbose: false)
+      return true unless preinstall
+
       if app_id_installed?(id)
         puts "Upgrading #{name} app. It is installed but not up-to-date." if verbose
         return false unless Bundle.system "mas", "upgrade", id.to_s, verbose: verbose

@@ -20,7 +20,7 @@ module MacOS
   end
 
   def version
-    :catalina
+    OpenStruct.new to_sym: :catalina, prerelease?: false
   end
 end
 
