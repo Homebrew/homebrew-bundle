@@ -3,14 +3,6 @@
 require "spec_helper"
 
 describe Bundle::CaskInstaller do
-  def do_install
-    Bundle::CaskInstaller.install("google-chrome")
-  end
-
-  def do_greedy_install
-    Bundle::CaskInstaller.install("opera", greedy: true)
-  end
-
   describe ".installed_casks" do
     before do
       Bundle::CaskDumper.reset!
@@ -61,7 +53,7 @@ describe Bundle::CaskInstaller do
 
       it "skips" do
         expect(Bundle).not_to receive(:system)
-        expect(do_install).to be(:skipped)
+        expect(described_class.preinstall("google-chrome")).to be(false)
       end
     end
 
@@ -75,21 +67,23 @@ describe Bundle::CaskInstaller do
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--cask", "google-chrome",
                                                 verbose: false)
                                           .and_return(true)
-        expect(do_install).to be(:success)
+        expect(described_class.preinstall("google-chrome")).to be(true)
+        expect(described_class.install("google-chrome")).to be(true)
       end
     end
 
     context "when cask is outdated and uses auto-update" do
       before do
-        allow(described_class).to receive(:installed_casks).and_return(["opera"])
-        allow(described_class).to receive(:outdated_casks).and_return([])
-        allow(described_class).to receive(:all_outdated_casks).and_return(["opera"])
+        allow(Bundle::CaskDumper).to receive(:cask_names).and_return(["opera"])
+        allow(Bundle::CaskDumper).to receive(:outdated_cask_names).and_return([])
+        allow(Bundle::CaskDumper).to receive(:outdated_cask_names).with(greedy: true).and_return(["opera"])
       end
 
       it "upgrades" do
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "upgrade", "--cask", "opera", verbose: false)
                                           .and_return(true)
-        expect(do_greedy_install).to be(:success)
+        expect(described_class.preinstall("opera", greedy: true)).to be(true)
+        expect(described_class.install("opera", greedy: true)).to be(true)
       end
     end
 
@@ -102,7 +96,8 @@ describe Bundle::CaskInstaller do
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "google-chrome",
                                                 verbose: false)
                                           .and_return(true)
-        expect(do_install).to be(:success)
+        expect(described_class.preinstall("google-chrome")).to be(true)
+        expect(described_class.install("google-chrome")).to be(true)
       end
 
       it "installs cask with arguments" do
@@ -110,14 +105,16 @@ describe Bundle::CaskInstaller do
           receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "firefox", "--appdir=/Applications",
                                 verbose: false)
                           .and_return(true)
-        expect(described_class.install("firefox", args: { appdir: "/Applications" })).to eq(:success)
+        expect(described_class.preinstall("firefox", args: { appdir: "/Applications" })).to eq(true)
+        expect(described_class.install("firefox", args: { appdir: "/Applications" })).to eq(true)
       end
 
       it "reports a failure" do
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "google-chrome",
                                                 verbose: false)
                                           .and_return(false)
-        expect(do_install).to be(:failed)
+        expect(described_class.preinstall("google-chrome")).to be(true)
+        expect(described_class.install("google-chrome")).to be(false)
       end
 
       context "with boolean arguments" do
@@ -125,13 +122,15 @@ describe Bundle::CaskInstaller do
           expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "iterm", "--force",
                                                   verbose: false)
                                             .and_return(true)
-          expect(described_class.install("iterm", args: { force: true })).to eq(:success)
+          expect(described_class.preinstall("iterm", args: { force: true })).to eq(true)
+          expect(described_class.install("iterm", args: { force: true })).to eq(true)
         end
 
         it "does not include a flag if false" do
           expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "iterm", verbose: false)
                                             .and_return(true)
-          expect(described_class.install("iterm", args: { force: false })).to eq(:success)
+          expect(described_class.preinstall("iterm", args: { force: false })).to eq(true)
+          expect(described_class.install("iterm", args: { force: false })).to eq(true)
         end
       end
     end

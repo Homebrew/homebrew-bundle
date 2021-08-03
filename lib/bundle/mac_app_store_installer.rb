@@ -11,7 +11,7 @@ module Bundle
       @outdated_app_ids = nil
     end
 
-    def install(name, id, no_upgrade: false, verbose: false)
+    def preinstall(name, id, no_upgrade: false, verbose: false)
       unless Bundle.mas_installed?
         puts "Installing mas. It is not currently installed." if verbose
         Bundle.system HOMEBREW_BREW_FILE, "install", "mas", verbose: verbose
@@ -20,7 +20,8 @@ module Bundle
 
       if app_id_installed?(id) &&
          (no_upgrade || !app_id_upgradable?(id))
-        return :skipped
+        puts "Skipping install of #{name} app. It is already installed." if verbose
+        return false
       end
 
       unless Bundle.mas_signedin?
@@ -28,19 +29,23 @@ module Bundle
         raise "Unable to install #{name} app. mas not signed in to Mac App Store."
       end
 
+      true
+    end
+
+    def install(name, id, no_upgrade: false, verbose: false)
       if app_id_installed?(id)
         puts "Upgrading #{name} app. It is installed but not up-to-date." if verbose
-        return :failed unless Bundle.system "mas", "upgrade", id.to_s, verbose: verbose
+        return false unless Bundle.system "mas", "upgrade", id.to_s, verbose: verbose
 
-        return :success
+        return true
       end
 
       puts "Installing #{name} app. It is not currently installed." if verbose
 
-      return :failed unless Bundle.system "mas", "install", id.to_s, verbose: verbose
+      return false unless Bundle.system "mas", "install", id.to_s, verbose: verbose
 
       installed_app_ids << id
-      :success
+      true
     end
 
     def self.app_id_installed_and_up_to_date?(id, no_upgrade: false)

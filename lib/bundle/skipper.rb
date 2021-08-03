@@ -12,7 +12,7 @@ module Bundle
           return true
         end
 
-        return true if skipped_entries[:tap]&.any? do |tap|
+        return true if @failed_taps&.any? do |tap|
           prefix = "#{tap}/"
           entry.name.start_with?(prefix) || entry.options[:full_name]&.start_with?(prefix)
         end
@@ -31,8 +31,9 @@ module Bundle
       end
       alias generic_skip? skip?
 
-      def skip(entry)
-        (skipped_entries[entry.type] ||= []) << entry.name
+      def tap_failed!(tap_name)
+        @failed_taps ||= []
+        @failed_taps << tap_name
       end
 
       private
