@@ -8,8 +8,12 @@ module Bundle
       @pinned_formulae = nil
     end
 
+    def self.preinstall(name, no_upgrade: false, verbose: false, **options)
+      new(name, options).preinstall(no_upgrade: no_upgrade, verbose: verbose)
+    end
+
     def self.install(name, no_upgrade: false, verbose: false, **options)
-      new(name, options).run(no_upgrade: no_upgrade, verbose: verbose)
+      new(name, options).install(no_upgrade: no_upgrade, verbose: verbose)
     end
 
     def initialize(name, options = {})
@@ -23,9 +27,19 @@ module Bundle
       @changed = nil
     end
 
-    def run(no_upgrade: false, verbose: false)
+    def preinstall(no_upgrade: false, verbose: false)
+      if installed? && (no_upgrade || !upgradable?)
+        puts "Skipping install of #{@name} formula. It is already installed." if verbose
+        @changed = nil
+        return false
+      end
+
+      true
+    end
+
+    def install(no_upgrade: false, verbose: false)
       install_result = install_change_state!(no_upgrade: no_upgrade, verbose: verbose)
-      service_change_state!(verbose: verbose) if install_result != :failed
+      service_change_state!(verbose: verbose) if install_result
       link_change_state!(verbose: verbose)
       install_result
     end
@@ -34,8 +48,6 @@ module Bundle
       return :failed unless resolve_conflicts!(verbose: verbose)
 
       if installed?
-        return :skipped if no_upgrade
-
         upgrade!(verbose: verbose)
       else
         install!(verbose: verbose)
@@ -206,7 +218,7 @@ module Bundle
         end
         return false unless Bundle.system(HOMEBREW_BREW_FILE, "unlink", conflict, verbose: verbose)
 
-        if @restart_service
+        if restart_service?
           puts "Stopping #{conflict} service (if it is running)." if verbose
           BrewServices.stop(conflict, verbose: verbose)
         end
@@ -219,29 +231,23 @@ module Bundle
       puts "Installing #{@name} formula. It is not currently installed." if verbose
       unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *@args, verbose: verbose)
         @changed = nil
-        return :failed
+        return false
       end
 
       BrewInstaller.installed_formulae << @name
       @changed = true
-      :success
+      true
     end
 
     def upgrade!(verbose:)
-      unless upgradable?
-        puts "Skipping install of #{@name} formula. It is already up-to-date." if verbose
-        @changed = nil
-        return :skipped
-      end
-
       puts "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
       unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, verbose: verbose)
         @changed = nil
-        return :failed
+        return false
       end
 
       @changed = true
-      :success
+      true
     end
   end
 end
