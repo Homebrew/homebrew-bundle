@@ -9,8 +9,10 @@ describe Bundle::Skipper do
     allow(ENV).to receive(:[]).and_return(nil)
     allow(ENV).to receive(:[]).with("HOMEBREW_BUNDLE_BREW_SKIP").and_return("mysql")
     allow(ENV).to receive(:[]).with("HOMEBREW_BUNDLE_WHALEBREW_SKIP").and_return("whalebrew/imagemagick")
+    allow(ENV).to receive(:[]).with("HOMEBREW_BUNDLE_TAP_SKIP").and_return("org/repo")
     allow(Formatter).to receive(:warning)
     skipper.instance_variable_set(:@skipped_entries, nil)
+    skipper.instance_variable_set(:@failed_taps, nil)
   end
 
   describe ".skip?" do
@@ -44,6 +46,31 @@ describe Bundle::Skipper do
       let(:entry) { Bundle::Dsl::Entry.new(:whalebrew, "whalebrew/imagemagick") }
 
       it "returns true" do
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+
+    context "with a listed formula in a failed tap" do
+      let(:entry) { Bundle::Dsl::Entry.new(:brew, "org/repo/formula") }
+
+      it "returns true" do
+        skipper.tap_failed!("org/repo")
+
+        expect(skipper.skip?(entry)).to be true
+      end
+    end
+  end
+
+  describe ".failed_tap!" do
+    context "with a tap" do
+      let(:tap) { Bundle::Dsl::Entry.new(:tap, "org/repo-b") }
+      let(:entry) { Bundle::Dsl::Entry.new(:brew, "org/repo-b/formula") }
+
+      it "returns false" do
+        expect(skipper.skip?(entry)).to be false
+
+        skipper.tap_failed! tap.name
+
         expect(skipper.skip?(entry)).to be true
       end
     end

@@ -20,7 +20,7 @@ describe Bundle::Commands::Install do
       <<~EOS
         tap 'phinze/cask'
         brew 'mysql', conflicts_with: ['mysql56']
-        cask 'google-chrome', greedy: true
+        cask 'phinze/cask/google-chrome', greedy: true
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
       EOS
@@ -62,6 +62,22 @@ describe Bundle::Commands::Install do
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
+      expect { described_class.run }.to raise_error(SystemExit)
+    end
+
+    it "skips installs from failed taps" do
+      allow(Bundle::BrewInstaller).to receive(:preinstall).and_return(true)
+      allow(Bundle::CaskInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
+      allow(Bundle::TapInstaller).to receive(:preinstall).and_return(true)
+      allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(true)
+      allow(Bundle::TapInstaller).to receive(:install).and_return(false)
+      allow(Bundle::BrewInstaller).to receive(:install).and_return(true)
+      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(true)
+      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
+
+      expect(Bundle::CaskInstaller).not_to receive(:install)
       expect { described_class.run }.to raise_error(SystemExit)
     end
   end

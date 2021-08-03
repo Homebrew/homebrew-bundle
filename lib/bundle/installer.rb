@@ -9,10 +9,12 @@ module Bundle
       failure = 0
 
       entries.each do |entry|
-        args = [entry.name]
+        name = entry.name
+        args = [name]
         options = {}
         verb = "Installing"
-        cls = case entry.type
+        type = entry.type
+        cls = case type
         when :brew
           options = entry.options
           Bundle::BrewInstaller
@@ -33,16 +35,21 @@ module Bundle
         next if Bundle::Skipper.skip? entry
 
         unless cls.preinstall(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
-          puts "Using #{entry.name}"
+          puts "Using #{name}"
           success += 1
           next
         end
 
-        puts Formatter.success("#{verb} #{entry.name}")
+        puts Formatter.success("#{verb} #{name}")
         if cls.install(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
           success += 1
         else
-          puts Formatter.error("#{verb} #{entry.name} has failed!")
+          if entry.type == :tap
+            Bundle::Skipper.tap_failed!(name)
+            puts Formatter.error("#{verb} #{name} has failed! Skipping dependents...")
+          else
+            puts Formatter.error("#{verb} #{name} has failed!")
+          end
           failure += 1
         end
       end
