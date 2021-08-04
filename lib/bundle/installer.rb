@@ -36,8 +36,10 @@ module Bundle
 
         preinstall = if cls.preinstall(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
           puts Formatter.success("#{verb} #{name}")
+          true
         else
           puts "Using #{name}"
+          false
         end
 
         if cls.install(*args, **options, preinstall: preinstall, no_upgrade: no_upgrade, verbose: verbose)
