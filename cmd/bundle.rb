@@ -45,6 +45,8 @@ module Homebrew
       EOS
       flag   "--file=",
              description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
+      flag   "--without",
+             description: "Ignore entries tagged with these, comma separated, group names."
       switch "--global",
              description: "Read the `Brewfile` from `~/.Brewfile`."
       switch "-v", "--verbose",
@@ -84,6 +86,7 @@ module Homebrew
 
   def bundle
     args = bundle_args.parse
+    without_groups = args.without.split(',').map(&:to_sym)
 
     # Keep this after the .parse to keep --help fast.
     require_relative "../lib/bundle"
@@ -92,11 +95,12 @@ module Homebrew
       case subcommand = args.named.first.presence
       when nil, "install"
         Bundle::Commands::Install.run(
-          global:     args.global?,
-          file:       args.file,
-          no_lock:    args.no_lock?,
-          no_upgrade: args.no_upgrade?,
-          verbose:    args.verbose?,
+          global:         args.global?,
+          file:           args.file,
+          no_lock:        args.no_lock?,
+          no_upgrade:     args.no_upgrade?,
+          verbose:        args.verbose?,
+          without_groups: without_groups,
         )
 
         if args.cleanup?
@@ -133,19 +137,21 @@ module Homebrew
         _subcommand, *named_args = args.named
         Bundle::Commands::Exec.run(
           *named_args,
-          global: args.global?,
-          file:   args.file,
+          global:         args.global?,
+          file:           args.file,
+          without_groups: without_groups,
         )
       when "list"
         Bundle::Commands::List.run(
-          global:    args.global?,
-          file:      args.file,
-          all:       args.all?,
-          casks:     args.casks?,
-          taps:      args.taps?,
-          mas:       args.mas?,
-          whalebrew: args.whalebrew?,
-          brews:     args.brews?,
+          global:         args.global?,
+          file:           args.file,
+          all:            args.all?,
+          casks:          args.casks?,
+          taps:           args.taps?,
+          mas:            args.mas?,
+          whalebrew:      args.whalebrew?,
+          brews:          args.brews?,
+          without_groups: without_groups,
         )
       else
         raise UsageError, "unknown subcommand: #{subcommand}"

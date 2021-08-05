@@ -9,17 +9,25 @@ module Bundle
         @type = type
         @name = name
         @options = options
+        @options[:group] ||= []
       end
 
       def to_s
         name
       end
+
+      def excluded_by?(without_groups)
+        return false if options[:group].empty?
+        (options[:group] - without_groups).empty?
+      end
     end
 
-    attr_reader :entries, :cask_arguments
+    attr_reader :entries, :cask_arguments, :groups
 
     def initialize(input)
       @input = input
+      @current_groups = []
+      @groups = Set.new
       @entries = []
       @cask_arguments = {}
 
@@ -47,6 +55,7 @@ module Bundle
       raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
 
       name = Bundle::Dsl.sanitize_brew_name(name)
+      options[:group] = Bundle::Dsl.determine_groups(@current_groups, [*options[:group]])
       @entries << Entry.new(:brew, name, options)
     end
 
@@ -57,6 +66,7 @@ module Bundle
       options[:full_name] = name
       name = Bundle::Dsl.sanitize_cask_name(name)
       options[:args] = @cask_arguments.merge options.fetch(:args, {})
+      options[:group] = Bundle::Dsl.determine_groups(@current_groups, [*options[:group]])
       @entries << Entry.new(:cask, name, options)
     end
 
@@ -65,13 +75,18 @@ module Bundle
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       raise "options[:id](#{id}) should be an Integer object" unless id.is_a? Integer
 
-      @entries << Entry.new(:mas, name, id: id)
+      options = {
+        id: id,
+        group: Bundle::Dsl.determine_groups(@current_groups, [*options[:group]])
+      }
+      @entries << Entry.new(:mas, name, options)
     end
 
-    def whalebrew(name)
+    def whalebrew(name, options = {})
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
 
-      @entries << Entry.new(:whalebrew, name)
+      options[:group] = Bundle::Dsl.determine_groups(@current_groups, [*options[:group]])
+      @entries << Entry.new(:whalebrew, name, options)
     end
 
     def tap(name, clone_target = nil)
@@ -81,7 +96,19 @@ module Bundle
       end
 
       name = Bundle::Dsl.sanitize_tap_name(name)
-      @entries << Entry.new(:tap, name, clone_target: clone_target)
+      @entries << Entry.new(:tap, name, clone_target: clone_target, group: @current_groups)
+    end
+
+    def group(*names, &block)
+      raise "group cannot be used within a group" unless @current_groups.empty?
+      names.each do |name|
+        raise "name(#{name.inspect}) should be a Symbol object" unless name.is_a? Symbol
+      end
+
+      @groups.merge(names)
+      @current_groups = names
+      instance_exec self, &block
+      @current_groups = []
     end
 
     HOMEBREW_TAP_ARGS_REGEX = %r{^([\w-]+)/(homebrew-)?([\w-]+)$}.freeze
@@ -118,6 +145,11 @@ module Bundle
 
     def self.pluralize_dependency(installed_count)
       (installed_count == 1) ? "dependency" : "dependencies"
+    end
+
+    def self.determine_groups(block_groups, options_groups)
+      raise "groups cannot be specified as an option, if also within a group block" if block_groups.any? && options_groups.any?
+      block_groups + options_groups
     end
   end
 end

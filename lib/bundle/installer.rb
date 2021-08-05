@@ -4,11 +4,16 @@ module Bundle
   module Installer
     module_function
 
-    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false)
+    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false, without_groups: [])
       success = 0
       failure = 0
 
       entries.each do |entry|
+        if entry.excluded_by?(without_groups)
+          puts Formatter.warning("Skipping #{entry.name}") + " (in #{entry.options[:group].join(', ')} group#{entry.options[:group].one? ? '' : 's'})"
+          next
+        end
+
         name = entry.name
         args = [name]
         options = {}

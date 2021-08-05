@@ -9,7 +9,7 @@ module Bundle
     module Exec
       module_function
 
-      def run(*args, global: false, file: nil)
+      def run(*args, global: false, file: nil, without_groups: [])
         # Setup Homebrew's ENV extensions
         ENV.activate_extensions!
         raise UsageError, "No command to execute was specified!" if args.blank?
@@ -32,6 +32,7 @@ module Bundle
 
         ENV.deps = brewfile.entries.map do |entry|
           next unless entry.type == :brew
+          next if entry.excluded_by?(without_groups)
 
           f = Formulary.factory(entry.name)
           [f, f.recursive_dependencies.map(&:to_formula)]

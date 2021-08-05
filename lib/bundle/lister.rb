@@ -4,8 +4,10 @@ module Bundle
   module Lister
     module_function
 
-    def list(entries, all: false, casks: false, taps: false, mas: false, whalebrew: false, brews: false)
+    def list(entries, all: false, casks: false, taps: false, mas: false, whalebrew: false, brews: false, without_groups: [])
       entries.each do |entry|
+        next if entry.excluded_by?(without_groups)
+
         if show?(entry.type, all: all, casks: casks, taps: taps, mas: mas, whalebrew: whalebrew, brews: brews)
           puts entry.name
         end
