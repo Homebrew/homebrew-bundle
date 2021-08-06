@@ -43,5 +43,11 @@ jobs:
 
     - name: Run RSpec tests
       run: bundle exec rspec
+
+    - name: Test that installing works
+      run: |
+        echo 'brew "hello"' > ./Brewfile
+        brew bundle
+        hello
       
     - uses: codecov/codecov-action@51d810878be5422784e86451c0e7c14e5860ec47
