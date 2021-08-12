@@ -156,7 +156,7 @@ module Bundle
           bottle_files[:all].present? || bottle_files[Utils::Bottles.tag.to_sym].present?
         end
       end
-
+\
       {
         name:                     formula.name,
         desc:                     formula.desc,
@@ -177,6 +177,7 @@ module Bundle
         poured_from_bottle?:      (poured_from_bottle || false),
         bottle:                   (bottle_hash || false),
         bottled_or_disabled:      (bottled_or_disabled || false),
+        official_tap:             (formula.tap&.official? || false),
       }
     end
     private_class_method :formula_to_hash
