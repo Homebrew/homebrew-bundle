@@ -97,4 +97,8 @@ class Formula
   def any_installed_prefix
     opt_prefix
   end
+
+  def tap
+    OpenStruct.new official?: true
+  end
 end
