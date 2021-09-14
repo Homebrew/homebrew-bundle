@@ -40,7 +40,7 @@ describe Bundle::Commands::List do
         args_hash = options_list.map { |arg| [arg, true] }.to_h
         words = options_list.join(" and ")
         opts = options_list.map { |o| "`#{o}`" }.join(" and ")
-        verb = options_list.length == 1 && "is" || "are"
+        verb = (options_list.length == 1 && "is") || "are"
 
         context "when #{opts} #{verb} passed" do
           let(:options) { args_hash }
