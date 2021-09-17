@@ -17,9 +17,11 @@ module Bundle
         cls = case type
         when :brew
           options = entry.options
+          verb = "Upgrading" if Bundle::BrewInstaller.formula_upgradable?(name)
           Bundle::BrewInstaller
         when :cask
           options = entry.options
+          verb = "Upgrading" if Bundle::CaskInstaller.cask_upgradable?(name)
           Bundle::CaskInstaller
         when :mas
           args << entry.options[:id]
