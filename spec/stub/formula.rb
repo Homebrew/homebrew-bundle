@@ -52,6 +52,10 @@ class Formula
     true
   end
 
+  def bottled?
+    true
+  end
+
   def bottle_hash
     {}
   end

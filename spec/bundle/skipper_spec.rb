@@ -29,6 +29,7 @@ describe Bundle::Skipper do
 
       it "returns true" do
         allow(Hardware::CPU).to receive(:arm?).and_return(true)
+        allow_any_instance_of(Formula).to receive(:bottled?).and_return(false)
 
         expect(skipper.skip?(entry)).to be true
       end

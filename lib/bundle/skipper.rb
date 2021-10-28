@@ -6,7 +6,7 @@ module Bundle
   module Skipper
     class << self
       def skip?(entry, silent: false)
-        if Hardware::CPU.arm? && !MacOS.version.prerelease? &&
+        if Hardware::CPU.arm? &&
            entry.type == :brew && entry.name.exclude?("/") &&
            (formula = BrewDumper.formulae_by_full_name(entry.name)) &&
            formula[:official_tap] &&
