@@ -152,11 +152,9 @@ module Bundle
       bottled_or_disabled = formula.bottle_disabled?
       bottled_or_disabled ||= if formula.bottle_defined?
         bottle_hash = formula.bottle_hash.deep_symbolize_keys
-        if (bottle_files = bottle_hash[:files].presence)
-          bottle_files[:all].present? || bottle_files[Utils::Bottles.tag.to_sym].present?
-        end
+        formula.bottled?
       end
-\
+
       {
         name:                     formula.name,
         desc:                     formula.desc,

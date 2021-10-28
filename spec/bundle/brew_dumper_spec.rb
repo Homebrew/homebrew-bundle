@@ -27,6 +27,7 @@ describe Bundle::BrewDumper do
                     outdated?:              false,
                     bottle_defined?:        false,
                     bottle_disabled?:       false,
+                    bottled?:               false,
                     tap:                    OpenStruct.new(official?: false))
   end
   let(:foo_hash) do
@@ -72,6 +73,7 @@ describe Bundle::BrewDumper do
                     outdated?:              true,
                     bottle_defined?:        true,
                     bottle_disabled?:       false,
+                    bottled?:               true,
                     linked_keg:             linked_keg,
                     tap:                    OpenStruct.new(official?: true),
                     bottle_hash:            {
@@ -134,6 +136,7 @@ describe Bundle::BrewDumper do
                     outdated?:              false,
                     bottle_defined?:        false,
                     bottle_disabled?:       false,
+                    bottled?:               false,
                     tap:                    OpenStruct.new(official?: false))
   end
   let(:baz_hash) do
