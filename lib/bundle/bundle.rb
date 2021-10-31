@@ -35,7 +35,8 @@ module Bundle
 
     def cask_installed?
       @cask_installed ||= File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
-                          File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask")
+                          (File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask") ||
+                           Homebrew::EnvConfig.install_from_api?)
     end
 
     def services_installed?
