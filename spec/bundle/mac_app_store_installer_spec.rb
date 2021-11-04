@@ -76,6 +76,17 @@ describe Bundle::MacAppStoreInstaller do
         end
       end
 
+      context "when on Monterey" do
+        before do
+          allow(MacOS).to receive(:version).and_return(:monterey)
+        end
+
+        it "skips" do
+          expect(Bundle).not_to receive(:system)
+          expect(described_class.preinstall("foo", 123)).to be(false)
+        end
+      end
+
       context "when app is outdated" do
         before do
           allow(described_class).to receive(:installed_app_ids).and_return([123])
