@@ -24,6 +24,11 @@ module Bundle
         return false
       end
 
+      if MacOS.version == :monterey
+        puts "Skipping install of #{name} app. mas is not yet functional on Monterey" if verbose
+        return false
+      end
+
       unless Bundle.mas_signedin?
         puts "Not signed in to Mac App Store." if verbose
         raise "Unable to install #{name} app. mas not signed in to Mac App Store."
