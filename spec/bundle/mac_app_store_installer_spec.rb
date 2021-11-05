@@ -54,6 +54,7 @@ describe Bundle::MacAppStoreInstaller do
       it "outputs an error" do
         allow(described_class).to receive(:installed_app_ids).and_return([123])
         allow(described_class).to receive(:outdated_app_ids).and_return([123])
+        allow(MacOS).to receive(:version).and_return(:big_sur)
         expect(Kernel).to receive(:system).with("mas account &>/dev/null").and_return(false)
         expect { described_class.preinstall("foo", 123) }.to raise_error(RuntimeError)
       end
