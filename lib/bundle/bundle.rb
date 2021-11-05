@@ -30,6 +30,10 @@ module Bundle
     end
 
     def mas_signedin?
+      # mas account doesn't work on Monterey (yet)
+      # https://github.com/mas-cli/mas/issues/417#issuecomment-957963271
+      return true if MacOS.version >= :monterey
+
       Kernel.system "mas account &>/dev/null"
     end
 
