@@ -6,12 +6,14 @@ module Bundle
   module Skipper
     class << self
       def skip?(entry, silent: false)
-        if Hardware::CPU.arm? &&
+        if (Hardware::CPU.arm? || OS.linux?) &&
+           Homebrew.default_prefix? &&
            entry.type == :brew && entry.name.exclude?("/") &&
            (formula = BrewDumper.formulae_by_full_name(entry.name)) &&
            formula[:official_tap] &&
            !formula[:bottled_or_disabled]
-          puts Formatter.warning "Skipping #{entry.name} (no bottle for Apple Silicon)" unless silent
+          reason = Hardware::CPU.arm? ? "Apple Silicon" : "Linux"
+          puts Formatter.warning "Skipping #{entry.name} (no bottle for #{reason})" unless silent
           return true
         end
 
