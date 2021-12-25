@@ -37,7 +37,7 @@ describe Bundle::Commands::List do
       end.sort
 
       combinations.each do |options_list|
-        args_hash = options_list.map { |arg| [arg, true] }.to_h
+        args_hash = options_list.to_h { |arg| [arg, true] }
         words = options_list.join(" and ")
         opts = options_list.map { |o| "`#{o}`" }.join(" and ")
         verb = (options_list.length == 1 && "is") || "are"
