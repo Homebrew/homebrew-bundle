@@ -11,8 +11,7 @@ module Bundle
       end
 
       def format_checkable(entries)
-        checkable_entries(entries).map { |e| [e.options[:id], e.name] }
-                                  .to_h
+        checkable_entries(entries).to_h { |e| [e.options[:id], e.name] }
       end
 
       def exit_early_check(app_ids_with_names, no_upgrade:)
