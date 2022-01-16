@@ -30,9 +30,10 @@ module Bundle
 
     def started_services
       @started_services ||= if Bundle.services_installed?
+        states_to_skip = %w[stopped none]
         `brew services list`.lines.map do |line|
           name, state, _plist = line.split(/\s+/)
-          next if state == "stopped"
+          next if states_to_skip.include? state
 
           name
         end.compact
