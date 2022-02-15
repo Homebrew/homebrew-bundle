@@ -10,7 +10,7 @@ GEM
     concurrent-ruby (1.1.9)
     diff-lcs (1.5.0)
     docile (1.4.0)
-    i18n (1.9.1)
+    i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     minitest (5.15.0)
     rexml (3.2.5)
