@@ -105,8 +105,8 @@ describe Bundle::CaskInstaller do
           receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "firefox", "--appdir=/Applications",
                                 verbose: false)
                           .and_return(true)
-        expect(described_class.preinstall("firefox", args: { appdir: "/Applications" })).to eq(true)
-        expect(described_class.install("firefox", args: { appdir: "/Applications" })).to eq(true)
+        expect(described_class.preinstall("firefox", args: { appdir: "/Applications" })).to be(true)
+        expect(described_class.install("firefox", args: { appdir: "/Applications" })).to be(true)
       end
 
       it "reports a failure" do
@@ -122,15 +122,15 @@ describe Bundle::CaskInstaller do
           expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "iterm", "--force",
                                                   verbose: false)
                                             .and_return(true)
-          expect(described_class.preinstall("iterm", args: { force: true })).to eq(true)
-          expect(described_class.install("iterm", args: { force: true })).to eq(true)
+          expect(described_class.preinstall("iterm", args: { force: true })).to be(true)
+          expect(described_class.install("iterm", args: { force: true })).to be(true)
         end
 
         it "does not include a flag if false" do
           expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "iterm", verbose: false)
                                             .and_return(true)
-          expect(described_class.preinstall("iterm", args: { force: false })).to eq(true)
-          expect(described_class.install("iterm", args: { force: false })).to eq(true)
+          expect(described_class.preinstall("iterm", args: { force: false })).to be(true)
+          expect(described_class.install("iterm", args: { force: false })).to be(true)
         end
       end
     end

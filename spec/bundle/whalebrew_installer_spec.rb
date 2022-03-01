@@ -17,7 +17,7 @@ describe Bundle::WhalebrewInstaller do
 
       it "returns true" do
         allow(Bundle::WhalebrewDumper).to receive(:images).and_return(["whalebrew/wget"])
-        expect(described_class.image_installed?("whalebrew/wget")).to eq(true)
+        expect(described_class.image_installed?("whalebrew/wget")).to be(true)
       end
     end
 
@@ -28,7 +28,7 @@ describe Bundle::WhalebrewInstaller do
 
       it "returns false" do
         allow(Bundle::WhalebrewDumper).to receive(:images).and_return([])
-        expect(described_class.image_installed?("test/doesnotexist")).to eq(false)
+        expect(described_class.image_installed?("test/doesnotexist")).to be(false)
       end
     end
   end
