@@ -22,10 +22,10 @@ describe Bundle::TapDumper do
   context "with `bitbucket/bar`, `homebrew/baz` and `homebrew/foo` taps" do
     before do
       described_class.reset!
-      bar = instance_double("Tap", name: "bitbucket/bar", custom_remote?: true,
+      bar = instance_double(Tap, name: "bitbucket/bar", custom_remote?: true,
                             remote: "https://bitbucket.org/bitbucket/bar.git")
-      baz = instance_double("Tap", name: "homebrew/baz", custom_remote?: false)
-      foo = instance_double("Tap", name: "homebrew/foo", custom_remote?: false)
+      baz = instance_double(Tap, name: "homebrew/baz", custom_remote?: false)
+      foo = instance_double(Tap, name: "homebrew/foo", custom_remote?: false)
       allow(Tap).to receive(:each).and_return [bar, baz, foo]
     end
 

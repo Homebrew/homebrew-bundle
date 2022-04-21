@@ -89,7 +89,7 @@ describe Bundle::Locker do
         before do
           allow(OS).to receive(:mac?).and_return(true)
 
-          adoptopenjdk8 = instance_double("Cask::Cask", to_s: "adoptopenjdk8", version: "8,232:b09")
+          adoptopenjdk8 = instance_double(Cask::Cask, to_s: "adoptopenjdk8", version: "8,232:b09")
           allow(Cask::Caskroom).to receive(:casks).and_return([adoptopenjdk8])
           allow(locker).to receive(:`).with("mas list").and_return("497799835 Xcode (11.2)")
         end

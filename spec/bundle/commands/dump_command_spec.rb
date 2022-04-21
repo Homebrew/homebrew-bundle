@@ -33,7 +33,7 @@ describe Bundle::Commands::Dump do
     end
 
     it "doesn't raise error" do
-      io = instance_double("File", write: true)
+      io = instance_double(File, write: true)
       expect_any_instance_of(Pathname).to receive(:open).with("w").and_yield(io)
       expect(io).to receive(:write)
       expect do

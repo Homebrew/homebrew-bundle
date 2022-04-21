@@ -2,3 +2,4 @@
 
 require "cask/cask"
 require "cask/caskroom"
+require "cask/config"
