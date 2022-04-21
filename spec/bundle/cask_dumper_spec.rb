@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "cask"
 
 describe Bundle::CaskDumper do
   subject(:dumper) { described_class }
@@ -40,17 +41,17 @@ describe Bundle::CaskDumper do
     before do
       described_class.reset!
 
-      foo = instance_double("Cask::Cask", to_s: "foo", desc: nil, config: nil)
-      baz = instance_double("Cask::Cask", to_s: "baz", desc: "Software", config: nil)
+      foo = instance_double(Cask::Cask, to_s: "foo", desc: nil, config: nil)
+      baz = instance_double(Cask::Cask, to_s: "baz", desc: "Software", config: nil)
       bar = instance_double(
-        "Cask::Cask", to_s:   "bar",
-                      desc:   nil,
-                      config: instance_double("Cask::Cask.config",
-                                              explicit:   {
-                                                fontdir:   "/Library/Fonts",
-                                                languages: ["zh-TW"],
-                                              },
-                                              explicit_s: 'fontdir: "/Library/Fonts", language: "zh-TW"')
+        Cask::Cask, to_s:   "bar",
+                    desc:   nil,
+                    config: instance_double(Cask::Config,
+                                            explicit:   {
+                                              fontdir:   "/Library/Fonts",
+                                              languages: ["zh-TW"],
+                                            },
+                                            explicit_s: 'fontdir: "/Library/Fonts", language: "zh-TW"')
       )
 
       allow(Bundle).to receive(:cask_installed?).and_return(true)
@@ -86,8 +87,8 @@ describe Bundle::CaskDumper do
     context "when multiple casks have the same dependency" do
       before do
         described_class.reset!
-        foo = instance_double("Cask::Cask", to_s: "foo", depends_on: { formula: ["baz", "qux"] })
-        bar = instance_double("Cask::Cask", to_s: "bar", depends_on: {})
+        foo = instance_double(Cask::Cask, to_s: "foo", depends_on: { formula: ["baz", "qux"] })
+        bar = instance_double(Cask::Cask, to_s: "bar", depends_on: {})
         allow(Cask::Caskroom).to receive(:casks).and_return([foo, bar])
         allow(Bundle).to receive(:cask_installed?).and_return(true)
       end

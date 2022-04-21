@@ -10,7 +10,7 @@ describe Bundle::BrewDumper do
   subject(:dumper) { described_class }
 
   let(:foo) do
-    instance_double("Formula",
+    instance_double(Formula,
                     name:                   "foo",
                     desc:                   "foobar",
                     oldname:                "oldfoo",
@@ -56,7 +56,7 @@ describe Bundle::BrewDumper do
   end
   let(:bar) do
     linked_keg = Pathname("/usr/local").join("var").join("homebrew").join("linked").join("bar")
-    instance_double("Formula",
+    instance_double(Formula,
                     name:                   "bar",
                     desc:                   "barfoo",
                     oldname:                nil,
@@ -119,7 +119,7 @@ describe Bundle::BrewDumper do
     }
   end
   let(:baz) do
-    instance_double("Formula",
+    instance_double(Formula,
                     name:                   "baz",
                     desc:                   "",
                     oldname:                nil,
@@ -202,7 +202,7 @@ describe Bundle::BrewDumper do
       expect(Formula).to receive(:installed).and_return([foo, bar, baz])
       expect(bar.linked_keg).to receive(:realpath).and_return(OpenStruct.new(basename: "1.0"))
       expect(Tab).to receive(:for_keg).with(bar.linked_keg).and_return \
-        instance_double("Tab",
+        instance_double(Tab,
                         installed_as_dependency: false,
                         installed_on_request:    false,
                         poured_from_bottle:      true,
