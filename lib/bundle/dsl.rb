@@ -74,14 +74,15 @@ module Bundle
       @entries << Entry.new(:whalebrew, name)
     end
 
-    def tap(name, clone_target = nil)
+    def tap(name, clone_target = nil, options = {})
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       if clone_target && !clone_target.is_a?(String)
         raise "clone_target(#{clone_target.inspect}) should be nil or a String object"
       end
 
+      options[:clone_target] = clone_target
       name = Bundle::Dsl.sanitize_tap_name(name)
-      @entries << Entry.new(:tap, name, clone_target: clone_target)
+      @entries << Entry.new(:tap, name, options)
     end
 
     HOMEBREW_TAP_ARGS_REGEX = %r{^([\w-]+)/(homebrew-)?([\w-]+)$}.freeze

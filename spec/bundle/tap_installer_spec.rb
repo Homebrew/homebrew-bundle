@@ -53,5 +53,25 @@ describe Bundle::TapInstaller do
         expect(described_class.install("homebrew/cask", clone_target: "clone_target_path")).to be(false)
       end
     end
+
+    context "with force_auto_update" do
+      it "taps" do
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "tap", "homebrew/cask",
+                                                "--force-auto-update",
+                                                verbose: false)
+                                          .and_return(true)
+        expect(described_class.preinstall("homebrew/cask", force_auto_update: true)).to be(true)
+        expect(described_class.install("homebrew/cask", force_auto_update: true)).to be(true)
+      end
+
+      it "fails" do
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "tap", "homebrew/cask",
+                                                "--force-auto-update",
+                                                verbose: false)
+                                          .and_return(false)
+        expect(described_class.preinstall("homebrew/cask", force_auto_update: true)).to be(true)
+        expect(described_class.install("homebrew/cask", force_auto_update: true)).to be(false)
+      end
+    end
   end
 end
