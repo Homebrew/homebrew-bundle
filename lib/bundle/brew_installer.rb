@@ -236,7 +236,7 @@ module Bundle
     end
 
     def install!(verbose:)
-      with_args = @args.empty? ? "" : " with args #{@args}"
+      with_args = " with args #{@args}" if @args.present?
       puts "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
       unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *@args, verbose: verbose)
         @changed = nil
