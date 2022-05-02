@@ -27,6 +27,9 @@ An example `Brewfile`:
 tap "homebrew/cask"
 # 'brew tap' with custom Git URL
 tap "user/tap-repo", "https://user@bitbucket.org/user/homebrew-tap-repo.git"
+# 'brew tap' with arguments
+tap "user/tap-repo", "https://user@bitbucket.org/user/homebrew-tap-repo.git", force_auto_update: true
+
 # set arguments for all 'brew install --cask' commands
 cask_args appdir: "~/Applications", require_sha: true
 

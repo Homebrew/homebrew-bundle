@@ -10,6 +10,7 @@ describe Bundle::Dsl do
         cask_args appdir: '/Applications'
         tap 'homebrew/cask'
         tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
+        tap 'auto/update', 'https://bitbucket.org/auto/update.git', force_auto_update: true
         brew 'imagemagick'
         brew 'mysql@5.6', restart_service: true, link: true, conflicts_with: ['mysql']
         brew 'emacs', args: ['with-cocoa', 'with-gnutls']
@@ -34,18 +35,20 @@ describe Bundle::Dsl do
       expect(dsl.entries[1].name).to eql("telemachus/brew")
       expect(dsl.entries[1].options).to \
         eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git")
-      expect(dsl.entries[2].name).to eql("imagemagick")
-      expect(dsl.entries[3].name).to eql("mysql@5.6")
-      expect(dsl.entries[3].options).to eql(restart_service: true, link: true, conflicts_with: ["mysql"])
-      expect(dsl.entries[4].name).to eql("emacs")
-      expect(dsl.entries[4].options).to eql(args: ["with-cocoa", "with-gnutls"])
-      expect(dsl.entries[5].name).to eql("google-chrome")
-      expect(dsl.entries[6].name).to eql("java")
-      expect(dsl.entries[7].name).to eql("firefox")
-      expect(dsl.entries[7].options).to eql(args: { appdir: "~/my-apps/Applications" }, full_name: "firefox")
-      expect(dsl.entries[8].name).to eql("1Password")
-      expect(dsl.entries[8].options).to eql(id: 443_987_910)
-      expect(dsl.entries[9].name).to eql("whalebrew/wget")
+      expect(dsl.entries[2].options).to \
+        eql(clone_target: "https://bitbucket.org/auto/update.git", force_auto_update: true)
+      expect(dsl.entries[3].name).to eql("imagemagick")
+      expect(dsl.entries[4].name).to eql("mysql@5.6")
+      expect(dsl.entries[4].options).to eql(restart_service: true, link: true, conflicts_with: ["mysql"])
+      expect(dsl.entries[5].name).to eql("emacs")
+      expect(dsl.entries[5].options).to eql(args: ["with-cocoa", "with-gnutls"])
+      expect(dsl.entries[6].name).to eql("google-chrome")
+      expect(dsl.entries[7].name).to eql("java")
+      expect(dsl.entries[8].name).to eql("firefox")
+      expect(dsl.entries[8].options).to eql(args: { appdir: "~/my-apps/Applications" }, full_name: "firefox")
+      expect(dsl.entries[9].name).to eql("1Password")
+      expect(dsl.entries[9].options).to eql(id: 443_987_910)
+      expect(dsl.entries[10].name).to eql("whalebrew/wget")
     end
   end
 
