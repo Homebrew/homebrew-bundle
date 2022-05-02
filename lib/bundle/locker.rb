@@ -75,7 +75,7 @@ module Bundle
 
       json = JSON.pretty_generate(lock)
       begin
-        lockfile.unlink if lockfile.exist?
+        lockfile.unlink if lockfile.exist? and not lockfile.symlink?
         lockfile.write("#{json}\n")
       rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
         opoo "Could not write to #{lockfile}!"
