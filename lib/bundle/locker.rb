@@ -12,9 +12,10 @@ module Bundle
       brew_file_path = Brewfile.path(global: global, file: file)
       lock_file_path = brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
 
-      # will recursively resolve any symlinks to lock file, if present
-      # so that calling `unlink` on the lockfile will remove the original file
-      # not the symlinks
+      # no need to call realpath if the lockfile is not a symlink
+      # unnecessary call to fs, also breaks tests, which use filenames that are not in fs
+      return lock_file_path if !lock_file_path.symlink?
+
       lock_file_path.realpath
     end
 
