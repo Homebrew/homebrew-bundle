@@ -10,7 +10,12 @@ module Bundle
 
     def lockfile(global: false, file: nil)
       brew_file_path = Brewfile.path(global: global, file: file)
-      brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
+      lock_file_path = brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
+
+      # will recursively resolve any symlinks to lock file, if present
+      # so that calling `unlink` on the lockfile will remove the original file
+      # not the symlinks
+      lock_file_path.realpath
     end
 
     def write_lockfile?(global: false, file: nil, no_lock: false)
@@ -75,7 +80,7 @@ module Bundle
 
       json = JSON.pretty_generate(lock)
       begin
-        lockfile.unlink if lockfile.exist? && !lockfile.symlink?
+        lockfile.unlink if lockfile.exist?
         lockfile.write("#{json}\n")
       rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
         opoo "Could not write to #{lockfile}!"
