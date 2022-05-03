@@ -14,7 +14,7 @@ module Bundle
 
       # no need to call realpath if the lockfile is not a symlink
       # unnecessary call to fs, also breaks tests, which use filenames that are not in fs
-      return lock_file_path if !lock_file_path.symlink?
+      return lock_file_path unless lock_file_path.symlink?
 
       lock_file_path.realpath
     end
