@@ -10,7 +10,13 @@ module Bundle
 
     def lockfile(global: false, file: nil)
       brew_file_path = Brewfile.path(global: global, file: file)
-      brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
+      lock_file_path = brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
+
+      # no need to call realpath if the lockfile is not a symlink
+      # unnecessary call to fs, also breaks tests, which use filenames that are not in fs
+      lock_file_path = lock_file_path.realpath if lock_file_path.symlink?
+
+      lock_file_path
     end
 
     def write_lockfile?(global: false, file: nil, no_lock: false)
