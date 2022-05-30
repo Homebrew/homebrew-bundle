@@ -149,8 +149,7 @@ module Bundle
 
       runtime_dependencies ||= formula.runtime_dependencies.map(&:name)
 
-      bottled_or_disabled = formula.bottle_disabled?
-      bottled_or_disabled ||= if formula.bottle_defined?
+      bottled = if formula.bottle_defined?
         bottle_hash = formula.bottle_hash.deep_symbolize_keys
         formula.bottled?
       end
@@ -174,7 +173,7 @@ module Bundle
         link?:                    link,
         poured_from_bottle?:      (poured_from_bottle || false),
         bottle:                   (bottle_hash || false),
-        bottled_or_disabled:      (bottled_or_disabled || false),
+        bottled:                  (bottled || false),
         official_tap:             (formula.tap&.official? || false),
       }
     end

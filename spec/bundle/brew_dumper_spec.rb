@@ -26,7 +26,6 @@ describe Bundle::BrewDumper do
                     pinned?:                false,
                     outdated?:              false,
                     bottle_defined?:        false,
-                    bottle_disabled?:       false,
                     bottled?:               false,
                     tap:                    OpenStruct.new(official?: false))
   end
@@ -36,7 +35,7 @@ describe Bundle::BrewDumper do
       any_version_installed?:   true,
       args:                     [],
       bottle:                   false,
-      bottled_or_disabled:      false,
+      bottled:                  false,
       build_dependencies:       [],
       conflicts_with:           [],
       dependencies:             [],
@@ -72,7 +71,6 @@ describe Bundle::BrewDumper do
                     pinned?:                true,
                     outdated?:              true,
                     bottle_defined?:        true,
-                    bottle_disabled?:       false,
                     bottled?:               true,
                     linked_keg:             linked_keg,
                     tap:                    OpenStruct.new(official?: true),
@@ -100,7 +98,7 @@ describe Bundle::BrewDumper do
           },
         },
       },
-      bottled_or_disabled:      true,
+      bottled:                  true,
       build_dependencies:       [],
       conflicts_with:           [],
       dependencies:             [],
@@ -135,7 +133,6 @@ describe Bundle::BrewDumper do
                     pinned?:                false,
                     outdated?:              false,
                     bottle_defined?:        false,
-                    bottle_disabled?:       false,
                     bottled?:               false,
                     tap:                    OpenStruct.new(official?: false))
   end
@@ -145,7 +142,7 @@ describe Bundle::BrewDumper do
       any_version_installed?:   true,
       args:                     [],
       bottle:                   false,
-      bottled_or_disabled:      false,
+      bottled:                  false,
       build_dependencies:       ["bar"],
       conflicts_with:           [],
       dependencies:             ["bar"],

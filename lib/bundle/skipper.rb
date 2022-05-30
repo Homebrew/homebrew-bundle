@@ -11,7 +11,7 @@ module Bundle
            entry.type == :brew && entry.name.exclude?("/") &&
            (formula = BrewDumper.formulae_by_full_name(entry.name)) &&
            formula[:official_tap] &&
-           !formula[:bottled_or_disabled]
+           !formula[:bottled]
           reason = Hardware::CPU.arm? ? "Apple Silicon" : "Linux"
           puts Formatter.warning "Skipping #{entry.name} (no bottle for #{reason})" unless silent
           return true
