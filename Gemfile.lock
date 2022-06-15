@@ -12,7 +12,7 @@ GEM
     docile (1.4.0)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
-    minitest (5.15.0)
+    minitest (5.16.0)
     rexml (3.2.5)
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
