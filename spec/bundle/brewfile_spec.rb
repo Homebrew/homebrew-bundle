@@ -14,15 +14,7 @@ describe Bundle::Brewfile do
     let(:has_global) { false }
 
     before do
-      original_method = ENV.method(:[])
-      allow(ENV).to receive(:[]) do |env_string|
-        case env_string
-        when "HOMEBREW_BUNDLE_FILE"
-          env_bundle_file_value
-        else
-          original_method.call(env_string)
-        end
-      end
+      allow(ENV).to receive(:fetch).with("HOMEBREW_BUNDLE_FILE", any_args).and_return(env_bundle_file_value)
     end
 
     context "when `file` is specified with a relative path" do
@@ -127,7 +119,7 @@ describe Bundle::Brewfile do
 
     context "when `global` is true" do
       let(:has_global) { true }
-      let(:expected_pathname) { Pathname.new("#{ENV["HOME"]}/.Brewfile") }
+      let(:expected_pathname) { Pathname.new("#{Dir.home}/.Brewfile") }
 
       it "returns the expected path" do
         expect(path).to eq(expected_pathname)
