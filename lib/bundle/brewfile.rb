@@ -5,13 +5,13 @@ module Bundle
     module_function
 
     def path(dash_writes_to_stdout: false, global: false, file: nil)
-      env_bundle_file = ENV["HOMEBREW_BUNDLE_FILE"]
+      env_bundle_file = ENV.fetch("HOMEBREW_BUNDLE_FILE", nil)
 
       filename =
         if global
           raise "'HOMEBREW_BUNDLE_FILE' cannot be specified with '--global'" if env_bundle_file.present?
 
-          "#{ENV["HOME"]}/.Brewfile"
+          "#{Dir.home}/.Brewfile"
         elsif file.present?
           handle_file_value(file, dash_writes_to_stdout)
         elsif env_bundle_file.present?
