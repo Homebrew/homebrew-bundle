@@ -38,6 +38,8 @@ module Bundle
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup")
           puts cleanup unless cleanup.empty?
         else
+          puts "Listing actions for cleanup, but not taking action..."
+          
           if casks.any?
             puts "Would uninstall casks:"
             puts Formatter.columns casks
@@ -58,6 +60,8 @@ module Bundle
             puts "Would `brew cleanup`:"
             puts cleanup
           end
+          
+          puts "Run 'brew bundle cleanup --force' to make changes."
         end
       end
 
