@@ -58,6 +58,10 @@ module Bundle
             puts "Would `brew cleanup`:"
             puts cleanup
           end
+
+          if casks.any? || formulae.any? || taps.any? || !cleanup.empty?
+            puts "Run `brew bundle cleanup --force` to make these changes."
+          end
         end
       end
 
