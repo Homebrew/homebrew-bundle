@@ -31,7 +31,7 @@ module Bundle
     def started_services
       @started_services ||= if Bundle.services_installed?
         states_to_skip = %w[stopped none]
-        `brew services list`.lines.map do |line|
+        Utils.safe_popen_read(HOMEBREW_BREW_FILE, "services", "list").lines.map do |line|
           name, state, _plist = line.split(/\s+/)
           next if states_to_skip.include? state
 
