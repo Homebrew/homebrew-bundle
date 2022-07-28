@@ -5,6 +5,7 @@ require "tsort"
 require "formula"
 require "tab"
 require "utils/bottles"
+require "utils/popen"
 
 describe Bundle::BrewDumper do
   subject(:dumper) { described_class }
