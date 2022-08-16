@@ -5,7 +5,6 @@ require "tsort"
 require "formula"
 require "tab"
 require "utils/bottles"
-require "utils/popen"
 
 describe Bundle::BrewDumper do
   subject(:dumper) { described_class }
@@ -224,6 +223,7 @@ describe Bundle::BrewDumper do
   describe "#dump" do
     it "returns a dump string with installed formulae" do
       expect(Formula).to receive(:installed).and_return([foo, bar, baz])
+      allow(Utils).to receive(:safe_popen_read).and_return("")
       expected = <<~EOS
         # barfoo
         brew "bar"
