@@ -114,6 +114,15 @@ describe Bundle::Locker do
         end
 
         it "returns true" do
+          # TODO: remove once https://github.com/Homebrew/brew/pull/13577 is merged and tagged.
+          allow(DevelopmentTools).to receive(:respond_to?).and_return(true)
+          expect(lockfile).to receive(:write)
+          expect(locker.lock(entries)).to be true
+        end
+
+        # TODO: remove once https://github.com/Homebrew/brew/pull/13577 is merged and tagged.
+        it "returns true with non_apple_gcc_version" do
+          allow(DevelopmentTools).to receive(:respond_to?).and_return(false)
           expect(lockfile).to receive(:write)
           expect(locker.lock(entries)).to be true
         end

@@ -149,11 +149,18 @@ module Bundle
     end
 
     def system_linux
+      # TODO: remove once https://github.com/Homebrew/brew/pull/13577 is merged and tagged.
+      gcc_version = if DevelopmentTools.respond_to?(:gcc_version)
+        DevelopmentTools.gcc_version("gcc")
+      else
+        DevelopmentTools.non_apple_gcc_version("gcc")
+      end
+
       [OS::Linux.os_version, {
         "HOMEBREW_VERSION"        => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"         => HOMEBREW_PREFIX.to_s,
         "Homebrew/linuxbrew-core" => CoreTap.instance.git_head,
-        "GCC"                     => DevelopmentTools.non_apple_gcc_version("gcc"),
+        "GCC"                     => gcc_version,
       }]
     end
   end
