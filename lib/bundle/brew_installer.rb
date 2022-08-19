@@ -92,6 +92,9 @@ module Bundle
 
     def link_change_state!(verbose: false)
       case @link
+      when :overwrite
+        puts "Overwriting links for #{@name} formula." if verbose
+        Bundle.system(HOMEBREW_BREW_FILE, "link", "--force", "--overwrite", @name, verbose: verbose)
       when true
         unless linked_and_keg_only?
           puts "Force-linking #{@name} formula." if verbose

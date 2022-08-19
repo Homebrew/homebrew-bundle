@@ -48,6 +48,19 @@ describe Bundle::BrewInstaller do
       end
     end
 
+    context "when the link option is :overwrite" do
+      before do
+        allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
+      end
+
+      it "links formula" do
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "--force", "--overwrite", "mysql",
+                                                verbose: false).and_return(true)
+        described_class.preinstall(formula, link: :overwrite)
+        described_class.install(formula, link: :overwrite)
+      end
+    end
+
     context "when the link option is false" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)

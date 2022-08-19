@@ -11,8 +11,8 @@ describe Bundle::Dsl do
         tap 'homebrew/cask'
         tap 'telemachus/brew', 'https://telemachus@bitbucket.org/telemachus/brew.git'
         tap 'auto/update', 'https://bitbucket.org/auto/update.git', force_auto_update: true
-        brew 'imagemagick'
-        brew 'mysql@5.6', restart_service: true, link: true, conflicts_with: ['mysql']
+        brew 'imagemagick@6', link: true
+        brew 'mysql@5.6', restart_service: true, link: :overwrite, conflicts_with: ['mysql']
         brew 'emacs', args: ['with-cocoa', 'with-gnutls']
         cask 'google-chrome'
         cask 'java' unless system '/usr/libexec/java_home --failfast'
@@ -37,9 +37,10 @@ describe Bundle::Dsl do
         eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git")
       expect(dsl.entries[2].options).to \
         eql(clone_target: "https://bitbucket.org/auto/update.git", force_auto_update: true)
-      expect(dsl.entries[3].name).to eql("imagemagick")
+      expect(dsl.entries[3].name).to eql("imagemagick@6")
+      expect(dsl.entries[3].options).to eql(link: true)
       expect(dsl.entries[4].name).to eql("mysql@5.6")
-      expect(dsl.entries[4].options).to eql(restart_service: true, link: true, conflicts_with: ["mysql"])
+      expect(dsl.entries[4].options).to eql(restart_service: true, link: :overwrite, conflicts_with: ["mysql"])
       expect(dsl.entries[5].name).to eql("emacs")
       expect(dsl.entries[5].options).to eql(args: ["with-cocoa", "with-gnutls"])
       expect(dsl.entries[6].name).to eql("google-chrome")
