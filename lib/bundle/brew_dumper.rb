@@ -51,7 +51,7 @@ module Bundle
       formulae_by_full_name(name) || @formulae_by_name[name]
     end
 
-    def dump(describe: false, no_restart: false)
+    def dump(describe: false, no_start: false, no_restart: false)
       requested_formula = formulae.select do |f|
         f[:installed_on_request?] || !f[:installed_as_dependency?]
       end
@@ -65,8 +65,15 @@ module Bundle
 
         args = f[:args].map { |arg| "\"#{arg}\"" }.sort.join(", ")
         brewline += ", args: [#{args}]" unless f[:args].empty?
-        brewline += ", restart_service: true" if !no_restart && BrewServices.started?(f[:full_name])
         brewline += ", link: #{f[:link?]}" unless f[:link?].nil?
+        if f[:service?]
+          if BrewServices.started?(f[:full_name])
+            brewline += ", start_service: true" unless no_start
+            brewline += ", restart_service: :changed" unless no_restart
+          else
+            brewline += ", start_service: false"
+          end
+        end
         brewline
       end.join("\n")
     end
@@ -175,6 +182,7 @@ module Bundle
         bottle:                   (bottle_hash || false),
         bottled:                  (bottled || false),
         official_tap:             (formula.tap&.official? || false),
+        service?:                 formula.service?,
       }
     end
     private_class_method :formula_to_hash

@@ -35,10 +35,10 @@ cask_args appdir: "~/Applications", require_sha: true
 
 # 'brew install'
 brew "imagemagick"
-# 'brew install --with-rmtp', 'brew services restart' on version changes
-brew "denji/nginx/nginx-full", args: ["with-rmtp"], restart_service: :changed
-# 'brew install', always 'brew services restart', 'brew link', 'brew unlink mysql' (if it is installed)
-brew "mysql@5.6", restart_service: true, link: true, conflicts_with: ["mysql"]
+# 'brew install --with-rmtp', always 'brew services restart'
+brew "denji/nginx/nginx-full", args: ["with-rmtp"], restart_service: true
+# 'brew install', always 'brew service start' if not running, 'brew services restart' on version changes, 'brew link', 'brew unlink mysql' (if it is installed)
+brew "mysql@5.6", start_service: true, restart_service: :changed, link: true, conflicts_with: ["mysql"]
 
 # 'brew install --cask'
 cask "google-chrome"

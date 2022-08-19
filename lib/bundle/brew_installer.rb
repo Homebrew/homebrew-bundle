@@ -66,6 +66,10 @@ module Bundle
       !@start_service.nil?
     end
 
+    def start_service_needed?
+      start_service? && !BrewServices.started?(@full_name)
+    end
+
     def restart_service?
       !@restart_service.nil?
     end
@@ -82,7 +86,10 @@ module Bundle
     end
 
     def service_change_state!(verbose:)
-      if restart_service_needed?
+      if start_service_needed?
+        puts "Starting #{@name} service." if verbose
+        BrewServices.start(@full_name, verbose: verbose)
+      elsif restart_service_needed?
         puts "Restarting #{@name} service." if verbose
         BrewServices.restart(@full_name, verbose: verbose)
       else
