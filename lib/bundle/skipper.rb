@@ -13,7 +13,16 @@ module Bundle
            formula[:official_tap] &&
            !formula[:bottled]
           reason = Hardware::CPU.arm? ? "Apple Silicon" : "Linux"
+
           puts Formatter.warning "Skipping #{entry.name} (no bottle for #{reason})" unless silent
+
+          # If the user wants to install things from a bundle even if no bottle exists
+          # we should let them.
+          if ENV['HOMEBREW_INSTALL_IF_BOTTLE_MISSING'] == "true"
+            puts Formatter.warning "... but HOMEBREW_INSTALL_IF_BOTTLE_MISSING is set to true. Installing anyway!" unless silent
+            return false
+          end
+
           return true
         end
 
