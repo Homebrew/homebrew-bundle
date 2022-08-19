@@ -18,8 +18,9 @@ module Bundle
 
           # If the user wants to install things from a bundle even if no bottle exists
           # we should let them.
-          if ENV['HOMEBREW_INSTALL_IF_BOTTLE_MISSING'] == "true"
-            puts Formatter.warning "... but HOMEBREW_INSTALL_IF_BOTTLE_MISSING is set to true. Installing anyway!" unless silent
+          if ENV["HOMEBREW_INSTALL_IF_BOTTLE_MISSING"] == "true"
+            message = "... but HOMEBREW_INSTALL_IF_BOTTLE_MISSING is set to true. Installing anyway!"
+            puts Formatter.warning message unless silent
             return false
           end
 
