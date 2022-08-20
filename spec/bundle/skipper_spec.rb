@@ -33,6 +33,14 @@ describe Bundle::Skipper do
 
         expect(skipper.skip?(entry)).to be true
       end
+      it "returns false when HOMEBREW_INSTALL_IF_BOTTLE_MISSING is true" do
+        allow(ENV).to receive(:[]).with("HOMEBREW_INSTALL_IF_BOTTLE_MISSING").and_return("true")
+        allow(Hardware::CPU).to receive(:arm?).and_return(true)
+        allow_any_instance_of(Formula).to receive(:bottled?).and_return(false)
+
+        expect(skipper.skip?(entry)).to be false 
+      end
+
     end
 
     context "with an unlisted cask", :needs_macos do
