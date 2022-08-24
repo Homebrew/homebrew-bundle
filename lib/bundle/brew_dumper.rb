@@ -118,6 +118,8 @@ module Bundle
     private_class_method :add_formula
 
     def formula_to_hash(formula)
+      formula.active_spec = :stable
+
       keg = if formula.linked?
         link = true if formula.keg_only?
         formula.linked_keg
