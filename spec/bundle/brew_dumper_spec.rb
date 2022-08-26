@@ -25,8 +25,7 @@ describe Bundle::BrewDumper do
                     keg_only?:              true,
                     pinned?:                false,
                     outdated?:              false,
-                    bottle_defined?:        false,
-                    bottled?:               false,
+                    stable:                 OpenStruct.new(bottle_defined?: false, bottled?: false),
                     tap:                    OpenStruct.new(official?: false))
   end
   let(:foo_hash) do
@@ -70,9 +69,8 @@ describe Bundle::BrewDumper do
                     keg_only?:              false,
                     pinned?:                true,
                     outdated?:              true,
-                    bottle_defined?:        true,
-                    bottled?:               true,
                     linked_keg:             linked_keg,
+                    stable:                 OpenStruct.new(bottle_defined?: true, bottled?: true),
                     tap:                    OpenStruct.new(official?: true),
                     bottle_hash:            {
                       cellar: ":any",
@@ -132,8 +130,7 @@ describe Bundle::BrewDumper do
                     keg_only?:              false,
                     pinned?:                false,
                     outdated?:              false,
-                    bottle_defined?:        false,
-                    bottled?:               false,
+                    stable:                 OpenStruct.new(bottle_defined?: false, bottled?: false),
                     tap:                    OpenStruct.new(official?: false))
   end
   let(:baz_hash) do
