@@ -149,9 +149,9 @@ module Bundle
 
       runtime_dependencies ||= formula.runtime_dependencies.map(&:name)
 
-      bottled = if formula.bottle_defined?
+      bottled = if (stable = formula.stable) && stable.bottle_defined?
         bottle_hash = formula.bottle_hash.deep_symbolize_keys
-        formula.bottled?
+        stable.bottled?
       end
 
       {

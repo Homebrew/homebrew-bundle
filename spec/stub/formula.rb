@@ -44,14 +44,6 @@ class Formula
     new(name)
   end
 
-  def bottle_defined?
-    true
-  end
-
-  def bottled?
-    true
-  end
-
   def bottle_hash
     {}
   end
@@ -99,6 +91,10 @@ class Formula
   end
 
   def tap
-    OpenStruct.new official?: true
+    OpenStruct.new(official?: true)
+  end
+
+  def stable
+    OpenStruct.new(bottled?: true, bottle_defined?: true)
   end
 end
