@@ -22,11 +22,11 @@ module Bundle
     end
 
     def mas_installed?
-      @mas_installed ||= !which("mas").nil?
+      @mas_installed ||= which_formula("mas")
     end
 
     def whalebrew_installed?
-      @whalebrew_installed ||= !which("whalebrew").nil?
+      @whalebrew_installed ||= which_formula("whalebrew")
     end
 
     def mas_signedin?
@@ -44,7 +44,13 @@ module Bundle
     end
 
     def services_installed?
-      @services_installed ||= !which("services.rb").nil?
+      @services_installed ||= which("services.rb").present?
+    end
+
+    def which_formula(name)
+      formula = Formulary.factory(name)
+      ENV["PATH"] = "#{formula.opt_bin}:#{ENV.fetch("PATH", nil)}" if formula.any_version_installed?
+      which(name).present?
     end
   end
 end
