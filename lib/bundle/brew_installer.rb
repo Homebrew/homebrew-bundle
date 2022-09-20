@@ -22,7 +22,7 @@ module Bundle
       @args = options.fetch(:args, []).map { |arg| "--#{arg}" }
       @conflicts_with_arg = options.fetch(:conflicts_with, [])
       @restart_service = options[:restart_service]
-      @start_service = options[:start_service]
+      @start_service = options.fetch(:start_service, @restart_service)
       @link = options.fetch(:link, nil)
       @changed = nil
     end
@@ -86,12 +86,12 @@ module Bundle
     end
 
     def service_change_state!(verbose:)
-      if start_service_needed?
-        puts "Starting #{@name} service." if verbose
-        BrewServices.start(@full_name, verbose: verbose)
-      elsif restart_service_needed?
+      if restart_service_needed?
         puts "Restarting #{@name} service." if verbose
         BrewServices.restart(@full_name, verbose: verbose)
+      elsif start_service_needed?
+        puts "Starting #{@name} service." if verbose
+        BrewServices.start(@full_name, verbose: verbose)
       else
         true
       end

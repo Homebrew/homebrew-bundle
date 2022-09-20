@@ -358,6 +358,14 @@ describe Bundle::BrewInstaller do
       it "is false with {start_service: true}" do
         expect(described_class.new(formula, start_service: true).start_service_needed?).to be(false)
       end
+
+      it "is false with {restart_service: true}" do
+        expect(described_class.new(formula, restart_service: true).start_service_needed?).to be(false)
+      end
+
+      it "is false with {restart_service: :changed}" do
+        expect(described_class.new(formula, restart_service: :changed).start_service_needed?).to be(false)
+      end
     end
 
     context "when a service is not started" do
@@ -371,6 +379,14 @@ describe Bundle::BrewInstaller do
 
       it "is true if {start_service: true}" do
         expect(described_class.new(formula, start_service: true).start_service_needed?).to be(true)
+      end
+
+      it "is true if {restart_service: true}" do
+        expect(described_class.new(formula, restart_service: true).start_service_needed?).to be(true)
+      end
+
+      it "is true if {restart_service: :changed}" do
+        expect(described_class.new(formula, restart_service: :changed).start_service_needed?).to be(true)
       end
     end
   end
