@@ -97,8 +97,4 @@ class Formula
   def stable
     OpenStruct.new(bottled?: true, bottle_defined?: true)
   end
-
-  def service?
-    false
-  end
 end

@@ -13,20 +13,20 @@ module Bundle
       true
     end
 
-    def build_brewfile(describe: false, no_start: false, no_restart: false)
+    def build_brewfile(describe: false, no_restart: false)
       content = []
       content << TapDumper.dump
-      content << BrewDumper.dump(describe: describe, no_start: no_start, no_restart: no_restart)
+      content << BrewDumper.dump(describe: describe, no_restart: no_restart)
       content << CaskDumper.dump(describe: describe)
       content << MacAppStoreDumper.dump
       content << WhalebrewDumper.dump
       "#{content.reject(&:empty?).join("\n")}\n"
     end
 
-    def dump_brewfile(global: false, file: nil, describe: false, force: false, no_start: false, no_restart: false)
+    def dump_brewfile(global: false, file: nil, describe: false, force: false, no_restart: false)
       path = brewfile_path(global: global, file: file)
       can_write_to_brewfile?(path, force: force)
-      content = build_brewfile(describe: describe, no_start: no_start, no_restart: no_restart)
+      content = build_brewfile(describe: describe, no_restart: no_restart)
       write_file path, content
     end
 

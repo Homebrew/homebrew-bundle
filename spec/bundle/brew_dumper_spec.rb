@@ -26,8 +26,7 @@ describe Bundle::BrewDumper do
                     pinned?:                false,
                     outdated?:              false,
                     stable:                 OpenStruct.new(bottle_defined?: false, bottled?: false),
-                    tap:                    OpenStruct.new(official?: false),
-                    service?:               true)
+                    tap:                    OpenStruct.new(official?: false))
   end
   let(:foo_hash) do
     {
@@ -49,7 +48,6 @@ describe Bundle::BrewDumper do
       outdated?:                false,
       pinned?:                  false,
       poured_from_bottle?:      false,
-      service?:                 true,
       version:                  nil,
       official_tap:             false,
     }
@@ -82,8 +80,7 @@ describe Bundle::BrewDumper do
                           url:    "https://brew.sh//foo-1.0.big_sur.bottle.tar.gz",
                         },
                       },
-                    },
-                    service?:               true)
+                    })
   end
   let(:bar_hash) do
     {
@@ -113,7 +110,6 @@ describe Bundle::BrewDumper do
       outdated?:                true,
       pinned?:                  true,
       poured_from_bottle?:      true,
-      service?:                 true,
       version:                  "1.0",
       official_tap:             true,
     }
@@ -135,8 +131,7 @@ describe Bundle::BrewDumper do
                     pinned?:                false,
                     outdated?:              false,
                     stable:                 OpenStruct.new(bottle_defined?: false, bottled?: false),
-                    tap:                    OpenStruct.new(official?: false),
-                    service?:               false)
+                    tap:                    OpenStruct.new(official?: false))
   end
   let(:baz_hash) do
     {
@@ -158,7 +153,6 @@ describe Bundle::BrewDumper do
       outdated?:                false,
       pinned?:                  false,
       poured_from_bottle?:      false,
-      service?:                 false,
       version:                  nil,
       official_tap:             false,
     }
@@ -224,20 +218,15 @@ describe Bundle::BrewDumper do
   end
 
   describe "#dump" do
-    before do
-      allow(Bundle::BrewServices).to receive(:started?).with("qux/quuz/foo").and_return(false)
-      allow(Bundle::BrewServices).to receive(:started?).with("bar").and_return(true)
-    end
-
     it "returns a dump string with installed formulae" do
       expect(Formula).to receive(:installed).and_return([foo, bar, baz])
       allow(Utils).to receive(:safe_popen_read).and_return("")
       expected = <<~EOS
         # barfoo
-        brew "bar", start_service: true, restart_service: :changed
+        brew "bar"
         brew "bazzles/bizzles/baz", link: false
         # foobar
-        brew "qux/quuz/foo", start_service: false
+        brew "qux/quuz/foo"
       EOS
       expect(dumper.dump(describe: true)).to eql(expected.chomp)
     end

@@ -75,8 +75,6 @@ module Homebrew
       switch "--describe",
              description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description."
-      switch "--no-start",
-             description: "`dump` does not add `start_service` to formula lines."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
       switch "--zap",
