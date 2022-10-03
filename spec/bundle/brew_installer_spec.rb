@@ -13,6 +13,55 @@ describe Bundle::BrewInstaller do
       allow_any_instance_of(described_class).to receive(:installed?).and_return(true)
     end
 
+    context "with a true start_service option" do
+      before do
+        allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
+        allow_any_instance_of(described_class).to receive(:installed?).and_return(true)
+      end
+
+      context "when service is already running" do
+        before do
+          allow(Bundle::BrewServices).to receive(:started?).with(formula).and_return(true)
+        end
+
+        context "with a successful installation" do
+          it "start service" do
+            expect(Bundle::BrewServices).not_to receive(:start)
+            described_class.preinstall(formula, start_service: true)
+            described_class.install(formula, start_service: true)
+          end
+        end
+
+        context "with a skipped installation" do
+          it "start service" do
+            expect(Bundle::BrewServices).not_to receive(:start)
+            described_class.install(formula, preinstall: false, start_service: true)
+          end
+        end
+      end
+
+      context "when service is not running" do
+        before do
+          allow(Bundle::BrewServices).to receive(:started?).with(formula).and_return(false)
+        end
+
+        context "with a successful installation" do
+          it "start service" do
+            expect(Bundle::BrewServices).to receive(:start).with(formula, verbose: false).and_return(true)
+            described_class.preinstall(formula, start_service: true)
+            described_class.install(formula, start_service: true)
+          end
+        end
+
+        context "with a skipped installation" do
+          it "start service" do
+            expect(Bundle::BrewServices).to receive(:start).with(formula, verbose: false).and_return(true)
+            described_class.install(formula, preinstall: false, start_service: true)
+          end
+        end
+      end
+    end
+
     context "with a true restart_service option" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
@@ -292,6 +341,52 @@ describe Bundle::BrewInstaller do
     context "when the start_service option is true" do
       it "is true" do
         expect(described_class.new(formula, start_service: true).start_service?).to be(true)
+      end
+    end
+  end
+
+  describe "#start_service_needed?" do
+    context "when a service is already started" do
+      before do
+        allow(Bundle::BrewServices).to receive(:started?).with(formula).and_return(true)
+      end
+
+      it "is false by default" do
+        expect(described_class.new(formula).start_service_needed?).to be(false)
+      end
+
+      it "is false with {start_service: true}" do
+        expect(described_class.new(formula, start_service: true).start_service_needed?).to be(false)
+      end
+
+      it "is false with {restart_service: true}" do
+        expect(described_class.new(formula, restart_service: true).start_service_needed?).to be(false)
+      end
+
+      it "is false with {restart_service: :changed}" do
+        expect(described_class.new(formula, restart_service: :changed).start_service_needed?).to be(false)
+      end
+    end
+
+    context "when a service is not started" do
+      before do
+        allow(Bundle::BrewServices).to receive(:started?).with(formula).and_return(false)
+      end
+
+      it "is false by default" do
+        expect(described_class.new(formula).start_service_needed?).to be(false)
+      end
+
+      it "is true if {start_service: true}" do
+        expect(described_class.new(formula, start_service: true).start_service_needed?).to be(true)
+      end
+
+      it "is true if {restart_service: true}" do
+        expect(described_class.new(formula, restart_service: true).start_service_needed?).to be(true)
+      end
+
+      it "is true if {restart_service: :changed}" do
+        expect(described_class.new(formula, restart_service: :changed).start_service_needed?).to be(true)
       end
     end
   end

@@ -56,7 +56,7 @@ describe Bundle::Locker do
   describe ".lock" do
     describe "writes Brewfile.lock.json" do
       let(:lockfile) { Pathname("Brewfile.json.lock") }
-      let(:brew_options) { { restart_service: true } }
+      let(:brew_options) { { start_service: true, restart_service: true } }
       let(:entries) do
         [
           Bundle::Dsl::Entry.new(:brew, "mysql", brew_options),
@@ -70,7 +70,7 @@ describe Bundle::Locker do
       before do
         allow(locker).to receive(:lockfile).and_return(lockfile)
         allow(brew_options).to receive(:deep_stringify_keys)
-          .and_return("restart_service" => true)
+          .and_return("start_service" => true, "restart_service" => true)
         allow(Bundle::BrewDumper).to receive(:formulae_by_full_name).with("mysql").and_return({
           name:    "mysql",
           version: "8.0.18",
