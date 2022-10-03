@@ -42,6 +42,14 @@ describe Bundle::BrewServices do
       end
     end
 
+    it "starts the service" do
+      allow(described_class).to receive(:started_services).and_return([])
+      expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "services", "start", "nginx",
+                                              verbose: false).and_return(true)
+      expect(described_class.start("nginx")).to be(true)
+      expect(described_class.started_services).to include("nginx")
+    end
+
     it "restarts the service" do
       allow(described_class).to receive(:started_services).and_return([])
       expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "services", "restart", "nginx",
