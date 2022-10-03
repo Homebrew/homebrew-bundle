@@ -17,6 +17,13 @@ module Bundle
       true
     end
 
+    def start(name, verbose: false)
+      return unless Bundle.system HOMEBREW_BREW_FILE, "services", "start", name, verbose: verbose
+
+      started_services << name
+      true
+    end
+
     def restart(name, verbose: false)
       return unless Bundle.system HOMEBREW_BREW_FILE, "services", "restart", name, verbose: verbose
 
