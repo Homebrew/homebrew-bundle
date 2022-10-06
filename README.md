@@ -40,9 +40,8 @@ brew "denji/nginx/nginx-full", args: ["with-rmtp"], restart_service: :changed
 # 'brew install', always 'brew services restart', 'brew link', 'brew unlink mysql' (if it is installed)
 brew "mysql@5.6", restart_service: true, link: true, conflicts_with: ["mysql"]
 # install only on specified OS
-if OS.mac?
-  brew "gnupg"
-end
+brew "gnupg" if OS.mac?
+brew "glibc" if OS.linux?
 
 # 'brew install --cask'
 cask "google-chrome"
