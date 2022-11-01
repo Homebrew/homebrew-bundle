@@ -33,8 +33,7 @@ jobs:
     - run: brew test-bot --only-tap-syntax
 
     - name: Set up Ruby
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.6'
 
@@ -52,5 +51,5 @@ jobs:
         echo 'brew "hello"' > ./Brewfile
         brew bundle
         hello
-      
+
     - uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70
