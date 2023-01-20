@@ -47,6 +47,8 @@ brew "glibc" if OS.linux?
 cask "google-chrome"
 # 'brew install --cask --appdir=~/my-apps/Applications'
 cask "firefox", args: { appdir: "~/my-apps/Applications" }
+# bypass Gatekeeper protections (NOT RECOMMENDED)
+cask "firefox", args: { no_quarantine: true }
 # always upgrade auto-updated or unversioned cask to latest version even if already installed
 cask "opera", greedy: true
 # 'brew install --cask' only if '/usr/libexec/java_home --failfast' fails
