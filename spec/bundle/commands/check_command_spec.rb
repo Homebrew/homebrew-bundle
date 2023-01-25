@@ -221,9 +221,9 @@ describe Bundle::Commands::Check do
 
   context "when a new checker fails to implement installed_and_up_to_date" do
     it "raises an exception" do
-      TestChecker = Class.new(Bundle::Checker::Base) do
+      stub_const("TestChecker", Class.new(Bundle::Checker::Base) do
         class_eval("PACKAGE_TYPE = :test", __FILE__, __LINE__)
-      end.freeze
+      end.freeze)
 
       test_entry = Bundle::Dsl::Entry.new(:test, "test")
       expect { TestChecker.new.find_actionable([test_entry]) }.to raise_error(NotImplementedError)
