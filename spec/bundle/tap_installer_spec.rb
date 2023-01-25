@@ -9,7 +9,7 @@ describe Bundle::TapInstaller do
     end
 
     it "calls Homebrew" do
-      described_class.installed_taps
+      expect { described_class.installed_taps }.not_to raise_error
     end
   end
 
