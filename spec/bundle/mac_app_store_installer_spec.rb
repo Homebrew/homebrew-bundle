@@ -5,7 +5,7 @@ require "spec_helper"
 describe Bundle::MacAppStoreInstaller do
   describe ".installed_app_ids" do
     it "shells out" do
-      described_class.installed_app_ids
+      expect { described_class.installed_app_ids }.not_to raise_error
     end
   end
 

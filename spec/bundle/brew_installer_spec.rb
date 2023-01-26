@@ -160,6 +160,8 @@ describe Bundle::BrewInstaller do
         expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose: verbose).and_return(true)
       end
 
+      # These tests wrap expect() calls in `expectations`
+      # rubocop:disable RSpec/NoExpectationExample
       it "unlinks conflicts and stops their services" do
         expectations(verbose: false)
         described_class.preinstall(formula, restart_service: true, conflicts_with: ["mysql56"])
@@ -172,6 +174,7 @@ describe Bundle::BrewInstaller do
         described_class.preinstall(formula, restart_service: true, conflicts_with: ["mysql56"], verbose: true)
         described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"], verbose: true)
       end
+      # rubocop:enable RSpec/NoExpectationExample
     end
   end
 

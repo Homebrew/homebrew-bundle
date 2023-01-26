@@ -5,7 +5,7 @@ require "spec_helper"
 describe Bundle::WhalebrewInstaller do
   describe ".installed_images" do
     it "shells out" do
-      described_class.installed_images
+      expect { described_class.installed_images }.not_to raise_error
     end
   end
 

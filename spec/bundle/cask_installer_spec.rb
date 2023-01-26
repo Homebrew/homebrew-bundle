@@ -9,7 +9,7 @@ describe Bundle::CaskInstaller do
     end
 
     it "shells out" do
-      described_class.installed_casks
+      expect { described_class.installed_casks }.not_to raise_error
     end
   end
 
