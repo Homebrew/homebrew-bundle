@@ -138,14 +138,17 @@ module Bundle
     end
 
     def system_macos
-      [MacOS.version.to_sym.to_s, {
+      details_hash = {
         "HOMEBREW_VERSION"       => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"        => HOMEBREW_PREFIX.to_s,
-        "Homebrew/homebrew-core" => CoreTap.instance.git_head,
         "CLT"                    => MacOS::CLT.version.to_s,
         "Xcode"                  => MacOS::Xcode.version.to_s,
         "macOS"                  => MacOS.full_version.to_s,
-      }]
+      }
+
+      details_hash["Homebrew/homebrew-core"] = CoreTap.instance.git_head if CoreTap.instance.installed?
+
+      [MacOS.version.to_sym.to_s, details_hash]
     end
 
     def system_linux
