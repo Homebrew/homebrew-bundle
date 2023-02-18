@@ -37,6 +37,7 @@ module Bundle
 
       lock = JSON.parse(lockfile.read) if lockfile.exist?
       lock ||= {}
+      lock["version"] = "1"
       lock["entries"] ||= {}
       lock["system"] ||= {}
 
