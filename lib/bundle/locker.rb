@@ -3,6 +3,7 @@
 require "tap"
 require "os"
 require "development_tools"
+require "env_config"
 
 module Bundle
   module Locker
@@ -141,7 +142,7 @@ module Bundle
       [MacOS.version.to_sym.to_s, {
         "HOMEBREW_VERSION"       => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"        => HOMEBREW_PREFIX.to_s,
-        "Homebrew/homebrew-core" => CoreTap.instance.git_head,
+        "Homebrew/homebrew-core" => Homebrew::EnvConfig.install_from_api? ? "api" : CoreTap.instance.git_head,
         "CLT"                    => MacOS::CLT.version.to_s,
         "Xcode"                  => MacOS::Xcode.version.to_s,
         "macOS"                  => MacOS.full_version.to_s,
@@ -159,7 +160,7 @@ module Bundle
       [OS::Linux.os_version, {
         "HOMEBREW_VERSION"        => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"         => HOMEBREW_PREFIX.to_s,
-        "Homebrew/linuxbrew-core" => CoreTap.instance.git_head,
+        "Homebrew/linuxbrew-core" => Homebrew::EnvConfig.install_from_api? ? "api" : CoreTap.instance.git_head,
         "GCC"                     => gcc_version,
       }]
     end
