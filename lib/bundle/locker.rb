@@ -159,12 +159,15 @@ module Bundle
         DevelopmentTools.non_apple_gcc_version("gcc")
       end
 
-      [OS::Linux.os_version, {
+      details_hash = {
         "HOMEBREW_VERSION"        => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"         => HOMEBREW_PREFIX.to_s,
-        "Homebrew/linuxbrew-core" => CoreTap.instance.git_head,
         "GCC"                     => gcc_version,
-      }]
+      }
+
+      details_hash["Homebrew/linuxbrew-core"] = CoreTap.instance.git_head if CoreTap.instance.installed?
+
+      [OS::Linux.os_version, details_hash]
     end
   end
 end
