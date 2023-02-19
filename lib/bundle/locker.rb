@@ -7,7 +7,6 @@ require "env_config"
 
 module Bundle
   module Locker
-
     LOCKFILE_FORMAT_VERSION = "1"
 
     module_function
@@ -20,7 +19,6 @@ module Bundle
       resolve_lockfile_path(global: global, brewfile: file)
     end
     deprecate(:lockfile, :resolve_lockfile_path, 2023, 2)
-
 
     def resolve_lockfile_path(global: false, brewfile: nil)
       brew_file_path = Brewfile.path(global: global, file: brewfile)
@@ -57,6 +55,7 @@ module Bundle
 
     def read_lockfile_if_exists(path)
       return JSON.parse(path.read) if path.exist?
+
       {}
     end
 
@@ -78,7 +77,7 @@ module Bundle
       lock
     end
 
-    def update_lock_metadata(lock: lock)
+    def update_lock_metadata(lock: {})
       lock["version"] = LOCKFILE_FORMAT_VERSION
       lock
     end

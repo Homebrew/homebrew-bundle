@@ -58,14 +58,17 @@ describe Bundle::Locker do
       before do
         pretend_macos
       end
+
       it "adds version info" do
         expect(locker.build_lock_data([])).to include "version"
       end
     end
+
     context "when on Linux" do
       before do
         pretend_linux
       end
+
       it "adds version info" do
         expect(locker.build_lock_data([])).to include "version"
       end
