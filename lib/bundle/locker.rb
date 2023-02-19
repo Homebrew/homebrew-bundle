@@ -73,7 +73,7 @@ module Bundle
       lock ||= base
       lock = update_lock_metadata(lock: lock)
       lock = add_entries_data(entries, lock: lock)
-      lock = add_system_data(lock: lock)
+      add_system_data(lock: lock)
     end
 
     def update_lock_metadata(lock: {})
