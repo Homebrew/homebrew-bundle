@@ -31,13 +31,11 @@ describe Bundle::Locker do
     end
 
     it "returns false if it would write to /dev" do
-      #allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("/dev/stdin"))
       expect(locker.write_lockfile?(path: Pathname("/dev/stdin"))).to be false
     end
 
     it "returns true otherwise" do
       ENV["HOMEBREW_BUNDLE_NO_LOCK"] = nil
-      #allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
       expect(locker.write_lockfile?(path: lockfile)).to be true
     end
   end
@@ -52,6 +50,25 @@ describe Bundle::Locker do
 
     it "returns a hash of the name and layer checksum" do
       expect(locker.whalebrew_list).to eq({ "whalebrew/wget" => "abcd1234" })
+    end
+  end
+
+  describe ".build_lock_data" do
+    context "when on macOS" do
+      before do
+        pretend_macos
+      end
+      it "adds version info" do
+        expect(locker.build_lock_data([])).to include "version"
+      end
+    end
+    context "when on Linux" do
+      before do
+        pretend_linux
+      end
+      it "adds version info" do
+        expect(locker.build_lock_data([])).to include "version"
+      end
     end
   end
 
@@ -89,7 +106,7 @@ describe Bundle::Locker do
 
       context "when on macOS" do
         before do
-          allow(OS).to receive(:mac?).and_return(true)
+          pretend_macos
           allow(Bundle).to receive(:cask_installed?).and_return(true)
 
           adoptopenjdk8 = instance_double(Cask::Cask, to_s: "adoptopenjdk8", version: "8,232:b09")
@@ -111,8 +128,7 @@ describe Bundle::Locker do
 
       context "when on Linux" do
         before do
-          allow(OS).to receive(:mac?).and_return(false)
-          allow(OS).to receive(:linux?).and_return(true)
+          pretend_linux
         end
 
         it "returns true" do

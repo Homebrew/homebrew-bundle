@@ -7,13 +7,16 @@ require "env_config"
 
 module Bundle
   module Locker
+
+    LOCKFILE_FORMAT_VERSION = "1"
+
     module_function
 
     extend Gem::Deprecate
 
     # @deprecated Use resolve_lockfile_path instead
     def lockfile(global: false, file: nil)
-      warn Kernel.caller.first + " used lockfile instead of resolve_lockfile_path"
+      # warn Kernel.caller.first + " used lockfile instead of resolve_lockfile_path"
       resolve_lockfile_path(global: global, brewfile: file)
     end
     deprecate(:lockfile, :resolve_lockfile_path, 2023, 2)
@@ -40,16 +43,48 @@ module Bundle
       true
     end
 
+    def write_lockfile!(lockfile, lock_data)
+      json = JSON.pretty_generate(lock_data)
+      begin
+        lockfile.unlink if lockfile.exist?
+        lockfile.write("#{json}\n")
+      rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
+        opoo "Could not write to #{lockfile}!"
+        return false
+      end
+      true
+    end
+
+    def read_lockfile_if_exists(path)
+      return JSON.parse(path.read) if path.exist?
+      {}
+    end
+
     def lock(entries, global: false, file: nil, no_lock: false)
       lockfile = resolve_lockfile_path(global: global, brewfile: file)
 
       return false unless write_lockfile?(path: lockfile, no_lock: no_lock)
 
-      lock = JSON.parse(lockfile.read) if lockfile.exist?
-      lock ||= {}
-      lock["version"] = "1"
+      lock_data = build_lock_data(entries, base: read_lockfile_if_exists(lockfile))
+
+      write_lockfile!(lockfile, lock_data)
+    end
+
+    def build_lock_data(entries, base: {})
+      lock ||= base
+      lock = update_lock_metadata(lock: lock)
+      lock = add_entries_data(entries, lock: lock)
+      lock = add_system_data(lock: lock)
+      lock
+    end
+
+    def update_lock_metadata(lock: lock)
+      lock["version"] = LOCKFILE_FORMAT_VERSION
+      lock
+    end
+
+    def add_entries_data(entries, lock: {})
       lock["entries"] ||= {}
-      lock["system"] ||= {}
 
       entries.each do |entry|
         next if Bundle::Skipper.skip?(entry, silent: true)
@@ -81,26 +116,7 @@ module Bundle
           options.deep_stringify_keys
       end
 
-      if OS.mac?
-        lock["system"]["macos"] ||= {}
-        version, hash = system_macos
-        lock["system"]["macos"][version] = hash
-      elsif OS.linux?
-        lock["system"]["linux"] ||= {}
-        version, hash = system_linux
-        lock["system"]["linux"][version] = hash
-      end
-
-      json = JSON.pretty_generate(lock)
-      begin
-        lockfile.unlink if lockfile.exist?
-        lockfile.write("#{json}\n")
-      rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
-        opoo "Could not write to #{lockfile}!"
-        return false
-      end
-
-      true
+      lock
     end
 
     def brew_list(name)
@@ -147,6 +163,21 @@ module Bundle
         _, version = `docker image inspect #{image} --format '{{ index .RepoDigests 0 }}'`.split(":")
         name_versions[image] = version.chomp
       end
+    end
+
+    def add_system_data(lock: {})
+      lock["system"] ||= {}
+
+      if OS.mac?
+        lock["system"]["macos"] ||= {}
+        version, hash = system_macos
+        lock["system"]["macos"][version] = hash
+      elsif OS.linux?
+        lock["system"]["linux"] ||= {}
+        version, hash = system_linux
+        lock["system"]["linux"][version] = hash
+      end
+      lock
     end
 
     def system_macos

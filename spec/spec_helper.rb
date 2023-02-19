@@ -81,3 +81,13 @@ RSpec.configure do |config|
     skip "Not on macOS." unless macos?
   end
 end
+
+def pretend_linux
+  allow(OS).to receive(:mac?).and_return(false)
+  allow(OS).to receive(:linux?).and_return(true)
+end
+
+def pretend_macos
+  allow(OS).to receive(:mac?).and_return(true)
+  allow(OS).to receive(:linux?).and_return(false)
+end
