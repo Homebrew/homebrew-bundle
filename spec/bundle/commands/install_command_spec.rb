@@ -59,7 +59,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(false)
       allow(Bundle::TapInstaller).to receive(:install).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(false)
-      allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
+      allow(Bundle::Locker).to receive(:resolve_lockfile_path).and_return(Pathname(__dir__))
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
       expect { described_class.run }.to raise_error(SystemExit)
