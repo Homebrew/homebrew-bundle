@@ -9,8 +9,18 @@ module Bundle
   module Locker
     module_function
 
+    extend Gem::Deprecate
+
+    # @deprecated Use resolve_lockfile_path instead
     def lockfile(global: false, file: nil)
-      brew_file_path = Brewfile.path(global: global, file: file)
+      warn Kernel.caller.first + " used lockfile instead of resolve_lockfile_path"
+      resolve_lockfile_path(global: global, brewfile: file)
+    end
+    deprecate(:lockfile, :resolve_lockfile_path, 2023, 2)
+
+
+    def resolve_lockfile_path(global: false, brewfile: nil)
+      brew_file_path = Brewfile.path(global: global, file: brewfile)
       lock_file_path = brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
 
       # no need to call realpath if the lockfile is not a symlink
@@ -20,20 +30,20 @@ module Bundle
       lock_file_path
     end
 
-    def write_lockfile?(global: false, file: nil, no_lock: false)
+    def write_lockfile?(path: nil, no_lock: false)
       return false if no_lock
       return false if ENV["HOMEBREW_BUNDLE_NO_LOCK"]
 
       # handle the /dev/stdin and /dev/stdout cases
-      return false if lockfile(global: global, file: file).parent.to_s == "/dev"
+      return false if path.nil? || path.parent.to_s == "/dev"
 
       true
     end
 
     def lock(entries, global: false, file: nil, no_lock: false)
-      return false unless write_lockfile?(global: global, file: file, no_lock: no_lock)
+      lockfile = resolve_lockfile_path(global: global, brewfile: file)
 
-      lockfile = lockfile(global: global, file: file)
+      return false unless write_lockfile?(path: lockfile, no_lock: no_lock)
 
       lock = JSON.parse(lockfile.read) if lockfile.exist?
       lock ||= {}

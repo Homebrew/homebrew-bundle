@@ -9,34 +9,36 @@ describe Bundle::Locker do
   describe ".lockfile" do
     it "returns a Pathname" do
       allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
-      expect(locker.lockfile.class).to be Pathname
+      expect(locker.resolve_lockfile_path.class).to be Pathname
     end
 
     it "correctly matches the Brewfile name in the lockfile name" do
       allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Personal.brewfile"))
-      expect(locker.lockfile).to eq Pathname.new("Personal.brewfile.lock.json")
+      expect(locker.resolve_lockfile_path).to eq Pathname.new("Personal.brewfile.lock.json")
     end
   end
 
   describe ".write_lockfile?" do
+    let(:lockfile) { Pathname("Brewfile.json.lock") }
+
     it "returns false if `no_lock` is true" do
-      expect(locker.write_lockfile?(no_lock: true)).to be false
+      expect(locker.write_lockfile?(path: lockfile, no_lock: true)).to be false
     end
 
     it "returns false if HOMEBREW_BUNDLE_NO_LOCK is set" do
       ENV["HOMEBREW_BUNDLE_NO_LOCK"] = "1"
-      expect(locker.write_lockfile?).to be false
+      expect(locker.write_lockfile?(path: lockfile)).to be false
     end
 
     it "returns false if it would write to /dev" do
-      allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("/dev/stdin"))
-      expect(locker.write_lockfile?).to be false
+      #allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("/dev/stdin"))
+      expect(locker.write_lockfile?(path: Pathname("/dev/stdin"))).to be false
     end
 
     it "returns true otherwise" do
       ENV["HOMEBREW_BUNDLE_NO_LOCK"] = nil
-      allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
-      expect(locker.write_lockfile?).to be true
+      #allow(Bundle::Brewfile).to receive(:path).and_return(Pathname("Brewfile"))
+      expect(locker.write_lockfile?(path: lockfile)).to be true
     end
   end
 
@@ -68,7 +70,7 @@ describe Bundle::Locker do
       end
 
       before do
-        allow(locker).to receive(:lockfile).and_return(lockfile)
+        allow(locker).to receive(:resolve_lockfile_path).and_return(lockfile)
         allow(brew_options).to receive(:deep_stringify_keys)
           .and_return("start_service" => true, "restart_service" => true)
         allow(Bundle::BrewDumper).to receive(:formulae_by_full_name).with("mysql").and_return({

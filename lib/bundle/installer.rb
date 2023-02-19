@@ -55,7 +55,7 @@ module Bundle
       unless failure.zero?
         puts Formatter.error "Homebrew Bundle failed! " \
                              "#{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install."
-        if (lock = Bundle::Locker.lockfile(global: global, file: file)) && lock.exist?
+        if (lock = Bundle::Locker.resolve_lockfile_path(global: global, brewfile: file)) && lock.exist?
           puts Formatter.error("Check for differences in your #{lock.basename}!")
         end
         return false
