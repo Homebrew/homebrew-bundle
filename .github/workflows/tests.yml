@@ -50,6 +50,7 @@ jobs:
       if: ${{ success() || failure() }}
       with:
         name: homebrew-bundle-${{ runner.os }}
+        flags: rspec-${{ runner.os }}
 
     - name: Test that installing works
       run: |
