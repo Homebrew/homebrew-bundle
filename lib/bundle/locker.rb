@@ -11,15 +11,6 @@ module Bundle
 
     module_function
 
-    extend Gem::Deprecate
-
-    # @deprecated Use resolve_lockfile_path instead
-    def lockfile(global: false, file: nil)
-      # warn Kernel.caller.first + " used lockfile instead of resolve_lockfile_path"
-      resolve_lockfile_path(global: global, brewfile: file)
-    end
-    deprecate(:lockfile, :resolve_lockfile_path, 2023, 2)
-
     def resolve_lockfile_path(global: false, brewfile: nil)
       brew_file_path = Brewfile.path(global: global, file: brewfile)
       lock_file_path = brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
