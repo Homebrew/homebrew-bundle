@@ -138,15 +138,20 @@ module Bundle
       end
     end
 
-    def system_macos
-      [MacOS.version.to_sym.to_s, {
+    def system
+      {
         "HOMEBREW_VERSION"       => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"        => HOMEBREW_PREFIX.to_s,
         "Homebrew/homebrew-core" => Homebrew::EnvConfig.install_from_api? ? "api" : CoreTap.instance.git_head,
-        "CLT"                    => MacOS::CLT.version.to_s,
-        "Xcode"                  => MacOS::Xcode.version.to_s,
-        "macOS"                  => MacOS.full_version.to_s,
-      }]
+      }
+    end
+
+    def system_macos
+      [MacOS.version.to_sym.to_s, system.merge({
+        "CLT"   => MacOS::CLT.version.to_s,
+        "Xcode" => MacOS::Xcode.version.to_s,
+        "macOS" => MacOS.full_version.to_s,
+      })]
     end
 
     def system_linux
@@ -157,12 +162,9 @@ module Bundle
         DevelopmentTools.non_apple_gcc_version("gcc")
       end
 
-      [OS::Linux.os_version, {
-        "HOMEBREW_VERSION"        => HOMEBREW_VERSION,
-        "HOMEBREW_PREFIX"         => HOMEBREW_PREFIX.to_s,
-        "Homebrew/linuxbrew-core" => Homebrew::EnvConfig.install_from_api? ? "api" : CoreTap.instance.git_head,
-        "GCC"                     => gcc_version,
-      }]
+      [OS::Linux.os_version, system.merge({
+        "GCC" => gcc_version,
+      })]
     end
   end
 end
