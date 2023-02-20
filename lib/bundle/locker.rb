@@ -156,7 +156,7 @@ module Bundle
 
     def system_linux
       [OS::Linux.os_version, system.merge({
-        "GCC" => DevelopmentTools.non_apple_gcc_version("gcc"),
+        "GCC" => DevelopmentTools.gcc_version("gcc"),
       })]
     end
   end
