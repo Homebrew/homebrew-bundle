@@ -142,7 +142,7 @@ module Bundle
       {
         "HOMEBREW_VERSION"       => HOMEBREW_VERSION,
         "HOMEBREW_PREFIX"        => HOMEBREW_PREFIX.to_s,
-        "Homebrew/homebrew-core" => Homebrew::EnvConfig.install_from_api? ? "api" : CoreTap.instance.git_head,
+        "Homebrew/homebrew-core" => Homebrew::EnvConfig.no_install_from_api? ? CoreTap.instance.git_head : "api",
       }
     end
 
