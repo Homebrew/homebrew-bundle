@@ -2,8 +2,8 @@
 
 module Homebrew
   class EnvConfig
-    def self.install_from_api?
-      true
+    def self.no_install_from_api?
+      false
     end
   end
 end
