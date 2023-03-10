@@ -61,7 +61,7 @@ mas "1Password", id: 443987910
 whalebrew "whalebrew/wget"
 ```
 
-## On Lockfiles
+## Lockfile
 
 Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for installing specific versions from a `.lock` file.
 
