@@ -63,7 +63,7 @@ whalebrew "whalebrew/wget"
 
 ## Lockfile
 
-Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for installing specific versions from a `.lock` file.
+Homebrew does not support installing specific versions of a library, only the most recent one, so there is no mechanism for installing specific versions given only a `.lock` file.
 
 If your software needs specific versions then perhaps you'll want to look at using [Vagrant](https://vagrantup.com/) to better match your development and production environments.
 
