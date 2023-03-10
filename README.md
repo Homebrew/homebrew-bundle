@@ -67,7 +67,7 @@ Homebrew does not support installing specific versions of a library, only the mo
 
 If your software needs specific versions, consider [Vagrant](https://vagrantup.com/), Docker (perhaps with [whalebrew](https://github.com/whalebrew/whalebrew), which homebrew-bundle supports), or another tool to install versions explicitly.
 
-homebrew-bundle does create a `Brewfile.lock.json` for information purposes only, as a record of the last succesful `brew bundle`. It's presence does not change the result of `brew bundle`, but it can be useful as a record if a subsequent `brew bundle` fails. It's probably not useful to commit to git or other version control, as it can contain local system info that varies between systems.
+After bundle installation, homebrew-bundle creates a `Brewfile.lock.json`. This file is for information purposes only as a record of the last successful `brew bundle`. Its presence does not change the result or behavior of `brew bundle`, but it can be useful as a record of a previous success when a subsequent `brew bundle` fails. It's probably not useful to commit to `git` or other version control, as it can contain local system info that varies between systems.
 
 Generation of the `Brewfile.lock.json` file can be disabled with environment `HOMEBREW_BUNDLE_NO_LOCK=1` or by command-line argument `brew bundle --no-lock`.
 
