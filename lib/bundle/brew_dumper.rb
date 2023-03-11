@@ -107,8 +107,8 @@ module Bundle
       @formula_oldnames
     end
 
-    def add_formula(f)
-      hash = formula_to_hash f
+    def add_formula(formula)
+      hash = formula_to_hash formula
 
       @formulae_by_name[hash[:name]] = hash
       @formulae_by_full_name[hash[:full_name]] = hash
