@@ -66,7 +66,7 @@ whalebrew "whalebrew/wget"
 Homebrew is a [rolling release](https://en.wikipedia.org/wiki/Rolling_release) package manager so does not support installing arbitrary older versions of software.
 If your software needs specific pinned versions, consider [`whalebrew`](https://github.com/whalebrew/whalebrew) lines in your `Brewfile` to install [Docker](https://www.docker.com) containers).
 
-After bundle installation, homebrew-bundle creates a `Brewfile.lock.json`. This file is for information purposes only as a record of the last successful `brew bundle`. Its presence does not change the result or behavior of `brew bundle`, but it can be useful as a record of a previous success when a subsequent `brew bundle` fails. It's probably not useful to commit to `git` or other version control, as it can contain local system info that varies between systems.
+After a successful `brew bundle` run, it creates a `Brewfile.lock.json` to record the environment. If a future `brew bundle` run fails, you can check the differences between `Brewfile.lock.json` to debug. As it can contain local environment information that varies between systems, it not worth committing to version control on multi-user repositories.
 
 Disable generation of the `Brewfile.lock.json` file by setting the environment variable with `export HOMEBREW_BUNDLE_NO_LOCK=1` or by using command-line argument `brew bundle --no-lock`.
 
