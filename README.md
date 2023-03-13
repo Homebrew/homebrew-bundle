@@ -63,7 +63,8 @@ whalebrew "whalebrew/wget"
 
 ## Versions and lockfiles
 
-If your software needs specific versions, consider [Vagrant](https://vagrantup.com/), Docker (perhaps with [whalebrew](https://github.com/whalebrew/whalebrew), which homebrew-bundle supports), or another tool to install versions explicitly.
+Homebrew is a [rolling release](https://en.wikipedia.org/wiki/Rolling_release) package manager so does not support installing arbitrary older versions of software.
+If your software needs specific pinned versions, consider [`whalebrew`](https://github.com/whalebrew/whalebrew) lines in your `Brewfile` to install [Docker](https://www.docker.com) containers).
 
 After bundle installation, homebrew-bundle creates a `Brewfile.lock.json`. This file is for information purposes only as a record of the last successful `brew bundle`. Its presence does not change the result or behavior of `brew bundle`, but it can be useful as a record of a previous success when a subsequent `brew bundle` fails. It's probably not useful to commit to `git` or other version control, as it can contain local system info that varies between systems.
 
