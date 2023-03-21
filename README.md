@@ -61,11 +61,14 @@ mas "1Password", id: 443987910
 whalebrew "whalebrew/wget"
 ```
 
-## Note
+## Versions and lockfiles
 
-Homebrew does not support installing specific versions of a library, only the most recent one, so there is no good mechanism for storing installed versions in a `.lock` file.
+Homebrew is a [rolling release](https://en.wikipedia.org/wiki/Rolling_release) package manager so it does not support installing arbitrary older versions of software.
+If your software needs specific pinned versions, consider [`whalebrew`](https://github.com/whalebrew/whalebrew) lines in your `Brewfile` to install [Docker](https://www.docker.com) containers.
 
-If your software needs specific versions then perhaps you'll want to look at using [Vagrant](https://vagrantup.com/) to better match your development and production environments.
+After a successful `brew bundle` run, it creates a `Brewfile.lock.json` to record the environment. If a future `brew bundle` run fails, you can check the differences between `Brewfile.lock.json` to debug. As it can contain local environment information that varies between systems, it's not worth committing to version control on multi-user repositories.
+
+Disable generation of the `Brewfile.lock.json` file by setting the environment variable with `export HOMEBREW_BUNDLE_NO_LOCK=1` or by using the command-line argument `brew bundle --no-lock`.
 
 ## Tests
 
