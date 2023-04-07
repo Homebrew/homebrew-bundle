@@ -13,10 +13,15 @@ describe Bundle::Commands::List do
 
   describe "outputs dependencies to stdout" do
     before do
-      allow_any_instance_of(Pathname).to receive(:read).and_return \
-        "tap 'phinze/cask'\nbrew 'mysql', " \
-        "conflicts_with: ['mysql56']\ncask 'google-chrome'\nmas '1Password', id: 443987910" \
-        "\n whalebrew 'whalebrew/imagemagick'"
+      allow_any_instance_of(Pathname).to receive(:read).and_return(
+        <<~EOS,
+          tap 'phinze/cask'
+          brew 'mysql', conflicts_with: ['mysql56']
+          cask 'google-chrome'
+          mas '1Password', id: 443987910
+          whalebrew 'whalebrew/imagemagick'
+        EOS
+      )
     end
 
     it "only shows brew deps when no options are passed" do
