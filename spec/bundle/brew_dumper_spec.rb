@@ -195,13 +195,14 @@ describe Bundle::BrewDumper do
     it "returns an array for all formulae" do
       expect(Formula).to receive(:installed).and_return([foo, bar, baz])
       expect(bar.linked_keg).to receive(:realpath).and_return(OpenStruct.new(basename: "1.0"))
-      expect(Tab).to receive(:for_keg).with(bar.linked_keg).and_return \
+      expect(Tab).to receive(:for_keg).with(bar.linked_keg).and_return(
         instance_double(Tab,
                         installed_as_dependency: false,
                         installed_on_request:    false,
                         poured_from_bottle:      true,
                         runtime_dependencies:    [],
-                        used_options:            [])
+                        used_options:            []),
+      )
       expect(dumper.formulae_by_full_name).to eql({
         "bar"                 => bar_hash,
         "qux/quuz/foo"        => foo_hash,

@@ -101,10 +101,11 @@ describe Bundle::CaskInstaller do
       end
 
       it "installs cask with arguments" do
-        expect(Bundle).to \
+        expect(Bundle).to(
           receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "firefox", "--appdir=/Applications",
                                 verbose: false)
-                          .and_return(true)
+                          .and_return(true),
+        )
         expect(described_class.preinstall("firefox", args: { appdir: "/Applications" })).to be(true)
         expect(described_class.install("firefox", args: { appdir: "/Applications" })).to be(true)
       end
