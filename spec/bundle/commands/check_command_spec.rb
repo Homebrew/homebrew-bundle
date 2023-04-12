@@ -112,22 +112,20 @@ describe Bundle::Commands::Check do
 
     context "when restart_service is true" do
       it "raises an error" do
-        allow_any_instance_of(Pathname).to(
-          receive(:read).and_return("brew 'abc', restart_service: true\nbrew 'def', restart_service: true"),
-        )
-        allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to \
-          receive(:format_checkable).and_return(1 => "foo")
+        allow_any_instance_of(Pathname)
+          .to receive(:read).and_return("brew 'abc', restart_service: true\nbrew 'def', restart_service: true")
+        allow_any_instance_of(Bundle::Checker::MacAppStoreChecker)
+          .to receive(:format_checkable).and_return(1 => "foo")
         expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
       end
     end
 
     context "when start_service is true" do
       it "raises an error" do
-        allow_any_instance_of(Pathname).to(
-          receive(:read).and_return("brew 'abc', start_service: true\nbrew 'def', start_service: true"),
-        )
-        allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to \
-          receive(:format_checkable).and_return(1 => "foo")
+        allow_any_instance_of(Pathname)
+          .to receive(:read).and_return("brew 'abc', start_service: true\nbrew 'def', start_service: true")
+        allow_any_instance_of(Bundle::Checker::MacAppStoreChecker)
+          .to receive(:format_checkable).and_return(1 => "foo")
         expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
       end
     end
@@ -151,11 +149,8 @@ describe Bundle::Commands::Check do
     end
 
     it "raises an error that doesn't mention upgrade" do
-      allow_any_instance_of(Pathname).to(
-        receive(:read).and_return("brew 'abc'"),
-      )
-      allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to \
-        receive(:format_checkable).and_return(1 => "foo")
+      allow_any_instance_of(Pathname).to receive(:read).and_return("brew 'abc'")
+      allow_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:format_checkable).and_return(1 => "foo")
       expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
     end
   end

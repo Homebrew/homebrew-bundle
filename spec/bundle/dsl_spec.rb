@@ -33,10 +33,11 @@ describe Bundle::Dsl do
       expect(dsl.cask_arguments).to eql(appdir: "/Applications")
       expect(dsl.entries[0].name).to eql("homebrew/cask")
       expect(dsl.entries[1].name).to eql("telemachus/brew")
-      expect(dsl.entries[1].options).to \
-        eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git")
-      expect(dsl.entries[2].options).to \
-        eql(clone_target: "https://bitbucket.org/auto/update.git", force_auto_update: true)
+      expect(dsl.entries[1].options).to eql(clone_target: "https://telemachus@bitbucket.org/telemachus/brew.git")
+      expect(dsl.entries[2].options).to eql(
+        clone_target:      "https://bitbucket.org/auto/update.git",
+        force_auto_update: true,
+      )
       expect(dsl.entries[3].name).to eql("imagemagick")
       expect(dsl.entries[4].name).to eql("mysql@5.6")
       expect(dsl.entries[4].options).to eql(restart_service: true, link: true, conflicts_with: ["mysql"])
