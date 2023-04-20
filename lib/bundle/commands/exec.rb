@@ -31,7 +31,7 @@ module Bundle
         require "formulary"
 
         ENV.deps = brewfile.entries.map do |entry|
-          next unless entry.type == :brew
+          next if entry.type != :brew
 
           f = Formulary.factory(entry.name)
           [f, f.recursive_dependencies.map(&:to_formula)]
