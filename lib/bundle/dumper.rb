@@ -20,6 +20,7 @@ module Bundle
       content << CaskDumper.dump(describe: describe)
       content << MacAppStoreDumper.dump
       content << WhalebrewDumper.dump
+      content << VscodeExtensionDumper.dump
       "#{content.reject(&:empty?).join("\n")}\n"
     end
 

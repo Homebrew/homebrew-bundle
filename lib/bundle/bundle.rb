@@ -25,6 +25,10 @@ module Bundle
       @mas_installed ||= which_formula("mas")
     end
 
+    def vscode_installed?
+      @vscode_installed ||= which("code").present?
+    end
+
     def whalebrew_installed?
       @whalebrew_installed ||= which_formula("whalebrew")
     end

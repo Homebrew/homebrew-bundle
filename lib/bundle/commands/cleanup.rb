@@ -14,6 +14,7 @@ module Bundle
         Bundle::CaskDumper.reset!
         Bundle::BrewDumper.reset!
         Bundle::TapDumper.reset!
+        Bundle::VscodeExtensionDumper.reset!
         Bundle::BrewServices.reset!
       end
 
@@ -21,6 +22,7 @@ module Bundle
         casks = casks_to_uninstall(global: global, file: file)
         formulae = formulae_to_uninstall(global: global, file: file)
         taps = taps_to_untap(global: global, file: file)
+        vscode_extensions = vscode_extensions_to_uninstall(global: global, file: file)
         if force
           if casks.any?
             args = zap ? ["--zap"] : []
@@ -34,6 +36,10 @@ module Bundle
           end
 
           Kernel.system HOMEBREW_BREW_FILE, "untap", *taps if taps.any?
+
+          vscode_extensions.each do |extension|
+            Kernel.system "code", "--uninstall-extension", extension
+          end
 
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup")
           puts cleanup unless cleanup.empty?
@@ -51,6 +57,11 @@ module Bundle
           if taps.any?
             puts "Would untap:"
             puts Formatter.columns taps
+          end
+
+          if vscode_extensions.any?
+            puts "Would uninstall VSCode extensions:"
+            puts Formatter.columns vscode_extensions
           end
 
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup", "--dry-run")
@@ -128,6 +139,13 @@ module Bundle
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS
+      end
+
+      def vscode_extensions_to_uninstall(global: false, file: nil)
+        @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
+        kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map(&:name)
+        current_extensions = Bundle::VscodeExtensionDumper.extensions
+        current_extensions - kept_extensions
       end
 
       def system_output_no_stderr(cmd, *args)

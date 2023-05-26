@@ -72,6 +72,8 @@ module Homebrew
              description: "`list` Mac App Store dependencies."
       switch "--whalebrew",
              description: "`list` Whalebrew dependencies."
+      switch "--vscode",
+             description: "`list` VSCode extensions."
       switch "--describe",
              description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description."
@@ -145,6 +147,7 @@ module Homebrew
           taps:      args.taps?,
           mas:       args.mas?,
           whalebrew: args.whalebrew?,
+          vscode:    args.vscode?,
           brews:     args.brews?,
         )
       else

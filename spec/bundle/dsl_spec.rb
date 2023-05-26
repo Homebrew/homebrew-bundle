@@ -19,6 +19,7 @@ describe Bundle::Dsl do
         cask 'firefox', args: { appdir: '~/my-apps/Applications' }
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
+        vscode 'GitHub.codespaces'
       EOS
     end
 
@@ -50,6 +51,7 @@ describe Bundle::Dsl do
       expect(dsl.entries[9].name).to eql("1Password")
       expect(dsl.entries[9].options).to eql(id: 443_987_910)
       expect(dsl.entries[10].name).to eql("whalebrew/wget")
+      expect(dsl.entries[11].name).to eql("GitHub.codespaces")
     end
   end
 

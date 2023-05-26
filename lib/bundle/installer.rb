@@ -28,6 +28,8 @@ module Bundle
           Bundle::MacAppStoreInstaller
         when :whalebrew
           Bundle::WhalebrewInstaller
+        when :vscode
+          Bundle::VscodeExtensionInstaller
         when :tap
           verb = "Tapping"
           options = entry.options

@@ -22,6 +22,7 @@ describe Bundle::Commands::Check do
       allow(Bundle::Checker).to receive(:formulae_to_install).and_return(nothing)
       allow(Bundle::Checker).to receive(:apps_to_install).and_return(nothing)
       allow(Bundle::Checker).to receive(:taps_to_tap).and_return(nothing)
+      allow(Bundle::Checker).to receive(:extensions_to_install).and_return(nothing)
       expect { do_check }.not_to raise_error
     end
   end
@@ -155,15 +156,53 @@ describe Bundle::Commands::Check do
     end
   end
 
+  context "when extension not installed" do
+    let(:expected_output) do
+      <<~MSG
+        brew bundle can't satisfy your Brewfile's dependencies.
+        → VSCode Extension foo needs to be installed.
+        Satisfy missing dependencies with `brew bundle install`.
+      MSG
+    end
+    let(:verbose) { true }
+
+    before do
+      Bundle::Checker.reset!
+      allow(Bundle::Checker::VscodeExtensionChecker).to receive(:installed_and_up_to_date?).and_return(false)
+    end
+
+    it "raises an error that doesn't mention upgrade" do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("vscode 'foo'")
+      expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
+    end
+  end
+
   context "when there are taps to install" do
     before do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow(Bundle::Checker).to receive(:taps_to_tap).and_return(["asdf"])
     end
 
-    it "does not check for tasks" do
+    it "does not check for casks" do
       expect(Bundle::Checker).not_to receive(:casks_to_install)
       expect { do_check }.to raise_error(SystemExit)
+    end
+
+    it "does not check for formulae" do
+      expect(Bundle::Checker).not_to receive(:formulae_to_install)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+
+    it "does not check for apps" do
+      expect(Bundle::Checker).not_to receive(:apps_to_install)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+  end
+
+  context "when there are VSCode extensions to install" do
+    before do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
+      allow(Bundle::Checker).to receive(:extensions_to_install).and_return(["asdf"])
     end
 
     it "does not check for formulae" do
@@ -213,6 +252,14 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Pathname).to receive(:read).and_return("mas 'foo', id: 123\nmas 'bar', id: 456")
 
       expect_any_instance_of(Bundle::Checker::MacAppStoreChecker).to receive(:exit_early_check).once.and_call_original
+      expect { do_check }.to raise_error(SystemExit)
+    end
+
+    it "stops checking after the first VSCode extension" do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("vscode 'abc'\nvscode 'def'")
+
+      expect_any_instance_of(Bundle::Checker::VscodeExtensionChecker).to \
+        receive(:exit_early_check).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end
   end

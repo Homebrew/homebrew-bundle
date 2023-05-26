@@ -10,11 +10,13 @@ describe Bundle::Dumper do
     allow(Bundle).to receive(:cask_installed?).and_return(true)
     allow(Bundle).to receive(:mas_installed?).and_return(false)
     allow(Bundle).to receive(:whalebrew_installed?).and_return(false)
+    allow(Bundle).to receive(:vscode_installed?).and_return(false)
     Bundle::BrewDumper.reset!
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!
     Bundle::MacAppStoreDumper.reset!
     Bundle::WhalebrewDumper.reset!
+    Bundle::VscodeExtensionDumper.reset!
     Bundle::BrewServices.reset!
 
     chrome     = instance_double(Cask::Cask,

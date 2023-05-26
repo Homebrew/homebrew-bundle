@@ -69,6 +69,11 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z homebrew/bundle homebrew/core])
       expect(described_class.taps_to_untap).to eql(%w[z])
     end
+
+    it "computes which VSCode extensions to uninstall" do
+      allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z])
+      expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
+    end
   end
 
   context "when there are no formulae to uninstall and no taps to untap" do
@@ -77,6 +82,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
     end
 
     it "does nothing" do
@@ -92,6 +98,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
     end
 
     it "uninstalls casks" do
@@ -107,6 +114,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
     end
 
     it "uninstalls casks" do
@@ -122,6 +130,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return([])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
     end
 
     it "uninstalls formulae" do
@@ -137,10 +146,27 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
     end
 
     it "untaps taps" do
       expect(Kernel).to receive(:system).with(HOMEBREW_BREW_FILE, "untap", "a", "b")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
+      described_class.run(force: true)
+    end
+  end
+
+  context "when there are VSCode extensions to uninstall" do
+    before do
+      described_class.reset!
+      allow(described_class).to receive(:casks_to_uninstall).and_return([])
+      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
+      allow(described_class).to receive(:taps_to_untap).and_return([])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return(%w[GitHub.codespaces])
+    end
+
+    it "uninstalls extensions" do
+      expect(Kernel).to receive(:system).with("code", "--uninstall-extension", "GitHub.codespaces")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       described_class.run(force: true)
     end
@@ -152,13 +178,16 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
       allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return(%w[a b])
     end
 
     it "lists casks, formulae and taps" do
-      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(3).times
+      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(4).times
       expect(Kernel).not_to receive(:system)
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
-      expect { described_class.run }.to output(/Would uninstall formulae:.*Would untap:/m).to_stdout
+      expect do
+        described_class.run
+      end.to output(/Would uninstall formulae:.*Would untap:.*Would uninstall VSCode extensions:/m).to_stdout
     end
   end
 
@@ -168,6 +197,7 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive(:casks_to_uninstall).and_return([])
       allow(described_class).to receive(:formulae_to_uninstall).and_return([])
       allow(described_class).to receive(:taps_to_untap).and_return([])
+      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
     end
 
     def sane?

@@ -23,6 +23,7 @@ describe Bundle::Commands::Install do
         cask 'phinze/cask/google-chrome', greedy: true
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
+        vscode 'GitHub.codespaces'
       EOS
     end
 
@@ -32,6 +33,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::BrewInstaller).to receive(:install).and_return(true)
       allow(Bundle::CaskInstaller).to receive(:install).and_return(true)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(true)
@@ -54,11 +56,13 @@ describe Bundle::Commands::Install do
       allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(true)
+      allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::BrewInstaller).to receive(:install).and_return(false)
       allow(Bundle::CaskInstaller).to receive(:install).and_return(false)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(false)
       allow(Bundle::TapInstaller).to receive(:install).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(false)
+      allow(Bundle::VscodeExtensionInstaller).to receive(:install).and_return(false)
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
@@ -71,10 +75,12 @@ describe Bundle::Commands::Install do
       allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(true)
+      allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::TapInstaller).to receive(:install).and_return(false)
       allow(Bundle::BrewInstaller).to receive(:install).and_return(true)
       allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(true)
       allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(true)
+      allow(Bundle::VscodeExtensionInstaller).to receive(:install).and_return(true)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
       expect(Bundle).not_to receive(:system)
