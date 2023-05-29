@@ -9,9 +9,5 @@ module Bundle
     def cask_installed?
       false
     end
-
-    def services_installed?
-      false
-    end
   end
 end

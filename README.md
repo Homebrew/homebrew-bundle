@@ -1,6 +1,6 @@
 # Homebrew Bundle
 
-Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store and Whalebrew.
+Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Whalebrew and Visual Studio Code.
 
 ## Requirements
 
@@ -11,6 +11,8 @@ Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store an
 [mas-cli](https://github.com/mas-cli/mas) is optional and used for installing Mac App Store applications.
 
 [Whalebrew](https://github.com/whalebrew/whalebrew) is optional and used for installing Whalebrew images.
+
+[Visual Studio Code](https://code.visualstudio.com/) is optional and used for installing Visual Studio Code extensions.
 
 ## Installation
 
@@ -59,6 +61,9 @@ mas "1Password", id: 443987910
 
 # 'whalebrew install'
 whalebrew "whalebrew/wget"
+
+# 'vscode --install-extension'
+vscode "GitHub.codespaces"
 ```
 
 ## Versions and lockfiles
