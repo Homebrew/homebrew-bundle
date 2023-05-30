@@ -20,6 +20,8 @@ describe Bundle::Commands::Cleanup do
         brew 'homebrew/tap/hasdependency'
         brew 'hasbuilddependency1'
         brew 'hasbuilddependency2'
+        mas 'appstoreapp1', id: 1
+        vscode 'vscodeextension1'
       EOS
     end
 
