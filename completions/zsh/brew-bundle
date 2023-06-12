@@ -1,0 +1,105 @@
+#compdef brew
+#autoload
+
+__brew_bundle_commands() {
+  local -a commands
+  commands=(
+    '-h:Show help'
+    '--help:Show help'
+    'install:Install and upgrade (by default) all dependencies from the Brewfile'
+    'dump:Write all installed casks/formulae/images/taps into a Brewfile in the current directory'
+    'cleanup:Uninstall all dependencies not listed from the Brewfile'
+    'check:Check if all dependencies are installed from the Brewfile'
+    'list:List all dependencies present in the Brewfile'
+    'exec:Run an external command in an isolated build environment based on the Brewfile dependencies'
+  )
+  _describe -t commands 'commands' commands
+}
+
+_brew_bundle_install() {
+  _arguments \
+    '--file[read the Brewfile from this location. Use --file=- to pipe to stdin/stdout]' \
+    '--global[read the Brewfile from ~/.Brewfile]' \
+    '-v[print output from commands as they are run]' \
+    '--verbose[print output from commands as they are run]' \
+    "--no-upgrade[don't run brew upgrade on outdated dependencies]" \
+    "--no-lock[don't output a Brewfile.lock.json]" \
+    '--cleanup[perform cleanup operation, same as running cleanup --force]' \
+    '--zap[cleanup casks using the zap command instead of uninstall]'
+}
+
+_brew_bundle_dump() {
+  _arguments \
+    '--file[read the Brewfile from this location. Use --file=- to pipe to stdin/stdout]' \
+    '--global[read the Brewfile from ~/.Brewfile]' \
+    '-f[overwrite an existing Brewfile]' \
+    '--force[overwrite an existing Brewfile]' \
+    '--describe[add a description comment above each line, unless the dependency does not have a description]' \
+    "--no-restart[don't add restart_service to formula lines]"
+}
+
+_brew_bundle_cleanup() {
+  _arguments \
+    '--file[read the Brewfile from this location. Use --file=- to pipe to stdin/stdout]' \
+    '--global[read the Brewfile from ~/.Brewfile]' \
+    '-f[actually perform cleanup operations]' \
+    '--force[actually perform cleanup operations]' \
+    '--zap[cleanup casks using the zap command instead of uninstall]'
+}
+
+_brew_bundle_check() {
+  _arguments \
+    '--file[read the Brewfile from this location. Use --file=- to pipe to stdin/stdout]' \
+    '--global[read the Brewfile from ~/.Brewfile]'
+}
+
+_brew_bundle_list() {
+  _arguments \
+    '--file[read the Brewfile from this location. Use --file=- to pipe to stdin/stdout]' \
+    '--global[read the Brewfile from ~/.Brewfile]' \
+    '--all[list all dependencies]' \
+    '--formula[list Homebrew dependencies]' \
+    '--brews[list Homebrew dependencies]' \
+    '--cask[list Homebrew Cask dependencies]' \
+    '--casks[list Homebrew Cask dependencies]' \
+    '--tap[list tap dependencies]' \
+    '--taps[list tap dependencies]' \
+    '--mas[list Mac App Store dependencies]' \
+    '--whalebrew[list Whalebrew dependencies]' \
+    '--vscode[list VSCode extensions]'
+}
+
+_brew_bundle_exec() {
+  _arguments \
+    '--file[read the Brewfile from this location. Use --file=- to pipe to stdin/stdout]' \
+    '--global[read the Brewfile from ~/.Brewfile]'
+}
+
+_brew_bundle_() {
+  return 1
+}
+
+_brew_bundle() {
+  local state line ret=1
+
+  _arguments -C \
+    '1: :->command' \
+    '*::arg:->args' && return 0
+
+  case $state in
+    command)
+      __brew_bundle_commands ;;
+    args)
+      local command completion_func
+      command="${line[1]}"
+      completion_func="_brew_bundle_${command//-/_}"
+
+      _call_function ret "${completion_func}" && return ret
+
+      _message "a completion function is not defined for brew bundle ${command}"
+      return 1
+   ;;
+  esac
+}
+
+_brew_bundle "$@"
