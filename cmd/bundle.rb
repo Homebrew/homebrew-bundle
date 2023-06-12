@@ -116,6 +116,13 @@ module Homebrew
           describe:   args.describe?,
           force:      args.force?,
           no_restart: args.no_restart?,
+          all:        args.all?,
+          taps:       args.taps?,
+          brews:      args.brews?,
+          casks:      args.casks?,
+          mas:        args.mas?,
+          whalebrew:  args.whalebrew?,
+          vscode:     args.vscode?,
         )
       when "cleanup"
         Bundle::Commands::Cleanup.run(
