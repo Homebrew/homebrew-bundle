@@ -1,3 +1,6 @@
+.idea
+.vscode
+
 Brewfile
 Brewfile.lock.json
 Gemfile.lock
