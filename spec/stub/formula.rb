@@ -62,6 +62,10 @@ class Formula
     nil
   end
 
+  def oldnames
+    []
+  end
+
   def aliases
     []
   end
