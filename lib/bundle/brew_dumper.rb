@@ -157,7 +157,7 @@ module Bundle
       {
         name:                     formula.name,
         desc:                     formula.desc,
-        oldname:                  formula.oldname,
+        oldname:                  formula.oldnames.first,
         full_name:                formula.full_name,
         aliases:                  formula.aliases,
         any_version_installed?:   formula.any_version_installed?,
