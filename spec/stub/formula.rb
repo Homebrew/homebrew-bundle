@@ -58,10 +58,6 @@ class Formula
     ""
   end
 
-  def oldname
-    nil
-  end
-
   def oldnames
     []
   end
