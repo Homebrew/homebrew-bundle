@@ -95,13 +95,15 @@ module Bundle
 
       @formula_oldnames = {}
       formulae.each do |f|
-        oldname = f[:oldname]
-        next if oldname.blank?
+        oldnames = f[:oldnames]
+        next if oldnames.blank?
 
-        @formula_oldnames[oldname] = f[:full_name]
-        if f[:full_name].include? "/" # tap formula
-          tap_name = f[:full_name].rpartition("/").first
-          @formula_oldnames["#{tap_name}/#{oldname}"] = f[:full_name]
+        oldnames.each do |oldname|
+          @formula_oldnames[oldname] = f[:full_name]
+          if f[:full_name].include? "/" # tap formula
+            tap_name = f[:full_name].rpartition("/").first
+            @formula_oldnames["#{tap_name}/#{oldname}"] = f[:full_name]
+          end
         end
       end
       @formula_oldnames
@@ -157,7 +159,7 @@ module Bundle
       {
         name:                     formula.name,
         desc:                     formula.desc,
-        oldname:                  formula.oldnames.first,
+        oldnames:                 formula.oldnames,
         full_name:                formula.full_name,
         aliases:                  formula.aliases,
         any_version_installed?:   formula.any_version_installed?,
