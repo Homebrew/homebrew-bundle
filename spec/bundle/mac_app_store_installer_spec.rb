@@ -42,13 +42,15 @@ describe Bundle::MacAppStoreInstaller do
       allow(Bundle).to receive(:mas_installed?).and_return(true)
     end
 
-    describe ".outdated_app_ids" do
-      it "returns app ids" do
-        expect(described_class).to receive(:`).and_return("foo 123")
-        described_class.reset!
-        described_class.outdated_app_ids
-      end
-    end
+    # TODO: can't be trusted right now.
+    # Uncomment when https://github.com/mas-cli/mas/pull/496 is merged.
+    # describe ".outdated_app_ids" do
+    #   it "returns app ids" do
+    #     expect(described_class).to receive(:`).and_return("foo 123")
+    #     described_class.reset!
+    #     described_class.outdated_app_ids
+    #   end
+    # end
 
     context "when mas is not signed in" do
       it "outputs an error" do

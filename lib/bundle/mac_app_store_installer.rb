@@ -70,13 +70,17 @@ module Bundle
     end
 
     def outdated_app_ids
-      @outdated_app_ids ||= if Bundle.mas_installed?
-        `mas outdated 2>/dev/null`.split("\n").map do |app|
-          app.split(" ", 2).first.to_i
-        end
-      else
-        []
-      end
+      []
+
+      # TODO: can't be trusted right now.
+      # Uncomment when https://github.com/mas-cli/mas/pull/496 is merged.
+      # @outdated_app_ids ||= if Bundle.mas_installed?
+      #   `mas outdated 2>/dev/null`.split("\n").map do |app|
+      #     app.split(" ", 2).first.to_i
+      #   end
+      # else
+      #   []
+      # end
     end
   end
 end
