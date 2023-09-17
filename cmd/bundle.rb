@@ -174,7 +174,7 @@ module Homebrew
       onoe e
       ohai(
         "#{Tty.bold}Please report this bug:#{Tty.reset}",
-        Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues")
+        Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues"),
       )
       ofail e.backtrace
     end
