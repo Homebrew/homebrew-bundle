@@ -7,7 +7,7 @@ module Bundle
     def list(entries, all: false, casks: false, taps: false, mas: false, whalebrew: false,
              vscode: false, brews: false)
       entries.each do |entry|
-        if show?(entry.type,
+        next unless show?(entry.type,
                  all:       all,
                  casks:     casks,
                  taps:      taps,
@@ -15,9 +15,8 @@ module Bundle
                  whalebrew: whalebrew,
                  vscode:    vscode,
                  brews:     brews)
-          # This is not log output!
-          puts entry.name
-        end
+        # This is not log output!
+        puts entry.name
       end
     end
 
