@@ -79,6 +79,33 @@ Disable generation of the `Brewfile.lock.json` file by setting the environment v
 
 Tests can be run with `bundle install && bundle exec rspec`.
 
+## Running actions after Homebrew Bundle runs
+
+If you need to run commands after Homebrew Bundle runs, such as using a package that was just installed,
+you can set an [`at_exit`](https://ruby-doc.org/core-2.6.8/Kernel.html#method-i-at_exit) hook and
+use parts of Homebrew Bundle and Homebrew itself to determine paths and execute the commands programmatically.
+Note that errors within an `at_exit` block may have unintended behavior, so program safely.
+It's better to resolve the paths than to hardcode them.
+
+In this example `Brewfile`, after installing the [cowsay](https://formulae.brew.sh/formula/cowsay) package,
+Homebrew Bundle, or, really, Ruby, will execute the program with a friendly message of completion.
+
+```ruby
+brew 'cowsay'
+
+at_exit do
+  # parse the args, get only the first
+  brew_bundle_cmd = Homebrew.bundle_args.parse.named.first
+  # only if install, whether default or explicit
+  if ['install', nil].include? brew_bundle_cmd
+    # Load the Formula then get its bin directory path
+    cowsay_bin = Formulary.factory('cowsay').bin
+    # execute the command
+    system "#{cowsay_bin}/cowsay 'All done!'"
+  end
+end
+```
+
 ## Copyright
 
 Copyright (c) Homebrew maintainers and Andrew Nesbitt. See [LICENSE](https://github.com/Homebrew/homebrew-bundle/blob/HEAD/LICENSE) for details.
