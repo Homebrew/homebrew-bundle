@@ -39,7 +39,8 @@ module Bundle
         next if Bundle::Skipper.skip? entry
 
         preinstall = if cls.preinstall(*args, **options, no_upgrade: no_upgrade, verbose: verbose)
-          # XXX: no method in Library/Homebrew/extend/kernel.rb wrapping Formatter.success simply, just pretty_installed(Formula)
+          # XXX: no method in Library/Homebrew/extend/kernel.rb wrapping Formatter.success simply
+          # See pretty_installed(Formula) for inspiration
           puts Formatter.success("#{verb} #{name}")
           true
         else
@@ -57,7 +58,7 @@ module Bundle
 
       unless failure.zero?
         ofail "Homebrew Bundle failed! " \
-                             "#{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install."
+              "#{failure} Brewfile #{Bundle::Dsl.pluralize_dependency(failure)} failed to install."
         if (lock = Bundle::Locker.lockfile(global: global, file: file)) && lock.exist?
           ofail "Check for differences in your #{lock.basename}!"
         end
@@ -66,7 +67,8 @@ module Bundle
 
       Bundle::Locker.lock(entries, global: global, file: file, no_lock: no_lock)
 
-      # XXX: no method in Library/Homebrew/extend/kernel.rb wrapping Formatter.success simply, just pretty_installed(Formula)
+      # XXX: no method in Library/Homebrew/extend/kernel.rb wrapping Formatter.success simply
+      # See pretty_installed(Formula) for inspiration
       puts Formatter.success "Homebrew Bundle complete! " \
                              "#{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed."
       true

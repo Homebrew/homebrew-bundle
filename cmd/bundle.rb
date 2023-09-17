@@ -172,7 +172,10 @@ module Homebrew
       ofail e.backtrace if args.debug?
     rescue => e
       onoe e
-      ohai "#{Tty.bold}Please report this bug:#{Tty.reset}", "#{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues")}"
+      ohai(
+        "#{Tty.bold}Please report this bug:#{Tty.reset}",
+        Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues"
+      )
       ofail e.backtrace
     end
   end
