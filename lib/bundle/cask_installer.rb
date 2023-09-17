@@ -20,7 +20,7 @@ module Bundle
 
     def preinstall(name, no_upgrade: false, verbose: false, **options)
       if installed_casks.include?(name) && !upgrading?(no_upgrade, name, options)
-        puts "Skipping install of #{name} cask. It is already installed." if verbose
+        ohai "Skipping install of #{name} cask. It is already installed." if verbose
         return false
       end
 
@@ -34,7 +34,7 @@ module Bundle
 
       if installed_casks.include?(name) && upgrading?(no_upgrade, name, options)
         status = "#{options[:greedy] ? "may not be" : "not"} up-to-date"
-        puts "Upgrading #{name} cask. It is installed but #{status}." if verbose
+        ohai "Upgrading #{name} cask. It is installed but #{status}." if verbose
         return Bundle.system HOMEBREW_BREW_FILE, "upgrade", "--cask", full_name, verbose: verbose
       end
 
@@ -49,7 +49,7 @@ module Bundle
         end
       end.compact
 
-      puts "Installing #{name} cask. It is not currently installed." if verbose
+      ohai "Installing #{name} cask. It is not currently installed." if verbose
 
       return false unless Bundle.system HOMEBREW_BREW_FILE, "install", "--cask", full_name, *args, verbose: verbose
 

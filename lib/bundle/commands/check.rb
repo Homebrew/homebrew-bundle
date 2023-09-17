@@ -17,13 +17,13 @@ module Bundle
         )
 
         if check_result.work_to_be_done
-          puts FAILURE_MESSAGE
+          opoo FAILURE_MESSAGE
 
-          check_result.errors.each { |package| puts "#{ARROW} #{package}" } if output_errors
-          puts "Satisfy missing dependencies with `brew bundle install`."
+          check_result.errors.each { |package| ohai(ARROW, package.to_s) } if output_errors
+          ohai "Satisfy missing dependencies with `brew bundle install`."
           exit 1
         else
-          puts "The Brewfile's dependencies are satisfied."
+          ohai "The Brewfile's dependencies are satisfied."
         end
       end
     end

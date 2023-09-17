@@ -29,7 +29,7 @@ module Bundle
 
     def preinstall(no_upgrade: false, verbose: false)
       if installed? && (no_upgrade || !upgradable?)
-        puts "Skipping install of #{@name} formula. It is already installed." if verbose
+        ohai "Skipping install of #{@name} formula. It is already installed." if verbose
         @changed = nil
         return false
       end
@@ -87,10 +87,10 @@ module Bundle
 
     def service_change_state!(verbose:)
       if restart_service_needed?
-        puts "Restarting #{@name} service." if verbose
+        ohai "Restarting #{@name} service." if verbose
         BrewServices.restart(@full_name, verbose: verbose)
       elsif start_service_needed?
-        puts "Starting #{@name} service." if verbose
+        ohai "Starting #{@name} service." if verbose
         BrewServices.start(@full_name, verbose: verbose)
       else
         true
@@ -101,20 +101,20 @@ module Bundle
       case @link
       when true
         unless linked_and_keg_only?
-          puts "Force-linking #{@name} formula." if verbose
+          ohai "Force-linking #{@name} formula." if verbose
           Bundle.system(HOMEBREW_BREW_FILE, "link", "--force", @name, verbose: verbose)
         end
       when false
         unless unlinked_and_not_keg_only?
-          puts "Unlinking #{@name} formula." if verbose
+          ohai "Unlinking #{@name} formula." if verbose
           Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
         end
       when nil
         if unlinked_and_not_keg_only?
-          puts "Linking #{@name} formula." if verbose
+          ohai "Linking #{@name} formula." if verbose
           Bundle.system(HOMEBREW_BREW_FILE, "link", @name, verbose: verbose)
         elsif linked_and_keg_only?
-          puts "Unlinking #{@name} formula." if verbose
+          ohai "Unlinking #{@name} formula." if verbose
           Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
         end
       end
@@ -226,7 +226,7 @@ module Bundle
         next unless BrewInstaller.formula_installed?(conflict)
 
         if verbose
-          puts <<~EOS
+          ohai <<~EOS
             Unlinking #{conflict} formula.
             It is currently installed and conflicts with #{@name}.
           EOS
@@ -234,7 +234,7 @@ module Bundle
         return false unless Bundle.system(HOMEBREW_BREW_FILE, "unlink", conflict, verbose: verbose)
 
         if restart_service?
-          puts "Stopping #{conflict} service (if it is running)." if verbose
+          ohai "Stopping #{conflict} service (if it is running)." if verbose
           BrewServices.stop(conflict, verbose: verbose)
         end
       end
@@ -244,7 +244,7 @@ module Bundle
 
     def install!(verbose:)
       with_args = " with args #{@args}" if @args.present?
-      puts "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
+      ohai "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
       unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *@args, verbose: verbose)
         @changed = nil
         return false
@@ -256,7 +256,7 @@ module Bundle
     end
 
     def upgrade!(verbose:)
-      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
+      ohai "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
       unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, verbose: verbose)
         @changed = nil
         return false

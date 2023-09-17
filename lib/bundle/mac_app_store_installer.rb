@@ -13,19 +13,19 @@ module Bundle
 
     def preinstall(name, id, no_upgrade: false, verbose: false)
       unless Bundle.mas_installed?
-        puts "Installing mas. It is not currently installed." if verbose
+        ohai "Installing mas. It is not currently installed." if verbose
         Bundle.system HOMEBREW_BREW_FILE, "install", "mas", verbose: verbose
         raise "Unable to install #{name} app. mas installation failed." unless Bundle.mas_installed?
       end
 
       if app_id_installed?(id) &&
          (no_upgrade || !app_id_upgradable?(id))
-        puts "Skipping install of #{name} app. It is already installed." if verbose
+        ohai "Skipping install of #{name} app. It is already installed." if verbose
         return false
       end
 
       unless Bundle.mas_signedin?
-        puts "Not signed in to Mac App Store." if verbose
+        ohai "Not signed in to Mac App Store." if verbose
         raise "Unable to install #{name} app. mas not signed in to Mac App Store."
       end
 
@@ -36,13 +36,13 @@ module Bundle
       return true unless preinstall
 
       if app_id_installed?(id)
-        puts "Upgrading #{name} app. It is installed but not up-to-date." if verbose
+        ohai "Upgrading #{name} app. It is installed but not up-to-date." if verbose
         return false unless Bundle.system "mas", "upgrade", id.to_s, verbose: verbose
 
         return true
       end
 
-      puts "Installing #{name} app. It is not currently installed." if verbose
+      ohai "Installing #{name} app. It is not currently installed." if verbose
 
       return false unless Bundle.system "mas", "install", id.to_s, verbose: verbose
 

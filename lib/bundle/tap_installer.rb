@@ -6,7 +6,7 @@ module Bundle
 
     def preinstall(name, verbose: false, **_options)
       if installed_taps.include? name
-        puts "Skipping install of #{name} tap. It is already installed." if verbose
+        ohai "Skipping install of #{name} tap. It is already installed." if verbose
         return false
       end
 
@@ -16,7 +16,7 @@ module Bundle
     def install(name, preinstall: true, verbose: false, **options)
       return true unless preinstall
 
-      puts "Installing #{name} tap. It is not currently installed." if verbose
+      ohai "Installing #{name} tap. It is not currently installed." if verbose
       args = []
       args.append("--force-auto-update") if options[:force_auto_update]
 

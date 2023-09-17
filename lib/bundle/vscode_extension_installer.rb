@@ -10,12 +10,12 @@ module Bundle
 
     def preinstall(name, no_upgrade: false, verbose: false)
       if !Bundle.vscode_installed? && Bundle.cask_installed?
-        puts "Installing visual-studio-code. It is not currently installed." if verbose
+        ohai "Installing visual-studio-code. It is not currently installed." if verbose
         Bundle.system HOMEBREW_BREW_FILE, "install", "--cask", "visual-studio-code", verbose: verbose
       end
 
       if extension_installed?(name)
-        puts "Skipping install of #{name} VSCode extension. It is already installed." if verbose
+        ohai "Skipping install of #{name} VSCode extension. It is already installed." if verbose
         return false
       end
 
@@ -28,7 +28,7 @@ module Bundle
       return true unless preinstall
       return true if extension_installed?(name)
 
-      puts "Installing #{name} VSCode extension. It is not currently installed." if verbose
+      ohai "Installing #{name} VSCode extension. It is not currently installed." if verbose
 
       return false unless Bundle.system "code", "--install-extension", name, verbose: verbose
 

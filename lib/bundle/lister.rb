@@ -9,6 +9,7 @@ module Bundle
       entries.each do |entry|
         if show?(entry.type, all: all, casks: casks, taps: taps, mas: mas, whalebrew: whalebrew, vscode: vscode,
 brews: brews)
+          # This is not log output!
           puts entry.name
         end
       end

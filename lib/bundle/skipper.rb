@@ -13,7 +13,7 @@ module Bundle
            formula[:official_tap] &&
            !formula[:bottled]
           reason = Hardware::CPU.arm? ? "Apple Silicon" : "Linux"
-          puts Formatter.warning "Skipping #{entry.name} (no bottle for #{reason})" unless silent
+          opoo "Skipping #{entry.name} (no bottle for #{reason})" unless silent
           return true
         end
 
@@ -31,7 +31,7 @@ module Bundle
         entry_ids = [entry.name, entry.options[:id]&.to_s].compact
         return false if (entry_type_skips & entry_ids).empty?
 
-        puts Formatter.warning "Skipping #{entry.name}" unless silent
+        opoo "Skipping #{entry.name}" unless silent
         true
       end
       alias generic_skip? skip?

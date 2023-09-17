@@ -10,13 +10,13 @@ module Bundle
 
     def preinstall(name, verbose: false, **_options)
       unless Bundle.whalebrew_installed?
-        puts "Installing whalebrew. It is not currently installed." if verbose
+        ohai "Installing whalebrew. It is not currently installed." if verbose
         Bundle.system HOMEBREW_BREW_FILE, "install", "--formula", "whalebrew", verbose: verbose
         raise "Unable to install #{name} app. Whalebrew installation failed." unless Bundle.whalebrew_installed?
       end
 
       if image_installed?(name)
-        puts "Skipping install of #{name} app. It is already installed." if verbose
+        ohai "Skipping install of #{name} app. It is already installed." if verbose
         return false
       end
 
@@ -26,7 +26,7 @@ module Bundle
     def install(name, preinstall: true, verbose: false, **_options)
       return true unless preinstall
 
-      puts "Installing #{name} image. It is not currently installed." if verbose
+      ohai "Installing #{name} image. It is not currently installed." if verbose
 
       return false unless Bundle.system "whalebrew", "install", name, verbose: verbose
 

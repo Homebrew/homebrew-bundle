@@ -162,22 +162,18 @@ module Homebrew
       end
     rescue SystemExit => e
       Homebrew.failed = true unless e.success?
-      puts "Kernel.exit" if args.debug?
+      odebug "Kernel.exit" if args.debug?
     rescue Interrupt
-      puts # seemingly a newline is typical
-      Homebrew.failed = true
+      ofail "Interrupted"
     rescue RuntimeError, SystemCallError => e
       raise if e.message.empty?
 
       onoe e
-      puts e.backtrace if args.debug?
-      Homebrew.failed = true
+      ofail e.backtrace if args.debug?
     rescue => e
       onoe e
-      puts "#{Tty.bold}Please report this bug:#{Tty.reset}"
-      puts "  #{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues")}"
-      puts e.backtrace
-      Homebrew.failed = true
+      ohai "#{Tty.bold}Please report this bug:#{Tty.reset}", "#{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues")}"
+      ofail e.backtrace
     end
   end
 end

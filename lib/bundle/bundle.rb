@@ -17,7 +17,7 @@ module Bundle
         success = $CHILD_STATUS.success?
         pipe.close
       end
-      puts logs.join unless success
+      opoo("Command [#{[cmd, *args].join(" ")}] failed, output:", logs.join) unless success
       success
     end
 

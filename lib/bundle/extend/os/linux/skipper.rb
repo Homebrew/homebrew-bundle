@@ -13,7 +13,7 @@ module Bundle
 
       def skip?(entry, silent: false)
         if macos_only_entry?(entry) || macos_only_tap?(entry)
-          puts Formatter.warning "Skipping #{entry.type} #{entry.name} (on Linux)" unless silent
+          opoo "Skipping #{entry.type} #{entry.name} (on Linux)" unless silent
           true
         else
           generic_skip?(entry)

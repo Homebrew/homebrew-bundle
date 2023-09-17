@@ -27,12 +27,12 @@ module Bundle
           if casks.any?
             args = zap ? ["--zap"] : []
             Kernel.system HOMEBREW_BREW_FILE, "uninstall", "--cask", *args, "--force", *casks
-            puts "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
+            ohai "Uninstalled #{casks.size} cask#{(casks.size == 1) ? "" : "s"}"
           end
 
           if formulae.any?
             Kernel.system HOMEBREW_BREW_FILE, "uninstall", "--formula", "--force", *formulae
-            puts "Uninstalled #{formulae.size} formula#{(formulae.size == 1) ? "" : "e"}"
+            ohai "Uninstalled #{formulae.size} formula#{(formulae.size == 1) ? "" : "e"}"
           end
 
           Kernel.system HOMEBREW_BREW_FILE, "untap", *taps if taps.any?
@@ -42,36 +42,36 @@ module Bundle
           end
 
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup")
-          puts cleanup unless cleanup.empty?
+          ohai cleanup unless cleanup.empty?
         else
           if casks.any?
-            puts "Would uninstall casks:"
-            puts Formatter.columns casks
+            ohai "Would uninstall casks:"
+            ohai Formatter.columns casks
           end
 
           if formulae.any?
-            puts "Would uninstall formulae:"
-            puts Formatter.columns formulae
+            ohai "Would uninstall formulae:"
+            ohai Formatter.columns formulae
           end
 
           if taps.any?
-            puts "Would untap:"
-            puts Formatter.columns taps
+            ohai "Would untap:"
+            ohai Formatter.columns taps
           end
 
           if vscode_extensions.any?
-            puts "Would uninstall VSCode extensions:"
-            puts Formatter.columns vscode_extensions
+            ohai "Would uninstall VSCode extensions:"
+            ohai Formatter.columns vscode_extensions
           end
 
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup", "--dry-run")
           unless cleanup.empty?
-            puts "Would `brew cleanup`:"
-            puts cleanup
+            ohai "Would `brew cleanup`:"
+            ohai cleanup
           end
 
           if casks.any? || formulae.any? || taps.any? || !cleanup.empty?
-            puts "Run `brew bundle cleanup --force` to make these changes."
+            ohai "Run `brew bundle cleanup --force` to make these changes."
           end
         end
       end
