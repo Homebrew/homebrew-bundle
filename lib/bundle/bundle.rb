@@ -43,7 +43,7 @@ module Bundle
 
     def cask_installed?
       @cask_installed ||= File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
-                          (File.directory?("#{HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask") ||
+                          (File.directory?("#{HOMEBREW_LIBRARY}/Taps/homebrew/homebrew-cask") ||
                            !Homebrew::EnvConfig.no_install_from_api?)
     end
 
