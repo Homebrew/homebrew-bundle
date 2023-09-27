@@ -82,6 +82,11 @@ module Homebrew
              description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description. " \
                           "This is enabled by default if HOMEBREW_BUNDLE_DUMP_DESCRIBE is set."
+      switch "--cask-force",
+             env:         :bundle_dump_cask_force,
+             description: "`dump` adds a force argument to casks to overwrite existing files " \
+                          "(binaries and symlinks are excluded, unless originally from the same cask). " \
+                          "This is enabled by default if HOMEBREW_BUNDLE_DUMP_CASK_FORCE is set."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
       switch "--zap",
