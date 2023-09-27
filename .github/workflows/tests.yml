@@ -36,20 +36,16 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.6'
-
-    - name: Install Bundler
-      run: gem install bundler -v "~>1"
-
-    - name: Install Homebrew/homebrew-bundle RubyGems
-      run: bundle install --jobs 4 --retry 3
+        bundler-cache: true
 
     - name: Run RSpec tests
       run: bundle exec rspec
+
+    - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d
+      if: always()
 
     - name: Test that installing works
       run: |
         echo 'brew "hello"' > ./Brewfile
         brew bundle
         hello
-
-    - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d

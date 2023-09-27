@@ -102,8 +102,23 @@ describe Bundle::Locker do
 
         it "returns false on a permission error" do
           expect(lockfile).to receive(:write).and_raise(Errno::EPERM)
-          expect(locker).to receive(:opoo)
+          allow(locker).to receive(:opoo)
+          allow(locker).to receive(:puts)
           expect(locker.lock(entries)).to be false
+        end
+
+        it "outputs warning on a permission error" do
+          expect(lockfile).to receive(:write).and_raise(Errno::EPERM)
+          expect(locker).to receive(:opoo)
+          allow(locker).to receive(:puts)
+          locker.lock(entries)
+        end
+
+        it "outputs environment variable hint on a permission error" do
+          expect(lockfile).to receive(:write).and_raise(Errno::EPERM)
+          allow(locker).to receive(:opoo)
+          expect(locker).to receive(:puts).twice
+          locker.lock(entries)
         end
       end
 

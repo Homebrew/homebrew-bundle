@@ -85,7 +85,13 @@ module Bundle
         lockfile.unlink if lockfile.exist?
         lockfile.write("#{json}\n")
       rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
-        opoo "Could not write to #{lockfile}!"
+        unless ENV.fetch("HOMEBREW_BUNDLE_NO_LOCKFILE_WRITE_WARNING", false)
+          opoo "Could not write to #{lockfile}!"
+          unless Homebrew::EnvConfig.no_env_hints?
+            puts "Hide this warning by setting HOMEBREW_BUNDLE_NO_LOCKFILE_WRITE_WARNING."
+            puts "Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`)."
+          end
+        end
         return false
       end
 
