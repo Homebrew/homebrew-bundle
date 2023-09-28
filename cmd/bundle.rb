@@ -43,10 +43,11 @@ module Homebrew
 
         This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
       EOS
-      flag   "--file=",
-             description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
+      flag "--file=",
+           description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
       switch "--global",
-             description: "Read the `Brewfile` from `~/.Brewfile`."
+             description: "Read the `Brewfile` from `~/.Brewfile` or " \
+                          "the `HOMEBREW_BUNDLE_FILE_GLOBAL` environment variable, if set."
       switch "-v", "--verbose",
              description: "`install` prints output from commands as they are run. " \
                           "`check` lists all missing dependencies."
@@ -57,7 +58,9 @@ module Homebrew
              description: "`dump` overwrites an existing `Brewfile`. " \
                           "`cleanup` actually performs its cleanup operations."
       switch "--cleanup",
-             description: "`install` performs cleanup operation, same as running `cleanup --force`."
+             env:         :bundle_install_cleanup,
+             description: "`install` performs cleanup operation, same as running `cleanup --force`. " \
+                          "This is enabled by default if HOMEBREW_BUNDLE_INSTALL_CLEANUP is set."
       switch "--no-lock",
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
@@ -75,8 +78,10 @@ module Homebrew
       switch "--vscode",
              description: "`list` VSCode extensions."
       switch "--describe",
+             env:         :bundle_dump_describe,
              description: "`dump` adds a description comment above each line, unless the " \
-                          "dependency does not have a description."
+                          "dependency does not have a description. " \
+                          "This is enabled by default if HOMEBREW_BUNDLE_DUMP_DESCRIBE is set."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
       switch "--zap",

@@ -9,12 +9,17 @@ describe Bundle::Brewfile do
     end
 
     let(:dash_writes_to_stdout) { false }
+    let(:env_bundle_file_global_value) { nil }
     let(:env_bundle_file_value) { nil }
     let(:file_value) { nil }
     let(:has_global) { false }
 
     before do
-      allow(ENV).to receive(:fetch).with("HOMEBREW_BUNDLE_FILE", any_args).and_return(env_bundle_file_value)
+      allow(ENV).to receive(:fetch).and_return(nil)
+      allow(ENV).to receive(:fetch).with("HOMEBREW_BUNDLE_FILE_GLOBAL", any_args)
+                                   .and_return(env_bundle_file_global_value)
+      allow(ENV).to receive(:fetch).with("HOMEBREW_BUNDLE_FILE", any_args)
+                                   .and_return(env_bundle_file_value)
     end
 
     context "when `file` is specified with a relative path" do
@@ -125,10 +130,19 @@ describe Bundle::Brewfile do
         expect(path).to eq(expected_pathname)
       end
 
+      context "when HOMEBREW_BUNDLE_FILE_GLOBAL is set" do
+        let(:env_bundle_file_global_value) { "/path/to/Brewfile" }
+        let(:expected_pathname) { Pathname.new(env_bundle_file_global_value) }
+
+        it "returns the value specified by the environment variable" do
+          expect(path).to eq(expected_pathname)
+        end
+      end
+
       context "when HOMEBREW_BUNDLE_FILE is set" do
         let(:env_bundle_file_value) { "/path/to/Brewfile" }
 
-        it "returns the value specified by `file` path" do
+        it "returns the value specified by the variable" do
           expect { path }.to raise_error(RuntimeError)
         end
       end
