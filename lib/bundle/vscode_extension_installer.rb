@@ -24,7 +24,7 @@ module Bundle
       true
     end
 
-    def install(name, preinstall: true, no_upgrade: false, verbose: false)
+    def install(name, preinstall: true, no_upgrade: false, verbose: false, force: false)
       return true unless preinstall
       return true if extension_installed?(name)
 

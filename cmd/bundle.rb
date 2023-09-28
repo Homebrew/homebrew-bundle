@@ -55,7 +55,8 @@ module Homebrew
              description: "`install` won't run `brew upgrade` on outdated dependencies. " \
                           "Note they may still be upgraded by `brew install` if needed."
       switch "-f", "--force",
-             description: "`dump` overwrites an existing `Brewfile`. " \
+             description: "`install` runs with `--force`/`--overwrite`. " \
+                          "`dump` overwrites an existing `Brewfile`. " \
                           "`cleanup` actually performs its cleanup operations."
       switch "--cleanup",
              env:         :bundle_install_cleanup,
@@ -82,11 +83,6 @@ module Homebrew
              description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description. " \
                           "This is enabled by default if HOMEBREW_BUNDLE_DUMP_DESCRIBE is set."
-      switch "--cask-force",
-             env:         :bundle_dump_cask_force,
-             description: "`dump` adds a force argument to casks to overwrite existing files " \
-                          "(binaries and symlinks are excluded, unless originally from the same cask). " \
-                          "This is enabled by default if HOMEBREW_BUNDLE_DUMP_CASK_FORCE is set."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
       switch "--zap",
@@ -109,6 +105,7 @@ module Homebrew
           no_lock:    args.no_lock?,
           no_upgrade: args.no_upgrade?,
           verbose:    args.verbose?,
+          force:      args.force?,
         )
 
         if args.cleanup?

@@ -32,17 +32,7 @@ module Bundle
     def dump(describe: false)
       casks.map do |cask|
         description = "# #{cask.desc}\n" if describe && cask.desc.present?
-        cask_config = cask.config.explicit_s if cask.config.present? && cask.config.explicit.present?
-        cask_args = if ENV.fetch("HOMEBREW_BUNDLE_DUMP_CASK_FORCE", false)
-          if cask_config.present?
-            "#{cask_config}, force: true}"
-          else
-            "force: true"
-          end
-        else
-          cask_config
-        end
-        config = ", args: { #{cask_args} }" if cask_args.present?
+        config = ", args: { #{cask.config.explicit_s} }" if cask.config.present? && cask.config.explicit.present?
         "#{description}cask \"#{cask}\"#{config}"
       end.join("\n")
     end

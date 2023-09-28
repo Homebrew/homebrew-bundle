@@ -23,7 +23,7 @@ module Bundle
       true
     end
 
-    def install(name, preinstall: true, verbose: false, **_options)
+    def install(name, preinstall: true, verbose: false, force: false, **_options)
       return true unless preinstall
 
       puts "Installing #{name} image. It is not currently installed." if verbose

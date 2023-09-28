@@ -5,11 +5,11 @@ module Bundle
     module Install
       module_function
 
-      def run(global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false)
+      def run(global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false, force: false)
         parsed_entries = Bundle::Dsl.new(Brewfile.read(global: global, file: file)).entries
         Bundle::Installer.install(
           parsed_entries,
-          global: global, file: file, no_lock: no_lock, no_upgrade: no_upgrade, verbose: verbose,
+          global: global, file: file, no_lock: no_lock, no_upgrade: no_upgrade, verbose: verbose, force: force,
         ) || exit(1)
       end
     end

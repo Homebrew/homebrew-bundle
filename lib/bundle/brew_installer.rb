@@ -37,9 +37,9 @@ module Bundle
       true
     end
 
-    def install(preinstall: true, no_upgrade: false, verbose: false)
+    def install(preinstall: true, no_upgrade: false, verbose: false, force: false)
       install_result = if preinstall
-        install_change_state!(no_upgrade: no_upgrade, verbose: verbose)
+        install_change_state!(no_upgrade: no_upgrade, verbose: verbose, force: force)
       else
         true
       end
@@ -52,13 +52,13 @@ module Bundle
       install_result
     end
 
-    def install_change_state!(no_upgrade:, verbose:)
+    def install_change_state!(no_upgrade:, verbose:, force:)
       return false unless resolve_conflicts!(verbose: verbose)
 
       if installed?
-        upgrade!(verbose: verbose)
+        upgrade!(verbose: verbose, force: force)
       else
-        install!(verbose: verbose)
+        install!(verbose: verbose, force: force)
       end
     end
 
@@ -242,10 +242,12 @@ module Bundle
       true
     end
 
-    def install!(verbose:)
-      with_args = " with args #{@args}" if @args.present?
+    def install!(verbose:, force:)
+      install_args = @args.dup
+      install_args << "--force" << "--overwrite" if force
+      with_args = " with #{install_args.join(" ")}" if install_args.present?
       puts "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
-      unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *@args, verbose: verbose)
+      unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *install_args, verbose: verbose)
         @changed = nil
         return false
       end
@@ -255,9 +257,12 @@ module Bundle
       true
     end
 
-    def upgrade!(verbose:)
-      puts "Upgrading #{@name} formula. It is installed but not up-to-date." if verbose
-      unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, verbose: verbose)
+    def upgrade!(verbose:, force:)
+      upgrade_args = []
+      upgrade_args << "--force" if force
+      with_args = " with #{upgrade_args.join(" ")}" if upgrade_args.present?
+      puts "Upgrading #{@name} formula#{with_args}. It is installed but not up-to-date." if verbose
+      unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, *upgrade_args, verbose: verbose)
         @changed = nil
         return false
       end
