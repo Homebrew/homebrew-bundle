@@ -13,7 +13,7 @@ module Bundle
       true
     end
 
-    def install(name, preinstall: true, verbose: false, **options)
+    def install(name, preinstall: true, verbose: false, force: false, **options)
       return true unless preinstall
 
       puts "Installing #{name} tap. It is not currently installed." if verbose

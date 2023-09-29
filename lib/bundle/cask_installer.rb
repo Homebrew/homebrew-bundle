@@ -27,7 +27,7 @@ module Bundle
       true
     end
 
-    def install(name, preinstall: true, no_upgrade: false, verbose: false, **options)
+    def install(name, preinstall: true, no_upgrade: false, verbose: false, force: false, **options)
       return true unless preinstall
 
       full_name = options.fetch(:full_name, name)
@@ -49,7 +49,11 @@ module Bundle
         end
       end.compact
 
-      puts "Installing #{name} cask. It is not currently installed." if verbose
+      args << "--force" if force
+      args.uniq!
+
+      with_args = " with #{args.join(" ")}" if args.present?
+      puts "Installing #{name} cask#{with_args}. It is not currently installed." if verbose
 
       return false unless Bundle.system HOMEBREW_BREW_FILE, "install", "--cask", full_name, *args, verbose: verbose
 

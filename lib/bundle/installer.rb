@@ -4,7 +4,7 @@ module Bundle
   module Installer
     module_function
 
-    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false)
+    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false, force: false)
       success = 0
       failure = 0
 
@@ -46,7 +46,8 @@ module Bundle
           false
         end
 
-        if cls.install(*args, **options, preinstall: preinstall, no_upgrade: no_upgrade, verbose: verbose)
+        if cls.install(*args, **options,
+                       preinstall: preinstall, no_upgrade: no_upgrade, verbose: verbose, force: force)
           success += 1
         else
           puts Formatter.error("#{verb} #{name} has failed!")

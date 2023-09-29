@@ -55,7 +55,8 @@ module Homebrew
              description: "`install` won't run `brew upgrade` on outdated dependencies. " \
                           "Note they may still be upgraded by `brew install` if needed."
       switch "-f", "--force",
-             description: "`dump` overwrites an existing `Brewfile`. " \
+             description: "`install` runs with `--force`/`--overwrite`. " \
+                          "`dump` overwrites an existing `Brewfile`. " \
                           "`cleanup` actually performs its cleanup operations."
       switch "--cleanup",
              env:         :bundle_install_cleanup,
@@ -104,6 +105,7 @@ module Homebrew
           no_lock:    args.no_lock?,
           no_upgrade: args.no_upgrade?,
           verbose:    args.verbose?,
+          force:      args.force?,
         )
 
         if args.cleanup?

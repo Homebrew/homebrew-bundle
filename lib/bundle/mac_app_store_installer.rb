@@ -32,7 +32,7 @@ module Bundle
       true
     end
 
-    def install(name, id, preinstall: true, no_upgrade: false, verbose: false)
+    def install(name, id, preinstall: true, no_upgrade: false, verbose: false, force: false)
       return true unless preinstall
 
       if app_id_installed?(id)
