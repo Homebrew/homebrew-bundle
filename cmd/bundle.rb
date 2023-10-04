@@ -61,7 +61,8 @@ module Homebrew
       switch "--cleanup",
              env:         :bundle_install_cleanup,
              description: "`install` performs cleanup operation, same as running `cleanup --force`. " \
-                          "This is enabled by default if HOMEBREW_BUNDLE_INSTALL_CLEANUP is set."
+                          "This is enabled by default if HOMEBREW_BUNDLE_INSTALL_CLEANUP is set and " \
+                          "`--global` is passed."
       switch "--no-lock",
              description: "`install` won't output a `Brewfile.lock.json`."
       switch "--all",
@@ -108,7 +109,13 @@ module Homebrew
           force:      args.force?,
         )
 
-        if args.cleanup?
+        cleanup = if ENV.fetch("HOMEBREW_BUNDLE_INSTALL_CLEANUP", nil)
+          args.global?
+        else
+          args.cleanup?
+        end
+
+        if cleanup
           Bundle::Commands::Cleanup.run(
             global: args.global?,
             file:   args.file,
