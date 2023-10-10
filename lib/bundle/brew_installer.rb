@@ -113,7 +113,7 @@ module Bundle
         if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if verbose
           link_args = "link"
-          link_args << "--force" if force
+          link_args << "--overwrite" if force
           Bundle.system(HOMEBREW_BREW_FILE, *link_args, @name, verbose: verbose)
         elsif linked_and_keg_only?
           puts "Unlinking #{@name} formula." if verbose
