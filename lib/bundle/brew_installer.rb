@@ -46,7 +46,7 @@ module Bundle
 
       if installed?
         service_change_state!(verbose: verbose) if install_result
-        link_change_state!(verbose: verbose)
+        link_change_state!(verbose: verbose, force: force)
       end
 
       install_result
@@ -97,7 +97,7 @@ module Bundle
       end
     end
 
-    def link_change_state!(verbose: false)
+    def link_change_state!(verbose: false, force: false)
       case @link
       when true
         unless linked_and_keg_only?
@@ -112,7 +112,9 @@ module Bundle
       when nil
         if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "link", @name, verbose: verbose)
+          link_args = "link"
+          link_args << "--force" if force
+          Bundle.system(HOMEBREW_BREW_FILE, *link_args, @name, verbose: verbose)
         elsif linked_and_keg_only?
           puts "Unlinking #{@name} formula." if verbose
           Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
