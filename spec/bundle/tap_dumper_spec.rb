@@ -19,14 +19,26 @@ describe Bundle::TapDumper do
     end
   end
 
-  context "with `bitbucket/bar`, `homebrew/baz` and `homebrew/foo` taps" do
+  context "with taps" do
     before do
       described_class.reset!
+
       bar = instance_double(Tap, name: "bitbucket/bar", custom_remote?: true,
                             remote: "https://bitbucket.org/bitbucket/bar.git")
       baz = instance_double(Tap, name: "homebrew/baz", custom_remote?: false)
       foo = instance_double(Tap, name: "homebrew/foo", custom_remote?: false)
-      allow(Tap).to receive(:each).and_return [bar, baz, foo]
+
+      ENV["HOMEBREW_GITHUB_API_TOKEN_BEFORE"] = ENV.fetch("HOMEBREW_GITHUB_API_TOKEN", nil)
+      ENV["HOMEBREW_GITHUB_API_TOKEN"] = "some-token"
+      private_tap = instance_double(Tap, name: "privatebrew/private", custom_remote?: true,
+        remote: "https://#{ENV.fetch("HOMEBREW_GITHUB_API_TOKEN")}@github.com/privatebrew/homebrew-private")
+
+      allow(Tap).to receive(:each).and_return [bar, baz, foo, private_tap]
+    end
+
+    after do
+      ENV["HOMEBREW_GITHUB_API_TOKEN"] = ENV.fetch("HOMEBREW_GITHUB_API_TOKEN_BEFORE", nil)
+      ENV.delete("HOMEBREW_GITHUB_API_TOKEN_BEFORE")
     end
 
     it "returns list of information" do
@@ -34,10 +46,13 @@ describe Bundle::TapDumper do
     end
 
     it "dumps output" do
-      expect(dumper.dump).to eql(
-        "tap \"bitbucket/bar\", \"https://bitbucket.org/bitbucket/bar.git\"\n" \
-        "tap \"homebrew/baz\"\ntap \"homebrew/foo\"",
-      )
+      expected_output = <<~EOS
+        tap "bitbucket/bar", "https://bitbucket.org/bitbucket/bar.git"
+        tap "homebrew/baz"
+        tap "homebrew/foo"
+        tap "privatebrew/private", "https://\#{ENV.fetch("HOMEBREW_GITHUB_API_TOKEN")}@github.com/privatebrew/homebrew-private"
+      EOS
+      expect(dumper.dump).to eql(expected_output.chomp)
     end
   end
 end
