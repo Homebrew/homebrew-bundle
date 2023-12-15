@@ -6,8 +6,7 @@ describe Bundle::VscodeExtensionInstaller do
   context "when VSCode is not installed" do
     before do
       described_class.reset!
-      allow(Bundle).to receive(:vscode_installed?).and_return(false)
-      allow(Bundle).to receive(:cask_installed?).and_return(true)
+      allow(Bundle).to receive_messages(vscode_installed?: false, cask_installed?: true)
     end
 
     it "tries to install mas" do

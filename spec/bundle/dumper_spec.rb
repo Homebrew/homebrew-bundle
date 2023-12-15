@@ -7,10 +7,8 @@ describe Bundle::Dumper do
   subject(:dumper) { described_class }
 
   before do
-    allow(Bundle).to receive(:cask_installed?).and_return(true)
-    allow(Bundle).to receive(:mas_installed?).and_return(false)
-    allow(Bundle).to receive(:whalebrew_installed?).and_return(false)
-    allow(Bundle).to receive(:vscode_installed?).and_return(false)
+    allow(Bundle).to receive_messages(cask_installed?: true, mas_installed?: false, whalebrew_installed?: false,
+                                      vscode_installed?: false)
     Bundle::BrewDumper.reset!
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!

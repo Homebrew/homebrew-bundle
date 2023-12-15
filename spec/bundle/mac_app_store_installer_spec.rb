@@ -11,8 +11,7 @@ describe Bundle::MacAppStoreInstaller do
 
   describe ".app_id_installed_and_up_to_date?" do
     it "returns result" do
-      allow(described_class).to receive(:installed_app_ids).and_return([123, 456])
-      allow(described_class).to receive(:outdated_app_ids).and_return([456])
+      allow(described_class).to receive_messages(installed_app_ids: [123, 456], outdated_app_ids: [456])
       expect(described_class.app_id_installed_and_up_to_date?(123)).to be(true)
       expect(described_class.app_id_installed_and_up_to_date?(456)).to be(false)
     end
@@ -54,8 +53,7 @@ describe Bundle::MacAppStoreInstaller do
 
     context "when mas is not signed in" do
       it "outputs an error" do
-        allow(described_class).to receive(:installed_app_ids).and_return([123])
-        allow(described_class).to receive(:outdated_app_ids).and_return([123])
+        allow(described_class).to receive_messages(installed_app_ids: [123], outdated_app_ids: [123])
         allow(MacOS).to receive(:version).and_return(:big_sur)
         expect(Kernel).to receive(:system).with("mas account &>/dev/null").and_return(false)
         expect { described_class.preinstall("foo", 123) }.to raise_error(RuntimeError)
@@ -81,8 +79,7 @@ describe Bundle::MacAppStoreInstaller do
 
       context "when app is outdated" do
         before do
-          allow(described_class).to receive(:installed_app_ids).and_return([123])
-          allow(described_class).to receive(:outdated_app_ids).and_return([123])
+          allow(described_class).to receive_messages(installed_app_ids: [123], outdated_app_ids: [123])
         end
 
         it "upgrades" do

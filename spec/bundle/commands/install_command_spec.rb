@@ -28,15 +28,12 @@ describe Bundle::Commands::Install do
     end
 
     it "does not raise an error" do
-      allow(Bundle::BrewInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::CaskInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(false)
-      allow(Bundle::BrewInstaller).to receive(:install).and_return(true)
-      allow(Bundle::CaskInstaller).to receive(:install).and_return(true)
-      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(true)
+      allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::CaskInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
       expect { described_class.run }.not_to raise_error
     end
@@ -51,18 +48,12 @@ describe Bundle::Commands::Install do
     end
 
     it "exits on failures" do
-      allow(Bundle::BrewInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::CaskInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::TapInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::BrewInstaller).to receive(:install).and_return(false)
-      allow(Bundle::CaskInstaller).to receive(:install).and_return(false)
-      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(false)
-      allow(Bundle::TapInstaller).to receive(:install).and_return(false)
-      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(false)
-      allow(Bundle::VscodeExtensionInstaller).to receive(:install).and_return(false)
+      allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::CaskInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::TapInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::WhalebrewInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::VscodeExtensionInstaller).to receive_messages(preinstall: true, install: false)
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
@@ -70,17 +61,12 @@ describe Bundle::Commands::Install do
     end
 
     it "skips installs from failed taps" do
-      allow(Bundle::BrewInstaller).to receive(:preinstall).and_return(true)
       allow(Bundle::CaskInstaller).to receive(:preinstall).and_return(false)
-      allow(Bundle::MacAppStoreInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::TapInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(true)
-      allow(Bundle::TapInstaller).to receive(:install).and_return(false)
-      allow(Bundle::BrewInstaller).to receive(:install).and_return(true)
-      allow(Bundle::MacAppStoreInstaller).to receive(:install).and_return(true)
-      allow(Bundle::WhalebrewInstaller).to receive(:install).and_return(true)
-      allow(Bundle::VscodeExtensionInstaller).to receive(:install).and_return(true)
+      allow(Bundle::TapInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::WhalebrewInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::VscodeExtensionInstaller).to receive_messages(preinstall: true, install: true)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
       expect(Bundle).not_to receive(:system)

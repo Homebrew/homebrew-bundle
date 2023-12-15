@@ -108,7 +108,7 @@ module Bundle
       return @brew_list[name] if @brew_list.key?(name)
 
       @brew_list[name] ||= Bundle::BrewDumper.formulae_by_name(name)
-                                            &.slice(:version, :bottle)
+                                             &.slice(:version, :bottle)
     end
 
     def cask_list

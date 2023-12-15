@@ -24,6 +24,8 @@ brews: brews)
       return true if vscode && type == :vscode
       return true if brews && type == :brew
       return true if type == :brew && !casks && !taps && !mas && !whalebrew && !vscode
+
+      false
     end
   end
 end

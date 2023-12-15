@@ -81,10 +81,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are no formulae to uninstall and no taps to untap" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return([])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
-      allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [])
     end
 
     it "does nothing" do
@@ -97,10 +97,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are casks to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
-      allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
+      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [])
     end
 
     it "uninstalls casks" do
@@ -113,10 +113,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are casks to zap" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
-      allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
+      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [])
     end
 
     it "uninstalls casks" do
@@ -129,10 +129,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are formulae to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return([])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
-      allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          %w[a b],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [])
     end
 
     it "uninstalls formulae" do
@@ -145,10 +145,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are taps to untap" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return([])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
-      allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  %w[a b],
+                                                 vscode_extensions_to_uninstall: [])
     end
 
     it "untaps taps" do
@@ -161,10 +161,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are VSCode extensions to uninstall" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return([])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
-      allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return(%w[GitHub.codespaces])
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: %w[GitHub.codespaces])
     end
 
     it "uninstalls extensions" do
@@ -177,10 +177,10 @@ describe Bundle::Commands::Cleanup do
   context "when there are casks and formulae to uninstall and taps to untap but without passing `--force`" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return(%w[a b])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return(%w[a b])
-      allow(described_class).to receive(:taps_to_untap).and_return(%w[a b])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return(%w[a b])
+      allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
+                                                 formulae_to_uninstall:          %w[a b],
+                                                 taps_to_untap:                  %w[a b],
+                                                 vscode_extensions_to_uninstall: %w[a b])
     end
 
     it "lists casks, formulae and taps" do
@@ -196,10 +196,10 @@ describe Bundle::Commands::Cleanup do
   context "when there is brew cleanup output" do
     before do
       described_class.reset!
-      allow(described_class).to receive(:casks_to_uninstall).and_return([])
-      allow(described_class).to receive(:formulae_to_uninstall).and_return([])
-      allow(described_class).to receive(:taps_to_untap).and_return([])
-      allow(described_class).to receive(:vscode_extensions_to_uninstall).and_return([])
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [])
     end
 
     def sane?
