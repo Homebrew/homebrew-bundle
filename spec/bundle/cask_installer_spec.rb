@@ -16,8 +16,8 @@ describe Bundle::CaskInstaller do
   describe ".cask_installed_and_up_to_date?" do
     it "returns result" do
       described_class.reset!
-      allow(described_class).to receive(:installed_casks).and_return(["foo", "baz"])
-      allow(described_class).to receive(:outdated_casks).and_return(["baz"])
+      allow(described_class).to receive_messages(installed_casks: ["foo", "baz"],
+                                                 outdated_casks:  ["baz"])
       expect(described_class.cask_installed_and_up_to_date?("foo")).to be(true)
       expect(described_class.cask_installed_and_up_to_date?("baz")).to be(false)
     end
@@ -59,8 +59,8 @@ describe Bundle::CaskInstaller do
 
     context "when cask is outdated" do
       before do
-        allow(described_class).to receive(:installed_casks).and_return(["google-chrome"])
-        allow(described_class).to receive(:outdated_casks).and_return(["google-chrome"])
+        allow(described_class).to receive_messages(installed_casks: ["google-chrome"],
+                                                   outdated_casks:  ["google-chrome"])
       end
 
       it "upgrades" do
@@ -74,8 +74,7 @@ describe Bundle::CaskInstaller do
 
     context "when cask is outdated and uses auto-update" do
       before do
-        allow(Bundle::CaskDumper).to receive(:cask_names).and_return(["opera"])
-        allow(Bundle::CaskDumper).to receive(:outdated_cask_names).and_return([])
+        allow(Bundle::CaskDumper).to receive_messages(cask_names: ["opera"], outdated_cask_names: [])
         allow(Bundle::CaskDumper).to receive(:outdated_cask_names).with(greedy: true).and_return(["opera"])
       end
 

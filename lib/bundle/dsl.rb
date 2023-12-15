@@ -103,7 +103,7 @@ module Bundle
         user = Regexp.last_match(1)
         repo = Regexp.last_match(2)
         name = Regexp.last_match(3)
-        "#{user}/#{repo.sub(/homebrew-/, "")}/#{name}"
+        "#{user}/#{repo.sub("homebrew-", "")}/#{name}"
       else
         name
       end

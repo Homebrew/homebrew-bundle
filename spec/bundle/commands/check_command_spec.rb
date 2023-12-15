@@ -18,11 +18,11 @@ describe Bundle::Commands::Check do
     it "does not raise an error" do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       nothing = []
-      allow(Bundle::Checker).to receive(:casks_to_install).and_return(nothing)
-      allow(Bundle::Checker).to receive(:formulae_to_install).and_return(nothing)
-      allow(Bundle::Checker).to receive(:apps_to_install).and_return(nothing)
-      allow(Bundle::Checker).to receive(:taps_to_tap).and_return(nothing)
-      allow(Bundle::Checker).to receive(:extensions_to_install).and_return(nothing)
+      allow(Bundle::Checker).to receive_messages(casks_to_install:      nothing,
+                                                 formulae_to_install:   nothing,
+                                                 apps_to_install:       nothing,
+                                                 taps_to_tap:           nothing,
+                                                 extensions_to_install: nothing)
       expect { do_check }.not_to raise_error
     end
   end
@@ -94,8 +94,7 @@ describe Bundle::Commands::Check do
     before do
       Bundle::Checker.reset!
       allow(Bundle::Checker::MacAppStoreChecker).to receive(:installed_and_up_to_date?).and_return(false)
-      allow(Bundle::BrewInstaller).to receive(:installed_formulae).and_return(["abc", "def"])
-      allow(Bundle::BrewInstaller).to receive(:upgradable_formulae).and_return([])
+      allow(Bundle::BrewInstaller).to receive_messages(installed_formulae: ["abc", "def"], upgradable_formulae: [])
       allow(Bundle::BrewServices).to receive(:started?).with("abc").and_return(true)
       allow(Bundle::BrewServices).to receive(:started?).with("def").and_return(false)
     end
@@ -219,10 +218,10 @@ describe Bundle::Commands::Check do
   context "when there are formulae to install" do
     before do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
-      allow(Bundle::Checker).to receive(:taps_to_tap).and_return([])
-      allow(Bundle::Checker).to receive(:casks_to_install).and_return([])
-      allow(Bundle::Checker).to receive(:apps_to_install).and_return([])
-      allow(Bundle::Checker).to receive(:formulae_to_install).and_return(["one"])
+      allow(Bundle::Checker).to receive_messages(taps_to_tap:         [],
+                                                 casks_to_install:    [],
+                                                 apps_to_install:     [],
+                                                 formulae_to_install: ["one"])
     end
 
     it "does not start formulae" do

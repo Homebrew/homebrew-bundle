@@ -35,8 +35,7 @@ describe Bundle::Commands::Exec do
     end
 
     it "raises if called with a command that's not on the PATH" do
-      allow(described_class).to receive(:exec).and_return(nil)
-      allow(described_class).to receive(:which).and_return(nil)
+      allow(described_class).to receive_messages(exec: nil, which: nil)
       allow_any_instance_of(Pathname).to receive(:read)
         .and_return("brew 'openssl'")
 

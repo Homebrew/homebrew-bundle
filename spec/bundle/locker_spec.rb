@@ -124,8 +124,7 @@ describe Bundle::Locker do
 
       context "when on Linux" do
         before do
-          allow(OS).to receive(:mac?).and_return(false)
-          allow(OS).to receive(:linux?).and_return(true)
+          allow(OS).to receive_messages(mac?: false, linux?: true)
         end
 
         it "returns true" do
