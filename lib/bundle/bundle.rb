@@ -14,7 +14,7 @@ module Bundle
           logs << buf
         end
         Process.wait(pipe.pid)
-        success = $CHILD_STATUS.dup.success?
+        success = $CHILD_STATUS.success?
         pipe.close
       end
       puts logs.join unless success
