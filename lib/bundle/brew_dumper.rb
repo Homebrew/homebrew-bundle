@@ -25,7 +25,7 @@ module Bundle
     end
 
     def formulae_by_full_name(name = nil)
-      return @formulae_by_full_name[name] if !name.nil? && @formulae_by_full_name&.key?(name)
+      return @formulae_by_full_name[name] if name.present? && @formulae_by_full_name&.key?(name)
 
       require "formula"
       require "formulary"

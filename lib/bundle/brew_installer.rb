@@ -63,7 +63,7 @@ module Bundle
     end
 
     def start_service?
-      !@start_service.nil?
+      @start_service.present?
     end
 
     def start_service_needed?
@@ -71,7 +71,7 @@ module Bundle
     end
 
     def restart_service?
-      !@restart_service.nil?
+      @restart_service.present?
     end
 
     def restart_service_needed?
@@ -82,7 +82,7 @@ module Bundle
     end
 
     def changed?
-      !@changed.nil?
+      @changed.present?
     end
 
     def service_change_state!(verbose:)
