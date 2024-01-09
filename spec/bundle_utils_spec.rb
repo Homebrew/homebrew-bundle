@@ -14,16 +14,18 @@ describe Bundle do
   end
 
   context "when the system call fails" do
-    before do
-      allow_any_instance_of(Process::Status).to receive(:success?).and_return(false)
-    end
-
     it "emits all stdout output even if verbose is false" do
-      expect { described_class.system "echo", "foo", verbose: false }.to output("foo\n").to_stdout_from_any_process
+      expect do
+        described_class.system "/bin/bash", "-c", "echo foo && false",
+                               verbose: false
+      end.to output("foo\n").to_stdout_from_any_process
     end
 
     it "emits all stdout output only once if verbose is true" do
-      expect { described_class.system "echo", "foo", verbose: true }.to output("foo\n").to_stdout_from_any_process
+      expect do
+        described_class.system "/bin/bash", "-c", "echo foo && true",
+                               verbose: true
+      end.to output("foo\n").to_stdout_from_any_process
     end
   end
 
