@@ -29,7 +29,7 @@ module Bundle
         # can have spaces in the names (and the `mas` output format changes on
         # occasion).
         entry_ids = [entry.name, entry.options[:id]&.to_s].compact
-        return false if (entry_type_skips & entry_ids).empty?
+        return false unless entry_type_skips.intersect?(entry_ids)
 
         puts Formatter.warning "Skipping #{entry.name}" unless silent
         true
