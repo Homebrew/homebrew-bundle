@@ -54,10 +54,10 @@ cask "firefox", args: { no_quarantine: true }
 # always upgrade auto-updated or unversioned cask to latest version even if already installed
 cask "opera", greedy: true
 # 'brew install --cask' only if '/usr/libexec/java_home --failfast' fails
-cask "java" unless system "/usr/libexec/java_home --failfast"
+cask "java" unless system "/usr/libexec/java_home", "--failfast"
 
 # 'mas install'
-mas "1Password", id: 443987910
+mas "1Password", id: 443_987_910
 
 # 'whalebrew install'
 whalebrew "whalebrew/wget"
