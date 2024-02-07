@@ -21,7 +21,7 @@ GEM
       ruby2_keywords
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    minitest (5.22.0)
+    minitest (5.22.2)
     mutex_m (0.2.0)
     rexml (3.2.6)
     rspec (3.13.0)
