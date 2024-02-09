@@ -151,7 +151,7 @@ module Bundle
         return [].freeze if kept_extensions.empty?
 
         current_extensions = Bundle::VscodeExtensionDumper.extensions
-        current_extensions - kept_extensions
+        current_extensions.map(&:downcase) - kept_extensions.map(&:downcase)
       end
 
       def system_output_no_stderr(cmd, *args)
