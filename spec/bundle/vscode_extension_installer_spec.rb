@@ -27,6 +27,11 @@ describe Bundle::VscodeExtensionInstaller do
         allow(described_class).to receive(:installed_extensions).and_return(["foo"])
       end
 
+      it "skips" do
+        expect(Bundle).not_to receive(:system)
+        expect(described_class.preinstall("foo")).to be(false)
+      end
+
       it "skips ignoring case" do
         expect(Bundle).not_to receive(:system)
         expect(described_class.preinstall("Foo")).to be(false)
