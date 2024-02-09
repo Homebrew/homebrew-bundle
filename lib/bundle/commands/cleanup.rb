@@ -143,7 +143,7 @@ module Bundle
 
       def vscode_extensions_to_uninstall(global: false, file: nil)
         @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
-        kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map(&:name)
+        kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map(&:name).map(&:downcase)
 
         # To provide a graceful migration from `Brewfile`s that don't yet or
         # don't want to use `vscode`: don't remove any extensions if we don't
@@ -151,7 +151,7 @@ module Bundle
         return [].freeze if kept_extensions.empty?
 
         current_extensions = Bundle::VscodeExtensionDumper.extensions
-        current_extensions.map(&:downcase) - kept_extensions.map(&:downcase)
+        current_extensions - kept_extensions
       end
 
       def system_output_no_stderr(cmd, *args)
