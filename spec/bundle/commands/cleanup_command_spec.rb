@@ -21,7 +21,7 @@ describe Bundle::Commands::Cleanup do
         brew 'hasbuilddependency1'
         brew 'hasbuilddependency2'
         mas 'appstoreapp1', id: 1
-        vscode 'vscodeextension1'
+        vscode 'VsCodeExtension1'
       EOS
     end
 
@@ -74,6 +74,11 @@ describe Bundle::Commands::Cleanup do
 
     it "computes which VSCode extensions to uninstall" do
       allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z])
+      expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
+    end
+
+    it "computes which VSCode extensions to uninstall irrespective of case of the extension name" do
+      allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z vscodeextension1])
       expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
     end
   end

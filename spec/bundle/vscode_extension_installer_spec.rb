@@ -31,6 +31,11 @@ describe Bundle::VscodeExtensionInstaller do
         expect(Bundle).not_to receive(:system)
         expect(described_class.preinstall("foo")).to be(false)
       end
+
+      it "skips ignoring case" do
+        expect(Bundle).not_to receive(:system)
+        expect(described_class.preinstall("Foo")).to be(false)
+      end
     end
 
     context "when app is not installed" do

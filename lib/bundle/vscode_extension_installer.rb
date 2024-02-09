@@ -38,7 +38,7 @@ module Bundle
     end
 
     def extension_installed?(name)
-      installed_extensions.include? name
+      installed_extensions.include? name.downcase
     end
 
     def installed_extensions
