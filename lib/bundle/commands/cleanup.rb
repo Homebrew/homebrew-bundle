@@ -143,7 +143,7 @@ module Bundle
 
       def vscode_extensions_to_uninstall(global: false, file: nil)
         @dsl ||= Bundle::Dsl.new(Brewfile.read(global: global, file: file))
-        kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map(&:name).map(&:downcase)
+        kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map { |x| x.name.downcase }
 
         # To provide a graceful migration from `Brewfile`s that don't yet or
         # don't want to use `vscode`: don't remove any extensions if we don't
