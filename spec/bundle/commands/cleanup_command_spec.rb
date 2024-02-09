@@ -76,6 +76,11 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z])
       expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
     end
+
+    it "computes which VSCode extensions to uninstall irrespective of case of the extension name" do
+      allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z Ab VsCodeExtension1])
+      expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z ab])
+    end
   end
 
   context "when there are no formulae to uninstall and no taps to untap" do
