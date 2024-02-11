@@ -7,6 +7,8 @@ describe Bundle::Dumper do
   subject(:dumper) { described_class }
 
   before do
+    ENV["HOMEBREW_BUNDLE_FILE"] = ""
+
     allow(Bundle).to receive_messages(cask_installed?: true, mas_installed?: false, whalebrew_installed?: false,
                                       vscode_installed?: false)
     Bundle::BrewDumper.reset!

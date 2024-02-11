@@ -28,6 +28,7 @@ describe Bundle::Commands::Dump do
 
   context "when files existed and `--force` is passed" do
     before do
+      ENV["HOMEBREW_BUNDLE_FILE"] = ""
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
       allow(Bundle).to receive(:cask_installed?).and_return(true)
     end
