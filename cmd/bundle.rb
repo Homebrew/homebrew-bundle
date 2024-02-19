@@ -9,7 +9,7 @@ module Homebrew
       usage_banner <<~EOS
         `bundle` [<subcommand>]
 
-        Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store and Whalebrew.
+        Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Whalebrew and Visual Studio Code.
 
         `brew bundle` [`install`]:
         Install and upgrade (by default) all dependencies from the `Brewfile`.
@@ -18,30 +18,30 @@ module Homebrew
 
         You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`.
 
-        `brew bundle` will output a `Brewfile.lock.json` in the same directory as the `Brewfile` if all dependencies are installed successfully. This contains dependency and system status information which can be useful in debugging `brew bundle` failures and replicating a "last known good build" state. You can opt-out of this behaviour by setting the `HOMEBREW_BUNDLE_NO_LOCK` environment variable or passing the `--no-lock` option. You may wish to check this file into the same version control system as your `Brewfile` (or ensure your version control system ignores it if you'd prefer to rely on debugging information from a local machine).
+        `brew bundle` will output a `Brewfile.lock.json` in the same directory as the `Brewfile` if all dependencies are installed successfully. This contains dependency and system status information which can be useful for debugging `brew bundle` failures and replicating a "last known good build" state. You can opt-out of this behaviour by setting the `HOMEBREW_BUNDLE_NO_LOCK` environment variable or passing the `--no-lock` option. You may wish to check this file into the same version control system as your `Brewfile` (or ensure your version control system ignores it if you'd prefer to rely on debugging information from a local machine).
 
         `brew bundle dump`:
         Write all installed casks/formulae/images/taps into a `Brewfile` in the current directory.
 
         `brew bundle cleanup`:
-        Uninstall all dependencies not listed from the `Brewfile`.
+        Uninstall all dependencies not present in the `Brewfile`.
 
         This workflow is useful for maintainers or testers who regularly install lots of formulae.
 
         `brew bundle check`:
-        Check if all dependencies are installed from the `Brewfile`.
+        Check if all dependencies present in the `Brewfile` are installed.
 
         This provides a successful exit code if everything is up-to-date, making it useful for scripting.
 
         `brew bundle list`:
         List all dependencies present in the `Brewfile`.
 
-        By default, only Homebrew dependencies are listed.
+        By default, only Homebrew formula dependencies are listed.
 
         `brew bundle exec` <command>:
         Run an external command in an isolated build environment based on the `Brewfile` dependencies.
 
-        This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help find keg-only dependencies like `openssl`, `icu4c`, etc.
+        This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help with finding keg-only dependencies like `openssl`, `icu4c`, etc.
       EOS
       flag "--file=",
            description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
@@ -52,7 +52,7 @@ module Homebrew
              description: "`install` prints output from commands as they are run. " \
                           "`check` lists all missing dependencies."
       switch "--no-upgrade",
-             description: "`install` won't run `brew upgrade` on outdated dependencies. " \
+             description: "`install` does not run `brew upgrade` on outdated dependencies. " \
                           "Note they may still be upgraded by `brew install` if needed."
       switch "-f", "--force",
              description: "`install` runs with `--force`/`--overwrite`. " \
@@ -61,18 +61,18 @@ module Homebrew
       switch "--cleanup",
              env:         :bundle_install_cleanup,
              description: "`install` performs cleanup operation, same as running `cleanup --force`. " \
-                          "This is enabled by default if HOMEBREW_BUNDLE_INSTALL_CLEANUP is set and " \
+                          "This is enabled by default if `HOMEBREW_BUNDLE_INSTALL_CLEANUP` is set and " \
                           "`--global` is passed."
       switch "--no-lock",
-             description: "`install` won't output a `Brewfile.lock.json`."
+             description: "`install` does not output a `Brewfile.lock.json`."
       switch "--all",
              description: "`list` all dependencies."
       switch "--formula", "--brews",
-             description: "`list` Homebrew dependencies."
+             description: "`list` Homebrew formula dependencies."
       switch "--cask", "--casks",
-             description: "`list` Homebrew Cask dependencies."
+             description: "`list` Homebrew cask dependencies."
       switch "--tap", "--taps",
-             description: "`list` tap dependencies."
+             description: "`list` Homebrew tap dependencies."
       switch "--mas",
              description: "`list` Mac App Store dependencies."
       switch "--whalebrew",
@@ -83,7 +83,7 @@ module Homebrew
              env:         :bundle_dump_describe,
              description: "`dump` adds a description comment above each line, unless the " \
                           "dependency does not have a description. " \
-                          "This is enabled by default if HOMEBREW_BUNDLE_DUMP_DESCRIBE is set."
+                          "This is enabled by default if `HOMEBREW_BUNDLE_DUMP_DESCRIBE` is set."
       switch "--no-restart",
              description: "`dump` does not add `restart_service` to formula lines."
       switch "--zap",
