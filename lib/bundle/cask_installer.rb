@@ -14,7 +14,7 @@ module Bundle
       return true if outdated_casks.include?(name)
       return false unless options[:greedy]
 
-      Bundle::CaskDumper.cask_is_outdated_using_greedy(name)
+      Bundle::CaskDumper.cask_is_outdated_using_greedy?(name)
     end
 
     def preinstall(name, no_upgrade: false, verbose: false, **options)

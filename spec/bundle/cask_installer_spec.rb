@@ -75,7 +75,7 @@ describe Bundle::CaskInstaller do
     context "when cask is outdated and uses auto-update" do
       before do
         allow(Bundle::CaskDumper).to receive_messages(cask_names: ["opera"], outdated_cask_names: [])
-        allow(Bundle::CaskDumper).to receive(:cask_is_outdated_using_greedy).with("opera").and_return(true)
+        allow(Bundle::CaskDumper).to receive(:cask_is_outdated_using_greedy?).with("opera").and_return(true)
       end
 
       it "upgrades" do

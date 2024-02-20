@@ -25,5 +25,9 @@ module Cask
     def config
       nil
     end
+
+    def outdated?(greedy: false)
+      false
+    end
   end
 end
