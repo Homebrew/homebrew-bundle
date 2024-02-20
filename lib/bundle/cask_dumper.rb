@@ -14,11 +14,19 @@ module Bundle
       @cask_names ||= casks.map(&:to_s)
     end
 
-    def outdated_cask_names(greedy: false)
+    def outdated_cask_names
       return [] unless Bundle.cask_installed?
 
-      casks.select { |c| c.outdated?(greedy: greedy) }
+      casks.select { |c| c.outdated?(greedy: false) }
            .map(&:to_s)
+    end
+
+    def cask_is_outdated_using_greedy(cask)
+      return [] unless Bundle.cask_installed?
+
+      casks.select { |c| c.to_s == cask }
+           .map { |c| c.outdated?(greedy: true) }
+           .first
     end
 
     def cask_versions
