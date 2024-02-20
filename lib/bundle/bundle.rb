@@ -33,14 +33,6 @@ module Bundle
       @whalebrew_installed ||= which_formula("whalebrew")
     end
 
-    def mas_signedin?
-      # mas account doesn't work on Monterey (yet)
-      # https://github.com/mas-cli/mas/issues/417#issuecomment-957963271
-      return true if MacOS.version >= :monterey
-
-      Kernel.system "mas account &>/dev/null"
-    end
-
     def cask_installed?
       @cask_installed ||= File.directory?("#{HOMEBREW_PREFIX}/Caskroom") &&
                           (File.directory?("#{HOMEBREW_LIBRARY}/Taps/homebrew/homebrew-cask") ||

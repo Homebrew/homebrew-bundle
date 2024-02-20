@@ -24,11 +24,6 @@ module Bundle
         return false
       end
 
-      unless Bundle.mas_signedin?
-        puts "Not signed in to Mac App Store." if verbose
-        raise "Unable to install #{name} app. mas not signed in to Mac App Store."
-      end
-
       true
     end
 
@@ -70,17 +65,13 @@ module Bundle
     end
 
     def outdated_app_ids
-      []
-
-      # TODO: can't be trusted right now.
-      # Uncomment when https://github.com/mas-cli/mas/pull/496 is merged.
-      # @outdated_app_ids ||= if Bundle.mas_installed?
-      #   `mas outdated 2>/dev/null`.split("\n").map do |app|
-      #     app.split(" ", 2).first.to_i
-      #   end
-      # else
-      #   []
-      # end
+      @outdated_app_ids ||= if Bundle.mas_installed?
+        `mas outdated 2>/dev/null`.split("\n").map do |app|
+          app.split(" ", 2).first.to_i
+        end
+      else
+        []
+      end
     end
   end
 end
