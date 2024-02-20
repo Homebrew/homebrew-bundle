@@ -87,7 +87,7 @@ describe Bundle::CaskDumper do
       expect(dumper.cask_is_outdated_using_greedy?("foo")).to be(true)
     end
 
-    it "does not want to greedily update bar if there is no updated available" do
+    it "does not want to greedily update bar if there is no update available" do
       expect(bar).to receive(:outdated?).with(greedy: true).and_return(false)
       expect(dumper.cask_is_outdated_using_greedy?("bar")).to be(false)
     end
