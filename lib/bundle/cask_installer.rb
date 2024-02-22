@@ -7,7 +7,6 @@ module Bundle
     def reset!
       @installed_casks = nil
       @outdated_casks = nil
-      @greedy_outdated_casks = nil
     end
 
     def upgrading?(no_upgrade, name, options)
@@ -15,7 +14,7 @@ module Bundle
       return true if outdated_casks.include?(name)
       return false unless options[:greedy]
 
-      greedy_outdated_casks.include?(name)
+      Bundle::CaskDumper.cask_is_outdated_using_greedy?(name)
     end
 
     def preinstall(name, no_upgrade: false, verbose: false, **options)
@@ -82,10 +81,6 @@ module Bundle
 
     def outdated_casks
       @outdated_casks ||= Bundle::CaskDumper.outdated_cask_names
-    end
-
-    def greedy_outdated_casks
-      @greedy_outdated_casks ||= Bundle::CaskDumper.outdated_cask_names(greedy: true)
     end
   end
 end
