@@ -172,19 +172,19 @@ module Bundle
     end
 
     def self.outdated_formulae
-      @outdated_formulae ||= formulae.map { |f| f[:name] if f[:outdated?] }.compact
+      @outdated_formulae ||= formulae.filter_map { |f| f[:name] if f[:outdated?] }
     end
 
     def self.pinned_formulae
-      @pinned_formulae ||= formulae.map { |f| f[:name] if f[:pinned?] }.compact
+      @pinned_formulae ||= formulae.filter_map { |f| f[:name] if f[:pinned?] }
     end
 
     def self.linked_and_keg_only_formulae
-      @linked_and_keg_only_formulae ||= formulae.map { |f| f[:name] if f[:link?] == true }.compact
+      @linked_and_keg_only_formulae ||= formulae.filter_map { |f| f[:name] if f[:link?] == true }
     end
 
     def self.unlinked_and_not_keg_only_formulae
-      @unlinked_and_not_keg_only_formulae ||= formulae.map { |f| f[:name] if f[:link?] == false }.compact
+      @unlinked_and_not_keg_only_formulae ||= formulae.filter_map { |f| f[:name] if f[:link?] == false }
     end
 
     def self.formulae

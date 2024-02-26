@@ -37,7 +37,7 @@ module Bundle
         return Bundle.system HOMEBREW_BREW_FILE, "upgrade", "--cask", full_name, verbose: verbose
       end
 
-      args = options.fetch(:args, []).map do |k, v|
+      args = options.fetch(:args, []).filter_map do |k, v|
         case v
         when TrueClass
           "--#{k}"
@@ -46,7 +46,7 @@ module Bundle
         else
           "--#{k}=#{v}"
         end
-      end.compact
+      end
 
       args << "--force" if force
       args.uniq!
