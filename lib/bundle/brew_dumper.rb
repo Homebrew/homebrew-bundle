@@ -143,8 +143,8 @@ module Bundle
         installed_as_dependency = tab.installed_as_dependency
         installed_on_request = tab.installed_on_request
         runtime_dependencies = if (runtime_deps = tab.runtime_dependencies)
-          runtime_deps.map { |d| d["full_name"] }
-                      .compact
+          runtime_deps.filter_map { |d| d["full_name"] }
+
         end
         poured_from_bottle = tab.poured_from_bottle
       end
@@ -205,13 +205,13 @@ module Bundle
       # Step 2: Sort by formula dependency topology.
       topo = Topo.new
       formulae.each do |f|
-        topo[f[:name]] = topo[f[:full_name]] = f[:dependencies].map do |dep|
+        topo[f[:name]] = topo[f[:full_name]] = f[:dependencies].filter_map do |dep|
           ff = formulae_by_name(dep)
           next if ff.blank?
           next unless ff[:any_version_installed?]
 
           ff[:full_name]
-        end.compact
+        end
       end
       @formulae = topo.tsort
                       .map { |name| @formulae_by_full_name[name] || @formulae_by_name[name] }
