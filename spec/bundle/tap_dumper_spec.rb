@@ -33,7 +33,7 @@ describe Bundle::TapDumper do
       private_tap = instance_double(Tap, name: "privatebrew/private", custom_remote?: true,
         remote: "https://#{ENV.fetch("HOMEBREW_GITHUB_API_TOKEN")}@github.com/privatebrew/homebrew-private")
 
-      allow(Tap).to receive(:each).and_return [bar, baz, foo, private_tap]
+      allow(Tap).to receive(:select).and_return [bar, baz, foo, private_tap]
     end
 
     after do

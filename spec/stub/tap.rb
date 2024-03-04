@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Tap
-  def self.each
+  def self.select(*)
     []
   end
 

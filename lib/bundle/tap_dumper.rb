@@ -34,7 +34,7 @@ module Bundle
     def taps
       @taps ||= begin
         require "tap"
-        Tap.each.to_a
+        Tap.select(&:installed?).to_a
       end
     end
     private_class_method :taps
