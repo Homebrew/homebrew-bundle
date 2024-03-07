@@ -5,7 +5,7 @@ require "spec_helper"
 describe Bundle::Brewfile do
   describe "path" do
     subject(:path) do
-      described_class.path(dash_writes_to_stdout: dash_writes_to_stdout, global: has_global, file: file_value)
+      described_class.path(dash_writes_to_stdout:, global: has_global, file: file_value)
     end
 
     let(:dash_writes_to_stdout) { false }

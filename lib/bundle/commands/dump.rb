@@ -9,9 +9,9 @@ module Bundle
               all: false, taps: false, brews: false, casks: false,
               mas: false, whalebrew: false, vscode: false)
         Bundle::Dumper.dump_brewfile(
-          global: global, file: file, describe: describe, force: force, no_restart: no_restart,
-          all: all, taps: taps, brews: brews, casks: casks,
-          mas: mas, whalebrew: whalebrew, vscode: vscode
+          global:, file:, describe:, force:, no_restart:,
+          all:, taps:, brews:, casks:,
+          mas:, whalebrew:, vscode:
         )
       end
     end

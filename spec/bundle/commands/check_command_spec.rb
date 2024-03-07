@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe Bundle::Commands::Check do
   let(:do_check) do
-    described_class.run(no_upgrade: no_upgrade, verbose: verbose)
+    described_class.run(no_upgrade:, verbose:)
   end
   let(:no_upgrade) { false }
   let(:verbose) { false }

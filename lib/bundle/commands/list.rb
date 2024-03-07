@@ -7,10 +7,10 @@ module Bundle
 
       def run(global: false, file: nil, all: false, casks: false, taps: false, mas: false, whalebrew: false,
               vscode: false, brews: false)
-        parsed_entries = Bundle::Dsl.new(Brewfile.read(global: global, file: file)).entries
+        parsed_entries = Bundle::Dsl.new(Brewfile.read(global:, file:)).entries
         Bundle::Lister.list(
           parsed_entries,
-          all: all, casks: casks, taps: taps, mas: mas, whalebrew: whalebrew, vscode: vscode, brews: brews,
+          all:, casks:, taps:, mas:, whalebrew:, vscode:, brews:,
         )
       end
     end

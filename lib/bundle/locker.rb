@@ -10,7 +10,7 @@ module Bundle
     module_function
 
     def lockfile(global: false, file: nil)
-      brew_file_path = Brewfile.path(global: global, file: file)
+      brew_file_path = Brewfile.path(global:, file:)
       lock_file_path = brew_file_path.dirname/"#{brew_file_path.basename}.lock.json"
 
       # no need to call realpath if the lockfile is not a symlink
@@ -25,15 +25,15 @@ module Bundle
       return false if ENV["HOMEBREW_BUNDLE_NO_LOCK"]
 
       # handle the /dev/stdin and /dev/stdout cases
-      return false if lockfile(global: global, file: file).parent.to_s == "/dev"
+      return false if lockfile(global:, file:).parent.to_s == "/dev"
 
       true
     end
 
     def lock(entries, global: false, file: nil, no_lock: false)
-      return false unless write_lockfile?(global: global, file: file, no_lock: no_lock)
+      return false unless write_lockfile?(global:, file:, no_lock:)
 
-      lockfile = lockfile(global: global, file: file)
+      lockfile = lockfile(global:, file:)
 
       lock = JSON.parse(lockfile.read) if lockfile.exist?
       lock ||= {}
@@ -131,8 +131,8 @@ module Bundle
         version = line.pop.delete("()")
         name = line.join(" ")
         name_id_versions[name] = {
-          id:      id,
-          version: version,
+          id:,
+          version:,
         }
       end
     end

@@ -28,7 +28,7 @@ module Bundle
     end
 
     def read(global: false, file: nil)
-      Brewfile.path(global: global, file: file).read
+      Brewfile.path(global:, file:).read
     rescue Errno::ENOENT
       raise "No Brewfile found"
     end

@@ -9,11 +9,11 @@ module Bundle
     end
 
     def self.preinstall(name, no_upgrade: false, verbose: false, **options)
-      new(name, options).preinstall(no_upgrade: no_upgrade, verbose: verbose)
+      new(name, options).preinstall(no_upgrade:, verbose:)
     end
 
     def self.install(name, preinstall: true, no_upgrade: false, verbose: false, **options)
-      new(name, options).install(preinstall: preinstall, no_upgrade: no_upgrade, verbose: verbose)
+      new(name, options).install(preinstall:, no_upgrade:, verbose:)
     end
 
     def initialize(name, options = {})
@@ -39,26 +39,26 @@ module Bundle
 
     def install(preinstall: true, no_upgrade: false, verbose: false, force: false)
       install_result = if preinstall
-        install_change_state!(no_upgrade: no_upgrade, verbose: verbose, force: force)
+        install_change_state!(no_upgrade:, verbose:, force:)
       else
         true
       end
 
       if installed?
-        service_change_state!(verbose: verbose) if install_result
-        link_change_state!(verbose: verbose, force: force)
+        service_change_state!(verbose:) if install_result
+        link_change_state!(verbose:, force:)
       end
 
       install_result
     end
 
     def install_change_state!(no_upgrade:, verbose:, force:)
-      return false unless resolve_conflicts!(verbose: verbose)
+      return false unless resolve_conflicts!(verbose:)
 
       if installed?
-        upgrade!(verbose: verbose, force: force)
+        upgrade!(verbose:, force:)
       else
-        install!(verbose: verbose, force: force)
+        install!(verbose:, force:)
       end
     end
 
@@ -88,10 +88,10 @@ module Bundle
     def service_change_state!(verbose:)
       if restart_service_needed?
         puts "Restarting #{@name} service." if verbose
-        BrewServices.restart(@full_name, verbose: verbose)
+        BrewServices.restart(@full_name, verbose:)
       elsif start_service_needed?
         puts "Starting #{@name} service." if verbose
-        BrewServices.start(@full_name, verbose: verbose)
+        BrewServices.start(@full_name, verbose:)
       else
         true
       end
@@ -102,22 +102,22 @@ module Bundle
       when true
         unless linked_and_keg_only?
           puts "Force-linking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "link", "--force", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "link", "--force", @name, verbose:)
         end
       when false
         unless unlinked_and_not_keg_only?
           puts "Unlinking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose:)
         end
       when nil
         if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if verbose
           link_args = "link"
           link_args << "--overwrite" if force
-          Bundle.system(HOMEBREW_BREW_FILE, *link_args, @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, *link_args, @name, verbose:)
         elsif linked_and_keg_only?
           puts "Unlinking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose: verbose)
+          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose:)
         end
       end
     end
@@ -233,11 +233,11 @@ module Bundle
             It is currently installed and conflicts with #{@name}.
           EOS
         end
-        return false unless Bundle.system(HOMEBREW_BREW_FILE, "unlink", conflict, verbose: verbose)
+        return false unless Bundle.system(HOMEBREW_BREW_FILE, "unlink", conflict, verbose:)
 
         if restart_service?
           puts "Stopping #{conflict} service (if it is running)." if verbose
-          BrewServices.stop(conflict, verbose: verbose)
+          BrewServices.stop(conflict, verbose:)
         end
       end
 
@@ -249,7 +249,7 @@ module Bundle
       install_args << "--force" << "--overwrite" if force
       with_args = " with #{install_args.join(" ")}" if install_args.present?
       puts "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
-      unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *install_args, verbose: verbose)
+      unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *install_args, verbose:)
         @changed = nil
         return false
       end
@@ -264,7 +264,7 @@ module Bundle
       upgrade_args << "--force" if force
       with_args = " with #{upgrade_args.join(" ")}" if upgrade_args.present?
       puts "Upgrading #{@name} formula#{with_args}. It is installed but not up-to-date." if verbose
-      unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, *upgrade_args, verbose: verbose)
+      unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, *upgrade_args, verbose:)
         @changed = nil
         return false
       end
