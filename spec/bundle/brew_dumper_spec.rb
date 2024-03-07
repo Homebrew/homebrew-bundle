@@ -69,7 +69,7 @@ describe Bundle::BrewDumper do
                     keg_only?:              false,
                     pinned?:                true,
                     outdated?:              true,
-                    linked_keg:             linked_keg,
+                    linked_keg:,
                     stable:                 OpenStruct.new(bottle_defined?: true, bottled?: true),
                     tap:                    OpenStruct.new(official?: true),
                     bottle_hash:            {

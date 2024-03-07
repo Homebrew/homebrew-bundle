@@ -164,7 +164,7 @@ module Bundle
         aliases:                  formula.aliases,
         any_version_installed?:   formula.any_version_installed?,
         args:                     Array(args).uniq,
-        version:                  version,
+        version:,
         installed_as_dependency?: installed_as_dependency || false,
         installed_on_request?:    installed_on_request || false,
         dependencies:             runtime_dependencies,

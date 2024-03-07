@@ -152,12 +152,12 @@ describe Bundle::BrewInstaller do
 
       def expectations(verbose:)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql55",
-                                                verbose: verbose).and_return(true)
+                                                verbose:).and_return(true)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql56",
-                                                verbose: verbose).and_return(true)
-        expect(Bundle::BrewServices).to receive(:stop).with("mysql55", verbose: verbose).and_return(true)
-        expect(Bundle::BrewServices).to receive(:stop).with("mysql56", verbose: verbose).and_return(true)
-        expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose: verbose).and_return(true)
+                                                verbose:).and_return(true)
+        expect(Bundle::BrewServices).to receive(:stop).with("mysql55", verbose:).and_return(true)
+        expect(Bundle::BrewServices).to receive(:stop).with("mysql56", verbose:).and_return(true)
+        expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose:).and_return(true)
       end
 
       # These tests wrap expect() calls in `expectations`

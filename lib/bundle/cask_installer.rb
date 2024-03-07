@@ -34,7 +34,7 @@ module Bundle
       if installed_casks.include?(name) && upgrading?(no_upgrade, name, options)
         status = "#{options[:greedy] ? "may not be" : "not"} up-to-date"
         puts "Upgrading #{name} cask. It is installed but #{status}." if verbose
-        return Bundle.system HOMEBREW_BREW_FILE, "upgrade", "--cask", full_name, verbose: verbose
+        return Bundle.system HOMEBREW_BREW_FILE, "upgrade", "--cask", full_name, verbose:
       end
 
       args = options.fetch(:args, []).filter_map do |k, v|

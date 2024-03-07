@@ -19,8 +19,8 @@ module Bundle
       all     ||= !(taps || brews || casks || mas || whalebrew || vscode)
       content = []
       content << TapDumper.dump if taps || all
-      content << BrewDumper.dump(describe: describe, no_restart: no_restart) if brews || all
-      content << CaskDumper.dump(describe: describe) if casks || all
+      content << BrewDumper.dump(describe:, no_restart:) if brews || all
+      content << CaskDumper.dump(describe:) if casks || all
       content << MacAppStoreDumper.dump if mas || all
       content << WhalebrewDumper.dump if whalebrew || all
       content << VscodeExtensionDumper.dump if vscode || all
@@ -30,16 +30,16 @@ module Bundle
     def dump_brewfile(global: false, file: nil, describe: false, force: false, no_restart: false,
                       all: false, taps: false, brews: false, casks: false,
                       mas: false, whalebrew: false, vscode: false)
-      path = brewfile_path(global: global, file: file)
-      can_write_to_brewfile?(path, force: force)
-      content = build_brewfile(describe: describe, no_restart: no_restart,
-                               all: all, taps: taps, brews: brews, casks: casks,
-                               mas: mas, whalebrew: whalebrew, vscode: vscode)
+      path = brewfile_path(global:, file:)
+      can_write_to_brewfile?(path, force:)
+      content = build_brewfile(describe:, no_restart:,
+                               all:, taps:, brews:, casks:,
+                               mas:, whalebrew:, vscode:)
       write_file path, content
     end
 
     def brewfile_path(global: false, file: nil)
-      Brewfile.path(dash_writes_to_stdout: true, global: global, file: file)
+      Brewfile.path(dash_writes_to_stdout: true, global:, file:)
     end
 
     def should_not_write_file?(file, overwrite: false)
