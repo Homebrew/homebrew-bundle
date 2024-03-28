@@ -79,6 +79,8 @@ module Homebrew
              description: "`list` Whalebrew dependencies."
       switch "--vscode",
              description: "`list` VSCode extensions."
+      switch "--tlmgr",
+             description: "`list` TeX Live packages."
       switch "--describe",
              env:         :bundle_dump_describe,
              description: "`dump` adds a description comment above each line, unless the " \
@@ -137,6 +139,7 @@ module Homebrew
           mas:        args.mas?,
           whalebrew:  args.whalebrew?,
           vscode:     args.vscode?,
+          tlmgr:      args.tlmgr?,
         )
       when "cleanup"
         Bundle::Commands::Cleanup.run(
@@ -169,6 +172,7 @@ module Homebrew
           mas:       args.mas?,
           whalebrew: args.whalebrew?,
           vscode:    args.vscode?,
+          tlmgr:     args.tlmgr?,
           brews:     args.brews?,
         )
       else

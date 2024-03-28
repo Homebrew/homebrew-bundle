@@ -22,6 +22,7 @@ describe Bundle::Commands::Cleanup do
         brew 'hasbuilddependency2'
         mas 'appstoreapp1', id: 1
         vscode 'VsCodeExtension1'
+        tlmgr 'TeX-Package-1'
       EOS
     end
 
@@ -81,6 +82,16 @@ describe Bundle::Commands::Cleanup do
       allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z vscodeextension1])
       expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
     end
+
+    it "computes which TeX Live packages to uninstall" do
+      allow(Bundle::TlmgrPackageDumper).to receive(:packages).and_return(%w[z])
+      expect(described_class.tlmgr_packages_to_uninstall).to eql(%w[z])
+    end
+
+    it "computes which TeX Live packages to uninstall irrespective of case of the extension name" do
+      allow(Bundle::TlmgrPackageDumper).to receive(:packages).and_return(%w[z tex-package-1])
+      expect(described_class.tlmgr_packages_to_uninstall).to eql(%w[z])
+    end
   end
 
   context "when there are no formulae to uninstall and no taps to untap" do
@@ -89,7 +100,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             [],
                                                  formulae_to_uninstall:          [],
                                                  taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     it "does nothing" do
@@ -105,7 +117,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
                                                  formulae_to_uninstall:          [],
                                                  taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     it "uninstalls casks" do
@@ -121,7 +134,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
                                                  formulae_to_uninstall:          [],
                                                  taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     it "uninstalls casks" do
@@ -137,7 +151,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             [],
                                                  formulae_to_uninstall:          %w[a b],
                                                  taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     it "uninstalls formulae" do
@@ -153,7 +168,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             [],
                                                  formulae_to_uninstall:          [],
                                                  taps_to_untap:                  %w[a b],
-                                                 vscode_extensions_to_uninstall: [])
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     it "untaps taps" do
@@ -169,11 +185,29 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             [],
                                                  formulae_to_uninstall:          [],
                                                  taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: %w[GitHub.codespaces])
+                                                 vscode_extensions_to_uninstall: %w[GitHub.codespaces],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     it "uninstalls extensions" do
       expect(Kernel).to receive(:system).with("code", "--uninstall-extension", "GitHub.codespaces")
+      expect(described_class).to receive(:system_output_no_stderr).and_return("")
+      described_class.run(force: true)
+    end
+  end
+
+  context "when there are TeX Live packages to uninstall" do
+    before do
+      described_class.reset!
+      allow(described_class).to receive_messages(casks_to_uninstall:             [],
+                                                 formulae_to_uninstall:          [],
+                                                 taps_to_untap:                  [],
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    %w[bibtex])
+    end
+
+    it "uninstalls packages" do
+      expect(Kernel).to receive(:system).with("sudo", "tlmgr", "remove", "bibtex")
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       described_class.run(force: true)
     end
@@ -185,16 +219,22 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             %w[a b],
                                                  formulae_to_uninstall:          %w[a b],
                                                  taps_to_untap:                  %w[a b],
-                                                 vscode_extensions_to_uninstall: %w[a b])
+                                                 vscode_extensions_to_uninstall: %w[a b],
+                                                 tlmgr_packages_to_uninstall:    %w[a b])
     end
 
     it "lists casks, formulae and taps" do
-      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(4).times
+      formulae_msg = "Would uninstall formulae:"
+      tap_msg = "Would untap:"
+      vscode_msg = "Would uninstall VSCode extensions:"
+      tlmgr_msg = "Would uninstall TeX Live packages:"
+
+      expect(Formatter).to receive(:columns).with(%w[a b]).exactly(5).times
       expect(Kernel).not_to receive(:system)
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect do
         described_class.run
-      end.to output(/Would uninstall formulae:.*Would untap:.*Would uninstall VSCode extensions:/m).to_stdout
+      end.to output(/#{formulae_msg}.*#{tap_msg}.*#{vscode_msg}.*#{tlmgr_msg}:/m).to_stdout
     end
   end
 
@@ -204,7 +244,8 @@ describe Bundle::Commands::Cleanup do
       allow(described_class).to receive_messages(casks_to_uninstall:             [],
                                                  formulae_to_uninstall:          [],
                                                  taps_to_untap:                  [],
-                                                 vscode_extensions_to_uninstall: [])
+                                                 vscode_extensions_to_uninstall: [],
+                                                 tlmgr_packages_to_uninstall:    [])
     end
 
     def sane?

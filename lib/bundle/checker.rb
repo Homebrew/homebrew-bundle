@@ -61,6 +61,7 @@ module Bundle
       taps_to_tap:           "Taps",
       casks_to_install:      "Casks",
       extensions_to_install: "VSCode Extensions",
+      packages_to_install:   "tlmgr Packages",
       apps_to_install:       "Apps",
       formulae_to_install:   "Formulae",
       formulae_to_start:     "Services",
@@ -122,6 +123,13 @@ module Bundle
       )
     end
 
+    def packages_to_install(exit_on_first_error: false, no_upgrade: false, verbose: false)
+      Bundle::Checker::TlmgrPackageChecker.new.find_actionable(
+        @dsl.entries,
+        exit_on_first_error:, no_upgrade:, verbose:,
+      )
+    end
+
     def formulae_to_start(exit_on_first_error: false, no_upgrade: false, verbose: false)
       Bundle::Checker::BrewServiceChecker.new.find_actionable(
         @dsl.entries,
@@ -134,6 +142,7 @@ module Bundle
       Bundle::CaskDumper.reset!
       Bundle::BrewDumper.reset!
       Bundle::MacAppStoreDumper.reset!
+      Bundle::TlmgrPackageDumper.reset!
       Bundle::TapDumper.reset!
       Bundle::BrewServices.reset!
     end

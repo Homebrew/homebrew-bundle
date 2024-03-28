@@ -15,8 +15,8 @@ module Bundle
 
     def build_brewfile(describe: false, no_restart: false,
                        all: false, taps: false, brews: false, casks: false,
-                       mas: false, whalebrew: false, vscode: false)
-      all     ||= !(taps || brews || casks || mas || whalebrew || vscode)
+                       mas: false, whalebrew: false, vscode: false, tlmgr: false)
+      all     ||= !(taps || brews || casks || mas || whalebrew || vscode || tlmgr)
       content = []
       content << TapDumper.dump if taps || all
       content << BrewDumper.dump(describe:, no_restart:) if brews || all
@@ -24,17 +24,18 @@ module Bundle
       content << MacAppStoreDumper.dump if mas || all
       content << WhalebrewDumper.dump if whalebrew || all
       content << VscodeExtensionDumper.dump if vscode || all
+      content << TlmgrPackageDumper.dump if tlmgr || all
       "#{content.reject(&:empty?).join("\n")}\n"
     end
 
     def dump_brewfile(global: false, file: nil, describe: false, force: false, no_restart: false,
                       all: false, taps: false, brews: false, casks: false,
-                      mas: false, whalebrew: false, vscode: false)
+                      mas: false, whalebrew: false, vscode: false, tlmgr: false)
       path = brewfile_path(global:, file:)
       can_write_to_brewfile?(path, force:)
       content = build_brewfile(describe:, no_restart:,
                                all:, taps:, brews:, casks:,
-                               mas:, whalebrew:, vscode:)
+                               mas:, whalebrew:, vscode:, tlmgr:)
       write_file path, content
     end
 
