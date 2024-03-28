@@ -9,7 +9,7 @@ describe Bundle::VscodeExtensionInstaller do
       allow(Bundle).to receive_messages(vscode_installed?: false, cask_installed?: true)
     end
 
-    it "tries to install mas" do
+    it "tries to install vscode" do
       expect(Bundle).to \
         receive(:system).with(HOMEBREW_BREW_FILE, "install", "--cask", "visual-studio-code", verbose: false)
                         .and_return(true)
@@ -19,10 +19,10 @@ describe Bundle::VscodeExtensionInstaller do
 
   context "when VSCode is installed" do
     before do
-      allow(Bundle).to receive(:mas_installed?).and_return(true)
+      allow(Bundle).to receive(:vscode_installed?).and_return(true)
     end
 
-    context "when app is installed" do
+    context "when extension is installed" do
       before do
         allow(described_class).to receive(:installed_extensions).and_return(["foo"])
       end
@@ -38,7 +38,7 @@ describe Bundle::VscodeExtensionInstaller do
       end
     end
 
-    context "when app is not installed" do
+    context "when extension is not installed" do
       before do
         allow(described_class).to receive(:installed_extensions).and_return([])
       end
