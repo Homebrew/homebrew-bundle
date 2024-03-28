@@ -24,13 +24,36 @@ module Bundle
       true
     end
 
+    def exchange_uid(&block)
+      return yield if Process.euid == Process.uid
+
+      old_euid = Process.euid
+      if Process::UID.re_exchangeable?
+        Process::UID.re_exchange
+      else
+        Process::Sys.seteuid(Process.uid)
+      end
+
+      ret = with_env("HOME" => Etc.getpwuid(Process.uid).dir, &block)
+
+      if Process::UID.re_exchangeable?
+        Process::UID.re_exchange
+      else
+        Process::Sys.seteuid(old_euid)
+      end
+
+      ret
+    end
+
     def install(name, preinstall: true, no_upgrade: false, verbose: false, force: false)
       return true unless preinstall
       return true if extension_installed?(name)
 
       puts "Installing #{name} VSCode extension. It is not currently installed." if verbose
 
-      return false unless Bundle.system "code", "--install-extension", name, verbose: verbose
+      return false unless exchange_uid do
+        Bundle.system("code", "--install-extension", name, verbose:)
+      end
 
       installed_extensions << name
 
