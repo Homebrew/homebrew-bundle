@@ -30,7 +30,14 @@ module Bundle
 
       puts "Installing #{name} VSCode extension. It is not currently installed." if verbose
 
-      return false unless Bundle.system "code", "--install-extension", name, verbose: verbose
+      needs_exchange = Process.euid != Process.uid && Process::UID.re_exchangeable?
+      Process::UID.re_exchange if needs_exchange
+
+      success = Bundle.system("code", "--install-extension", name, verbose:)
+
+      Process::UID.re_exchange if needs_exchange
+
+      return false unless success
 
       installed_extensions << name
 
