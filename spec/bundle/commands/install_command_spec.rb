@@ -24,6 +24,7 @@ describe Bundle::Commands::Install do
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
         vscode 'GitHub.codespaces'
+        tlmgr 'bibtex'
       EOS
     end
 
@@ -31,6 +32,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(false)
       allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::TlmgrPackageInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::CaskInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
@@ -54,6 +56,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::TapInstaller).to receive_messages(preinstall: true, install: false)
       allow(Bundle::WhalebrewInstaller).to receive_messages(preinstall: true, install: false)
       allow(Bundle::VscodeExtensionInstaller).to receive_messages(preinstall: true, install: false)
+      allow(Bundle::TlmgrPackageInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::Locker).to receive(:lockfile).and_return(Pathname(__dir__))
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
@@ -67,6 +70,7 @@ describe Bundle::Commands::Install do
       allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::WhalebrewInstaller).to receive_messages(preinstall: true, install: true)
       allow(Bundle::VscodeExtensionInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::TlmgrPackageInstaller).to receive_messages(preinstall: true, install: true)
       allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
 
       expect(Bundle).not_to receive(:system)

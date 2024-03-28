@@ -10,13 +10,14 @@ describe Bundle::Dumper do
     ENV["HOMEBREW_BUNDLE_FILE"] = ""
 
     allow(Bundle).to receive_messages(cask_installed?: true, mas_installed?: false, whalebrew_installed?: false,
-                                      vscode_installed?: false)
+                                      vscode_installed?: false, tlmgr_installed?: false)
     Bundle::BrewDumper.reset!
     Bundle::TapDumper.reset!
     Bundle::CaskDumper.reset!
     Bundle::MacAppStoreDumper.reset!
     Bundle::WhalebrewDumper.reset!
     Bundle::VscodeExtensionDumper.reset!
+    Bundle::TlmgrPackageDumper.reset!
     Bundle::BrewServices.reset!
 
     chrome     = instance_double(Cask::Cask,

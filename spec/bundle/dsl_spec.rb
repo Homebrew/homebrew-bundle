@@ -20,6 +20,7 @@ describe Bundle::Dsl do
         mas '1Password', id: 443987910
         whalebrew 'whalebrew/wget'
         vscode 'GitHub.codespaces'
+        tlmgr 'bibtex', args: ['with-doc']
       EOS
     end
 
@@ -52,6 +53,8 @@ describe Bundle::Dsl do
       expect(dsl.entries[9].options).to eql(id: 443_987_910)
       expect(dsl.entries[10].name).to eql("whalebrew/wget")
       expect(dsl.entries[11].name).to eql("GitHub.codespaces")
+      expect(dsl.entries[12].name).to eql("bibtex")
+      expect(dsl.entries[12].options).to eql(args: ["with-docs"])
     end
   end
 

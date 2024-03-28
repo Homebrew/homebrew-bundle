@@ -155,7 +155,7 @@ describe Bundle::Commands::Check do
     end
   end
 
-  context "when extension not installed" do
+  context "when VSCode extension not installed" do
     let(:expected_output) do
       <<~MSG
         brew bundle can't satisfy your Brewfile's dependencies.
@@ -172,6 +172,27 @@ describe Bundle::Commands::Check do
 
     it "raises an error that doesn't mention upgrade" do
       allow_any_instance_of(Pathname).to receive(:read).and_return("vscode 'foo'")
+      expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
+    end
+  end
+
+  context "when TeX Live package not installed" do
+    let(:expected_output) do
+      <<~MSG
+        brew bundle can't satisfy your Brewfile's dependencies.
+        → TeX Live Package foo needs to be installed.
+        Satisfy missing dependencies with `brew bundle install`.
+      MSG
+    end
+    let(:verbose) { true }
+
+    before do
+      Bundle::Checker.reset!
+      allow(Bundle::Checker::TlmgrPackageChecker).to receive(:installed_and_up_to_date?).and_return(false)
+    end
+
+    it "raises an error that doesn't mention upgrade" do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("tlmgr 'foo'")
       expect { do_check }.to raise_error(SystemExit).and output(expected_output).to_stdout
     end
   end
@@ -202,6 +223,23 @@ describe Bundle::Commands::Check do
     before do
       allow_any_instance_of(Pathname).to receive(:read).and_return("")
       allow(Bundle::Checker).to receive(:extensions_to_install).and_return(["asdf"])
+    end
+
+    it "does not check for formulae" do
+      expect(Bundle::Checker).not_to receive(:formulae_to_install)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+
+    it "does not check for apps" do
+      expect(Bundle::Checker).not_to receive(:apps_to_install)
+      expect { do_check }.to raise_error(SystemExit)
+    end
+  end
+
+  context "when there are TeX Live packages to install" do
+    before do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("")
+      allow(Bundle::Checker).to receive(:packages_to_install).and_return(["asdf"])
     end
 
     it "does not check for formulae" do
@@ -258,6 +296,14 @@ describe Bundle::Commands::Check do
       allow_any_instance_of(Pathname).to receive(:read).and_return("vscode 'abc'\nvscode 'def'")
 
       expect_any_instance_of(Bundle::Checker::VscodeExtensionChecker).to \
+        receive(:exit_early_check).once.and_call_original
+      expect { do_check }.to raise_error(SystemExit)
+    end
+
+    it "stops checking after the first TeX Live package" do
+      allow_any_instance_of(Pathname).to receive(:read).and_return("tlmgr 'abc'\ntlmgr 'def'")
+
+      expect_any_instance_of(Bundle::Checker::TlmgrPackageChecker).to \
         receive(:exit_early_check).once.and_call_original
       expect { do_check }.to raise_error(SystemExit)
     end

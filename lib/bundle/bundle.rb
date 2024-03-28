@@ -29,6 +29,10 @@ module Bundle
       @vscode_installed ||= which("code").present?
     end
 
+    def tlmgr_installed?
+      @tlmgr_installed ||= which("tlmgr").present?
+    end
+
     def whalebrew_installed?
       @whalebrew_installed ||= which_formula("whalebrew")
     end

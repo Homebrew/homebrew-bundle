@@ -80,6 +80,13 @@ module Bundle
       @entries << Entry.new(:vscode, name)
     end
 
+    def tlmgr(name, options = {})
+      raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
+      raise "options(#{options.inspect}) should be a Hash object" unless options.is_a? Hash
+
+      @entries << Entry.new(:tlmgr, name, options)
+    end
+
     def tap(name, clone_target = nil, options = {})
       raise "name(#{name.inspect}) should be a String object" unless name.is_a? String
       if clone_target && !clone_target.is_a?(String)

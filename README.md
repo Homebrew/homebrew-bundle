@@ -1,6 +1,6 @@
 # Homebrew Bundle
 
-Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Whalebrew and Visual Studio Code.
+Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, Whalebrew, Visual Studio Code, and TeX Live package manager.
 
 ## Requirements
 
@@ -13,6 +13,8 @@ Bundler for non-Ruby dependencies from Homebrew, Homebrew Cask, Mac App Store, W
 [Whalebrew](https://github.com/whalebrew/whalebrew) is optional and used for installing Whalebrew images.
 
 [Visual Studio Code](https://code.visualstudio.com/) is optional and used for installing Visual Studio Code extensions.
+
+[TeX Live package manager](https://tug.org/texlive/tlmgr.html) is optional and used for installing TeX Live packages. It is provided via [basictex](https://formulae.brew.sh/cask/basictex) for example but must be provided by you as a user. Homebrew Bundle will make no attempt at installing the TeX Live package manager for you.
 
 ## Installation
 
@@ -64,6 +66,10 @@ whalebrew "whalebrew/wget"
 
 # 'vscode --install-extension'
 vscode "GitHub.codespaces"
+
+# 'sudo tlmgr install', see https://tug.org/texlive/doc/tlmgr.html#install-option...-pkg for arguments, Brew will take care of the `--` prefix
+tlmgr "babel"
+tlmgr "bibtex", args: ["with-doc"]
 ```
 
 ## Versions and lockfiles
