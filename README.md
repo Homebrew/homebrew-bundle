@@ -75,6 +75,20 @@ After a successful `brew bundle` run, it creates a `Brewfile.lock.json` to recor
 
 Disable generation of the `Brewfile.lock.json` file by setting the environment variable with `export HOMEBREW_BUNDLE_NO_LOCK=1` or by using the command-line argument `brew bundle --no-lock`.
 
+## New Installers/Checkers/Dumpers
+
+`brew bundle` currently supports Homebrew, Homebrew Cask, Mac App Store, Whalebrew and Visual Studio Code.
+
+We are interested in contributions for other installers/checkers/dumpers but they must:
+
+- be able to install software without user interaction
+- be able to check if software is installed
+- be able to dump the installed software to a format that can be stored in a `Brewfile`
+- not require `sudo` to install
+- be extremely widely used
+
+Note: based on these criteria, we would not accept e.g. Whalebrew (but have no plans to remove it.)
+
 ## Tests
 
 Tests can be run with `bundle install && bundle exec rspec`.
