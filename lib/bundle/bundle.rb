@@ -57,7 +57,7 @@ module Bundle
       which(name).present?
     end
 
-    def exchange_uid(&block)
+    def exchange_uid_if_needed!(&block)
       euid = Process.euid
       uid = Process.uid
       return yield if euid == uid

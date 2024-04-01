@@ -82,8 +82,10 @@ module Bundle
 
       json = JSON.pretty_generate(lock)
       begin
-        lockfile.unlink if lockfile.exist?
-        lockfile.write("#{json}\n")
+        Bundle.exchange_uid_if_needed! do
+          lockfile.unlink if lockfile.exist?
+          lockfile.write("#{json}\n")
+        end
       rescue Errno::EPERM, Errno::EACCES, Errno::ENOTEMPTY
         unless ENV.fetch("HOMEBREW_BUNDLE_NO_LOCKFILE_WRITE_WARNING", false)
           opoo "Could not write to #{lockfile}!"

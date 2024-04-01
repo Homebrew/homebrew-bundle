@@ -14,7 +14,9 @@ module Bundle
         else
           raise "'HOMEBREW_BUNDLE_FILE' cannot be specified with '--global'" if env_bundle_file.present?
 
-          "#{Dir.home}/.Brewfile"
+          Bundle.exchange_uid_if_needed! do
+            "#{Dir.home}/.Brewfile"
+          end
         end
       elsif file.present?
         handle_file_value(file, dash_writes_to_stdout)
