@@ -10,7 +10,9 @@ module Bundle
 
     def extensions
       @extensions ||= if Bundle.vscode_installed?
-        `code --list-extensions 2>/dev/null`.split("\n").map(&:downcase)
+        Bundle.exchange_uid do
+          `code --list-extensions 2>/dev/null`
+        end.split("\n").map(&:downcase)
       else
         []
       end
