@@ -47,7 +47,9 @@ module Bundle
     end
 
     def write_file(file, content)
-      file.open("w") { |io| io.write content }
+      Bundle.exchange_uid_if_needed! do
+        file.open("w") { |io| io.write content }
+      end
     end
   end
 end

@@ -30,7 +30,7 @@ module Bundle
 
       puts "Installing #{name} VSCode extension. It is not currently installed." if verbose
 
-      return false unless Bundle.exchange_uid do
+      return false unless Bundle.exchange_uid_if_needed! do
         Bundle.system("code", "--install-extension", name, verbose:)
       end
 
