@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "extend/kernel"
 
 describe Bundle::VscodeExtensionInstaller do
   context "when VSCode is not installed" do
@@ -44,6 +45,26 @@ describe Bundle::VscodeExtensionInstaller do
       end
 
       it "installs extension" do
+        expect(Bundle).to receive(:system).with("code", "--install-extension", "foo", verbose: false).and_return(true)
+        expect(described_class.preinstall("foo")).to be(true)
+        expect(described_class.install("foo")).to be(true)
+      end
+
+      it "installs extension when euid != uid and Process::UID.re_exchangeable? returns true" do
+        expect(Process).to receive(:euid).and_return(1).once
+        expect(Process::UID).to receive(:re_exchangeable?).and_return(true).once
+        expect(Process::UID).to receive(:re_exchange).twice
+
+        expect(Bundle).to receive(:system).with("code", "--install-extension", "foo", verbose: false).and_return(true)
+        expect(described_class.preinstall("foo")).to be(true)
+        expect(described_class.install("foo")).to be(true)
+      end
+
+      it "installs extension when euid != uid and Process::UID.re_exchangeable? returns false" do
+        expect(Process).to receive(:euid).and_return(1).once
+        expect(Process::UID).to receive(:re_exchangeable?).and_return(false).once
+        expect(Process::Sys).to receive(:seteuid).twice
+
         expect(Bundle).to receive(:system).with("code", "--install-extension", "foo", verbose: false).and_return(true)
         expect(described_class.preinstall("foo")).to be(true)
         expect(described_class.install("foo")).to be(true)

@@ -25,24 +25,27 @@ module Bundle
     end
 
     def exchange_uid(&block)
-      return yield if Process.euid == Process.uid
+      euid = Process.euid
+      uid = Process.uid
+      return yield if euid == uid
 
-      old_euid = Process.euid
-      if Process::UID.re_exchangeable?
+      old_euid = euid
+      process_reexchangeable = Process::UID.re_exchangeable?
+      if process_reexchangeable
         Process::UID.re_exchange
       else
-        Process::Sys.seteuid(Process.uid)
+        Process::Sys.seteuid(uid)
       end
 
-      ret = with_env("HOME" => Etc.getpwuid(Process.uid).dir, &block)
+      return_value = with_env("HOME" => Etc.getpwuid(Process.uid).dir, &block)
 
-      if Process::UID.re_exchangeable?
+      if process_reexchangeable
         Process::UID.re_exchange
       else
         Process::Sys.seteuid(old_euid)
       end
 
-      ret
+      return_value
     end
 
     def install(name, preinstall: true, no_upgrade: false, verbose: false, force: false)
