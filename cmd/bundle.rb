@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+if Version.new(HOMEBREW_VERSION) < Version.new("4.2.15")
+  odie "Your Homebrew is too outdated for `brew bundle`. Please run `brew update`!"
+end
+
 require "abstract_command"
 
 module Homebrew
@@ -94,101 +98,81 @@ module Homebrew
         # Keep this inside `run` to keep --help fast.
         require_relative "../lib/bundle"
 
-        begin
-          case subcommand = args.named.first.presence
-          when nil, "install"
-            Bundle::Commands::Install.run(
-              global:     args.global?,
-              file:       args.file,
-              no_lock:    args.no_lock?,
-              no_upgrade: args.no_upgrade?,
-              verbose:    args.verbose?,
-              force:      args.force?,
-            )
+        case subcommand = args.named.first.presence
+        when nil, "install"
+          Bundle::Commands::Install.run(
+            global:     args.global?,
+            file:       args.file,
+            no_lock:    args.no_lock?,
+            no_upgrade: args.no_upgrade?,
+            verbose:    args.verbose?,
+            force:      args.force?,
+          )
 
-            cleanup = if ENV.fetch("HOMEBREW_BUNDLE_INSTALL_CLEANUP", nil)
-              args.global?
-            else
-              args.cleanup?
-            end
+          cleanup = if ENV.fetch("HOMEBREW_BUNDLE_INSTALL_CLEANUP", nil)
+            args.global?
+          else
+            args.cleanup?
+          end
 
-            if cleanup
-              Bundle::Commands::Cleanup.run(
-                global: args.global?,
-                file:   args.file,
-                force:  true,
-                zap:    args.zap?,
-              )
-            end
-          when "dump"
-            Bundle::Commands::Dump.run(
-              global:     args.global?,
-              file:       args.file,
-              describe:   args.describe?,
-              force:      args.force?,
-              no_restart: args.no_restart?,
-              all:        args.all?,
-              taps:       args.taps?,
-              brews:      args.brews?,
-              casks:      args.casks?,
-              mas:        args.mas?,
-              whalebrew:  args.whalebrew?,
-              vscode:     args.vscode?,
-            )
-          when "cleanup"
+          if cleanup
             Bundle::Commands::Cleanup.run(
               global: args.global?,
               file:   args.file,
-              force:  args.force?,
+              force:  true,
               zap:    args.zap?,
             )
-          when "check"
-            Bundle::Commands::Check.run(
-              global:     args.global?,
-              file:       args.file,
-              no_upgrade: args.no_upgrade?,
-              verbose:    args.verbose?,
-            )
-          when "exec"
-            _subcommand, *named_args = args.named
-            Bundle::Commands::Exec.run(
-              *named_args,
-              global: args.global?,
-              file:   args.file,
-            )
-          when "list"
-            Bundle::Commands::List.run(
-              global:    args.global?,
-              file:      args.file,
-              all:       args.all?,
-              casks:     args.casks?,
-              taps:      args.taps?,
-              mas:       args.mas?,
-              whalebrew: args.whalebrew?,
-              vscode:    args.vscode?,
-              brews:     args.brews?,
-            )
-          else
-            raise UsageError, "unknown subcommand: #{subcommand}"
           end
-        rescue SystemExit => e
-          Homebrew.failed = true unless e.success?
-          puts "Kernel.exit" if args.debug?
-        rescue Interrupt
-          puts # seemingly a newline is typical
-          Homebrew.failed = true
-        rescue RuntimeError, SystemCallError => e
-          raise if e.message.empty?
-
-          onoe e
-          puts e.backtrace if args.debug?
-          Homebrew.failed = true
-        rescue => e
-          onoe e
-          puts "#{Tty.bold}Please report this bug:#{Tty.reset}"
-          puts "  #{Formatter.url("https://github.com/Homebrew/homebrew-bundle/issues")}"
-          puts e.backtrace
-          Homebrew.failed = true
+        when "dump"
+          Bundle::Commands::Dump.run(
+            global:     args.global?,
+            file:       args.file,
+            describe:   args.describe?,
+            force:      args.force?,
+            no_restart: args.no_restart?,
+            all:        args.all?,
+            taps:       args.taps?,
+            brews:      args.brews?,
+            casks:      args.casks?,
+            mas:        args.mas?,
+            whalebrew:  args.whalebrew?,
+            vscode:     args.vscode?,
+          )
+        when "cleanup"
+          Bundle::Commands::Cleanup.run(
+            global: args.global?,
+            file:   args.file,
+            force:  args.force?,
+            zap:    args.zap?,
+          )
+        when "check"
+          Bundle::Commands::Check.run(
+            global:     args.global?,
+            file:       args.file,
+            no_upgrade: args.no_upgrade?,
+            verbose:    args.verbose?,
+          )
+        when "exec"
+          _subcommand, *named_args = args.named
+          Bundle::Commands::Exec.run(
+            *named_args,
+            global: args.global?,
+            file:   args.file,
+          )
+        when "list"
+          Bundle::Commands::List.run(
+            global:    args.global?,
+            file:      args.file,
+            all:       args.all?,
+            casks:     args.casks?,
+            taps:      args.taps?,
+            mas:       args.mas?,
+            whalebrew: args.whalebrew?,
+            vscode:    args.vscode?,
+            brews:     args.brews?,
+          )
+        else
+          raise UsageError, "unknown subcommand: #{subcommand}"
         end
       end
     end
