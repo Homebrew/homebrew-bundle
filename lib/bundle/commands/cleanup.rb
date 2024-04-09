@@ -37,8 +37,10 @@ module Bundle
 
           Kernel.system HOMEBREW_BREW_FILE, "untap", *taps if taps.any?
 
-          vscode_extensions.each do |extension|
-            Kernel.system "code", "--uninstall-extension", extension
+          Bundle.exchange_uid_if_needed! do
+            vscode_extensions.each do |extension|
+              Kernel.system "code", "--uninstall-extension", extension
+            end
           end
 
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup")
