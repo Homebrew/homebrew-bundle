@@ -4,7 +4,8 @@ module Bundle
   module Installer
     module_function
 
-    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false, force: false)
+    def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false, force: false,
+                quiet: false)
       success = 0
       failure = 0
 
@@ -42,7 +43,7 @@ module Bundle
           puts Formatter.success("#{verb} #{name}")
           true
         else
-          puts "Using #{name}"
+          puts "Using #{name}" unless quiet
           false
         end
 
