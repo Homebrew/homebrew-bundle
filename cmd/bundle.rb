@@ -107,6 +107,7 @@ module Homebrew
             no_upgrade: args.no_upgrade?,
             verbose:    args.verbose?,
             force:      args.force?,
+            quiet:      args.quiet?,
           )
 
           cleanup = if ENV.fetch("HOMEBREW_BUNDLE_INSTALL_CLEANUP", nil)
