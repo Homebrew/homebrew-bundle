@@ -92,6 +92,7 @@ Note: based on these criteria, we would not accept e.g. Whalebrew (but have no p
 ## Tests
 
 Tests can be run with `bundle install && bundle exec rspec`.
+Syntax linting can be run with `brew style homebrew/bundle`.
 
 ## Copyright
 
