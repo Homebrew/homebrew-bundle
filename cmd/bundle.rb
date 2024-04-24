@@ -92,13 +92,20 @@ module Homebrew
                description: "`dump` does not add `restart_service` to formula lines."
         switch "--zap",
                description: "`cleanup` casks using the `zap` command instead of `uninstall`."
+
+        named_args %w[install dump cleanup check exec list]
       end
 
       def run
         # Keep this inside `run` to keep --help fast.
         require_relative "../lib/bundle"
 
-        case subcommand = args.named.first.presence
+        subcommand = args.named.first.presence
+        if subcommand != "exec" && args.named.size > 1
+          raise UsageError, "This command does not take more than 1 subcommand argument."
+        end
+
+        case subcommand
         when nil, "install"
           Bundle::Commands::Install.run(
             global:     args.global?,
