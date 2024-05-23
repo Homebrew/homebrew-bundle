@@ -18,8 +18,9 @@ module Bundle
 
     attr_reader :entries, :cask_arguments
 
-    def initialize(input)
-      @input = input
+    def initialize(path)
+      @path = path
+      @input = path.read
       @entries = []
       @cask_arguments = {}
 
@@ -33,7 +34,7 @@ module Bundle
     end
 
     def process
-      instance_eval(@input)
+      instance_eval(@input, @path.to_s)
     end
 
     def cask_args(args)

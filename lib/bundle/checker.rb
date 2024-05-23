@@ -67,7 +67,7 @@ module Bundle
     }.freeze
 
     def check(global: false, file: nil, exit_on_first_error: false, no_upgrade: false, verbose: false)
-      @dsl ||= Bundle::Dsl.new(Brewfile.read(global:, file:))
+      @dsl ||= Brewfile.read(global:, file:)
 
       check_method_names = CHECKS.keys
 

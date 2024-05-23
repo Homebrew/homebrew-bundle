@@ -3,9 +3,13 @@
 require "spec_helper"
 
 describe Bundle::Dsl do
+  def dsl_from_string(string)
+    described_class.new(StringIO.new(string))
+  end
+
   context "with a DSL example" do
     subject(:dsl) do
-      described_class.new <<~EOS
+      dsl_from_string <<~EOS
         # frozen_string_literal: true
         cask_args appdir: '/Applications'
         tap 'homebrew/cask'
@@ -57,20 +61,20 @@ describe Bundle::Dsl do
 
   context "with invalid input" do
     it "handles completely invalid code" do
-      expect { described_class.new "abcdef" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "abcdef" }.to raise_error(RuntimeError)
     end
 
     it "handles valid commands but with invalid options" do
-      expect { described_class.new "brew 1" }.to raise_error(RuntimeError)
-      expect { described_class.new "cask 1" }.to raise_error(RuntimeError)
-      expect { described_class.new "tap 1" }.to raise_error(RuntimeError)
-      expect { described_class.new "cask_args ''" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "brew 1" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "cask 1" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "tap 1" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "cask_args ''" }.to raise_error(RuntimeError)
     end
 
     it "errors on bad options" do
-      expect { described_class.new "brew 'foo', ['bad_option']" }.to raise_error(RuntimeError)
-      expect { described_class.new "cask 'foo', ['bad_option']" }.to raise_error(RuntimeError)
-      expect { described_class.new "tap 'foo', ['bad_clone_target']" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "brew 'foo', ['bad_option']" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "cask 'foo', ['bad_option']" }.to raise_error(RuntimeError)
+      expect { dsl_from_string "tap 'foo', ['bad_clone_target']" }.to raise_error(RuntimeError)
     end
   end
 
