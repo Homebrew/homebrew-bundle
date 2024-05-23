@@ -2,6 +2,8 @@
 
 source "https://rubygems.org"
 
+ruby file: ".ruby-version"
+
 group :test do
   gem "activesupport"
   gem "rspec"
