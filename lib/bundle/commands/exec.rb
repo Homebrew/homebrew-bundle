@@ -25,7 +25,7 @@ module Bundle
           command_path = command_path.dirname.to_s
         end
 
-        brewfile = Bundle::Dsl.new(Brewfile.read(global:, file:))
+        brewfile = Brewfile.read(global:, file:)
 
         require "formula"
         require "formulary"

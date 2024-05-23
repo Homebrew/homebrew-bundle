@@ -83,7 +83,7 @@ module Bundle
       end
 
       def formulae_to_uninstall(global: false, file: nil)
-        @dsl ||= Bundle::Dsl.new(Brewfile.read(global:, file:))
+        @dsl ||= Brewfile.read(global:, file:)
         kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
         kept_cask_formula_dependencies = Bundle::CaskDumper.formula_dependencies(kept_casks)
         kept_formulae += kept_cask_formula_dependencies
@@ -104,7 +104,7 @@ module Bundle
       def kept_casks(global: false, file: nil)
         return @kept_casks if @kept_casks
 
-        @dsl ||= Bundle::Dsl.new(Brewfile.read(global:, file:))
+        @dsl ||= Brewfile.read(global:, file:)
         @kept_casks = @dsl.entries.select { |e| e.type == :cask }.map(&:name)
       end
 
@@ -137,14 +137,14 @@ module Bundle
       IGNORED_TAPS = %w[homebrew/core homebrew/bundle].freeze
 
       def taps_to_untap(global: false, file: nil)
-        @dsl ||= Bundle::Dsl.new(Brewfile.read(global:, file:))
+        @dsl ||= Brewfile.read(global:, file:)
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS
       end
 
       def vscode_extensions_to_uninstall(global: false, file: nil)
-        @dsl ||= Bundle::Dsl.new(Brewfile.read(global:, file:))
+        @dsl ||= Brewfile.read(global:, file:)
         kept_extensions = @dsl.entries.select { |e| e.type == :vscode }.map { |x| x.name.downcase }
 
         # To provide a graceful migration from `Brewfile`s that don't yet or

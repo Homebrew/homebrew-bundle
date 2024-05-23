@@ -30,7 +30,7 @@ module Bundle
     end
 
     def read(global: false, file: nil)
-      Brewfile.path(global:, file:).read
+      Bundle::Dsl.new(Brewfile.path(global:, file:))
     rescue Errno::ENOENT
       raise "No Brewfile found"
     end
