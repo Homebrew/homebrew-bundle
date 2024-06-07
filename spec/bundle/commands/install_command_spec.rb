@@ -38,6 +38,18 @@ describe Bundle::Commands::Install do
       expect { described_class.run }.not_to raise_error
     end
 
+    it "#dsl returns a valid DSL" do
+      allow(Bundle::TapInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::WhalebrewInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::VscodeExtensionInstaller).to receive(:preinstall).and_return(false)
+      allow(Bundle::BrewInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::CaskInstaller).to receive_messages(preinstall: true, install: true)
+      allow(Bundle::MacAppStoreInstaller).to receive_messages(preinstall: true, install: true)
+      allow_any_instance_of(Pathname).to receive(:read).and_return(brewfile_contents)
+      described_class.run
+      expect(described_class.dsl.entries.first.name).to eql("phinze/cask")
+    end
+
     it "does not raise an error when skippable" do
       expect(Bundle::BrewInstaller).not_to receive(:install)
 

@@ -129,6 +129,7 @@ module Homebrew
               file:   args.file,
               force:  true,
               zap:    args.zap?,
+              dsl:    Bundle::Commands::Install.dsl,
             )
           end
         when "dump"

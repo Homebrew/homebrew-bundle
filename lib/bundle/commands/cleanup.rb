@@ -18,7 +18,9 @@ module Bundle
         Bundle::BrewServices.reset!
       end
 
-      def run(global: false, file: nil, force: false, zap: false)
+      def run(global: false, file: nil, force: false, zap: false, dsl: nil)
+        @dsl ||= dsl
+
         casks = casks_to_uninstall(global:, file:)
         formulae = formulae_to_uninstall(global:, file:)
         taps = taps_to_untap(global:, file:)

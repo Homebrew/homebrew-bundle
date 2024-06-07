@@ -25,12 +25,12 @@ module Bundle
           command_path = command_path.dirname.to_s
         end
 
-        brewfile = Brewfile.read(global:, file:)
+        @dsl = Brewfile.read(global:, file:)
 
         require "formula"
         require "formulary"
 
-        ENV.deps = brewfile.entries.map do |entry|
+        ENV.deps = @dsl.entries.map do |entry|
           next if entry.type != :brew
 
           f = Formulary.factory(entry.name)
