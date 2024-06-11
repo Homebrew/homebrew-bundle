@@ -15,16 +15,4 @@ updates:
     artifacts:
       patterns:
       - actions/*-artifact
-- package-ecosystem: bundler
-  directory: "/"
-  schedule:
-    interval: daily
-  allow:
-  - dependency-type: all
-- package-ecosystem: devcontainers
-  directory: "/"
-  schedule:
-    interval: daily
-  allow:
-  - dependency-type: all
 
