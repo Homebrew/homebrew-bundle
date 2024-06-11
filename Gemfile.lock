@@ -22,8 +22,8 @@ GEM
       concurrent-ruby (~> 1.0)
     minitest (5.23.1)
     mutex_m (0.2.0)
-    rexml (3.2.8)
-      strscan (>= 3.0.9)
+    rexml (3.2.9)
+      strscan
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
