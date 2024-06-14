@@ -40,7 +40,7 @@ jobs:
     - name: Run RSpec tests
       run: bundle exec rspec
 
-    - uses: codecov/codecov-action@125fc84a9a348dbcf27191600683ec096ec9021c
+    - uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
       if: always()
 
     - name: Test that installing works
