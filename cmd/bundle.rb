@@ -32,6 +32,8 @@ module Homebrew
 
           This workflow is useful for maintainers or testers who regularly install lots of formulae.
 
+          Unless `--force` is passed, this returns with an unsuccessful exit code if changes would be made, making it useful for scripting.
+
           `brew bundle check`:
           Check if all dependencies present in the `Brewfile` are installed.
 
