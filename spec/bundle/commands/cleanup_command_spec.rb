@@ -194,7 +194,8 @@ describe Bundle::Commands::Cleanup do
       expect(described_class).to receive(:system_output_no_stderr).and_return("")
       expect do
         described_class.run
-      end.to output(/Would uninstall formulae:.*Would untap:.*Would uninstall VSCode extensions:/m).to_stdout
+      end.to raise_error(SystemExit)
+        .and output(/Would uninstall formulae:.*Would untap:.*Would uninstall VSCode extensions:/m).to_stdout
     end
   end
 

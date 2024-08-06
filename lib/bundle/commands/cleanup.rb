@@ -48,24 +48,30 @@ module Bundle
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup")
           puts cleanup unless cleanup.empty?
         else
+          would_uninstall = false
+
           if casks.any?
             puts "Would uninstall casks:"
             puts Formatter.columns casks
+            would_uninstall = true
           end
 
           if formulae.any?
             puts "Would uninstall formulae:"
             puts Formatter.columns formulae
+            would_uninstall = true
           end
 
           if taps.any?
             puts "Would untap:"
             puts Formatter.columns taps
+            would_uninstall = true
           end
 
           if vscode_extensions.any?
             puts "Would uninstall VSCode extensions:"
             puts Formatter.columns vscode_extensions
+            would_uninstall = true
           end
 
           cleanup = system_output_no_stderr(HOMEBREW_BREW_FILE, "cleanup", "--dry-run")
@@ -74,9 +80,8 @@ module Bundle
             puts cleanup
           end
 
-          if casks.any? || formulae.any? || taps.any? || !cleanup.empty?
-            puts "Run `brew bundle cleanup --force` to make these changes."
-          end
+          puts "Run `brew bundle cleanup --force` to make these changes." if would_uninstall || !cleanup.empty?
+          exit 1 if would_uninstall
         end
       end
 
