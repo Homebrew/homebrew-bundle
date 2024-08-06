@@ -12,8 +12,8 @@ module Bundle
       return [] unless Bundle.whalebrew_installed?
 
       @images ||= `whalebrew list 2>/dev/null`.split("\n")
-                                              .reject { |image| image.start_with?("COMMAND ") }
-                                              .map { |image| image.sub(/\w*\s+/, "") }
+                                              .reject { |line| line.start_with?("COMMAND ") }
+                                              .map { |line| line.split(/\s+/).last }
                                               .uniq
     end
 
