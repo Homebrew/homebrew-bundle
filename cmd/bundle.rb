@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
-if Version.new(HOMEBREW_VERSION) < Version.new("4.2.15")
+homebrew_version = if HOMEBREW_VERSION.present?
+  HOMEBREW_VERSION.delete_prefix(">=")
+                  .delete_suffix(" (shallow or no git repository)")
+else
+  "0.0.1"
+end
+if Version.new(homebrew_version) < Version.new("4.2.15")
   odie "Your Homebrew is too outdated for `brew bundle`. Please run `brew update`!"
 end
 
