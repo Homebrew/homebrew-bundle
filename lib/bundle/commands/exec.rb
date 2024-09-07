@@ -42,6 +42,16 @@ module Bundle
         # Enable compiler flag filtering
         ENV.refurbish_args
 
+        # Set up `nodenv`, `pyenv` and `rbenv` if present.
+        env_formulae = %w[nodenv pyenv rbenv]
+        ENV.deps.each do |dep|
+          dep_name = dep.name
+          next unless env_formulae.include?(dep_name)
+
+          dep_root = ENV.fetch("HOMEBREW_#{dep_name.upcase}_ROOT", "#{Dir.home}/.#{dep_name}")
+          ENV.prepend_path "PATH", Pathname.new(dep_root)/"shims"
+        end
+
         # Setup pkg-config, if present, to help locate packages
         pkgconfig = Formulary.factory("pkg-config")
         ENV.prepend_path "PATH", pkgconfig.opt_bin.to_s if pkgconfig.any_version_installed?
