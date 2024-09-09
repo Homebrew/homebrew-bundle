@@ -80,5 +80,22 @@ describe Bundle::Commands::Exec do
         expect { described_class.run("/Users/admin/Downloads/command") }.not_to raise_error
       end
     end
+
+    describe "when the Brewfile contains rbenv" do
+      before { ENV["HOMEBREW_RBENV_ROOT"] = rbenv_root.to_s }
+
+      let(:rbenv_root) { Pathname.new("/tmp/.rbenv") }
+
+      it "prepends the path of the rbenv shims to PATH before running" do
+        allow_any_instance_of(Pathname).to receive(:read)
+          .and_return("brew 'rbenv'")
+        allow(ENV).to receive(:fetch).with(any_args).and_call_original
+        allow(ENV).to receive(:prepend_path).with(any_args).once.and_call_original
+
+        expect(ENV).to receive(:fetch).with("HOMEBREW_RBENV_ROOT", "#{Dir.home}/.rbenv").once.and_call_original
+        expect(ENV).to receive(:prepend_path).with("PATH", rbenv_root/"shims").once.and_call_original
+        described_class.run("/usr/bin/true")
+      end
+    end
   end
 end
