@@ -12,8 +12,8 @@ module Bundle
       new(name, options).preinstall(no_upgrade:, verbose:)
     end
 
-    def self.install(name, preinstall: true, no_upgrade: false, verbose: false, **options)
-      new(name, options).install(preinstall:, no_upgrade:, verbose:)
+    def self.install(name, preinstall: true, no_upgrade: false, verbose: false, force: false, **options)
+      new(name, options).install(preinstall:, no_upgrade:, verbose:, force:)
     end
 
     def initialize(name, options = {})
@@ -112,7 +112,7 @@ module Bundle
       when nil
         if unlinked_and_not_keg_only?
           puts "Linking #{@name} formula." if verbose
-          link_args = "link"
+          link_args = ["link"]
           link_args << "--overwrite" if force
           Bundle.system(HOMEBREW_BREW_FILE, *link_args, @name, verbose:)
         elsif linked_and_keg_only?
