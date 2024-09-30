@@ -17,7 +17,7 @@ describe Bundle::Dsl do
         tap 'auto/update', 'https://bitbucket.org/auto/update.git', force_auto_update: true
         brew 'imagemagick'
         brew 'mysql@5.6', restart_service: true, link: true, conflicts_with: ['mysql']
-        brew 'emacs', args: ['with-cocoa', 'with-gnutls']
+        brew 'emacs', args: ['with-cocoa', 'with-gnutls'], link: :overwrite
         cask 'google-chrome'
         cask 'java' unless system '/usr/libexec/java_home --failfast'
         cask 'firefox', args: { appdir: '~/my-apps/Applications' }
@@ -47,7 +47,7 @@ describe Bundle::Dsl do
       expect(dsl.entries[4].name).to eql("mysql@5.6")
       expect(dsl.entries[4].options).to eql(restart_service: true, link: true, conflicts_with: ["mysql"])
       expect(dsl.entries[5].name).to eql("emacs")
-      expect(dsl.entries[5].options).to eql(args: ["with-cocoa", "with-gnutls"])
+      expect(dsl.entries[5].options).to eql(args: ["with-cocoa", "with-gnutls"], link: :overwrite)
       expect(dsl.entries[6].name).to eql("google-chrome")
       expect(dsl.entries[7].name).to eql("java")
       expect(dsl.entries[8].name).to eql("firefox")

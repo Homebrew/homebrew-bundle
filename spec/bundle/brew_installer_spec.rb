@@ -90,10 +90,34 @@ describe Bundle::BrewInstaller do
       end
 
       it "links formula" do
+        allow_any_instance_of(described_class).to receive(:linked?).and_return(false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "mysql",
+                                                verbose: false).and_return(true)
+        described_class.preinstall(formula, link: true)
+        described_class.install(formula, link: true)
+      end
+
+      it "force-links keg-only formula" do
+        allow_any_instance_of(described_class).to receive(:linked?).and_return(false)
+        allow_any_instance_of(described_class).to receive(:keg_only?).and_return(true)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "--force", "mysql",
                                                 verbose: false).and_return(true)
         described_class.preinstall(formula, link: true)
         described_class.install(formula, link: true)
+      end
+    end
+
+    context "when the link option is :overwrite" do
+      before do
+        allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
+      end
+
+      it "overwrite links formula" do
+        allow_any_instance_of(described_class).to receive(:linked?).and_return(false)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "--overwrite", "mysql",
+                                                verbose: false).and_return(true)
+        described_class.preinstall(formula, link: :overwrite)
+        described_class.install(formula, link: :overwrite)
       end
     end
 
@@ -103,6 +127,7 @@ describe Bundle::BrewInstaller do
       end
 
       it "unlinks formula" do
+        allow_any_instance_of(described_class).to receive(:linked?).and_return(true)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql",
                                                 verbose: false).and_return(true)
         described_class.preinstall(formula, link: false)
@@ -113,10 +138,11 @@ describe Bundle::BrewInstaller do
     context "when the link option is nil and formula is unlinked and not keg-only" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
+        allow_any_instance_of(described_class).to receive(:linked?).and_return(false)
+        allow_any_instance_of(described_class).to receive(:keg_only?).and_return(false)
       end
 
       it "links formula" do
-        allow_any_instance_of(described_class).to receive(:unlinked_and_not_keg_only?).and_return(true)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "link", "mysql",
                                                 verbose: false).and_return(true)
         described_class.preinstall(formula, link: nil)
@@ -127,10 +153,11 @@ describe Bundle::BrewInstaller do
     context "when the link option is nil and formula is linked and keg-only" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
+        allow_any_instance_of(described_class).to receive(:linked?).and_return(true)
+        allow_any_instance_of(described_class).to receive(:keg_only?).and_return(true)
       end
 
       it "unlinks formula" do
-        allow_any_instance_of(described_class).to receive(:linked_and_keg_only?).and_return(true)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql",
                                                 verbose: false).and_return(true)
         described_class.preinstall(formula, link: nil)
