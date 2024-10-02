@@ -80,17 +80,21 @@ module Homebrew
         switch "--all",
                description: "`list` all dependencies."
         switch "--formula", "--brews",
-               description: "`list` Homebrew formula dependencies."
+               description: "`list` or `dump` Homebrew formula dependencies."
         switch "--cask", "--casks",
-               description: "`list` Homebrew cask dependencies."
+               description: "`list` or `dump` Homebrew cask dependencies."
         switch "--tap", "--taps",
-               description: "`list` Homebrew tap dependencies."
+               description: "`list` or `dump` Homebrew tap dependencies."
         switch "--mas",
-               description: "`list` Mac App Store dependencies."
+               description: "`list` or `dump` Mac App Store dependencies."
         switch "--whalebrew",
-               description: "`list` Whalebrew dependencies."
+               description: "`list` or `dump` Whalebrew dependencies."
         switch "--vscode",
-               description: "`list` VSCode extensions."
+               description: "`list` or `dump` VSCode extensions."
+        switch "--no-vscode",
+               env:         :bundle_dump_no_vscode,
+               description: "`dump` without VSCode extensions. " \
+                            "This is enabled by default if `HOMEBREW_BUNDLE_DUMP_NO_VSCODE` is set."
         switch "--describe",
                env:         :bundle_dump_describe,
                description: "`dump` adds a description comment above each line, unless the " \
@@ -100,6 +104,9 @@ module Homebrew
                description: "`dump` does not add `restart_service` to formula lines."
         switch "--zap",
                description: "`cleanup` casks using the `zap` command instead of `uninstall`."
+
+        conflicts "--all", "--no-vscode"
+        conflicts "--vscode", "--no-vscode"
 
         named_args %w[install dump cleanup check exec list]
       end
@@ -113,16 +120,22 @@ module Homebrew
           raise UsageError, "This command does not take more than 1 subcommand argument."
         end
 
+        global = args.global?
+        file = args.file
+        args.zap?
+        no_upgrade = args.no_upgrade?
+        verbose = args.verbose?
+        force = args.force?
+        zap = args.zap?
+
+        no_type_args = !args.brews? && !args.casks? && !args.taps? && !args.mas? && !args.whalebrew? && !args.vscode?
+
         case subcommand
         when nil, "install"
           Bundle::Commands::Install.run(
-            global:     args.global?,
-            file:       args.file,
+            global:, file:, no_upgrade:, verbose:, force:,
             no_lock:    args.no_lock?,
-            no_upgrade: args.no_upgrade?,
-            verbose:    args.verbose?,
-            force:      args.force?,
-            quiet:      args.quiet?,
+            quiet:      args.quiet?
           )
 
           cleanup = if ENV.fetch("HOMEBREW_BUNDLE_INSTALL_CLEANUP", nil)
@@ -133,60 +146,48 @@ module Homebrew
 
           if cleanup
             Bundle::Commands::Cleanup.run(
-              global: args.global?,
-              file:   args.file,
+              global:, file:, zap:,
               force:  true,
-              zap:    args.zap?,
-              dsl:    Bundle::Commands::Install.dsl,
+              dsl:    Bundle::Commands::Install.dsl
             )
           end
         when "dump"
+          vscode = if args.no_vscode?
+            false
+          elsif args.vscode?
+            true
+          else
+            no_type_args
+          end
+
           Bundle::Commands::Dump.run(
-            global:     args.global?,
-            file:       args.file,
+            global:, file:, force:,
             describe:   args.describe?,
-            force:      args.force?,
             no_restart: args.no_restart?,
-            all:        args.all?,
-            taps:       args.taps?,
-            brews:      args.brews?,
-            casks:      args.casks?,
-            mas:        args.mas?,
-            whalebrew:  args.whalebrew?,
-            vscode:     args.vscode?,
+            taps:       args.taps? || no_type_args,
+            brews:      args.brews? || no_type_args,
+            casks:      args.casks? || no_type_args,
+            mas:        args.mas? || no_type_args,
+            whalebrew:  args.whalebrew? || no_type_args,
+            vscode:
           )
         when "cleanup"
-          Bundle::Commands::Cleanup.run(
-            global: args.global?,
-            file:   args.file,
-            force:  args.force?,
-            zap:    args.zap?,
-          )
+          Bundle::Commands::Cleanup.run(global:, file:, force:, zap:)
         when "check"
-          Bundle::Commands::Check.run(
-            global:     args.global?,
-            file:       args.file,
-            no_upgrade: args.no_upgrade?,
-            verbose:    args.verbose?,
-          )
+          Bundle::Commands::Check.run(global:, file:, no_upgrade:, verbose:)
         when "exec"
           _subcommand, *named_args = args.named
-          Bundle::Commands::Exec.run(
-            *named_args,
-            global: args.global?,
-            file:   args.file,
-          )
+          Bundle::Commands::Exec.run(*named_args, global:, file:)
         when "list"
           Bundle::Commands::List.run(
-            global:    args.global?,
-            file:      args.file,
-            all:       args.all?,
-            casks:     args.casks?,
-            taps:      args.taps?,
-            mas:       args.mas?,
-            whalebrew: args.whalebrew?,
-            vscode:    args.vscode?,
-            brews:     args.brews?,
+            global:,
+            file:,
+            brews:     args.brews? || args.all? || no_type_args,
+            casks:     args.casks? || args.all?,
+            taps:      args.taps? || args.all?,
+            mas:       args.mas? || args.all?,
+            whalebrew: args.whalebrew? || args.all?,
+            vscode:    args.vscode? || args.all?,
           )
         else
           raise UsageError, "unknown subcommand: #{subcommand}"

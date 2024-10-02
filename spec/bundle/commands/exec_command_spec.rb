@@ -87,6 +87,7 @@ describe Bundle::Commands::Exec do
       let(:rbenv_root) { Pathname.new("/tmp/.rbenv") }
 
       it "prepends the path of the rbenv shims to PATH before running" do
+        allow(described_class).to receive(:exec).with("/usr/bin/true").and_return(0)
         allow_any_instance_of(Pathname).to receive(:read)
           .and_return("brew 'rbenv'")
         allow(ENV).to receive(:fetch).with(any_args).and_call_original

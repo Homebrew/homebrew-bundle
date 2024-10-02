@@ -13,28 +13,22 @@ module Bundle
       true
     end
 
-    def build_brewfile(describe: false, no_restart: false,
-                       all: false, taps: false, brews: false, casks: false,
-                       mas: false, whalebrew: false, vscode: false)
-      all     ||= !(taps || brews || casks || mas || whalebrew || vscode)
+    def build_brewfile(describe:, no_restart:, brews:, taps:, casks:, mas:, whalebrew:, vscode:)
       content = []
-      content << TapDumper.dump if taps || all
-      content << BrewDumper.dump(describe:, no_restart:) if brews || all
-      content << CaskDumper.dump(describe:) if casks || all
-      content << MacAppStoreDumper.dump if mas || all
-      content << WhalebrewDumper.dump if whalebrew || all
-      content << VscodeExtensionDumper.dump if vscode || all
+      content << TapDumper.dump if taps
+      content << BrewDumper.dump(describe:, no_restart:) if brews
+      content << CaskDumper.dump(describe:) if casks
+      content << MacAppStoreDumper.dump if mas
+      content << WhalebrewDumper.dump if whalebrew
+      content << VscodeExtensionDumper.dump if vscode
       "#{content.reject(&:empty?).join("\n")}\n"
     end
 
-    def dump_brewfile(global: false, file: nil, describe: false, force: false, no_restart: false,
-                      all: false, taps: false, brews: false, casks: false,
-                      mas: false, whalebrew: false, vscode: false)
+    def dump_brewfile(global:, file:, describe:, force:, no_restart:, brews:, taps:, casks:, mas:, whalebrew:,
+                      vscode:)
       path = brewfile_path(global:, file:)
       can_write_to_brewfile?(path, force:)
-      content = build_brewfile(describe:, no_restart:,
-                               all:, taps:, brews:, casks:,
-                               mas:, whalebrew:, vscode:)
+      content = build_brewfile(describe:, no_restart:, taps:, brews:, casks:, mas:, whalebrew:, vscode:)
       write_file path, content
     end
 
