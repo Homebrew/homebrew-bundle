@@ -36,7 +36,10 @@ describe Bundle::Dumper do
   end
 
   it "generates output" do
-    expect(dumper.build_brewfile).to eql("cask \"google-chrome\"\ncask \"java\"\ncask \"iterm2-beta\"\n")
+    expect(dumper.build_brewfile(
+             describe: false, no_restart: false, brews: true, taps: true, casks: true, mas: true,
+             whalebrew: true, vscode: true
+           )).to eql("cask \"google-chrome\"\ncask \"java\"\ncask \"iterm2-beta\"\n")
   end
 
   it "determines the brewfile correctly" do

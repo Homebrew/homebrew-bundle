@@ -3,6 +3,14 @@
 require "spec_helper"
 
 describe Bundle::Commands::Dump do
+  subject(:dump) do
+    described_class.run(global:, file: nil, describe: false, force:, no_restart: false, taps: true, brews: true,
+                        casks: true, mas: true, whalebrew: true, vscode: true)
+  end
+
+  let(:force) { false }
+  let(:global) { false }
+
   context "when files existed" do
     before do
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
@@ -11,7 +19,7 @@ describe Bundle::Commands::Dump do
 
     it "raises error" do
       expect do
-        described_class.run
+        dump
       end.to raise_error(RuntimeError)
     end
 
@@ -21,12 +29,15 @@ describe Bundle::Commands::Dump do
       expect(Bundle::CaskDumper).not_to receive(:dump)
       expect(Bundle::WhalebrewDumper).not_to receive(:dump)
       expect do
-        described_class.run
+        dump
       end.to raise_error(RuntimeError)
     end
   end
 
-  context "when files existed and `--force` is passed" do
+  context "when files existed and `--force` and `--global` are passed" do
+    let(:force) { true }
+    let(:global) { true }
+
     before do
       ENV["HOMEBREW_BUNDLE_FILE"] = ""
       allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
@@ -38,7 +49,7 @@ describe Bundle::Commands::Dump do
       expect_any_instance_of(Pathname).to receive(:open).with("w").and_yield(io)
       expect(io).to receive(:write)
       expect do
-        described_class.run(force: true, global: true)
+        dump
       end.not_to raise_error
     end
   end

@@ -3,9 +3,14 @@
 require "spec_helper"
 
 describe Bundle::Commands::List do
-  subject(:list) { described_class.run(**options) }
+  subject(:list) { described_class.run(global: false, file: nil, brews:, casks:, taps:, mas:, whalebrew:, vscode:) }
 
-  let(:options) { {} }
+  let(:brews) { true }
+  let(:casks) { false }
+  let(:taps) { false }
+  let(:mas) { false }
+  let(:whalebrew) { false }
+  let(:vscode) { false }
 
   before do
     allow_any_instance_of(IO).to receive(:puts)
@@ -20,6 +25,7 @@ describe Bundle::Commands::List do
           cask 'google-chrome'
           mas '1Password', id: 443987910
           whalebrew 'whalebrew/imagemagick'
+          vscode 'shopify.ruby-lsp'
         EOS
       )
     end
@@ -35,6 +41,7 @@ describe Bundle::Commands::List do
         casks:     "google-chrome",
         mas:       "1Password",
         whalebrew: "whalebrew/imagemagick",
+        vscode:    "shopify.ruby-lsp",
       }
 
       combinations = 1.upto(types_and_deps.length).flat_map do |i|
@@ -48,7 +55,12 @@ describe Bundle::Commands::List do
         verb = (options_list.length == 1 && "is") || "are"
 
         context "when #{opts} #{verb} passed" do
-          let(:options) { args_hash }
+          let(:brews) { args_hash[:brews] }
+          let(:casks) { args_hash[:casks] }
+          let(:taps) { args_hash[:taps] }
+          let(:mas) { args_hash[:mas] }
+          let(:whalebrew) { args_hash[:whalebrew] }
+          let(:vscode) { args_hash[:vscode] }
 
           it "shows only #{words}" do
             expected = options_list.map { |opt| types_and_deps[opt] }.join("\n")
