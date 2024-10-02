@@ -117,7 +117,7 @@ module Bundle
         end
       end
 
-      if cmd
+      if cmd.present?
         verb = "#{cmd}ing".capitalize
         with_args = " with #{link_args.join(" ")}" if link_args.present?
         puts "#{verb} #{@name} formula#{with_args}." if verbose
