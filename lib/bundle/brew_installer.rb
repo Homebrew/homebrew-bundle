@@ -46,7 +46,7 @@ module Bundle
 
       if installed?
         service_change_state!(verbose:) if install_result
-        link_change_state!(verbose:, force:)
+        link_change_state!(verbose:)
       end
 
       install_result
@@ -97,29 +97,34 @@ module Bundle
       end
     end
 
-    def link_change_state!(verbose: false, force: false)
-      case @link
+    def link_change_state!(verbose: false)
+      link_args = []
+      link_args << "--force" if unlinked_and_keg_only?
+
+      cmd = case @link
+      when :overwrite
+        link_args << "--overwrite"
+        "link" unless linked?
       when true
-        unless linked_and_keg_only?
-          puts "Force-linking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "link", "--force", @name, verbose:)
-        end
+        "link" unless linked?
       when false
-        unless unlinked_and_not_keg_only?
-          puts "Unlinking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose:)
-        end
+        "unlink" if linked?
       when nil
-        if unlinked_and_not_keg_only?
-          puts "Linking #{@name} formula." if verbose
-          link_args = ["link"]
-          link_args << "--overwrite" if force
-          Bundle.system(HOMEBREW_BREW_FILE, *link_args, @name, verbose:)
-        elsif linked_and_keg_only?
-          puts "Unlinking #{@name} formula." if verbose
-          Bundle.system(HOMEBREW_BREW_FILE, "unlink", @name, verbose:)
+        if keg_only?
+          "unlink" if linked?
+        else
+          "link" unless linked?
         end
       end
+
+      if cmd.present?
+        verb = "#{cmd}ing".capitalize
+        with_args = " with #{link_args.join(" ")}" if link_args.present?
+        puts "#{verb} #{@name} formula#{with_args}." if verbose
+        return Bundle.system(HOMEBREW_BREW_FILE, cmd, *link_args, @name, verbose:)
+      end
+
+      true
     end
 
     def self.formula_installed_and_up_to_date?(formula, no_upgrade: false)
@@ -150,21 +155,13 @@ module Bundle
       formula_in_array?(formula, installed_formulae)
     end
 
-    def self.formula_linked_and_keg_only?(formula)
-      formula_in_array?(formula, linked_and_keg_only_formulae)
-    end
-
-    def self.formula_unlinked_and_not_keg_only?(formula)
-      formula_in_array?(formula, unlinked_and_not_keg_only_formulae)
-    end
-
     def self.formula_upgradable?(formula)
       # Check local cache first and then authoratitive Homebrew source.
       formula_in_array?(formula, upgradable_formulae) && Formula[formula].outdated?
     end
 
     def self.installed_formulae
-      @installed_formulae ||= Bundle::BrewDumper.formulae.map { |f| f[:name] }
+      @installed_formulae ||= formulae.map { |f| f[:name] }
     end
 
     def self.upgradable_formulae
@@ -179,14 +176,6 @@ module Bundle
       @pinned_formulae ||= formulae.filter_map { |f| f[:name] if f[:pinned?] }
     end
 
-    def self.linked_and_keg_only_formulae
-      @linked_and_keg_only_formulae ||= formulae.filter_map { |f| f[:name] if f[:link?] == true }
-    end
-
-    def self.unlinked_and_not_keg_only_formulae
-      @unlinked_and_not_keg_only_formulae ||= formulae.filter_map { |f| f[:name] if f[:link?] == false }
-    end
-
     def self.formulae
       Bundle::BrewDumper.formulae
     end
@@ -197,12 +186,16 @@ module Bundle
       BrewInstaller.formula_installed?(@name)
     end
 
-    def linked_and_keg_only?
-      BrewInstaller.formula_linked_and_keg_only?(@name)
+    def linked?
+      Formula[@name].linked?
     end
 
-    def unlinked_and_not_keg_only?
-      BrewInstaller.formula_unlinked_and_not_keg_only?(@name)
+    def keg_only?
+      Formula[@name].keg_only?
+    end
+
+    def unlinked_and_keg_only?
+      !linked? && keg_only?
     end
 
     def upgradable?
