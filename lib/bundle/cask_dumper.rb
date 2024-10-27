@@ -65,7 +65,6 @@ module Bundle
     end
     private_class_method :casks
 
-
     def explicit_s(cask_config)
       cask_config.explicit.map do |key, value|
         # inverse of #env - converts :languages config key back to --language flag
