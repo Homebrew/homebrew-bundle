@@ -41,7 +41,7 @@ module Bundle
     def dump(describe: false)
       casks.map do |cask|
         description = "# #{cask.desc}\n" if describe && cask.desc.present?
-        config = ", args: { #{cask.config.explicit_s} }" if cask.config.present? && cask.config.explicit.present?
+        config = ", args: { #{explicit_s(cask.config)} }" if cask.config.present? && cask.config.explicit.present?
         "#{description}cask \"#{cask}\"#{config}"
       end.join("\n")
     end
@@ -64,5 +64,16 @@ module Bundle
       @casks ||= Cask::Caskroom.casks
     end
     private_class_method :casks
+
+    def explicit_s(cask_config)
+      cask_config.explicit.map do |key, value|
+        # inverse of #env - converts :languages config key back to --language flag
+        if key == :languages
+          key = "language"
+          value = cask_config.explicit.fetch(:languages, []).join(",")
+        end
+        "#{key}: \"#{value.to_s.sub(/^#{Dir.home}/, "~")}\""
+      end.join(", ")
+    end
   end
 end
