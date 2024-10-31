@@ -1,0 +1,82 @@
+# This file is synced from the `.github` repository, do not modify it directly.
+name: Workflow Syntax
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '.github/workflows/*.ya?ml'
+  pull_request:
+    paths:
+      - '.github/workflows/*.ya?ml'
+
+defaults:
+  run:
+    shell: bash -xeuo pipefail {0}
+
+concurrency:
+  group: "actionlint-${{ github.ref }}"
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  HOMEBREW_DEVELOPER: 1
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_ENV_HINTS: 1
+
+permissions: {}
+
+jobs:
+  workflow_syntax:
+    if: github.repository_owner == 'Homebrew'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Homebrew
+        id: setup-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+        with:
+          core: false
+          cask: false
+          test-bot: false
+
+      - name: Install tools
+        run: brew install actionlint shellcheck zizmor
+
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - run: zizmor --format sarif . >results.sarif
+
+      - name: Upload SARIF file
+        uses: actions/upload-artifact@v4
+        with:
+          name: results.sarif
+          path: results.sarif
+
+      - name: Set up actionlint
+        run: echo "::add-matcher::$(brew --repository)/.github/actionlint-matcher.json"
+
+      - run: actionlint
+
+  upload_sarif:
+    needs: workflow_syntax
+    # We want to always upload this even if `actionlint` failed.
+    if: always() && !contains(fromJSON('[["cancelled", "skipped"]]'), needs.workflow_syntax.result)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Download SARIF file
+        uses: actions/download-artifact@v4
+        with:
+          name: results.sarif
+          path: results.sarif
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+          category: zizmor
