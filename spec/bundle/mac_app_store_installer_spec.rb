@@ -41,64 +41,46 @@ describe Bundle::MacAppStoreInstaller do
       allow(Bundle).to receive(:mas_installed?).and_return(true)
     end
 
-    # TODO: can't be trusted right now.
-    # Uncomment when https://github.com/mas-cli/mas/pull/496 is merged.
-    # describe ".outdated_app_ids" do
-    #   it "returns app ids" do
-    #     expect(described_class).to receive(:`).and_return("foo 123")
-    #     described_class.reset!
-    #     described_class.outdated_app_ids
-    #   end
-    # end
-
-    context "when mas is not signed in" do
-      it "outputs an error" do
-        allow(described_class).to receive_messages(installed_app_ids: [123], outdated_app_ids: [123])
-        allow(MacOS).to receive(:version).and_return(:big_sur)
-        expect(Kernel).to receive(:system).with("mas account &>/dev/null").and_return(false)
-        expect { described_class.preinstall("foo", 123) }.to raise_error(RuntimeError)
+    describe ".outdated_app_ids" do
+      it "returns app ids" do
+        expect(described_class).to receive(:`).and_return("foo 123")
+        described_class.reset!
+        described_class.outdated_app_ids
       end
     end
 
-    context "when mas is signed in" do
+    context "when app is installed" do
       before do
-        allow(Bundle).to receive(:mas_signedin?).and_return(true)
-        allow(described_class).to receive(:outdated_app_ids).and_return([])
+        allow(described_class).to receive(:installed_app_ids).and_return([123])
       end
 
-      context "when app is installed" do
-        before do
-          allow(described_class).to receive(:installed_app_ids).and_return([123])
-        end
+      it "skips" do
+        expect(Bundle).not_to receive(:system)
+        expect(described_class.preinstall("foo", 123)).to be(false)
+      end
+    end
 
-        it "skips" do
-          expect(Bundle).not_to receive(:system)
-          expect(described_class.preinstall("foo", 123)).to be(false)
-        end
+    context "when app is outdated" do
+      before do
+        allow(described_class).to receive_messages(installed_app_ids: [123], outdated_app_ids: [123])
       end
 
-      context "when app is outdated" do
-        before do
-          allow(described_class).to receive_messages(installed_app_ids: [123], outdated_app_ids: [123])
-        end
+      it "upgrades" do
+        expect(Bundle).to receive(:system).with("mas", "upgrade", "123", verbose: false).and_return(true)
+        expect(described_class.preinstall("foo", 123)).to be(true)
+        expect(described_class.install("foo", 123)).to be(true)
+      end
+    end
 
-        it "upgrades" do
-          expect(Bundle).to receive(:system).with("mas", "upgrade", "123", verbose: false).and_return(true)
-          expect(described_class.preinstall("foo", 123)).to be(true)
-          expect(described_class.install("foo", 123)).to be(true)
-        end
+    context "when app is not installed" do
+      before do
+        allow(described_class).to receive(:installed_app_ids).and_return([])
       end
 
-      context "when app is not installed" do
-        before do
-          allow(described_class).to receive(:installed_app_ids).and_return([])
-        end
-
-        it "installs app" do
-          expect(Bundle).to receive(:system).with("mas", "install", "123", verbose: false).and_return(true)
-          expect(described_class.preinstall("foo", 123)).to be(true)
-          expect(described_class.install("foo", 123)).to be(true)
-        end
+      it "installs app" do
+        expect(Bundle).to receive(:system).with("mas", "install", "123", verbose: false).and_return(true)
+        expect(described_class.preinstall("foo", 123)).to be(true)
+        expect(described_class.install("foo", 123)).to be(true)
       end
     end
   end
