@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "ostruct"
 require "spec_helper"
 require "tsort"
 require "formula"
