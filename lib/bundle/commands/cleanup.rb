@@ -153,7 +153,9 @@ module Bundle
 
       def taps_to_untap(global: false, file: nil)
         @dsl ||= Brewfile.read(global:, file:)
+        kept_formulae = self.kept_formulae(global:, file:).map(&Formulary.method(:factory))
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
+        kept_taps += kept_formulae.filter_map(&:tap).map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS
       end
