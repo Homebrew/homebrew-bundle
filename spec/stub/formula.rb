@@ -3,10 +3,16 @@
 require "ostruct"
 require "pathname"
 
+# This pattern is a slight remix of `HOMEBREW_TAP_FORMULA_NAME_REGEX` and
+# `HOMEBREW_TAP_FORMULA_REGEX`
+# https://github.com/Homebrew/brew/blob/4.4.4/Library/Homebrew/tap_constants.rb#L4-L10
+HOMEBREW_TAP_NAME_REGEX = %r{\A(?<tap>(?:[^/]+)/(?:[^/]+))/(?:[\w+\-.@]+)\Z}
+
 class Formula
   def initialize(name)
     @prefix = Pathname("/usr/local")
     @name = name
+    @tap_name = (match = HOMEBREW_TAP_NAME_REGEX.match(name)) && match[:tap]
   end
 
   def opt_prefix
@@ -92,7 +98,7 @@ class Formula
   end
 
   def tap
-    OpenStruct.new(official?: true)
+    OpenStruct.new(official?: true, name: @tap_name)
   end
 
   def stable
