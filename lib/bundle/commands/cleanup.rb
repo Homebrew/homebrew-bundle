@@ -92,8 +92,7 @@ module Bundle
       def formulae_to_uninstall(global: false, file: nil)
         @dsl ||= Brewfile.read(global:, file:)
         kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        kept_cask_formula_dependencies = Bundle::CaskDumper.formula_dependencies(kept_casks)
-        kept_formulae += kept_cask_formula_dependencies
+        kept_formulae += Bundle::CaskDumper.formula_dependencies(kept_casks)
         kept_formulae.map! do |f|
           Bundle::BrewDumper.formula_aliases[f] ||
             Bundle::BrewDumper.formula_oldnames[f] ||
