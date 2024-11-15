@@ -11,6 +11,7 @@ module Bundle
       def reset!
         @dsl = nil
         @kept_casks = nil
+        @kept_formulae = nil
         Bundle::CaskDumper.reset!
         Bundle::BrewDumper.reset!
         Bundle::TapDumper.reset!
@@ -90,22 +91,29 @@ module Bundle
       end
 
       def formulae_to_uninstall(global: false, file: nil)
-        @dsl ||= Brewfile.read(global:, file:)
-        kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
-        kept_cask_formula_dependencies = Bundle::CaskDumper.formula_dependencies(kept_casks)
-        kept_formulae += kept_cask_formula_dependencies
-        kept_formulae.map! do |f|
-          Bundle::BrewDumper.formula_aliases[f] ||
-            Bundle::BrewDumper.formula_oldnames[f] ||
-            f
-        end
+        kept_formulae = self.kept_formulae(global:, file:)
 
         current_formulae = Bundle::BrewDumper.formulae
-        kept_formulae += recursive_dependencies(current_formulae, kept_formulae)
         current_formulae.reject! do |f|
           Bundle::BrewInstaller.formula_in_array?(f[:full_name], kept_formulae)
         end
         current_formulae.map { |f| f[:full_name] }
+      end
+
+      def kept_formulae(global: false, file: nil)
+        @kept_formulae ||= begin
+          @dsl ||= Brewfile.read(global:, file:)
+
+          kept_formulae = @dsl.entries.select { |e| e.type == :brew }.map(&:name)
+          kept_formulae += Bundle::CaskDumper.formula_dependencies(kept_casks)
+          kept_formulae.map! do |f|
+            Bundle::BrewDumper.formula_aliases[f] ||
+              Bundle::BrewDumper.formula_oldnames[f] ||
+              f
+          end
+
+          kept_formulae + recursive_dependencies(Bundle::BrewDumper.formulae, kept_formulae)
+        end
       end
 
       def kept_casks(global: false, file: nil)
@@ -145,7 +153,9 @@ module Bundle
 
       def taps_to_untap(global: false, file: nil)
         @dsl ||= Brewfile.read(global:, file:)
+        kept_formulae = self.kept_formulae(global:, file:).map(&Formulary.method(:factory))
         kept_taps = @dsl.entries.select { |e| e.type == :tap }.map(&:name)
+        kept_taps += kept_formulae.filter_map(&:tap).map(&:name)
         current_taps = Bundle::TapDumper.tap_names
         current_taps - kept_taps - IGNORED_TAPS
       end
