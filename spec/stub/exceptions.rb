@@ -5,3 +5,6 @@ end
 
 class FormulaUnavailableError < RuntimeError
 end
+
+class TapFormulaUnavailableError < RuntimeError
+end

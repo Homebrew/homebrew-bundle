@@ -72,6 +72,12 @@ describe Bundle::Commands::Cleanup do
       expect(described_class.taps_to_untap).to eql(%w[z])
     end
 
+    it "ignores unavailable formulae when computing which taps to keep" do
+      allow(Formulary).to receive(:factory).and_raise(TapFormulaUnavailableError)
+      allow(Bundle::TapDumper).to receive(:tap_names).and_return(%w[z homebrew/bundle homebrew/core homebrew/tap])
+      expect(described_class.taps_to_untap).to eql(%w[z homebrew/tap])
+    end
+
     it "computes which VSCode extensions to uninstall" do
       allow(Bundle::VscodeExtensionDumper).to receive(:extensions).and_return(%w[z])
       expect(described_class.vscode_extensions_to_uninstall).to eql(%w[z])
