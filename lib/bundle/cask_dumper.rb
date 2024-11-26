@@ -30,14 +30,6 @@ module Bundle
       cask.outdated?(greedy: true)
     end
 
-    def cask_versions
-      return {} unless Bundle.cask_installed?
-
-      casks.each_with_object({}) do |cask, name_versions|
-        name_versions[cask.to_s] = cask.version
-      end
-    end
-
     def dump(describe: false)
       casks.map do |cask|
         description = "# #{cask.desc}\n" if describe && cask.desc.present?
