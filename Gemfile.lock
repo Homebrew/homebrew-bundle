@@ -26,7 +26,7 @@ GEM
       concurrent-ruby (~> 1.0)
     logger (1.6.3)
     minitest (5.25.4)
-    rexml (3.3.9)
+    rexml (3.4.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
