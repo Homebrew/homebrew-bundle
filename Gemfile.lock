@@ -24,7 +24,7 @@ GEM
     drb (2.2.1)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
-    logger (1.6.3)
+    logger (1.6.4)
     minitest (5.25.4)
     rexml (3.4.0)
     rspec (3.13.0)
