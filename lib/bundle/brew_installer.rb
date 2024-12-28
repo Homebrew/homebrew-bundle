@@ -156,7 +156,7 @@ module Bundle
     end
 
     def self.formula_upgradable?(formula)
-      # Check local cache first and then authoratitive Homebrew source.
+      # Check local cache first and then authoritative Homebrew source.
       formula_in_array?(formula, upgradable_formulae) && Formula[formula].outdated?
     end
 
