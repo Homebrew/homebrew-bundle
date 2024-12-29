@@ -8,7 +8,7 @@ describe Bundle::BrewServices do
       described_class.reset!
     end
 
-    it "is empty when brew servies not installed" do
+    it "is empty when brew services not installed" do
       allow(Bundle).to receive(:services_installed?).and_return(false)
       expect(described_class.started_services).to be_empty
     end
