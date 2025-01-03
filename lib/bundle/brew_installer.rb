@@ -187,11 +187,11 @@ module Bundle
     end
 
     def linked?
-      Formula[@name].linked?
+      Formula[@full_name].linked?
     end
 
     def keg_only?
-      Formula[@name].keg_only?
+      Formula[@full_name].keg_only?
     end
 
     def unlinked_and_keg_only?
