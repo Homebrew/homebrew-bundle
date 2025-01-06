@@ -14,7 +14,7 @@ module Bundle
     def preinstall(name, id, no_upgrade: false, verbose: false)
       unless Bundle.mas_installed?
         puts "Installing mas. It is not currently installed." if verbose
-        Bundle.system(HOMEBREW_BREW_FILE, "install", "mas", verbose:)
+        Bundle.brew("install", "mas", verbose:)
         raise "Unable to install #{name} app. mas installation failed." unless Bundle.mas_installed?
       end
 

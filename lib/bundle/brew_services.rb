@@ -11,21 +11,21 @@ module Bundle
     def stop(name, verbose: false)
       return true unless started?(name)
 
-      return unless Bundle.system HOMEBREW_BREW_FILE, "services", "stop", name, verbose: verbose
+      return unless Bundle.brew("services", "stop", name, verbose:)
 
       started_services.delete(name)
       true
     end
 
     def start(name, verbose: false)
-      return unless Bundle.system HOMEBREW_BREW_FILE, "services", "start", name, verbose: verbose
+      return unless Bundle.brew("services", "start", name, verbose:)
 
       started_services << name
       true
     end
 
     def restart(name, verbose: false)
-      return unless Bundle.system HOMEBREW_BREW_FILE, "services", "restart", name, verbose: verbose
+      return unless Bundle.brew("services", "restart", name, verbose:)
 
       started_services << name
       true

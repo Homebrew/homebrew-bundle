@@ -21,6 +21,10 @@ module Bundle
       success
     end
 
+    def brew(*args, verbose: false)
+      system(HOMEBREW_BREW_FILE, *args, verbose:)
+    end
+
     def mas_installed?
       @mas_installed ||= which_formula("mas")
     end
