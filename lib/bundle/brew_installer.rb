@@ -121,7 +121,7 @@ module Bundle
         verb = "#{cmd}ing".capitalize
         with_args = " with #{link_args.join(" ")}" if link_args.present?
         puts "#{verb} #{@name} formula#{with_args}." if verbose
-        return Bundle.system(HOMEBREW_BREW_FILE, cmd, *link_args, @name, verbose:)
+        return Bundle.brew(cmd, *link_args, @name, verbose:)
       end
 
       true
@@ -226,7 +226,7 @@ module Bundle
             It is currently installed and conflicts with #{@name}.
           EOS
         end
-        return false unless Bundle.system(HOMEBREW_BREW_FILE, "unlink", conflict, verbose:)
+        return false unless Bundle.brew("unlink", conflict, verbose:)
 
         if restart_service?
           puts "Stopping #{conflict} service (if it is running)." if verbose
@@ -242,7 +242,7 @@ module Bundle
       install_args << "--force" << "--overwrite" if force
       with_args = " with #{install_args.join(" ")}" if install_args.present?
       puts "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
-      unless Bundle.system(HOMEBREW_BREW_FILE, "install", "--formula", @full_name, *install_args, verbose:)
+      unless Bundle.brew("install", "--formula", @full_name, *install_args, verbose:)
         @changed = nil
         return false
       end
@@ -257,7 +257,7 @@ module Bundle
       upgrade_args << "--force" if force
       with_args = " with #{upgrade_args.join(" ")}" if upgrade_args.present?
       puts "Upgrading #{@name} formula#{with_args}. It is installed but not up-to-date." if verbose
-      unless Bundle.system(HOMEBREW_BREW_FILE, "upgrade", "--formula", @name, *upgrade_args, verbose:)
+      unless Bundle.brew("upgrade", "--formula", @name, *upgrade_args, verbose:)
         @changed = nil
         return false
       end

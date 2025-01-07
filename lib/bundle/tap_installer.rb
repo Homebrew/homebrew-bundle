@@ -22,9 +22,9 @@ module Bundle
       args.append("--force-auto-update") if options[:force_auto_update]
 
       success = if options[:clone_target]
-        Bundle.system(HOMEBREW_BREW_FILE, "tap", name, options[:clone_target], *args, verbose:)
+        Bundle.brew("tap", name, options[:clone_target], *args, verbose:)
       else
-        Bundle.system(HOMEBREW_BREW_FILE, "tap", name, *args, verbose:)
+        Bundle.brew("tap", name, *args, verbose:)
       end
 
       unless success
