@@ -1,3 +1,4 @@
+# typed: strict
 # frozen_string_literal: true
 
 homebrew_version = if HOMEBREW_VERSION.present?
@@ -110,6 +111,7 @@ module Homebrew
         named_args %w[install dump cleanup check exec list]
       end
 
+      sig { override.void }
       def run
         # Keep this inside `run` to keep --help fast.
         require_relative "../lib/bundle"
