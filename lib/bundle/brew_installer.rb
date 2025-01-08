@@ -43,13 +43,18 @@ module Bundle
       else
         true
       end
+      result = install_result
 
       if installed?
-        service_change_state!(verbose:) if install_result
-        link_change_state!(verbose:)
+        if install_result
+          service_result = service_change_state!(verbose:)
+          result &&= service_result
+        end
+        link_result = link_change_state!(verbose:)
+        result &&= link_result
       end
 
-      install_result
+      result
     end
 
     def install_change_state!(no_upgrade:, verbose:, force:)
