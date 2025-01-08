@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Formulary
+module Formulary
   def self.factory(name)
     Formula.new(name)
   end
