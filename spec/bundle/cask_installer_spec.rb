@@ -134,5 +134,27 @@ describe Bundle::CaskInstaller do
         end
       end
     end
+
+    context "when the postinstall option is provided" do
+      before do
+        Bundle::CaskDumper.reset!
+        allow(Bundle::CaskDumper).to receive_messages(cask_names:          ["google-chrome"],
+                                                      outdated_cask_names: ["google-chrome"])
+        allow(Bundle).to receive(:brew).and_return(true)
+        allow(described_class).to receive(:upgrading?).and_return(true)
+      end
+
+      it "runs the postinstall command" do
+        expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(true)
+        expect(described_class.preinstall("google-chrome", postinstall: "custom command")).to be(true)
+        expect(described_class.install("google-chrome", postinstall: "custom command")).to be(true)
+      end
+
+      it "reports a failure when postinstall fails" do
+        expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(false)
+        expect(described_class.preinstall("google-chrome", postinstall: "custom command")).to be(true)
+        expect(described_class.install("google-chrome", postinstall: "custom command")).to be(false)
+      end
+    end
   end
 end

@@ -31,33 +31,51 @@ module Bundle
 
       full_name = options.fetch(:full_name, name)
 
-      if installed_casks.include?(name) && upgrading?(no_upgrade, name, options)
+      install_result = if installed_casks.include?(name) && upgrading?(no_upgrade, name, options)
         status = "#{options[:greedy] ? "may not be" : "not"} up-to-date"
         puts "Upgrading #{name} cask. It is installed but #{status}." if verbose
-        return Bundle.brew("upgrade", "--cask", full_name, verbose:)
-      end
+        Bundle.brew("upgrade", "--cask", full_name, verbose:)
+      else
+        args = options.fetch(:args, []).filter_map do |k, v|
+          case v
+          when TrueClass
+            "--#{k}"
+          when FalseClass
+            nil
+          else
+            "--#{k}=#{v}"
+          end
+        end
 
-      args = options.fetch(:args, []).filter_map do |k, v|
-        case v
-        when TrueClass
-          "--#{k}"
-        when FalseClass
-          nil
+        args << "--force" if force
+        args.uniq!
+
+        with_args = " with #{args.join(" ")}" if args.present?
+        puts "Installing #{name} cask#{with_args}. It is not currently installed." if verbose
+
+        if Bundle.brew("install", "--cask", full_name, *args, verbose:)
+          installed_casks << name
+          true
         else
-          "--#{k}=#{v}"
+          false
         end
       end
+      result = install_result
 
-      args << "--force" if force
-      args.uniq!
+      if cask_installed?(name)
+        postinstall_result = postinstall_change_state!(name:, options:, verbose:)
+        result &&= postinstall_result
+      end
 
-      with_args = " with #{args.join(" ")}" if args.present?
-      puts "Installing #{name} cask#{with_args}. It is not currently installed." if verbose
+      result
+    end
 
-      return false unless Bundle.brew("install", "--cask", full_name, *args, verbose:)
+    def postinstall_change_state!(name:, options:, verbose:)
+      postinstall = options.fetch(:postinstall, nil)
+      return true if postinstall.blank?
 
-      installed_casks << name
-      true
+      puts "Running postinstall for #{name}." if verbose
+      Bundle.system(postinstall, verbose:)
     end
 
     def self.cask_installed_and_up_to_date?(cask, no_upgrade: false)
