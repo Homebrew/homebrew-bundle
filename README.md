@@ -37,10 +37,13 @@ cask_args appdir: "~/Applications", require_sha: true
 
 # 'brew install'
 brew "imagemagick"
-# 'brew install --with-rmtp', 'brew link --overwrite', 'brew services restart' on version changes
-brew "denji/nginx/nginx-full", link: :overwrite, args: ["with-rmtp"], restart_service: :changed
+# 'brew install --with-rmtp', 'brew link --overwrite', 'brew services restart' even if no install/upgrade
+brew "denji/nginx/nginx-full", link: :overwrite, args: ["with-rmtp"], restart_service: :always
 # 'brew install', always 'brew services restart', 'brew link', 'brew unlink mysql' (if it is installed)
-brew "mysql@5.6", restart_service: true, link: true, conflicts_with: ["mysql"]
+brew "mysql@5.6", restart_service: :changed, link: true, conflicts_with: ["mysql"]
+# 'brew install' and run a command if installer or upgraded.
+brew "postgresql@16",
+     postinstall: "${HOMEBREW_PREFIX}/opt/postgresql@16/bin/postgres -D ${HOMEBREW_PREFIX}/var/postgresql@16"
 # install only on specified OS
 brew "gnupg" if OS.mac?
 brew "glibc" if OS.linux?
@@ -55,6 +58,8 @@ cask "firefox", args: { no_quarantine: true }
 cask "opera", greedy: true
 # 'brew install --cask' only if '/usr/libexec/java_home --failfast' fails
 cask "java" unless system "/usr/libexec/java_home", "--failfast"
+# 'brew install --cask' and run a command if installer or upgraded.
+cask "google-cloud-sdk", postinstall: "${HOMEBREW_PREFIX}/bin/gcloud components update"
 
 # 'mas install'
 mas "1Password", id: 443_987_910

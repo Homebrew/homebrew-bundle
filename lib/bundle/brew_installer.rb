@@ -24,6 +24,7 @@ module Bundle
       @restart_service = options[:restart_service]
       @start_service = options.fetch(:start_service, @restart_service)
       @link = options.fetch(:link, nil)
+      @postinstall = options.fetch(:postinstall, nil)
       @changed = nil
     end
 
@@ -46,12 +47,14 @@ module Bundle
       result = install_result
 
       if installed?
-        if install_result
-          service_result = service_change_state!(verbose:)
-          result &&= service_result
-        end
+        service_result = service_change_state!(verbose:)
+        result &&= service_result
+
         link_result = link_change_state!(verbose:)
         result &&= link_result
+
+        postinstall_result = postinstall_change_state!(verbose:)
+        result &&= postinstall_result
       end
 
       result
@@ -83,7 +86,7 @@ module Bundle
       return false unless restart_service?
 
       # Restart if `restart_service: :always`, or if the formula was installed or upgraded
-      @restart_service.to_s != "changed" || changed?
+      @restart_service.to_s == "always" || changed?
     end
 
     def changed?
@@ -130,6 +133,14 @@ module Bundle
       end
 
       true
+    end
+
+    def postinstall_change_state!(verbose:)
+      return true if @postinstall.blank?
+      return true unless changed?
+
+      puts "Running postinstall for #{@name}." if verbose
+      Bundle.system(@postinstall, verbose:)
     end
 
     def self.formula_installed_and_up_to_date?(formula, no_upgrade: false)

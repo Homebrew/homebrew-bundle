@@ -62,7 +62,7 @@ describe Bundle::BrewInstaller do
       end
     end
 
-    context "with a true restart_service option" do
+    context "with an always restart_service option" do
       before do
         allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
         allow_any_instance_of(described_class).to receive(:installed?).and_return(true)
@@ -71,15 +71,15 @@ describe Bundle::BrewInstaller do
       context "with a successful installation" do
         it "restart service" do
           expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose: false).and_return(true)
-          described_class.preinstall(formula, restart_service: true)
-          described_class.install(formula, restart_service: true)
+          described_class.preinstall(formula, restart_service: :always)
+          described_class.install(formula, restart_service: :always)
         end
       end
 
       context "with a skipped installation" do
         it "restart service" do
           expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose: false).and_return(true)
-          described_class.install(formula, preinstall: false, restart_service: true)
+          described_class.install(formula, preinstall: false, restart_service: :always)
         end
       end
     end
@@ -177,7 +177,8 @@ describe Bundle::BrewInstaller do
         allow_any_instance_of(described_class).to receive(:upgrade!).and_return(true)
       end
 
-      def expectations(verbose:)
+      it "unlinks conflicts and stops their services" do
+        verbose = false
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql55",
                                                 verbose:).and_return(true)
         expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql56",
@@ -185,23 +186,60 @@ describe Bundle::BrewInstaller do
         expect(Bundle::BrewServices).to receive(:stop).with("mysql55", verbose:).and_return(true)
         expect(Bundle::BrewServices).to receive(:stop).with("mysql56", verbose:).and_return(true)
         expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose:).and_return(true)
-      end
-
-      # These tests wrap expect() calls in `expectations`
-      # rubocop:disable RSpec/NoExpectationExample
-      it "unlinks conflicts and stops their services" do
-        expectations(verbose: false)
-        described_class.preinstall(formula, restart_service: true, conflicts_with: ["mysql56"])
-        described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"])
+        described_class.preinstall(formula, restart_service: :always, conflicts_with: ["mysql56"])
+        described_class.install(formula, restart_service: :always, conflicts_with: ["mysql56"])
       end
 
       it "prints a message" do
         allow_any_instance_of(described_class).to receive(:puts)
-        expectations(verbose: true)
-        described_class.preinstall(formula, restart_service: true, conflicts_with: ["mysql56"], verbose: true)
-        described_class.install(formula, restart_service: true, conflicts_with: ["mysql56"], verbose: true)
+        verbose = true
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql55",
+                                                verbose:).and_return(true)
+        expect(Bundle).to receive(:system).with(HOMEBREW_BREW_FILE, "unlink", "mysql56",
+                                                verbose:).and_return(true)
+        expect(Bundle::BrewServices).to receive(:stop).with("mysql55", verbose:).and_return(true)
+        expect(Bundle::BrewServices).to receive(:stop).with("mysql56", verbose:).and_return(true)
+        expect(Bundle::BrewServices).to receive(:restart).with(formula, verbose:).and_return(true)
+        described_class.preinstall(formula, restart_service: :always, conflicts_with: ["mysql56"], verbose: true)
+        described_class.install(formula, restart_service: :always, conflicts_with: ["mysql56"], verbose: true)
       end
-      # rubocop:enable RSpec/NoExpectationExample
+    end
+
+    context "when the postinstall option is provided" do
+      before do
+        allow_any_instance_of(described_class).to receive(:install_change_state!).and_return(true)
+        allow_any_instance_of(described_class).to receive(:installed?).and_return(true)
+      end
+
+      context "when formula has changed" do
+        before do
+          allow_any_instance_of(described_class).to receive(:changed?).and_return(true)
+        end
+
+        it "runs the postinstall command" do
+          expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(true)
+          described_class.preinstall(formula, postinstall: "custom command")
+          described_class.install(formula, postinstall: "custom command")
+        end
+
+        it "reports a failure" do
+          expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(false)
+          described_class.preinstall(formula, postinstall: "custom command")
+          expect(described_class.install(formula, postinstall: "custom command")).to be(false)
+        end
+      end
+
+      context "when formula has not changed" do
+        before do
+          allow_any_instance_of(described_class).to receive(:changed?).and_return(false)
+        end
+
+        it "does not run the postinstall command" do
+          expect(Bundle).not_to receive(:system)
+          described_class.preinstall(formula, postinstall: "custom command")
+          described_class.install(formula, postinstall: "custom command")
+        end
+      end
     end
   end
 
@@ -396,6 +434,10 @@ describe Bundle::BrewInstaller do
       it "is false with {restart_service: :changed}" do
         expect(described_class.new(formula, restart_service: :changed).start_service_needed?).to be(false)
       end
+
+      it "is false with {restart_service: :always}" do
+        expect(described_class.new(formula, restart_service: :always).start_service_needed?).to be(false)
+      end
     end
 
     context "when a service is not started" do
@@ -418,6 +460,10 @@ describe Bundle::BrewInstaller do
       it "is true if {restart_service: :changed}" do
         expect(described_class.new(formula, restart_service: :changed).start_service_needed?).to be(true)
       end
+
+      it "is true if {restart_service: :always}" do
+        expect(described_class.new(formula, restart_service: :always).start_service_needed?).to be(true)
+      end
     end
   end
 
@@ -429,6 +475,12 @@ describe Bundle::BrewInstaller do
     context "when the restart_service option is true" do
       it "is true" do
         expect(described_class.new(formula, restart_service: true).restart_service?).to be(true)
+      end
+    end
+
+    context "when the restart_service option is always" do
+      it "is true" do
+        expect(described_class.new(formula, restart_service: :always).restart_service?).to be(true)
       end
     end
 
@@ -449,8 +501,12 @@ describe Bundle::BrewInstaller do
         allow_any_instance_of(described_class).to receive(:changed?).and_return(false)
       end
 
-      it "is true with {restart_service: true}" do
-        expect(described_class.new(formula, restart_service: true).restart_service_needed?).to be(true)
+      it "is false with {restart_service: true}" do
+        expect(described_class.new(formula, restart_service: true).restart_service_needed?).to be(false)
+      end
+
+      it "is true with {restart_service: :always}" do
+        expect(described_class.new(formula, restart_service: :always).restart_service_needed?).to be(true)
       end
 
       it "is false if {restart_service: :changed}" do
@@ -465,6 +521,10 @@ describe Bundle::BrewInstaller do
 
       it "is true with {restart_service: true}" do
         expect(described_class.new(formula, restart_service: true).restart_service_needed?).to be(true)
+      end
+
+      it "is true with {restart_service: :always}" do
+        expect(described_class.new(formula, restart_service: :always).restart_service_needed?).to be(true)
       end
 
       it "is true if {restart_service: :changed}" do
