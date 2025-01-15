@@ -9,4 +9,5 @@ group :test do
   gem "rspec"
   gem "simplecov", require: false
   gem "simplecov-cobertura", require: false
+  gem "sorbet-runtime"
 end
