@@ -63,7 +63,9 @@ module Homebrew
                description: "`install` prints output from commands as they are run. " \
                             "`check` lists all missing dependencies."
         switch "--no-upgrade",
+               env:         :bundle_no_upgrade,
                description: "`install` does not run `brew upgrade` on outdated dependencies. " \
+                            "`check` does not check for outdated dependencies. " \
                             "Note they may still be upgraded by `brew install` if needed."
         switch "-f", "--force",
                description: "`install` runs with `--force`/`--overwrite`. " \
