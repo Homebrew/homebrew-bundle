@@ -30,12 +30,11 @@ module Bundle
         require "formula"
         require "formulary"
 
-        ENV.deps = @dsl.entries.map do |entry|
+        ENV.deps = @dsl.entries.filter_map do |entry|
           next if entry.type != :brew
 
-          f = Formulary.factory(entry.name)
-          [f, f.recursive_dependencies.map(&:to_formula)]
-        end.flatten.compact
+          Formulary.factory(entry.name)
+        end
         ENV.keg_only_deps = ENV.deps.select(&:keg_only?)
         ENV.setup_build_environment
 
