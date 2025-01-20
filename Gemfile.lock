@@ -22,7 +22,7 @@ GEM
     diff-lcs (1.5.1)
     docile (1.4.1)
     drb (2.2.1)
-    i18n (1.14.6)
+    i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     logger (1.6.5)
     minitest (5.25.4)
