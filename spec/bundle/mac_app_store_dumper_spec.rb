@@ -70,6 +70,7 @@ describe Bundle::MacAppStoreDumper do
         896732467 你好 (1.1)
         634324555 مرحبا (1.0)
         234324325 áéíóú (1.0)
+        310633997 non>‎<printing>⁣<characters (1.0)
       HEREDOC
     end
 
@@ -93,6 +94,7 @@ describe Bundle::MacAppStoreDumper do
         ["896732467", "你好"],
         ["634324555", "مرحبا"],
         ["234324325", "áéíóú"],
+        ["310633997", "non><printing><characters"],
       ]
     end
 
@@ -108,6 +110,7 @@ describe Bundle::MacAppStoreDumper do
         mas "My App?", id: 543213432
         mas "my 😊 app", id: 123345384
         mas "my,comma,app", id: 893489734
+        mas "non><printing><characters", id: 310633997
         mas "Numbers", id: 409203825
         mas "Pages", id: 409201541
         mas "Pastebin It!", id: 944924917
