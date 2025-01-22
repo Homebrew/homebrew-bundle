@@ -16,6 +16,7 @@ module Bundle
           app_details = app.match(/\A(?<id>\d+)\s+(?<name>.*?)\s+\((?<version>[\d.]*)\)\Z/)
 
           # Only add the application details should we have a valid match.
+          # Strip unprintable characters
           [app_details[:id], app_details[:name].gsub(/[[:cntrl:]]|[\p{C}]/, "")] if app_details
         end
       else
