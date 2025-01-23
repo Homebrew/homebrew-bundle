@@ -69,6 +69,10 @@ whalebrew "whalebrew/wget"
 
 # 'vscode --install-extension'
 vscode "GitHub.codespaces"
+
+# Set an environment variable to be used e.g. inside `brew bundle exec`
+# Mostly only `HOMEBREW_*` variables are passed through to other `brew` commands.
+ENV["SOME_ENV_VAR"] = "some_value"
 ```
 
 ## Versions and lockfiles
