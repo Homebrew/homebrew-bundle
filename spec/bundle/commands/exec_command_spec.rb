@@ -10,35 +10,47 @@ describe Bundle::Commands::Exec do
   end
 
   context "when a Brewfile is found" do
-    it "does not raise an error" do
-      allow(described_class).to receive(:exec).and_return(nil)
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("brew 'openssl'")
+    let(:brewfile_contents) { "brew 'openssl'" }
 
-      expect { described_class.run("bundle", "install") }.not_to raise_error
+    before do
+      allow_any_instance_of(Pathname).to receive(:read)
+        .and_return(brewfile_contents)
     end
 
-    it "is able to run without bundle arguments" do
-      allow(described_class).to receive(:exec).with("bundle", "install").and_return(nil)
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("brew 'openssl'")
+    context "with valid command setup" do
+      before do
+        allow(described_class).to receive(:exec).and_return(nil)
+      end
 
-      expect { described_class.run("bundle", "install") }.not_to raise_error
-    end
+      it "does not raise an error" do
+        expect { described_class.run("bundle", "install") }.not_to raise_error
+      end
 
-    it "raises an exception if called without a command" do
-      allow(described_class).to receive(:exec).and_return(nil)
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("brew 'openssl'")
+      it "does not raise an error when HOMEBREW_BUNDLE_EXEC_ALL_KEG_ONLY_DEPS is set" do
+        ENV["HOMEBREW_BUNDLE_EXEC_ALL_KEG_ONLY_DEPS"] = "1"
+        expect { described_class.run("bundle", "install") }.not_to raise_error
+      end
 
-      expect { described_class.run }.to raise_error(RuntimeError)
+      it "uses the formula version from the environment variable" do
+        openssl_version = "1.1.1"
+        ENV["PATH"] = "/opt/homebrew/opt/openssl/bin"
+        ENV["HOMEBREW_BUNDLE_EXEC_FORMULA_VERSION_OPENSSL"] = openssl_version
+        described_class.run("bundle", "install")
+        expect(ENV.fetch("PATH")).to include("/Cellar/openssl/1.1.1/bin")
+      end
+
+      it "is able to run without bundle arguments" do
+        allow(described_class).to receive(:exec).with("bundle", "install").and_return(nil)
+        expect { described_class.run("bundle", "install") }.not_to raise_error
+      end
+
+      it "raises an exception if called without a command" do
+        expect { described_class.run }.to raise_error(RuntimeError)
+      end
     end
 
     it "raises if called with a command that's not on the PATH" do
       allow(described_class).to receive_messages(exec: nil, which: nil)
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("brew 'openssl'")
-
       expect { described_class.run("bundle", "install") }.to raise_error(RuntimeError)
     end
 
@@ -47,49 +59,35 @@ describe Bundle::Commands::Exec do
       expect(described_class).to receive(:which).and_return(Pathname("/usr/local/bin/bundle"))
       allow(ENV).to receive(:prepend_path).with(any_args).and_call_original
       expect(ENV).to receive(:prepend_path).with("PATH", "/usr/local/bin").once.and_call_original
-      allow_any_instance_of(Pathname).to receive(:read)
-        .and_return("brew 'openssl'")
       described_class.run("bundle", "install")
     end
 
     describe "when running a command which exists but is not on the PATH" do
-      it "does not raise if the command is a relative path with current directory indicator" do
-        allow(described_class).to receive(:exec).with("./configure").and_return(nil)
-        expect(described_class).not_to receive(:which)
-        allow_any_instance_of(Pathname).to receive(:read)
-          .and_return("brew 'zlib'")
+      let(:brewfile_contents) { "brew 'zlib'" }
 
-        expect { described_class.run("./configure") }.not_to raise_error
+      shared_examples "allows command execution" do |command|
+        it "does not raise" do
+          allow(described_class).to receive(:exec).with(command).and_return(nil)
+          expect(described_class).not_to receive(:which)
+          expect { described_class.run(command) }.not_to raise_error
+        end
       end
 
-      it "does not raise if the command is a relative path without current directory indicator" do
-        allow(described_class).to receive(:exec).with("bin/install").and_return(nil)
-        expect(described_class).not_to receive(:which)
-        allow_any_instance_of(Pathname).to receive(:read)
-          .and_return("brew 'zlib'")
-
-        expect { described_class.run("bin/install") }.not_to raise_error
-      end
-
-      it "does not raise if the command is an absolute path" do
-        allow(described_class).to receive(:exec).with("/Users/admin/Downloads/command").and_return(nil)
-        expect(described_class).not_to receive(:which)
-        allow_any_instance_of(Pathname).to receive(:read)
-          .and_return("brew 'zlib'")
-
-        expect { described_class.run("/Users/admin/Downloads/command") }.not_to raise_error
-      end
+      it_behaves_like "allows command execution", "./configure"
+      it_behaves_like "allows command execution", "bin/install"
+      it_behaves_like "allows command execution", "/Users/admin/Downloads/command"
     end
 
     describe "when the Brewfile contains rbenv" do
-      before { ENV["HOMEBREW_RBENV_ROOT"] = rbenv_root.to_s }
-
       let(:rbenv_root) { Pathname.new("/tmp/.rbenv") }
+      let(:brewfile_contents) { "brew 'rbenv'" }
+
+      before do
+        ENV["HOMEBREW_RBENV_ROOT"] = rbenv_root.to_s
+      end
 
       it "prepends the path of the rbenv shims to PATH before running" do
         allow(described_class).to receive(:exec).with("/usr/bin/true").and_return(0)
-        allow_any_instance_of(Pathname).to receive(:read)
-          .and_return("brew 'rbenv'")
         allow(ENV).to receive(:fetch).with(any_args).and_call_original
         allow(ENV).to receive(:prepend_path).with(any_args).once.and_call_original
 
