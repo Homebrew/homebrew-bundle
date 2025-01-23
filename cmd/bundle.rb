@@ -52,6 +52,9 @@ module Homebrew
 
           By default, only Homebrew formula dependencies are listed.
 
+          `brew bundle edit`:
+          Edit the `Brewfile` in your editor.
+
           `brew bundle exec` <command>:
           Run an external command in an isolated build environment based on the `Brewfile` dependencies.
 
@@ -123,7 +126,7 @@ module Homebrew
         conflicts "--all", "--no-vscode"
         conflicts "--vscode", "--no-vscode"
 
-        named_args %w[install dump cleanup check exec list sh env]
+        named_args %w[install dump cleanup check exec list sh env edit]
       end
 
       sig { override.void }
@@ -191,6 +194,8 @@ module Homebrew
             whalebrew:  args.whalebrew? || no_type_args,
             vscode:
           )
+        when "edit"
+          exec_editor(Bundle::Brewfile.path(global:, file:))
         when "cleanup"
           Bundle::Commands::Cleanup.run(global:, file:, force:, zap:)
         when "check"
