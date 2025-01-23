@@ -256,6 +256,7 @@ module Bundle
     def install!(verbose:, force:)
       install_args = @args.dup
       install_args << "--force" << "--overwrite" if force
+      install_args << "--skip-link" if @link == false
       with_args = " with #{install_args.join(" ")}" if install_args.present?
       puts "Installing #{@name} formula#{with_args}. It is not currently installed." if verbose
       unless Bundle.brew("install", "--formula", @full_name, *install_args, verbose:)
