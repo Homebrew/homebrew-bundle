@@ -29,6 +29,9 @@ module Homebrew
 
           You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`.
 
+          `brew bundle upgrade`:
+          Shorthand for `brew bundle install --upgrade`.
+
           `brew bundle dump`:
           Write all installed casks/formulae/images/taps into a `Brewfile` in the current directory.
 
@@ -66,7 +69,11 @@ module Homebrew
                env:         :bundle_no_upgrade,
                description: "`install` does not run `brew upgrade` on outdated dependencies. " \
                             "`check` does not check for outdated dependencies. " \
-                            "Note they may still be upgraded by `brew install` if needed."
+                            "Note they may still be upgraded by `brew install` if needed." \
+                            "This is enabled by default if `HOMEBREW_BUNDLE_NO_UPGRADE` is set."
+        switch "--upgrade",
+               description: "`install` runs `brew upgrade` on outdated dependencies, " \
+                            "even if `HOMEBREW_BUNDLE_NO_UPGRADE` is set. "
         switch "-f", "--force",
                description: "`install` runs with `--force`/`--overwrite`. " \
                             "`dump` overwrites an existing `Brewfile`. " \
@@ -126,7 +133,11 @@ module Homebrew
         global = args.global?
         file = args.file
         args.zap?
-        no_upgrade = args.no_upgrade?
+        no_upgrade = if args.upgrade? || subcommand == "upgrade"
+          false
+        else
+          args.no_upgrade?
+        end
         verbose = args.verbose?
         force = args.force?
         zap = args.zap?
@@ -134,7 +145,7 @@ module Homebrew
         no_type_args = !args.brews? && !args.casks? && !args.taps? && !args.mas? && !args.whalebrew? && !args.vscode?
 
         case subcommand
-        when nil, "install"
+        when nil, "install", "upgrade"
           Bundle::Commands::Install.run(
             global:, file:, no_upgrade:, verbose:, force:,
             no_lock:    args.no_lock?,

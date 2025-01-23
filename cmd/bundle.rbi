@@ -58,6 +58,9 @@ class Homebrew::Cmd::BundleCmd::Args < Homebrew::CLI::Args
   def taps?; end
 
   sig { returns(T::Boolean) }
+  def upgrade?; end
+
+  sig { returns(T::Boolean) }
   def verbose?; end
 
   sig { returns(T::Boolean) }
