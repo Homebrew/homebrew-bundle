@@ -53,6 +53,12 @@ module Homebrew
           Run an external command in an isolated build environment based on the `Brewfile` dependencies.
 
           This sanitized build environment ignores unrequested dependencies, which makes sure that things you didn't specify in your `Brewfile` won't get picked up by commands like `bundle install`, `npm install`, etc. It will also add compiler flags which will help with finding keg-only dependencies like `openssl`, `icu4c`, etc.
+
+          `brew bundle sh`:
+          Run your shell in a `brew bundle exec` environment.
+
+          `brew bundle env`:
+          Print the environment variables that would be set in a `brew bundle exec` environment.
         EOS
         flag "--file=",
              description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
@@ -110,7 +116,7 @@ module Homebrew
         conflicts "--all", "--no-vscode"
         conflicts "--vscode", "--no-vscode"
 
-        named_args %w[install dump cleanup check exec list]
+        named_args %w[install dump cleanup check exec list sh env]
       end
 
       sig { override.void }
@@ -178,8 +184,27 @@ module Homebrew
           Bundle::Commands::Cleanup.run(global:, file:, force:, zap:)
         when "check"
           Bundle::Commands::Check.run(global:, file:, no_upgrade:, verbose:)
-        when "exec"
-          _subcommand, *named_args = args.named
+        when "exec", "sh", "env"
+          named_args = case subcommand
+          when "exec"
+            _subcommand, *named_args = args.named
+            named_args
+          when "sh"
+            preferred_shell = Utils::Shell.preferred_path(default: "/bin/bash")
+            subshell = case Utils::Shell.preferred
+            when :zsh
+              "PS1='brew bundle %B%F{green}%~%f%b$ ' #{preferred_shell} -d -f"
+            when :bash
+              "PS1=\"brew bundle \\[\\033[1;32m\\]\\w\\[\\033[0m\\]$ \" #{preferred_shell} --noprofile --norc"
+            else
+              "PS1=\"brew bundle \\[\\033[1;32m\\]\\w\\[\\033[0m\\]$ \" #{preferred_shell}"
+            end
+            $stdout.flush
+            ENV["HOMEBREW_FORCE_API_AUTO_UPDATE"] = nil
+            [subshell]
+          when "env"
+            ["env"]
+          end
           Bundle::Commands::Exec.run(*named_args, global:, file:)
         when "list"
           Bundle::Commands::List.run(
