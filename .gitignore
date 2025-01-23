@@ -4,3 +4,4 @@
 Brewfile
 Gemfile.lock
 coverage
+vendor
