@@ -56,8 +56,8 @@ module Homebrew
         flag "--file=",
              description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
         switch "--global",
-               description: "Read the `Brewfile` from `~/.Brewfile` or " \
-                            "the `HOMEBREW_BUNDLE_FILE_GLOBAL` environment variable, if set."
+               description: "Read the global `Brewfile`, from the homebrew config directory or `~/.Brewfile`. " \
+                            "Override this path with the `HOMEBREW_BUNDLE_FILE_GLOBAL` environment variable."
         switch "-v", "--verbose",
                description: "`install` prints output from commands as they are run. " \
                             "`check` lists all missing dependencies."
