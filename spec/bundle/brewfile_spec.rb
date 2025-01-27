@@ -11,8 +11,10 @@ describe Bundle::Brewfile do
     let(:dash_writes_to_stdout) { false }
     let(:env_bundle_file_global_value) { nil }
     let(:env_bundle_file_value) { nil }
+    let(:env_user_config_home_value) { "/Users/username/.homebrew" }
     let(:file_value) { nil }
     let(:has_global) { false }
+    let(:config_dir_brewfile_exist) { false }
 
     before do
       allow(ENV).to receive(:fetch).and_return(nil)
@@ -20,6 +22,11 @@ describe Bundle::Brewfile do
                                    .and_return(env_bundle_file_global_value)
       allow(ENV).to receive(:fetch).with("HOMEBREW_BUNDLE_FILE", any_args)
                                    .and_return(env_bundle_file_value)
+
+      allow(ENV).to receive(:fetch).with("HOMEBREW_USER_CONFIG_HOME", any_args)
+                                   .and_return(env_user_config_home_value)
+      allow(File).to receive(:exist?).with("/Users/username/.homebrew/Brewfile")
+                                     .and_return(config_dir_brewfile_exist)
     end
 
     context "when `file` is specified with a relative path" do
@@ -151,6 +158,15 @@ describe Bundle::Brewfile do
         let(:env_bundle_file_value) { "" }
 
         it "returns the value specified by `file` path" do
+          expect(path).to eq(expected_pathname)
+        end
+      end
+
+      context "when HOMEBREW_USER_CONFIG_HOME/Brewfile exists" do
+        let(:config_dir_brewfile_exist) { true }
+        let(:expected_pathname) { Pathname.new("#{env_user_config_home_value}/Brewfile") }
+
+        it "returns the expected path" do
           expect(path).to eq(expected_pathname)
         end
       end
