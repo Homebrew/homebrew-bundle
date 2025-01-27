@@ -25,9 +25,9 @@ module Homebrew
           `brew bundle` [`install`]:
           Install and upgrade (by default) all dependencies from the `Brewfile`.
 
-          You can specify the `Brewfile` location using `--file` or by setting the `HOMEBREW_BUNDLE_FILE` environment variable.
+          You can specify the `Brewfile` location using `--file` or by setting the `$HOMEBREW_BUNDLE_FILE` environment variable.
 
-          You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `HOMEBREW_BUNDLE_BREW_SKIP`, `HOMEBREW_BUNDLE_CASK_SKIP`, `HOMEBREW_BUNDLE_MAS_SKIP`, `HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `HOMEBREW_BUNDLE_TAP_SKIP`.
+          You can skip the installation of dependencies by adding space-separated values to one or more of the following environment variables: `$HOMEBREW_BUNDLE_BREW_SKIP`, `$HOMEBREW_BUNDLE_CASK_SKIP`, `$HOMEBREW_BUNDLE_MAS_SKIP`, `$HOMEBREW_BUNDLE_WHALEBREW_SKIP`, `$HOMEBREW_BUNDLE_TAP_SKIP`.
 
           `brew bundle upgrade`:
           Shorthand for `brew bundle install --upgrade`.
@@ -69,9 +69,9 @@ module Homebrew
         flag "--file=",
              description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
         switch "--global",
-               description: "Read the `Brewfile` from `~/.Brewfile`, " \
-                            "in the `HOMEBREW_USER_CONFIG_HOME` directory, " \
-                            "or the `HOMEBREW_BUNDLE_FILE_GLOBAL` environment variable, if set."
+               description: "Read the `Brewfile` from `$HOMEBREW_BUNDLE_FILE_GLOBAL` (if set), " \
+                            "`${XDG_CONFIG_HOME}/homebrew/Brewfile` (if `$XDG_CONFIG_HOME` is set), " \
+                            "`${HOME}/.homebrew/Brewfile` or `${HOME}/.Brewfile` otherwise."
         switch "-v", "--verbose",
                description: "`install` prints output from commands as they are run. " \
                             "`check` lists all missing dependencies."
@@ -80,10 +80,10 @@ module Homebrew
                description: "`install` does not run `brew upgrade` on outdated dependencies. " \
                             "`check` does not check for outdated dependencies. " \
                             "Note they may still be upgraded by `brew install` if needed. " \
-                            "This is enabled by default if `HOMEBREW_BUNDLE_NO_UPGRADE` is set."
+                            "This is enabled by default if `$HOMEBREW_BUNDLE_NO_UPGRADE` is set."
         switch "--upgrade",
                description: "`install` runs `brew upgrade` on outdated dependencies, " \
-                            "even if `HOMEBREW_BUNDLE_NO_UPGRADE` is set. "
+                            "even if `$HOMEBREW_BUNDLE_NO_UPGRADE` is set. "
         switch "-f", "--force",
                description: "`install` runs with `--force`/`--overwrite`. " \
                             "`dump` overwrites an existing `Brewfile`. " \
@@ -91,7 +91,7 @@ module Homebrew
         switch "--cleanup",
                env:         :bundle_install_cleanup,
                description: "`install` performs cleanup operation, same as running `cleanup --force`. " \
-                            "This is enabled by default if `HOMEBREW_BUNDLE_INSTALL_CLEANUP` is set and " \
+                            "This is enabled by default if `$HOMEBREW_BUNDLE_INSTALL_CLEANUP` is set and " \
                             "`--global` is passed."
         switch "--no-lock",
                description: "no-op since `Brewfile.lock.json` was removed.",
@@ -113,12 +113,12 @@ module Homebrew
         switch "--no-vscode",
                env:         :bundle_dump_no_vscode,
                description: "`dump` without VSCode extensions. " \
-                            "This is enabled by default if `HOMEBREW_BUNDLE_DUMP_NO_VSCODE` is set."
+                            "This is enabled by default if `$HOMEBREW_BUNDLE_DUMP_NO_VSCODE` is set."
         switch "--describe",
                env:         :bundle_dump_describe,
                description: "`dump` adds a description comment above each line, unless the " \
                             "dependency does not have a description. " \
-                            "This is enabled by default if `HOMEBREW_BUNDLE_DUMP_DESCRIBE` is set."
+                            "This is enabled by default if `$HOMEBREW_BUNDLE_DUMP_DESCRIBE` is set."
         switch "--no-restart",
                description: "`dump` does not add `restart_service` to formula lines."
         switch "--zap",
