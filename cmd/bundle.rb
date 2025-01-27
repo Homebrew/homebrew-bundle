@@ -71,7 +71,7 @@ module Homebrew
         switch "--global",
                description: "Read the `Brewfile` from `$HOMEBREW_BUNDLE_FILE_GLOBAL` (if set), " \
                             "`${XDG_CONFIG_HOME}/homebrew/Brewfile` (if `$XDG_CONFIG_HOME` is set), " \
-                            "`${HOME}/.homebrew/Brewfile` or `${HOME}/.Brewfile` otherwise."
+                            "`~/.homebrew/Brewfile` or `~/.Brewfile` otherwise."
         switch "-v", "--verbose",
                description: "`install` prints output from commands as they are run. " \
                             "`check` lists all missing dependencies."
