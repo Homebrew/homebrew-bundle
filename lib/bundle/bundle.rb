@@ -67,7 +67,8 @@ module Bundle
         Process::Sys.seteuid(uid)
       end
 
-      return_value = with_env("HOME" => Etc.getpwuid(Process.uid)&.dir, &block)
+      home = T.must(Etc.getpwuid(Process.uid)).dir
+      return_value = with_env("HOME" => home, &block)
 
       if process_reexchangeable
         Process::UID.re_exchange
