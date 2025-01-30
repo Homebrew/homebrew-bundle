@@ -58,6 +58,7 @@ Dir.glob("#{PROJECT_ROOT}/lib/**/*.rb").each do |file|
 end
 
 require "bundler"
+require "sorbet-runtime"
 require "rspec/support/object_formatter"
 
 RSpec.configure do |config|

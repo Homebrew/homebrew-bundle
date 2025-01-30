@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 require "json"
@@ -17,7 +18,10 @@ module Bundle
 
           # Only add the application details should we have a valid match.
           # Strip unprintable characters
-          [app_details[:id], app_details[:name].gsub(/[[:cntrl:]]|[\p{C}]/, "")] if app_details
+          if app_details
+            name = T.must(app_details[:name])
+            [app_details[:id], name.gsub(/[[:cntrl:]]|[\p{C}]/, "")]
+          end
         end
       else
         []

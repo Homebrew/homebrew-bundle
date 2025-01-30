@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 module Bundle
@@ -102,7 +103,7 @@ module Bundle
         Regexp.last_match(1)
       elsif name =~ HOMEBREW_TAP_FORMULA_REGEX
         user = Regexp.last_match(1)
-        repo = Regexp.last_match(2)
+        repo = T.must(Regexp.last_match(2))
         name = Regexp.last_match(3)
         "#{user}/#{repo.sub("homebrew-", "")}/#{name}"
       else
