@@ -140,8 +140,8 @@ module Bundle
       return true if @postinstall.blank?
       return true unless changed?
 
-      puts "Running postinstall for #{@name}." if verbose
-      Bundle.system(@postinstall, verbose:)
+      puts "Running postinstall for #{@name}: #{@postinstall}" if verbose
+      Kernel.system(@postinstall)
     end
 
     def self.formula_installed_and_up_to_date?(formula, no_upgrade: false)

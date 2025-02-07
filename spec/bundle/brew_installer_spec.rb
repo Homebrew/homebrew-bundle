@@ -217,13 +217,13 @@ describe Bundle::BrewInstaller do
         end
 
         it "runs the postinstall command" do
-          expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(true)
+          expect(Kernel).to receive(:system).with("custom command").and_return(true)
           described_class.preinstall(formula, postinstall: "custom command")
           described_class.install(formula, postinstall: "custom command")
         end
 
         it "reports a failure" do
-          expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(false)
+          expect(Kernel).to receive(:system).with("custom command").and_return(false)
           described_class.preinstall(formula, postinstall: "custom command")
           expect(described_class.install(formula, postinstall: "custom command")).to be(false)
         end
@@ -235,7 +235,7 @@ describe Bundle::BrewInstaller do
         end
 
         it "does not run the postinstall command" do
-          expect(Bundle).not_to receive(:system)
+          expect(Kernel).not_to receive(:system)
           described_class.preinstall(formula, postinstall: "custom command")
           described_class.install(formula, postinstall: "custom command")
         end
