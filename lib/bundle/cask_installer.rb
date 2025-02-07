@@ -75,8 +75,8 @@ module Bundle
       postinstall = options.fetch(:postinstall, nil)
       return true if postinstall.blank?
 
-      puts "Running postinstall for #{name}." if verbose
-      Bundle.system(postinstall, verbose:)
+      puts "Running postinstall for #{@name}: #{postinstall}" if verbose
+      Kernel.system(postinstall)
     end
 
     def self.cask_installed_and_up_to_date?(cask, no_upgrade: false)

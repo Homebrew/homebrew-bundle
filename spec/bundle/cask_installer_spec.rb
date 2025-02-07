@@ -145,13 +145,13 @@ describe Bundle::CaskInstaller do
       end
 
       it "runs the postinstall command" do
-        expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(true)
+        expect(Kernel).to receive(:system).with("custom command").and_return(true)
         expect(described_class.preinstall("google-chrome", postinstall: "custom command")).to be(true)
         expect(described_class.install("google-chrome", postinstall: "custom command")).to be(true)
       end
 
       it "reports a failure when postinstall fails" do
-        expect(Bundle).to receive(:system).with("custom command", verbose: false).and_return(false)
+        expect(Kernel).to receive(:system).with("custom command").and_return(false)
         expect(described_class.preinstall("google-chrome", postinstall: "custom command")).to be(true)
         expect(described_class.install("google-chrome", postinstall: "custom command")).to be(false)
       end
