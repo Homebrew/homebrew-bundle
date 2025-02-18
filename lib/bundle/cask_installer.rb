@@ -49,6 +49,7 @@ module Bundle
         end
 
         args << "--force" if force
+        args << "--adopt" unless args.include?("--force")
         args.uniq!
 
         with_args = " with #{args.join(" ")}" if args.present?
