@@ -6,9 +6,5 @@ module Bundle
     def mas_installed?
       false
     end
-
-    def cask_installed?
-      false
-    end
   end
 end
