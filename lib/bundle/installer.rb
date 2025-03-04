@@ -64,8 +64,11 @@ module Bundle
         return false
       end
 
-      puts Formatter.success "Homebrew Bundle complete! " \
-                             "#{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed."
+      unless quiet
+        puts Formatter.success "Homebrew Bundle complete! " \
+                               "#{success} Brewfile #{Bundle::Dsl.pluralize_dependency(success)} now installed."
+      end
+
       true
     end
   end

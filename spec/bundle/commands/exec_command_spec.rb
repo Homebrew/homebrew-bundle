@@ -49,6 +49,15 @@ describe Bundle::Commands::Exec do
       end
     end
 
+    context "with env command" do
+      it "outputs the environment variables" do
+        ENV["HOMEBREW_PREFIX"] = "/opt/homebrew"
+
+        expect { described_class.run("env", env: true) }.to \
+          output(/HOMEBREW_PREFIX="#{ENV.fetch("HOMEBREW_PREFIX")}"/).to_stdout
+      end
+    end
+
     it "raises if called with a command that's not on the PATH" do
       allow(described_class).to receive_messages(exec: nil, which: nil)
       expect { described_class.run("bundle", "install") }.to raise_error(RuntimeError)

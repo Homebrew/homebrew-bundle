@@ -37,10 +37,10 @@ class Homebrew::Cmd::BundleCmd::Args < Homebrew::CLI::Args
   def global?; end
 
   sig { returns(T::Boolean) }
-  def mas?; end
+  def install?; end
 
   sig { returns(T::Boolean) }
-  def no_lock?; end
+  def mas?; end
 
   sig { returns(T::Boolean) }
   def no_restart?; end

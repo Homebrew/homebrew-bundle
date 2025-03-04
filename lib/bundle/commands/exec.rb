@@ -10,7 +10,7 @@ module Bundle
     module Exec
       module_function
 
-      def run(*args, global: false, file: nil)
+      def run(*args, global: false, file: nil, env: false)
         # Setup Homebrew's ENV extensions
         ENV.activate_extensions!
         raise UsageError, "No command to execute was specified!" if args.blank?
@@ -86,6 +86,13 @@ module Bundle
 
             ENV[key] = value.gsub(opt, "/Cellar/#{formula_name}/#{formula_version}\\1")
           end
+        end
+
+        if env
+          ENV.each do |key, value|
+            puts "export #{key}=\"#{value}\""
+          end
+          return
         end
 
         exec(*args)
