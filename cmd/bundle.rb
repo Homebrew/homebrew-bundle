@@ -84,6 +84,8 @@ module Homebrew
         switch "--upgrade",
                description: "`install` runs `brew upgrade` on outdated dependencies, " \
                             "even if `$HOMEBREW_BUNDLE_NO_UPGRADE` is set. "
+        switch "--install",
+               description: "Run `install` before continuing to other operations e.g. `exec`."
         switch "-f", "--force",
                description: "`install` runs with `--force`/`--overwrite`. " \
                             "`dump` overwrites an existing `Brewfile`. " \
@@ -93,9 +95,6 @@ module Homebrew
                description: "`install` performs cleanup operation, same as running `cleanup --force`. " \
                             "This is enabled by default if `$HOMEBREW_BUNDLE_INSTALL_CLEANUP` is set and " \
                             "`--global` is passed."
-        switch "--no-lock",
-               description: "no-op since `Brewfile.lock.json` was removed.",
-               hidden:      true
         switch "--all",
                description: "`list` all dependencies."
         switch "--formula", "--brews",
@@ -126,6 +125,7 @@ module Homebrew
 
         conflicts "--all", "--no-vscode"
         conflicts "--vscode", "--no-vscode"
+        conflicts "--install", "--upgrade"
 
         named_args %w[install dump cleanup check exec list sh env edit]
       end
@@ -154,13 +154,17 @@ module Homebrew
 
         no_type_args = !args.brews? && !args.casks? && !args.taps? && !args.mas? && !args.whalebrew? && !args.vscode?
 
+        if args.install?
+          if [nil, "install", "upgrade"].include?(subcommand)
+            raise UsageError, "`--install` cannot be used with `install`, `upgrade` or no subcommand."
+          end
+
+          Bundle::Commands::Install.run(global:, file:, no_upgrade:, verbose:, force:, quiet: true)
+        end
+
         case subcommand
         when nil, "install", "upgrade"
-          Bundle::Commands::Install.run(
-            global:, file:, no_upgrade:, verbose:, force:,
-            no_lock:    args.no_lock?,
-            quiet:      args.quiet?
-          )
+          Bundle::Commands::Install.run(global:, file:, no_upgrade:, verbose:, force:, quiet: args.quiet?)
 
           cleanup = if ENV.fetch("HOMEBREW_BUNDLE_INSTALL_CLEANUP", nil)
             args.global?
@@ -202,6 +206,7 @@ module Homebrew
         when "check"
           Bundle::Commands::Check.run(global:, file:, no_upgrade:, verbose:)
         when "exec", "sh", "env"
+          env = false
           named_args = case subcommand
           when "exec"
             _subcommand, *named_args = args.named
@@ -220,9 +225,10 @@ module Homebrew
             ENV["HOMEBREW_FORCE_API_AUTO_UPDATE"] = nil
             [subshell]
           when "env"
+            env = true
             ["env"]
           end
-          Bundle::Commands::Exec.run(*named_args, global:, file:)
+          Bundle::Commands::Exec.run(*named_args, global:, file:, env:)
         when "list"
           Bundle::Commands::List.run(
             global:,
