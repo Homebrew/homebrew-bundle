@@ -33,7 +33,7 @@ module Homebrew
           Shorthand for `brew bundle install --upgrade`.
 
           `brew bundle dump`:
-          Write all installed casks/formulae/images/taps into a `Brewfile` in the current directory.
+          Write all installed casks/formulae/images/taps into a `Brewfile` in the current directory or to a custom file specified with the `--file` option.
 
           `brew bundle cleanup`:
           Uninstall all dependencies not present in the `Brewfile`.
@@ -67,9 +67,10 @@ module Homebrew
           Print the environment variables that would be set in a `brew bundle exec` environment.
         EOS
         flag "--file=",
-             description: "Read the `Brewfile` from this location. Use `--file=-` to pipe to stdin/stdout."
+             description: "Read from or write to the `Brewfile` from this location." \
+                          "Use `--file=-` to pipe to stdin/stdout."
         switch "--global",
-               description: "Read the `Brewfile` from `$HOMEBREW_BUNDLE_FILE_GLOBAL` (if set), " \
+               description: "Read from or write to the `Brewfile` from `$HOMEBREW_BUNDLE_FILE_GLOBAL` (if set), " \
                             "`${XDG_CONFIG_HOME}/homebrew/Brewfile` (if `$XDG_CONFIG_HOME` is set), " \
                             "`~/.homebrew/Brewfile` or `~/.Brewfile` otherwise."
         switch "-v", "--verbose",
