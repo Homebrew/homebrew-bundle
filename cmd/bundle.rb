@@ -160,7 +160,7 @@ module Homebrew
             raise UsageError, "`--install` cannot be used with `install`, `upgrade` or no subcommand."
           end
 
-          Bundle::Commands::Install.run(global:, file:, no_upgrade:, verbose:, force:, quiet: true)
+          Bundle::Commands::Install.run(global:, file:, no_upgrade:, verbose:, force:, output: $stderr, quiet: true)
         end
 
         case subcommand
