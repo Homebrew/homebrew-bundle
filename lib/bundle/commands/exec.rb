@@ -10,7 +10,43 @@ module Bundle
     module Exec
       module_function
 
+      # Homebrew's global environment variables that we don't want to leak into
+      # the `brew bundle exec` environment.
+      HOMEBREW_ENV_CLEANUP = %w[
+        HOMEBREW_HELP_MESSAGE
+        HOMEBREW_API_DEFAULT_DOMAIN
+        HOMEBREW_BOTTLE_DEFAULT_DOMAIN
+        HOMEBREW_DEFAULT_CACHE
+        HOMEBREW_DEFAULT_LOGS
+        HOMEBREW_DEFAULT_TEMP
+        HOMEBREW_REQUIRED_RUBY_VERSION
+        HOMEBREW_PRODUCT
+        HOMEBREW_SYSTEM
+        HOMEBREW_PROCESSOR
+        HOMEBREW_PHYSICAL_PROCESSOR
+        HOMEBREW_BREWED_CURL_PATH
+        HOMEBREW_USER_AGENT_CURL
+        HOMEBREW_USER_AGENT
+        HOMEBREW_GENERIC_DEFAULT_PREFIX
+        HOMEBREW_GENERIC_DEFAULT_REPOSITORY
+        HOMEBREW_DEFAULT_PREFIX
+        HOMEBREW_DEFAULT_REPOSITORY
+        HOMEBREW_AUTO_UPDATE_COMMAND
+        HOMEBREW_BREW_GIT_REMOTE
+        HOMEBREW_COMMAND_DEPTH
+        HOMEBREW_CORE_GIT_REMOTE
+        HOMEBREW_MACOS_VERSION_NUMERIC
+        HOMEBREW_MINIMUM_GIT_VERSION
+        HOMEBREW_MACOS_NEWEST_UNSUPPORTED
+        HOMEBREW_MACOS_OLDEST_SUPPORTED
+        HOMEBREW_MACOS_OLDEST_ALLOWED
+        HOMEBREW_GITHUB_PACKAGES_AUTH
+      ].freeze
+
       def run(*args, global: false, file: nil, env: false)
+        # Cleanup Homebrew's global environment
+        HOMEBREW_ENV_CLEANUP.each { |key| ENV.delete(key) }
+
         # Setup Homebrew's ENV extensions
         ENV.activate_extensions!
         raise UsageError, "No command to execute was specified!" if args.blank?
