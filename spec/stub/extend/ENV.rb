@@ -20,4 +20,6 @@ ENV.instance_eval do
   def refurbish_args; end
 
   def prepend_path(*args); end
+
+  def append_path(*args); end
 end

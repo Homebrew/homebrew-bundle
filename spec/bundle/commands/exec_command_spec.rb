@@ -52,8 +52,9 @@ describe Bundle::Commands::Exec do
     context "with env command" do
       it "outputs the environment variables" do
         ENV["HOMEBREW_PREFIX"] = "/opt/homebrew"
+        ENV["HOMEBREW_PATH"] = "/usr/bin"
 
-        expect { described_class.run("env", env: true) }.to \
+        expect { described_class.run("env", subcommand: "env") }.to \
           output(/HOMEBREW_PREFIX="#{ENV.fetch("HOMEBREW_PREFIX")}"/).to_stdout
       end
     end

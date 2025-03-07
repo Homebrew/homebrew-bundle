@@ -43,7 +43,7 @@ module Bundle
         HOMEBREW_GITHUB_PACKAGES_AUTH
       ].freeze
 
-      def run(*args, global: false, file: nil, env: false)
+      def run(*args, global: false, file: nil, subcommand: "")
         # Cleanup Homebrew's global environment
         HOMEBREW_ENV_CLEANUP.each { |key| ENV.delete(key) }
 
@@ -124,7 +124,12 @@ module Bundle
           end
         end
 
-        if env
+        # Ensure brew bundle sh/env commands have access to other tools in the PATH
+        if ["sh", "env"].include?(subcommand) && (homebrew_path = ENV.fetch("HOMEBREW_PATH", nil))
+          ENV.append_path "PATH", homebrew_path
+        end
+
+        if subcommand == "env"
           ENV.each do |key, value|
             puts "export #{key}=\"#{value}\""
           end
