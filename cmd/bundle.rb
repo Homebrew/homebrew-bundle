@@ -143,7 +143,7 @@ module Homebrew
         require_relative "../lib/bundle"
 
         subcommand = args.named.first.presence
-        if ["exec", "add", "remove"].exclude?(subcommand) && args.named.size > 1
+        if %w[exec add remove services].exclude?(subcommand) && args.named.size > 1
           raise UsageError, "This command does not take more than 1 subcommand argument."
         end
 
@@ -273,6 +273,9 @@ module Homebrew
           else
             Bundle::Commands::Remove.run(*named_args, type: selected_types.first, global:, file:)
           end
+        when "services"
+          _, *named_args = args.named
+          Bundle::Commands::Services.run(*named_args, global:, file:)
         else
           raise UsageError, "unknown subcommand: #{subcommand}"
         end
