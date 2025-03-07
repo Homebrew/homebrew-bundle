@@ -67,7 +67,7 @@ module Homebrew
           Print the environment variables that would be set in a `brew bundle exec` environment.
         EOS
         flag "--file=",
-             description: "Read from or write to the `Brewfile` from this location." \
+             description: "Read from or write to the `Brewfile` from this location. " \
                           "Use `--file=-` to pipe to stdin/stdout."
         switch "--global",
                description: "Read from or write to the `Brewfile` from `$HOMEBREW_BUNDLE_FILE_GLOBAL` (if set), " \
