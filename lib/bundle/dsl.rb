@@ -17,7 +17,7 @@ module Bundle
       end
     end
 
-    attr_reader :entries, :cask_arguments
+    attr_reader :entries, :cask_arguments, :input
 
     def initialize(path)
       @path = path
