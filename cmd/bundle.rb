@@ -137,7 +137,7 @@ module Homebrew
         require_relative "../lib/bundle"
 
         subcommand = args.named.first.presence
-        if subcommand != "exec" && args.named.size > 1
+        if subcommand != "exec" && subcommand != "services" && args.named.size > 1
           raise UsageError, "This command does not take more than 1 subcommand argument."
         end
 
@@ -241,6 +241,9 @@ module Homebrew
             whalebrew: args.whalebrew? || args.all?,
             vscode:    args.vscode? || args.all?,
           )
+        when "services"
+          _, *named_args = args.named
+          Bundle::Commands::Services.run(*named_args, global:, file:)
         else
           raise UsageError, "unknown subcommand: #{subcommand}"
         end
