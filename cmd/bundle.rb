@@ -207,7 +207,6 @@ module Homebrew
         when "check"
           Bundle::Commands::Check.run(global:, file:, no_upgrade:, verbose:)
         when "exec", "sh", "env"
-          env = false
           named_args = case subcommand
           when "exec"
             _subcommand, *named_args = args.named
@@ -226,10 +225,9 @@ module Homebrew
             ENV["HOMEBREW_FORCE_API_AUTO_UPDATE"] = nil
             [subshell]
           when "env"
-            env = true
             ["env"]
           end
-          Bundle::Commands::Exec.run(*named_args, global:, file:, env:)
+          Bundle::Commands::Exec.run(*named_args, global:, file:, subcommand:)
         when "list"
           Bundle::Commands::List.run(
             global:,
