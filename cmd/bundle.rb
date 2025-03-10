@@ -240,11 +240,12 @@ module Homebrew
             vscode:    args.vscode? || args.all?,
           )
         when "add"
+          raise UsageError, "`add` does not support `--mas`." if args.mas?
+
           # We intentionally omit the `s` from `brews` and `casks` for ease of handling later.
           type_hash = {
             brew:      args.brews? || no_type_args,
             cask:      args.casks?,
-            mas:       args.mas?,
             whalebrew: args.whalebrew?,
             vscode:    args.vscode?,
           }
