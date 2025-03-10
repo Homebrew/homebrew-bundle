@@ -137,7 +137,7 @@ module Homebrew
         require_relative "../lib/bundle"
 
         subcommand = args.named.first.presence
-        if ["exec", "add"].exclude?(subcommand) && args.named.size > 1
+        if ["exec", "add", "remove"].exclude?(subcommand) && args.named.size > 1
           raise UsageError, "This command does not take more than 1 subcommand argument."
         end
 
@@ -254,6 +254,21 @@ module Homebrew
 
           _subcommand, *named_args = args.named
           Bundle::Commands::Add.run(*named_args, type: selected_types.first, global:, file:)
+        when "remove"
+          # We intentionally omit the `s` from `brews` and `casks` for ease of handling later.
+          type_hash = {
+            brew:      args.brews?,
+            cask:      args.casks?,
+            mas:       args.mas?,
+            whalebrew: args.whalebrew?,
+            vscode:    args.vscode?,
+            none:      no_type_args,
+          }
+          selected_types = type_hash.select { |_, v| v }.keys
+          raise UsageError, "`remove` requires exactly one type of entry." if selected_types.count != 1
+
+          _, *named_args = args.named
+          Bundle::Commands::Remove.run(*named_args, type: selected_types.first, global:, file:)
         else
           raise UsageError, "unknown subcommand: #{subcommand}"
         end
