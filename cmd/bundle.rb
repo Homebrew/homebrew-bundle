@@ -55,6 +55,12 @@ module Homebrew
           `brew bundle edit`:
           Edit the `Brewfile` in your editor.
 
+          `brew bundle add` <name> [...]:
+          Add entries to your `Brewfile`. Adds formulae by default. Use `--cask`, `--tap`, `--whalebrew` or `--vscode` to add the corresponding entry instead.
+
+          `brew bundle remove` <name> [...]:
+          Remove entries that match `name` from your `Brewfile`. Use `--formula`, `--cask`, `--tap`, `--mas`, `--whalebrew` or `--vscode` to remove only entries of the corresponding type.
+
           `brew bundle exec` <command>:
           Run an external command in an isolated build environment based on the `Brewfile` dependencies.
 
