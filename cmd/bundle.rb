@@ -137,7 +137,7 @@ module Homebrew
         require_relative "../lib/bundle"
 
         subcommand = args.named.first.presence
-        if ["exec", "add"].exclude?(subcommand) && args.named.size > 1
+        if ["exec", "add", "remove"].exclude?(subcommand) && args.named.size > 1
           raise UsageError, "This command does not take more than 1 subcommand argument."
         end
 
@@ -239,21 +239,32 @@ module Homebrew
             whalebrew: args.whalebrew? || args.all?,
             vscode:    args.vscode? || args.all?,
           )
-        when "add"
-          raise UsageError, "`add` does not support `--mas`." if args.mas?
-
-          # We intentionally omit the `s` from `brews` and `casks` for ease of handling later.
+        when "add", "remove"
+          # We intentionally omit the `s` from `brews`, `casks`, and `taps` for ease of handling later.
           type_hash = {
-            brew:      args.brews? || no_type_args,
+            brew:      args.brews?,
             cask:      args.casks?,
+            tap:       args.taps?,
+            mas:       args.mas?,
             whalebrew: args.whalebrew?,
             vscode:    args.vscode?,
+            none:      no_type_args,
           }
           selected_types = type_hash.select { |_, v| v }.keys
-          raise UsageError, "`add` supports only one type of entry at a time." if selected_types.count > 1
+          raise UsageError, "`#{subcommand}` supports only one type of entry at a time." if selected_types.count != 1
 
-          _subcommand, *named_args = args.named
-          Bundle::Commands::Add.run(*named_args, type: selected_types.first, global:, file:)
+          _, *named_args = args.named
+          if subcommand == "add"
+            type = case (t = selected_types.first)
+            when :none then :brew
+            when :mas then raise UsageError, "`add` does not support `--mas`."
+            else t
+            end
+
+            Bundle::Commands::Add.run(*named_args, type:, global:, file:)
+          else
+            Bundle::Commands::Remove.run(*named_args, type: selected_types.first, global:, file:)
+          end
         else
           raise UsageError, "unknown subcommand: #{subcommand}"
         end
