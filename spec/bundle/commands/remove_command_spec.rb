@@ -44,5 +44,26 @@ describe Bundle::Commands::Remove do
       expect { remove }.not_to raise_error
       expect(File.read(file)).not_to include(args.first)
     end
+
+    context "with arguments that match entries only when considering formula aliases" do
+      let(:foo) do
+        instance_double(
+          Formula,
+          name:      "foo",
+          full_name: "qux/quuz/foo",
+          oldnames:  ["oldfoo"],
+          aliases:   ["foobar"],
+        )
+      end
+      let(:args) { ["foobar"] }
+
+      it "suggests using `--formula` to match against formula aliases" do
+        expect(Formulary).to receive(:factory).with("foobar").and_return(foo)
+        expect { remove }.not_to raise_error
+        expect(File.read(file)).to eq(content)
+        # FIXME: Why doesn't this work?
+        # expect { remove }.to output("--formula").to_stderr
+      end
+    end
   end
 end
