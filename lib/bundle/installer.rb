@@ -6,7 +6,7 @@ module Bundle
     module_function
 
     def install(entries, global: false, file: nil, no_lock: false, no_upgrade: false, verbose: false, force: false,
-                output: $stdout, quiet: false)
+                quiet: false)
       success = 0
       failure = 0
 
@@ -42,10 +42,10 @@ module Bundle
         next if Bundle::Skipper.skip? entry
 
         preinstall = if cls.preinstall(*args, **options, no_upgrade:, verbose:)
-          output.puts Formatter.success("#{verb} #{name}")
+          puts Formatter.success("#{verb} #{name}")
           true
         else
-          output.puts "Using #{name}" unless quiet
+          puts "Using #{name}" unless quiet
           false
         end
 
@@ -66,7 +66,7 @@ module Bundle
 
       unless quiet
         dependency = Bundle::Dsl.pluralize_dependency(success)
-        output.puts Formatter.success "Homebrew Bundle complete! #{success} Brewfile #{dependency} now installed."
+        puts Formatter.success "Homebrew Bundle complete! #{success} Brewfile #{dependency} now installed."
       end
 
       true
