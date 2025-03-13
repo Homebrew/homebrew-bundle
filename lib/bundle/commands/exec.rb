@@ -4,6 +4,7 @@
 require "exceptions"
 require "extend/ENV"
 require "utils"
+require "PATH"
 
 module Bundle
   module Commands
@@ -44,6 +45,8 @@ module Bundle
         HOMEBREW_MACOS_OLDEST_ALLOWED
         HOMEBREW_GITHUB_PACKAGES_AUTH
       ].freeze
+
+      PATH_LIKE_ENV_REGEX = /.+#{File::PATH_SEPARATOR}/
 
       def run(*args, global: false, file: nil, subcommand: "")
         # Cleanup Homebrew's global environment
@@ -99,8 +102,10 @@ module Bundle
         end
 
         # Setup pkg-config, if present, to help locate packages
-        pkgconfig = Formulary.factory("pkg-config")
-        ENV.prepend_path "PATH", pkgconfig.opt_bin.to_s if pkgconfig.any_version_installed?
+        # Only need this on Linux as Homebrew provides a shim on macOS
+        if OS.linux? && (pkgconf = Formulary.factory("pkgconf")) && pkgconf.any_version_installed?
+          ENV.prepend_path "PATH", pkgconf.opt_bin.to_s
+        end
 
         # Ensure the Ruby path we saved goes before anything else, if the command was in the PATH
         ENV.prepend_path "PATH", command_path if command_path.present?
@@ -122,7 +127,22 @@ module Bundle
             opt = %r{/opt/#{formula_name}([/:$])}
             next unless value.match(opt)
 
-            ENV[key] = value.gsub(opt, "/Cellar/#{formula_name}/#{formula_version}\\1")
+            cellar = "/Cellar/#{formula_name}/#{formula_version}\\1"
+
+            # Look for PATH-like environment variables
+            if key.include?("PATH") && value.match?(PATH_LIKE_ENV_REGEX)
+              rejected_opts = []
+              path = PATH.new(ENV.fetch("PATH"))
+                         .reject do |value|
+                rejected_opts << value if value.match?(opt)
+              end
+              rejected_opts.each do |value|
+                path.prepend(value.gsub(opt, cellar))
+              end
+              ENV["PATH"] = path.to_s
+            else
+              ENV[key] = value.gsub(opt, cellar)
+            end
           end
         end
 

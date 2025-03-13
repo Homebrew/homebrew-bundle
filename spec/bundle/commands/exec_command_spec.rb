@@ -33,7 +33,8 @@ describe Bundle::Commands::Exec do
 
       it "uses the formula version from the environment variable" do
         openssl_version = "1.1.1"
-        ENV["PATH"] = "/opt/homebrew/opt/openssl/bin"
+        ENV["PATH"] = "/opt/homebrew/opt/openssl/bin:/usr/bin:/bin"
+        ENV["MANPATH"] = "/opt/homebrew/opt/openssl/man"
         ENV["HOMEBREW_BUNDLE_EXEC_FORMULA_VERSION_OPENSSL"] = openssl_version
         described_class.run("bundle", "install")
         expect(ENV.fetch("PATH")).to include("/Cellar/openssl/1.1.1/bin")
@@ -53,6 +54,7 @@ describe Bundle::Commands::Exec do
       it "outputs the environment variables" do
         ENV["HOMEBREW_PREFIX"] = "/opt/homebrew"
         ENV["HOMEBREW_PATH"] = "/usr/bin"
+        allow(OS).to receive(:linux?).and_return(true)
 
         expect { described_class.run("env", subcommand: "env") }.to \
           output(/HOMEBREW_PREFIX="#{ENV.fetch("HOMEBREW_PREFIX")}"/).to_stdout
