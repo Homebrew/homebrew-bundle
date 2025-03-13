@@ -130,7 +130,7 @@ module Bundle
             cellar = "/Cellar/#{formula_name}/#{formula_version}\\1"
 
             # Look for PATH-like environment variables
-            if key.include?("PATH") && value.match?(PATH_LIKE_ENV_REGEX)
+            ENV[key] = if key.include?("PATH") && value.match?(PATH_LIKE_ENV_REGEX)
               rejected_opts = []
               path = PATH.new(ENV.fetch("PATH"))
                          .reject do |value|
@@ -139,9 +139,9 @@ module Bundle
               rejected_opts.each do |value|
                 path.prepend(value.gsub(opt, cellar))
               end
-              ENV["PATH"] = path.to_s
+              path.to_s
             else
-              ENV[key] = value.gsub(opt, cellar)
+              value.gsub(opt, cellar)
             end
           end
         end
