@@ -1,7 +1,0 @@
-.idea
-.vscode
-
-Brewfile
-Gemfile.lock
-coverage
-vendor
